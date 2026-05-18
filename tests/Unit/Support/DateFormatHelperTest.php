@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Support;
+namespace Weblitzer\CFDev\Tests\Unit\Support;
 
-use CFDev\Support\DateFormatHelper;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Support\DateFormatHelper;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 
 class DateFormatHelperTest extends CFDevTestCase
 {

@@ -1,7 +1,7 @@
 <?php
 
 // src/Contracts/Validatable.php
-namespace CFDev\Contracts;
+namespace Weblitzer\CFDev\Contracts;
 
 interface Validatable
 {

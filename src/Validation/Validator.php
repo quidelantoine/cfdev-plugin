@@ -1,9 +1,9 @@
 <?php
 
 // src/Validation/Validator.php
-namespace CFDev\Validation;
+namespace Weblitzer\CFDev\Validation;
 
-use CFDev\Contracts\Validatable;
+use Weblitzer\CFDev\Contracts\Validatable;
 
 /**
  * Runs a set of validation rules against a value

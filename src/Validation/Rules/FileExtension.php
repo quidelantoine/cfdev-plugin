@@ -1,8 +1,8 @@
 <?php
 
-namespace CFDev\Validation\Rules;
+namespace Weblitzer\CFDev\Validation\Rules;
 
-use CFDev\Contracts\Validatable;
+use Weblitzer\CFDev\Contracts\Validatable;
 
 /**
  * Validates the extension of a WordPress attachment by its ID.

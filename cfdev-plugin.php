@@ -21,4 +21,4 @@ if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
 }
 require __DIR__ . '/vendor/autoload.php';
 
-CFDev\Initializer::instance(__FILE__);
+Weblitzer\CFDev\Initializer::instance(__FILE__);

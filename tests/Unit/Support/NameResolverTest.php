@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Support;
+namespace Weblitzer\CFDev\Tests\Unit\Support;
 
-use CFDev\Support\NameResolver;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Support\NameResolver;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class NameResolverTest extends CFDevTestCase

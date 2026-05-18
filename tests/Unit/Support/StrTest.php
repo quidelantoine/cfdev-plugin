@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Support;
+namespace Weblitzer\CFDev\Tests\Unit\Support;
 
-use CFDev\Support\Str;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Support\Str;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class StrTest extends CFDevTestCase

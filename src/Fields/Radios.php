@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Field;
-use CFDev\Support\Str;
+use Weblitzer\CFDev\Field;
+use Weblitzer\CFDev\Support\Str;
 
 class Radios extends Field
 {
@@ -75,7 +75,7 @@ class Radios extends Field
             return checked($this->default_value, $slug, false);
         }
 
-        $decoded = \CFDev\Field::decodeMetaValue($value);
+        $decoded = \Weblitzer\CFDev\Field::decodeMetaValue($value);
         $values  = is_array($decoded) ? $decoded : [];
 
         return in_array($slug, $values) ? 'checked="checked"' : '';

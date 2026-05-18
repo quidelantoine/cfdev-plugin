@@ -1,11 +1,11 @@
 <?php
 
-namespace CFDev\Tests\Unit\Validation\Rules;
+namespace Weblitzer\CFDev\Tests\Unit\Validation\Rules;
 
-use CFDev\Tests\Unit\CFDevTestCase;
-use CFDev\Validation\Rules\DateAfter;
-use CFDev\Validation\Rules\DateAfterToday;
-use CFDev\Validation\Rules\DateBefore;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Validation\Rules\DateAfter;
+use Weblitzer\CFDev\Validation\Rules\DateAfterToday;
+use Weblitzer\CFDev\Validation\Rules\DateBefore;
 
 class DateRulesTest extends CFDevTestCase
 {

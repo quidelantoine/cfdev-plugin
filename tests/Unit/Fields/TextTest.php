@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Fields;
+namespace Weblitzer\CFDev\Tests\Unit\Fields;
 
-use CFDev\Fields\Text;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Fields\Text;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class TextTest extends CFDevTestCase
@@ -18,6 +18,12 @@ class TextTest extends CFDevTestCase
         Functions\when('apply_filters')->returnArg(2);
         Functions\when('sanitize_title')->alias(function (string $title): string {
             return strtolower(trim((string) preg_replace('/[^a-z0-9]+/i', '-', $title), '-'));
+        });
+        Functions\when('wp_strip_all_tags')->alias(function (string $value): string {
+            return strip_tags($value); // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter
+        });
+        Functions\when('sanitize_text_field')->alias(function (string $value): string {
+            return wp_strip_all_tags($value);
         });
 
         $defaults = [
@@ -79,11 +85,11 @@ class TextTest extends CFDevTestCase
     // saveValue — string
     // -------------------------------------------------------------------------
 
-    public function testSaveValueEscapesHtml(): void
+    public function testSaveValueStripsHtmlTags(): void
     {
         $field  = $this->makeField();
         $result = $field->saveValue('<script>alert("xss")</script>');
-        $this->assertSame(htmlspecialchars('<script>alert("xss")</script>'), $result);
+        $this->assertSame('alert("xss")', $result);
     }
 
     public function testSaveValuePlainStringUnchanged(): void
@@ -93,18 +99,25 @@ class TextTest extends CFDevTestCase
         $this->assertSame('Hello World', $result);
     }
 
-    public function testSaveValueAmpersandEscaped(): void
+    public function testSaveValueAmpersandPreserved(): void
     {
         $field  = $this->makeField();
         $result = $field->saveValue('Tom & Jerry');
-        $this->assertStringContainsString('&amp;', is_string($result) ? $result : '');
+        $this->assertSame('Tom & Jerry', $result);
     }
 
-    public function testSaveValueQuotesEscaped(): void
+    public function testSaveValueSingleQuotePreserved(): void
+    {
+        $field  = $this->makeField();
+        $result = $field->saveValue("l'apostrophe");
+        $this->assertSame("l'apostrophe", $result);
+    }
+
+    public function testSaveValueDoubleQuotePreserved(): void
     {
         $field  = $this->makeField();
         $result = $field->saveValue('"quoted"');
-        $this->assertStringContainsString('&quot;', is_string($result) ? $result : '');
+        $this->assertSame('"quoted"', $result);
     }
 
     public function testSaveValueEmptyString(): void
@@ -118,25 +131,25 @@ class TextTest extends CFDevTestCase
     // saveValue — array (repeatable)
     // -------------------------------------------------------------------------
 
-    public function testSaveValueArrayEscapesEachItem(): void
+    public function testSaveValueArrayStripsTagsFromEachItem(): void
     {
         $field  = $this->makeField();
         $result = $field->saveValue(['<b>bold</b>', 'plain', '"quoted"']);
 
         $this->assertIsArray($result);
-        $this->assertSame(htmlspecialchars('<b>bold</b>'), $result[0]);
+        $this->assertSame('bold', $result[0]);
         $this->assertSame('plain', $result[1]);
-        $this->assertSame(htmlspecialchars('"quoted"'), $result[2]);
+        $this->assertSame('"quoted"', $result[2]);
     }
 
-    public function testSaveValueNestedArrayEscapesRecursively(): void
+    public function testSaveValueNestedArrayStripsTagsRecursively(): void
     {
         $field  = $this->makeField();
         $result = $field->saveValue([['<script>', 'safe'], ['<img>']]);
 
-        $this->assertSame(htmlspecialchars('<script>'), $result[0][0]);
+        $this->assertSame('', $result[0][0]);
         $this->assertSame('safe', $result[0][1]);
-        $this->assertSame(htmlspecialchars('<img>'), $result[1][0]);
+        $this->assertSame('', $result[1][0]);
     }
 
     public function testSaveValueEmptyArray(): void

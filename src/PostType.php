@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev;
+namespace Weblitzer\CFDev;
 
-use CFDev\Abstracts\ContentType;
-use CFDev\Contracts\HasTaxonomy;
-use CFDev\Support\NameResolver;
+use Weblitzer\CFDev\Abstracts\ContentType;
+use Weblitzer\CFDev\Contracts\HasTaxonomy;
+use Weblitzer\CFDev\Support\NameResolver;
 
 /**
  * Registers and manages a Custom Post Type

@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Field;
-use CFDev\Support\DateFormatHelper;
+use Weblitzer\CFDev\Field;
+use Weblitzer\CFDev\Support\DateFormatHelper;
 
 class Date extends Field
 {
@@ -50,7 +50,7 @@ class Date extends Field
         return esc_attr(gmdate($format, (int) $value));
     }
 
-    public function validate(mixed $value): \CFDev\Validation\Validator
+    public function validate(mixed $value): \Weblitzer\CFDev\Validation\Validator
     {
         $format = $this->args['date_format'] ?? 'm/d/Y';
         $date   = \DateTime::createFromFormat($format, (string) $value);

@@ -1,13 +1,13 @@
 <?php
 
-namespace CFDev\Tests\Unit\Validation\Rules;
+namespace Weblitzer\CFDev\Tests\Unit\Validation\Rules;
 
 use Brain\Monkey\Functions;
-use CFDev\Tests\Unit\CFDevTestCase;
-use CFDev\Validation\Rules\FileExtension;
-use CFDev\Validation\Rules\FileMime;
-use CFDev\Validation\Rules\ImageExactDimensions;
-use CFDev\Validation\Rules\ImageMinDimensions;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Validation\Rules\FileExtension;
+use Weblitzer\CFDev\Validation\Rules\FileMime;
+use Weblitzer\CFDev\Validation\Rules\ImageExactDimensions;
+use Weblitzer\CFDev\Validation\Rules\ImageMinDimensions;
 
 class WpAttachmentRulesTest extends CFDevTestCase
 {

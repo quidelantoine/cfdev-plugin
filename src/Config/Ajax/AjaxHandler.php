@@ -1,8 +1,8 @@
 <?php
 
-namespace CFDev\Config\Ajax;
+namespace Weblitzer\CFDev\Config\Ajax;
 
-use CFDev\Contracts\Registerable;
+use Weblitzer\CFDev\Contracts\Registerable;
 
 /**
  * Gère l'enregistrement et le chargement des assets (styles et scripts)
@@ -24,6 +24,6 @@ class AjaxHandler implements Registerable
     public function register(): void
     {
         // Ajax
-        add_action('wp_ajax_cfdev_field_ajax_save', ['CFDev\\Field', 'ajaxSave']);
+        add_action('wp_ajax_cfdev_field_ajax_save', ['Weblitzer\\CFDev\\Field', 'ajaxSave']);
     }
 }

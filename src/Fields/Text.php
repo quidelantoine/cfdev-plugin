@@ -1,8 +1,8 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Field;
+use Weblitzer\CFDev\Field;
 
 class Text extends Field
 {
@@ -20,16 +20,16 @@ class Text extends Field
     public function saveValue(string|array $value): string|array
     {
         if (is_array($value)) {
-            array_walk_recursive($value, array( $this, 'doHtmlspecialchars' ));
+            array_walk_recursive($value, array( $this, 'doSanitize' ));
         } else {
-            $value = htmlspecialchars($value);
+            $value = sanitize_text_field($value);
         }
 
         return $value;
     }
 
-    public function doHtmlspecialchars(string &$value): void
+    public function doSanitize(string &$value): void
     {
-        $value = htmlspecialchars($value);
+        $value = sanitize_text_field($value);
     }
 }

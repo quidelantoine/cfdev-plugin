@@ -1,7 +1,7 @@
 <?php
 
 // src/Contracts/HasTaxonomy.php
-namespace CFDev\Contracts;
+namespace Weblitzer\CFDev\Contracts;
 
 interface HasTaxonomy
 {

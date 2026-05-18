@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Fields;
+namespace Weblitzer\CFDev\Tests\Unit\Fields;
 
-use CFDev\Fields\Select;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Fields\Select;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class SelectTest extends CFDevTestCase

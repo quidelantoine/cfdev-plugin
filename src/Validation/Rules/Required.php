@@ -1,9 +1,9 @@
 <?php
 
 // src/Validation/Rules/Required.php
-namespace CFDev\Validation\Rules;
+namespace Weblitzer\CFDev\Validation\Rules;
 
-use CFDev\Contracts\Validatable;
+use Weblitzer\CFDev\Contracts\Validatable;
 
 final class Required implements Validatable
 {

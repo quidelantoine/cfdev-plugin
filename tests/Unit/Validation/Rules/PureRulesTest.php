@@ -1,28 +1,28 @@
 <?php
 
-namespace CFDev\Tests\Unit\Validation\Rules;
+namespace Weblitzer\CFDev\Tests\Unit\Validation\Rules;
 
 use Brain\Monkey\Functions;
-use CFDev\Tests\Unit\CFDevTestCase;
-use CFDev\Validation\Rules\Alpha;
-use CFDev\Validation\Rules\AlphaNumeric;
-use CFDev\Validation\Rules\Between;
-use CFDev\Validation\Rules\Contains;
-use CFDev\Validation\Rules\Email;
-use CFDev\Validation\Rules\EndsWith;
-use CFDev\Validation\Rules\ExactLength;
-use CFDev\Validation\Rules\Max;
-use CFDev\Validation\Rules\MaxLength;
-use CFDev\Validation\Rules\Min;
-use CFDev\Validation\Rules\MinLength;
-use CFDev\Validation\Rules\Numeric;
-use CFDev\Validation\Rules\Positive;
-use CFDev\Validation\Rules\Regex;
-use CFDev\Validation\Rules\Required;
-use CFDev\Validation\Rules\Slug;
-use CFDev\Validation\Rules\StartsWith;
-use CFDev\Validation\Rules\Url;
-use CFDev\Validation\Rules\Uuid;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Validation\Rules\Alpha;
+use Weblitzer\CFDev\Validation\Rules\AlphaNumeric;
+use Weblitzer\CFDev\Validation\Rules\Between;
+use Weblitzer\CFDev\Validation\Rules\Contains;
+use Weblitzer\CFDev\Validation\Rules\Email;
+use Weblitzer\CFDev\Validation\Rules\EndsWith;
+use Weblitzer\CFDev\Validation\Rules\ExactLength;
+use Weblitzer\CFDev\Validation\Rules\Max;
+use Weblitzer\CFDev\Validation\Rules\MaxLength;
+use Weblitzer\CFDev\Validation\Rules\Min;
+use Weblitzer\CFDev\Validation\Rules\MinLength;
+use Weblitzer\CFDev\Validation\Rules\Numeric;
+use Weblitzer\CFDev\Validation\Rules\Positive;
+use Weblitzer\CFDev\Validation\Rules\Regex;
+use Weblitzer\CFDev\Validation\Rules\Required;
+use Weblitzer\CFDev\Validation\Rules\Slug;
+use Weblitzer\CFDev\Validation\Rules\StartsWith;
+use Weblitzer\CFDev\Validation\Rules\Url;
+use Weblitzer\CFDev\Validation\Rules\Uuid;
 
 class PureRulesTest extends CFDevTestCase
 {

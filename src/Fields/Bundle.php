@@ -1,13 +1,13 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Abstracts\FieldContainer;
-use CFDev\Validation\ErrorBag;
+use Weblitzer\CFDev\Abstracts\FieldContainer;
+use Weblitzer\CFDev\Validation\ErrorBag;
 
 class Bundle extends FieldContainer
 {
-    /** @var array<string, \CFDev\Field> */
+    /** @var array<string, \Weblitzer\CFDev\Field> */
     public array $fields = [];
     /** @var string|array<mixed> */
     public string|array $default_value = '';
@@ -50,7 +50,7 @@ class Bundle extends FieldContainer
             'term' => get_term_meta($post->ID, $this->id, true),
             default => get_post_meta($post->ID, $this->id, true),
         };
-        $meta = \CFDev\Field::decodeMetaValue($meta);
+        $meta = \Weblitzer\CFDev\Field::decodeMetaValue($meta);
 
         echo '<div id="' . esc_attr($this->id) . '" class="padding-wrap">';
         echo '<a class="button-secondary cfdev-button js-cfdev-add-sortable'
@@ -142,9 +142,9 @@ class Bundle extends FieldContainer
         echo '</li>';
     }
 
-    private function renderField(\CFDev\Field $field, string $id, mixed $value, object $post, ?string $errorKey = null): void
+    private function renderField(\Weblitzer\CFDev\Field $field, string $id, mixed $value, object $post, ?string $errorKey = null): void
     {
-        if ($field instanceof \CFDev\Fields\Hidden) {
+        if ($field instanceof \Weblitzer\CFDev\Fields\Hidden) {
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo $field->output($value);
             return;
@@ -176,7 +176,7 @@ class Bundle extends FieldContainer
         echo '</td></tr>';
     }
 
-    private function renderFieldOutput(\CFDev\Field $field, mixed $value, object $post): void
+    private function renderFieldOutput(\Weblitzer\CFDev\Field $field, mixed $value, object $post): void
     {
         if (!$field->supports_bundle) {
             echo '<em>' . esc_html(__("This input type doesn't support the bundle functionality (yet).", 'cfdev')) . '</em>';
@@ -221,7 +221,7 @@ class Bundle extends FieldContainer
 //                    $field_errors    = ErrorBag::forField($error_key);
 //                    $has_error       = ! empty($field_errors);
 //
-//                    if (! $field instanceof \CFDev\Fields\Hidden) {
+//                    if (! $field instanceof \Weblitzer\CFDev\Fields\Hidden) {
 //                        echo '<tr' . ( $has_error ? ' class="cfdev-has-error"' : '' ) . '>';
 //                            echo '<th class="cfdev-th">';
 //                                echo '<label for="' . esc_attr($id . $field->after_id) . '" class="cfdev-label">' . esc_html($field->label) . '</label>';
@@ -284,7 +284,7 @@ class Bundle extends FieldContainer
 //                    $field->default_value   = $this->default_value[$i][$y];
 //                    $value                  = '';
 //
-//                    if (! $field instanceof \CFDev\Fields\Hidden) {
+//                    if (! $field instanceof \Weblitzer\CFDev\Fields\Hidden) {
 //                        echo '<tr>';
 //                            echo '<th class="cfdev-th">';
 //                                echo '<label for="' . esc_attr($id . $field->after_id) . '" class="cfdev-label">' . esc_html($field->label) . '</label>';
@@ -337,7 +337,7 @@ class Bundle extends FieldContainer
 //                $field->after_id    = '_0';
 //                $value              = '';
 //
-//                if (! $field instanceof \CFDev\Fields\Hidden) {
+//                if (! $field instanceof \Weblitzer\CFDev\Fields\Hidden) {
 //                    echo '<tr>';
 //                        echo '<th class="cfdev-th">';
 //                            echo '<label for="' . esc_attr($id . $field->after_id) . '" class="cfdev-label">' . esc_html($field->label) . '</label>';

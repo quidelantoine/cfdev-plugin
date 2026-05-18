@@ -1,11 +1,11 @@
 <?php
 
-namespace CFDev\Tests\Unit\Fields;
+namespace Weblitzer\CFDev\Tests\Unit\Fields;
 
-use CFDev\Fields\Datetime;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Fields\Datetime;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
-use CFDev\Support\DateFormatHelper;
+use Weblitzer\CFDev\Support\DateFormatHelper;
 
 class DatetimeTest extends CFDevTestCase
 {
@@ -45,9 +45,9 @@ class DatetimeTest extends CFDevTestCase
         $this->assertTrue($this->makeField()->supports_bundle);
     }
 
-    public function testDoesNotSupportRepeatable(): void
+    public function testSupportsRepeatable(): void
     {
-        $this->assertFalse($this->makeField()->supports_repeatable);
+        $this->assertTrue($this->makeField()->supports_repeatable);
     }
 
     // -------------------------------------------------------------------------

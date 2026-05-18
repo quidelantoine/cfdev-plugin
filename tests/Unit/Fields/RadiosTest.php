@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Fields;
+namespace Weblitzer\CFDev\Tests\Unit\Fields;
 
-use CFDev\Fields\Radios;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Fields\Radios;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class RadiosTest extends CFDevTestCase

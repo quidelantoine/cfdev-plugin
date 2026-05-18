@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev\Abstracts;
+namespace Weblitzer\CFDev\Abstracts;
 
-use CFDev\Contracts\Registerable;
-use CFDev\Contracts\Supportable;
-use CFDev\Contracts\HasMetaBox;
+use Weblitzer\CFDev\Contracts\Registerable;
+use Weblitzer\CFDev\Contracts\Supportable;
+use Weblitzer\CFDev\Contracts\HasMetaBox;
 
 /**
  * Base class for all content types (Post Type, Taxonomy)
@@ -87,7 +87,7 @@ abstract class ContentType implements Registerable, Supportable, HasMetaBox
      */
     public function addMetaBox(string $id, string $title, array $fields = [], string $context = 'normal', string $priority = 'default'): static
     {
-        new \CFDev\Meta\MetaBox($id, $title, $this->name, $fields, $context, $priority);
+        new \Weblitzer\CFDev\Meta\MetaBox($id, $title, $this->name, $fields, $context, $priority);
 
         return $this;
     }

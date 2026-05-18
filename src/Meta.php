@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev;
+namespace Weblitzer\CFDev;
 
-use CFDev\Notice;
-use CFDev\Support\Str;
-use CFDev\Validation\ErrorBag;
+use Weblitzer\CFDev\Notice;
+use Weblitzer\CFDev\Support\Str;
+use Weblitzer\CFDev\Validation\ErrorBag;
 
 /**
  * Custom Meta for handling meta data
@@ -26,7 +26,7 @@ abstract class Meta
     public mixed $callback = null;
     /** @var mixed */
     public mixed $data = null;
-    /** @var array<string, \CFDev\Field> */
+    /** @var array<string, \Weblitzer\CFDev\Field> */
     public array $fields = [];
     public string $description = '';
 
@@ -88,9 +88,9 @@ abstract class Meta
         }
 
         if (
-            $data instanceof \CFDev\Fields\Tabs
-            || $data instanceof \CFDev\Fields\Accordion
-            || $data instanceof \CFDev\Fields\Bundle
+            $data instanceof \Weblitzer\CFDev\Fields\Tabs
+            || $data instanceof \Weblitzer\CFDev\Fields\Accordion
+            || $data instanceof \Weblitzer\CFDev\Fields\Bundle
         ) {
             $data->output($object);
         } else {
@@ -100,7 +100,7 @@ abstract class Meta
         echo '</div>';
     }
 
-    /** @param iterable<string, \CFDev\Field> $data */
+    /** @param iterable<string, \Weblitzer\CFDev\Field> $data */
     private function renderTable(iterable $data, object $object): void
     {
         /** @var object{ID: int} $object */
@@ -112,12 +112,12 @@ abstract class Meta
                 'term'  => get_term_meta($object->ID, $id_name, true),
                 default => get_post_meta($object->ID, $id_name, true),
             };
-            $value = \CFDev\Field::decodeMetaValue($value);
+            $value = \Weblitzer\CFDev\Field::decodeMetaValue($value);
 
             $field_errors = ErrorBag::forField($id_name);
             $has_error    = ! empty($field_errors);
 
-            if ($field instanceof \CFDev\Fields\Hidden) {
+            if ($field instanceof \Weblitzer\CFDev\Fields\Hidden) {
                 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo $field->output($value);
                 continue;
@@ -150,7 +150,7 @@ abstract class Meta
         echo '</table>';
     }
 
-    private function renderField(\CFDev\Field $field, mixed $value, object $object): void
+    private function renderField(\Weblitzer\CFDev\Field $field, mixed $value, object $object): void
     {
         if ($field->repeatable && $field->supports_repeatable) {
             echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">';
@@ -193,14 +193,14 @@ abstract class Meta
         // Loop through each meta box
         //if (! empty($this->data) && isset($_POST['cfdev'])) { // je le garde pour le moment
         if (!empty($this->data) && !empty($cfdev_data)) {
-            if ($this->data instanceof \CFDev\Fields\Bundle) {
+            if ($this->data instanceof \Weblitzer\CFDev\Fields\Bundle) {
                 $bundle = $this->data;
                 if (isset($values[$bundle->id])) {
                     $bundle->save($object_id, $values[$bundle->id]);
                 }
-            } elseif ($this->data instanceof \CFDev\Fields\Tabs || $this->data instanceof \CFDev\Fields\Accordion) {
+            } elseif ($this->data instanceof \Weblitzer\CFDev\Fields\Tabs || $this->data instanceof \Weblitzer\CFDev\Fields\Accordion) {
                 foreach ($this->data->tabs as $tab) {
-                    if ($tab->fields instanceof \CFDev\Fields\Bundle) {
+                    if ($tab->fields instanceof \Weblitzer\CFDev\Fields\Bundle) {
                         $bundle = $tab->fields;
                         if (isset($values[$bundle->id])) {
                             $bundle->save($object_id, $values[$bundle->id]);
@@ -328,11 +328,11 @@ abstract class Meta
     {
         $errors = [];
 
-        if ($this->data instanceof \CFDev\Fields\Bundle) {
+        if ($this->data instanceof \Weblitzer\CFDev\Fields\Bundle) {
             $errors = $this->validateBundle($this->data, $values);
-        } elseif ($this->data instanceof \CFDev\Fields\Tabs || $this->data instanceof \CFDev\Fields\Accordion) {
+        } elseif ($this->data instanceof \Weblitzer\CFDev\Fields\Tabs || $this->data instanceof \Weblitzer\CFDev\Fields\Accordion) {
             foreach ($this->data->tabs as $tab) {
-                if ($tab->fields instanceof \CFDev\Fields\Bundle) {
+                if ($tab->fields instanceof \Weblitzer\CFDev\Fields\Bundle) {
                     $errors = array_merge($errors, $this->validateBundle($tab->fields, $values));
                 } else {
                     foreach ((array) $tab->fields as $id => $field) {
@@ -361,7 +361,7 @@ abstract class Meta
     /**
      * @return array{label: string, errors: string[]}|null
      */
-    private function validateSingleField(\CFDev\Field $field, mixed $value): ?array
+    private function validateSingleField(\Weblitzer\CFDev\Field $field, mixed $value): ?array
     {
         $validator = $field->validate($value);
         if ($validator->passes()) {
@@ -380,7 +380,7 @@ abstract class Meta
      * @param  array<mixed>                                        $values
      * @return array<string, array{label: string, errors: string[]}>
      */
-    private function validateBundle(\CFDev\Fields\Bundle $bundle, array $values): array
+    private function validateBundle(\Weblitzer\CFDev\Fields\Bundle $bundle, array $values): array
     {
         $errors = [];
         $rows   = $values[$bundle->id] ?? [];
@@ -409,7 +409,7 @@ abstract class Meta
      * This array builds the complete array with the right key => value pairs
      *
      * @param   mixed           $data
-     * @return  array<string, \CFDev\Field>|\CFDev\Fields\Tabs|\CFDev\Fields\Accordion|\CFDev\Fields\Bundle
+     * @return  array<string, \Weblitzer\CFDev\Field>|\Weblitzer\CFDev\Fields\Tabs|\Weblitzer\CFDev\Fields\Accordion|\Weblitzer\CFDev\Fields\Bundle
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -421,11 +421,11 @@ abstract class Meta
 
         if (is_array($data) && ! empty($data)) {
             if (self::isTabs($data) || self::isAccordion($data)) {
-                $tabs               = self::isTabs($data) ? new  \CFDev\Fields\Tabs($this->id) : new  \CFDev\Fields\Accordion($this->id);
+                $tabs               = self::isTabs($data) ? new  \Weblitzer\CFDev\Fields\Tabs($this->id) : new  \Weblitzer\CFDev\Fields\Accordion($this->id);
                 $tabs->meta_type    = $this->metaType();
 
                 foreach ($data[1] as $title => $fields) {
-                    $tab            = new  \CFDev\Fields\Tab($title);
+                    $tab            = new  \Weblitzer\CFDev\Fields\Tab($title);
                     $tab->meta_type = $this->metaType();
 
                     if (self::isBundle($fields[0])) {
@@ -437,7 +437,7 @@ abstract class Meta
                             $class = $this->getClassFieldByType($field['type']);
                             if (class_exists($class)) {
                                 $field = new $class($field, $this->id);
-                                /** @var \CFDev\Field $field */
+                                /** @var \Weblitzer\CFDev\Field $field */
                                 $field->meta_type           = $this->metaType();
 
                                 $this->fields[$field->id]   = $field;
@@ -454,13 +454,13 @@ abstract class Meta
             } elseif (self::isBundle($data)) {
                 $bundle_id   = is_string($data[1]) ? $data[1] : $this->id;
                 $fields_list = is_string($data[1]) ? ($data[2] ?? []) : $data[1];
-                $bundle      = new \CFDev\Fields\Bundle($bundle_id, $data);
+                $bundle      = new \Weblitzer\CFDev\Fields\Bundle($bundle_id, $data);
 
                 foreach ($fields_list as $field) {
                     $class = $this->getClassFieldByType($field['type']);
                     if (class_exists($class)) {
                         $field = new $class($field, '');
-                        /** @var \CFDev\Field $field */
+                        /** @var \Weblitzer\CFDev\Field $field */
                         //$field->repeatable = false; je veux le garder au cas ou
                         $field->ajax            = false;
                         $field->meta_type       = $this->metaType();
@@ -478,7 +478,7 @@ abstract class Meta
                     $class = $this->getClassFieldByType($field['type']);
                     if (class_exists($class)) {
                         $field = new $class($field, $this->id);
-                        /** @var \CFDev\Field $field */
+                        /** @var \Weblitzer\CFDev\Field $field */
                         $field->meta_type           = $this->metaType();
 
                         $this->fields[$field->id]   = $field;
@@ -493,7 +493,7 @@ abstract class Meta
 
     private function getClassFieldByType(string $type): string
     {
-        return 'CFDev\\Fields\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $type)));
+        return 'Weblitzer\\CFDev\\Fields\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $type)));
     }
 
     /**

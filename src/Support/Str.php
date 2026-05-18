@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev\Support;
+namespace Weblitzer\CFDev\Support;
 
 /**
  * String manipulation helpers

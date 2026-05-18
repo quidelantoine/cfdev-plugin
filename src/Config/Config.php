@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev\Config;
+namespace Weblitzer\CFDev\Config;
 
 /**
  * Holds the immutable plugin configuration

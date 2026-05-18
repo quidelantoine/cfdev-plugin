@@ -1,16 +1,16 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Abstracts\FieldContainer;
-use CFDev\Support\Str;
-use CFDev\Validation\ErrorBag;
+use Weblitzer\CFDev\Abstracts\FieldContainer;
+use Weblitzer\CFDev\Support\Str;
+use Weblitzer\CFDev\Validation\ErrorBag;
 
 class Tab extends FieldContainer
 {
     public string $title = '';
-    /** @var array<string, \CFDev\Field>|\CFDev\Fields\Bundle */
-    public array|\CFDev\Fields\Bundle $fields = [];
+    /** @var array<string, \Weblitzer\CFDev\Field>|\Weblitzer\CFDev\Fields\Bundle */
+    public array|\Weblitzer\CFDev\Fields\Bundle $fields = [];
 
     public function __construct(string $title)
     {
@@ -29,14 +29,14 @@ class Tab extends FieldContainer
 //
 //        echo '<div id="cfdev-' . esc_attr($this->id) . '">';
 //
-//        if ($fields instanceof \CFDev\Fields\Bundle) {
+//        if ($fields instanceof \Weblitzer\CFDev\Fields\Bundle) {
 //            $fields->output($post);
 //        } else {
 //            echo '<table border="0" cellading="0" cellspacing="0" class="from-table cfdev-table">';
 //            foreach ($fields as $id => $field) {
 //                $value = $this->meta_type == 'user' ? get_user_meta($post->ID, $id, true) : get_post_meta($post->ID, $id, true);
 //
-//                if (! $field instanceof \CFDev\Fields\Hidden) {
+//                if (! $field instanceof \Weblitzer\CFDev\Fields\Hidden) {
 //                    $field_errors = ErrorBag::forField($id);
 //                    $has_error    = ! empty($field_errors);
 //
@@ -87,7 +87,7 @@ class Tab extends FieldContainer
 
         echo '<div id="cfdev-' . esc_attr($this->id) . '">';
 
-        if ($this->fields instanceof \CFDev\Fields\Bundle) {
+        if ($this->fields instanceof \Weblitzer\CFDev\Fields\Bundle) {
             $this->fields->output($post);
         } else {
             $this->renderTable($post);
@@ -108,7 +108,7 @@ class Tab extends FieldContainer
         foreach ($this->fields as $id => $field) {
             $value = $this->resolveValue($post->ID, $id);
 
-            if ($field instanceof \CFDev\Fields\Hidden) {
+            if ($field instanceof \Weblitzer\CFDev\Fields\Hidden) {
                 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo $field->output($value);
             } else {
@@ -127,10 +127,10 @@ class Tab extends FieldContainer
             default => get_post_meta($postId, $id, true),
         };
 
-        return \CFDev\Field::decodeMetaValue($value);
+        return \Weblitzer\CFDev\Field::decodeMetaValue($value);
     }
 
-    private function renderRow(string $id, \CFDev\Field $field, mixed $value): void
+    private function renderRow(string $id, \Weblitzer\CFDev\Field $field, mixed $value): void
     {
         $fieldErrors = ErrorBag::forField($id);
         $hasError    = !empty($fieldErrors);
@@ -158,7 +158,7 @@ class Tab extends FieldContainer
         echo '</td></tr>';
     }
 
-    private function renderFieldOutput(\CFDev\Field $field, mixed $value): void
+    private function renderFieldOutput(\Weblitzer\CFDev\Field $field, mixed $value): void
     {
         if ($field->repeatable && $field->supports_repeatable) {
             echo '<div class="cfdev-padding-wrap">';
@@ -181,7 +181,7 @@ class Tab extends FieldContainer
 //
 //        echo '<div id="cfdev-' . esc_attr($this->id) . '">';
 //
-//        if ($this->fields instanceof \CFDev\Fields\Bundle) {
+//        if ($this->fields instanceof \Weblitzer\CFDev\Fields\Bundle) {
 //            $this->fields->output($post);
 //        } else {
 //            echo $this->buildTable($post);
@@ -196,7 +196,7 @@ class Tab extends FieldContainer
 //
 //        foreach ($this->fields as $id => $field) {
 //            $value = $this->resolveValue($post->ID, $id);
-//            $html .= $field instanceof \CFDev\Fields\Hidden
+//            $html .= $field instanceof \Weblitzer\CFDev\Fields\Hidden
 //                ? $field->output($value)
 //                : $this->buildRow($id, $field, $value);
 //        }
@@ -211,7 +211,7 @@ class Tab extends FieldContainer
 //            : get_post_meta($postId, $id, true);
 //    }
 //
-//    private function buildRow(string $id, \CFDev\Field $field, mixed $value): string
+//    private function buildRow(string $id, \Weblitzer\CFDev\Field $field, mixed $value): string
 //    {
 //        $fieldErrors = ErrorBag::forField($id);
 //        $hasError    = !empty($fieldErrors);
@@ -241,7 +241,7 @@ class Tab extends FieldContainer
 //        );
 //    }
 //
-//    private function buildFieldOutput(\CFDev\Field $field, mixed $value): string
+//    private function buildFieldOutput(\Weblitzer\CFDev\Field $field, mixed $value): string
 //    {
 //        if (!$field->repeatable || !$field->supports_repeatable) {
 //            return $field->output($value);

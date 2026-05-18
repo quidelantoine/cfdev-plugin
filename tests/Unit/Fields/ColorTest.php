@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Fields;
+namespace Weblitzer\CFDev\Tests\Unit\Fields;
 
-use CFDev\Fields\Color;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Fields\Color;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class ColorTest extends CFDevTestCase
@@ -43,9 +43,9 @@ class ColorTest extends CFDevTestCase
         $this->assertTrue($this->makeField()->supports_bundle);
     }
 
-    public function testDoesNotSupportRepeatable(): void
+    public function testSupportsRepeatable(): void
     {
-        $this->assertFalse($this->makeField()->supports_repeatable);
+        $this->assertTrue($this->makeField()->supports_repeatable);
     }
 
     // -------------------------------------------------------------------------

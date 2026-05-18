@@ -1,7 +1,7 @@
 <?php
 
 // src/Contracts/Supportable.php
-namespace CFDev\Contracts;
+namespace Weblitzer\CFDev\Contracts;
 
 interface Supportable
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev\Tests\Unit\Validation;
+namespace Weblitzer\CFDev\Tests\Unit\Validation;
 
 use Brain\Monkey\Functions;
-use CFDev\Tests\Unit\CFDevTestCase;
-use CFDev\Validation\ErrorBag;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Validation\ErrorBag;
 
 class ErrorBagTest extends CFDevTestCase
 {

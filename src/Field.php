@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev;
+namespace Weblitzer\CFDev;
 
-use CFDev\Support\Str;
-use CFDev\Validation\Validator;
+use Weblitzer\CFDev\Support\Str;
+use Weblitzer\CFDev\Validation\Validator;
 
 /**
  * Custom Field Class
@@ -56,7 +56,7 @@ class Field
     public bool $supports_ajax = false;
     // Validation
     public bool $required = false;
-    /** @var array<\CFDev\Contracts\Validatable> */
+    /** @var array<\Weblitzer\CFDev\Contracts\Validatable> */
     protected array $rules = [];
 
     /**
@@ -94,7 +94,7 @@ class Field
         $this->id = $field['id'] ?? $this->buildId($this->name, $parent ?? '');
         // Auto-add Required rule if field is marked required
         if ($this->required) {
-            $this->rules[] = new \CFDev\Validation\Rules\Required();
+            $this->rules[] = new \Weblitzer\CFDev\Validation\Rules\Required();
         }
 
         // Additional rules declared inline in the field config array
@@ -452,7 +452,7 @@ class Field
      * Sets validation rules on the field
      *
      * @since  1.0.0
-     * @param  array<\CFDev\Contracts\Validatable> $rules  Validation rules to apply
+     * @param  array<\Weblitzer\CFDev\Contracts\Validatable> $rules  Validation rules to apply
      * @return static
      */
     public function setRules(array $rules): static

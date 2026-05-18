@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev;
+namespace Weblitzer\CFDev;
 
 /**
  * Displays a WordPress admin notice

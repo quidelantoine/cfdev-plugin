@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Abstracts;
+namespace Weblitzer\CFDev\Tests\Unit\Abstracts;
 
-use CFDev\Abstracts\FieldContainer;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Abstracts\FieldContainer;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 
 class FieldContainerTest extends CFDevTestCase
 {

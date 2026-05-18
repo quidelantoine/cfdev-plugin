@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev\Meta;
+namespace Weblitzer\CFDev\Meta;
 
-use CFDev\Meta;
-use CFDev\Support\WPValidator;
-use CFDev\Validation\ErrorBag;
+use Weblitzer\CFDev\Meta;
+use Weblitzer\CFDev\Support\WPValidator;
+use Weblitzer\CFDev\Validation\ErrorBag;
 
 /**
  * User Meta
@@ -105,13 +105,13 @@ class UserMeta extends Meta
                 ErrorBag::push('user', $user_id, $errors);
             }
 
-            if ($this->data instanceof \CFDev\Fields\Bundle) {
+            if ($this->data instanceof \Weblitzer\CFDev\Fields\Bundle) {
                 if (isset($values[$this->data->id])) {
                     $this->data->save($user_id, $values[$this->data->id]);
                 }
-            } elseif ($this->data instanceof \CFDev\Fields\Tabs || $this->data instanceof \CFDev\Fields\Accordion) {
+            } elseif ($this->data instanceof \Weblitzer\CFDev\Fields\Tabs || $this->data instanceof \Weblitzer\CFDev\Fields\Accordion) {
                 foreach ($this->data->tabs as $tab) {
-                    if ($tab->fields instanceof \CFDev\Fields\Bundle) {
+                    if ($tab->fields instanceof \Weblitzer\CFDev\Fields\Bundle) {
                         if (isset($values[$tab->fields->id])) {
                             $tab->fields->save($user_id, $values[$tab->fields->id]);
                         }
@@ -171,13 +171,13 @@ class UserMeta extends Meta
                 continue;
             }
 
-            $meta = \CFDev\Field::decodeMetaValue(get_user_meta($user_id, $column, true));
+            $meta = \Weblitzer\CFDev\Field::decodeMetaValue(get_user_meta($user_id, $column, true));
 
             if ($field->repeatable && $field->supports_repeatable) {
                 return esc_html(implode(', ', (array) $meta));
             }
 
-            if ($field instanceof \CFDev\Fields\Image) {
+            if ($field instanceof \Weblitzer\CFDev\Fields\Image) {
                 return wp_get_attachment_image((int) $meta, [100, 100]);
             }
 

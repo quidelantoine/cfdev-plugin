@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev\Abstracts;
+namespace Weblitzer\CFDev\Abstracts;
 
 abstract class FieldContainer
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Field;
-use CFDev\Support\DateFormatHelper;
+use Weblitzer\CFDev\Field;
+use Weblitzer\CFDev\Support\DateFormatHelper;
 
 class Time extends Field
 {

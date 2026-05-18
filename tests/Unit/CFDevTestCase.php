@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev\Tests\Unit;
+namespace Weblitzer\CFDev\Tests\Unit;
 
 use Brain\Monkey;
 use Brain\Monkey\Functions;

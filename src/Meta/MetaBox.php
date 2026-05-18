@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev\Meta;
+namespace Weblitzer\CFDev\Meta;
 
-use CFDev\Meta;
-use CFDev\Support\WPValidator;
-use CFDev\Validation\ErrorBag;
+use Weblitzer\CFDev\Meta;
+use Weblitzer\CFDev\Support\WPValidator;
+use Weblitzer\CFDev\Validation\ErrorBag;
 
 /**
  * Registers the meta boxes
@@ -208,7 +208,7 @@ class MetaBox extends Meta
      */
     public function addColumnContent($column, $post_id): void
     {
-        $meta = \CFDev\Field::decodeMetaValue(get_post_meta($post_id, $column, true));
+        $meta = \Weblitzer\CFDev\Field::decodeMetaValue(get_post_meta($post_id, $column, true));
 
         if ($this->fields) {
             foreach ($this->fields as $id_name => $field) {
@@ -216,9 +216,9 @@ class MetaBox extends Meta
                     if ($field->repeatable && $field->supports_repeatable) {
                         echo esc_html(implode(', ', (array) $meta));
                     } else {
-                        if ($field instanceof \CFDev\Fields\Image) {
+                        if ($field instanceof \Weblitzer\CFDev\Fields\Image) {
                             echo wp_get_attachment_image($meta, array(100, 100));
-                        } elseif ($field instanceof \CFDev\Fields\Radios) {
+                        } elseif ($field instanceof \Weblitzer\CFDev\Fields\Radios) {
                             echo isset($field->options[$meta[0]]) ? esc_html($field->options[$meta[0]]) : '';
                         } else {
                             echo esc_html($meta);

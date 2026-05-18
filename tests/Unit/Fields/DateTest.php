@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Fields;
+namespace Weblitzer\CFDev\Tests\Unit\Fields;
 
-use CFDev\Fields\Date;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Fields\Date;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class DateTest extends CFDevTestCase
@@ -51,9 +51,9 @@ class DateTest extends CFDevTestCase
         $this->assertTrue($this->makeField()->supports_bundle);
     }
 
-    public function testDoesNotSupportRepeatable(): void
+    public function testSupportsRepeatable(): void
     {
-        $this->assertFalse($this->makeField()->supports_repeatable);
+        $this->assertTrue($this->makeField()->supports_repeatable);
     }
 
     // -------------------------------------------------------------------------

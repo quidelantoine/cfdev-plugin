@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev;
+namespace Weblitzer\CFDev;
 
 use RuntimeException;
 

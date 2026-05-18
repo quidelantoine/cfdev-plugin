@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Support;
+namespace Weblitzer\CFDev\Tests\Unit\Support;
 
-use CFDev\Support\WPValidator;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Support\WPValidator;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 
 class WPValidatorTest extends CFDevTestCase
 {

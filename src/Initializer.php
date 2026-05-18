@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev;
+namespace Weblitzer\CFDev;
 
-use CFDev\Config\Config;
-use CFDev\Config\Assets\AssetLoader;
-use CFDev\Config\Ajax\AjaxHandler;
+use Weblitzer\CFDev\Config\Config;
+use Weblitzer\CFDev\Config\Assets\AssetLoader;
+use Weblitzer\CFDev\Config\Ajax\AjaxHandler;
 
 /**
  * Initializer handles init of Custom Field For Dev

@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Field;
-use CFDev\Support\Str;
+use Weblitzer\CFDev\Field;
+use Weblitzer\CFDev\Support\Str;
 
 class Checkboxes extends Field
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Abstracts;
+namespace Weblitzer\CFDev\Tests\Unit\Abstracts;
 
-use CFDev\Abstracts\ContentType;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Abstracts\ContentType;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class ContentTypeTest extends CFDevTestCase

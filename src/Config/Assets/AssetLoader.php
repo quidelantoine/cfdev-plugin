@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Config\Assets;
+namespace Weblitzer\CFDev\Config\Assets;
 
-use CFDev\Config\Config;
-use CFDev\Contracts\Registerable;
+use Weblitzer\CFDev\Config\Config;
+use Weblitzer\CFDev\Contracts\Registerable;
 
 /**
  * Gère l'enregistrement et le chargement des assets (styles et scripts)

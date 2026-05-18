@@ -1,8 +1,8 @@
 <?php
 
-namespace CFDev\Tests\Unit;
+namespace Weblitzer\CFDev\Tests\Unit;
 
-use CFDev\Container;
+use Weblitzer\CFDev\Container;
 use RuntimeException;
 
 class ContainerTest extends CFDevTestCase

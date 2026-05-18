@@ -1,8 +1,8 @@
 <?php
 
-namespace CFDev\Tests\Unit;
+namespace Weblitzer\CFDev\Tests\Unit;
 
-use CFDev\Notice;
+use Weblitzer\CFDev\Notice;
 use Brain\Monkey\Functions;
 
 class NoticeTest extends CFDevTestCase

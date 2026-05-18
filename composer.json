@@ -3,12 +3,12 @@
   "type": "wordpress-plugin",
   "autoload": {
     "psr-4": {
-      "CFDev\\": "src/"
+      "Weblitzer\\CFDev\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "CFDev\\Tests\\": "tests/"
+      "Weblitzer\\CFDev\\Tests\\": "tests/"
     }
   },
   "require": {

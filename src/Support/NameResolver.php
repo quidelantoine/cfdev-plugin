@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev\Support;
+namespace Weblitzer\CFDev\Support;
 
 /**
  * Resolves singular, plural and slug from a name input

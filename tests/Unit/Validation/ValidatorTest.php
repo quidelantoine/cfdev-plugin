@@ -1,13 +1,13 @@
 <?php
 
-namespace CFDev\Tests\Unit\Validation;
+namespace Weblitzer\CFDev\Tests\Unit\Validation;
 
-use CFDev\Tests\Unit\CFDevTestCase;
-use CFDev\Validation\Rules\Max;
-use CFDev\Validation\Rules\Min;
-use CFDev\Validation\Rules\MinLength;
-use CFDev\Validation\Rules\Required;
-use CFDev\Validation\Validator;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Validation\Rules\Max;
+use Weblitzer\CFDev\Validation\Rules\Min;
+use Weblitzer\CFDev\Validation\Rules\MinLength;
+use Weblitzer\CFDev\Validation\Rules\Required;
+use Weblitzer\CFDev\Validation\Validator;
 
 class ValidatorTest extends CFDevTestCase
 {

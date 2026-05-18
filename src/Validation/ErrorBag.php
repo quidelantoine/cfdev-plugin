@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev\Validation;
+namespace Weblitzer\CFDev\Validation;
 
 /**
  * Stores and retrieves per-field validation errors across the POST→redirect→GET cycle.

@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev\Tests\Unit\Config;
+namespace Weblitzer\CFDev\Tests\Unit\Config;
 
-use CFDev\Config\Assets\AssetLoader;
-use CFDev\Config\Config;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Config\Assets\AssetLoader;
+use Weblitzer\CFDev\Config\Config;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class AssetLoaderTest extends CFDevTestCase

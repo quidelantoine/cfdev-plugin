@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Config;
+namespace Weblitzer\CFDev\Tests\Unit\Config;
 
-use CFDev\Config\Ajax\AjaxHandler;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Config\Ajax\AjaxHandler;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 
 class AjaxHandlerTest extends CFDevTestCase
 {

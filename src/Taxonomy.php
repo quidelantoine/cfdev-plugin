@@ -1,10 +1,10 @@
 <?php
 
-namespace CFDev;
+namespace Weblitzer\CFDev;
 
-use CFDev\Abstracts\ContentType;
-use CFDev\Support\NameResolver;
-use CFDev\Support\WPValidator;
+use Weblitzer\CFDev\Abstracts\ContentType;
+use Weblitzer\CFDev\Support\NameResolver;
+use Weblitzer\CFDev\Support\WPValidator;
 
 /**
  * Registers and manages a Custom Taxonomy
@@ -103,7 +103,7 @@ class Taxonomy extends ContentType
      */
     public function addTermMeta(array $data = [], array $locations = ['add_form', 'edit_form']): static
     {
-        new \CFDev\Meta\TermMeta($this->name, $data, $locations);
+        new \Weblitzer\CFDev\Meta\TermMeta($this->name, $data, $locations);
 
         return $this;
     }

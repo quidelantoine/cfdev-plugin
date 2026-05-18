@@ -1,9 +1,9 @@
 <?php
 
-namespace CFDev\Tests\Unit\Meta;
+namespace Weblitzer\CFDev\Tests\Unit\Meta;
 
-use CFDev\Meta\MetaBox;
-use CFDev\Tests\Unit\CFDevTestCase;
+use Weblitzer\CFDev\Meta\MetaBox;
+use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
 
 class MetaBoxTest extends CFDevTestCase

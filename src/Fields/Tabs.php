@@ -1,12 +1,12 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Abstracts\FieldContainer;
+use Weblitzer\CFDev\Abstracts\FieldContainer;
 
 class Tabs extends FieldContainer
 {
-    /** @var array<string, \CFDev\Fields\Tab> */
+    /** @var array<string, \Weblitzer\CFDev\Fields\Tab> */
     public array $tabs = [];
 
     public function __construct(string $id)

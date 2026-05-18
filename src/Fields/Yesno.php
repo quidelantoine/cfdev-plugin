@@ -1,8 +1,8 @@
 <?php
 
-namespace CFDev\Fields;
+namespace Weblitzer\CFDev\Fields;
 
-use CFDev\Field;
+use Weblitzer\CFDev\Field;
 
 class Yesno extends Field
 {

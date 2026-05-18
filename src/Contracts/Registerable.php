@@ -1,6 +1,6 @@
 <?php
 
-namespace CFDev\Contracts;
+namespace Weblitzer\CFDev\Contracts;
 
 interface Registerable
 {

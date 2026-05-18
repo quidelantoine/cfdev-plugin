@@ -6,43 +6,8 @@
 ```bash
 composer require quidelantoine/cfdev
 ```
-
-# Questions 
-est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur +++, ou alors il faut aller plus loin ++andler , et du js aussi ++
-=> faire des tests sur column ? et les config de cuztom
-    -> qu'est ce que je garde , Faire une passe +++ 
-```php
-$box = new Cuztom_Meta_Box( $id, $title, $post_type, array(
-
-    // Parameters
-    array(
-        'id'                    => '_data_example',
-        'type'                  => 'text',
-        'label'                 => __('Example'),
-        'description'           => __('Field description'),
-        'explanation'           => __('Field explanations'),
-        'default_value'         => 'Default',
-        'options'               => array(),
-        'args'                  => array(),
-        'repeatable'            => false,
-        'ajax'                  => false,
-        'show_admin_column'     => false,
-        'admin_column_sortable' => false,
-        'admin_column_filter'   => false,
-    ),
-
-    // Text
-    array(
-        'id'        => '_data_text_field',
-        'type'      => 'text',
-        'label'     => 'Field Label',
-    ),
-
-    ...
-
-) );
-```
 # A faire 
+
 
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
 -> reste eslint ??? et ci 

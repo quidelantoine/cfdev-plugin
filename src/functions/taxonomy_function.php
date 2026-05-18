@@ -7,15 +7,15 @@
  * @param   string               $post_type
  * @param   array<mixed>         $args
  * @param   array<string>        $labels
- * @return  \CFDev\Taxonomy
+ * @return  \Weblitzer\CFDev\Taxonomy
  *
  * @author  quidelantoine
  * @since   1.0.0
  *
  */
-function register_cfdev_taxonomy(string|array $name, string $post_type, array $args = array(), array $labels = array()): \CFDev\Taxonomy
+function register_cfdev_taxonomy(string|array $name, string $post_type, array $args = array(), array $labels = array()): \Weblitzer\CFDev\Taxonomy
 {
-    $taxonomy = new \CFDev\Taxonomy($name, $post_type, $args, $labels);
+    $taxonomy = new \Weblitzer\CFDev\Taxonomy($name, $post_type, $args, $labels);
 
     return $taxonomy;
 }
@@ -48,7 +48,7 @@ function get_cfdev_term_meta(int|string $term, string $taxonomy, ?string $key = 
     $termId = (int) $term;
 
     if ($key) {
-        return \CFDev\Field::decodeMetaValue(get_term_meta($termId, $key, true));
+        return \Weblitzer\CFDev\Field::decodeMetaValue(get_term_meta($termId, $key, true));
     }
 
     $raw = get_term_meta($termId);
@@ -56,7 +56,7 @@ function get_cfdev_term_meta(int|string $term, string $taxonomy, ?string $key = 
         return [];
     }
 
-    return array_map(fn($v) => \CFDev\Field::decodeMetaValue(maybe_unserialize($v[0])), $raw);
+    return array_map(fn($v) => \Weblitzer\CFDev\Field::decodeMetaValue(maybe_unserialize($v[0])), $raw);
 }
 
 /**

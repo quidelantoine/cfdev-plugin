@@ -1,7 +1,7 @@
 <?php
 
 // src/Contracts/Has_Meta_Box.php
-namespace CFDev\Contracts;
+namespace Weblitzer\CFDev\Contracts;
 
 interface HasMetaBox
 {

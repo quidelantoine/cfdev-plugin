@@ -13,6 +13,10 @@ final class StartsWith implements Validatable
 
     public function validate(mixed $value): bool
     {
+        if (! is_scalar($value) && $value !== null) {
+            return false;
+        }
+
         return str_starts_with((string) $value, $this->prefix);
     }
 

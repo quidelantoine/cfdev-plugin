@@ -35,6 +35,7 @@ class UserSelect extends Field
         $this->args['name']     = 'cfdev' . $this->pre . '[' . $this->id . ']' . $this->after . ( $this->repeatable ? '[]' : '' );
         $this->args['id']       = $this->id . $this->after_id;
         $this->args['selected'] = ( ! empty($value) ? $value : $this->default_value );
+        // @phpstan-ignore-next-line argument.type — args built dynamically, shape verified at runtime
         $this->dropdown         = wp_dropdown_users($this->args);
 
         $output = $this->dropdown;

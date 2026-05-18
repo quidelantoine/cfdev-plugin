@@ -117,7 +117,7 @@ class UserSelectTest extends CFDevTestCase
             }))
             ->andReturn('<select></select>');
 
-        $this->makeField()->outputHtml(42);
+        $this->makeField()->outputHtml('42');
     }
 
     public function testOutputUsesDefaultValueWhenEmpty(): void

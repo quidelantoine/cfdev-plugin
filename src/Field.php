@@ -153,7 +153,7 @@ class Field
      * Outputs the field, ready for repeatable functionality
      *
      * @param   string|array    $value
-     * @return  mixed           $output
+     * @return  string
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -196,7 +196,7 @@ class Field
      * Outputs the field, ready for ajax save
      *
      * @param   string|array    $value
-     * @return  mixed           $output
+     * @return  string
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -219,12 +219,12 @@ class Field
      * @param int $object_id
      * @param string|array $value
      *
-     * @return false|string
+     * @return int|bool|\WP_Error
      *
      * @author  quidelantoine
      * @since   1.0.0
      */
-    public function save(int $object_id, string|array $value): false|string
+    public function save(int $object_id, string|array $value): int|bool|\WP_Error
     {
         $value = $this->saveValue($value);
 
@@ -394,7 +394,7 @@ class Field
         foreach (array_merge($this->data_attributes, $extra) as $attribute => $value) {
             if (! is_null($value)) {
                 $output .= 'data-' . $attribute . '="' . $value . '"';
-            } elseif (!$value && isset($this->args[Str::uglify($attribute)])) {
+            } elseif (isset($this->args[Str::uglify($attribute)])) {
                 $output .= 'data-' . $attribute . '="' . $this->args[Str::uglify($attribute)] . '"';
             }
         }
@@ -445,7 +445,7 @@ class Field
      * Sets validation rules on the field
      *
      * @since  1.0.0
-     * @param  array<Validatable> $rules  Validation rules to apply
+     * @param  array<\CFDev\Contracts\Validatable> $rules  Validation rules to apply
      * @return static
      */
     public function setRules(array $rules): static

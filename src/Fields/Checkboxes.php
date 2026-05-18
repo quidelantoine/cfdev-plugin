@@ -21,7 +21,7 @@ class Checkboxes extends Field
 
     public function outputHtml(string|array $value): string
     {
-        if (!is_array($this->options)) {
+        if (empty($this->options)) {
             return $this->outputExplanation();
         }
 

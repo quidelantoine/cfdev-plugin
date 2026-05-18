@@ -30,7 +30,7 @@ class Select extends Field
             $html .= $this->buildNoneOption($value);
         }
 
-        if (is_array($this->options)) {
+        if (!empty($this->options)) {
             foreach ($this->options as $slug => $name) {
                 $html .= $this->buildOption($slug, $name, $value);
             }
@@ -60,7 +60,7 @@ class Select extends Field
 
     private function buildOption(string $slug, string $name, string|array $value): string
     {
-        $selected = (isset($value) && strlen($value) > 0)
+        $selected = (is_string($value) && $value !== '')
             ? selected($slug, $value, false)
             : selected($this->default_value, $slug, false);
 

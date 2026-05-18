@@ -22,6 +22,10 @@ final class ImageExactDimensions implements Validatable
 
     public function validate(mixed $value): bool
     {
+        if (! is_numeric($value)) {
+            return false;
+        }
+
         $attachment_id = (int) $value;
 
         if ($attachment_id <= 0) {

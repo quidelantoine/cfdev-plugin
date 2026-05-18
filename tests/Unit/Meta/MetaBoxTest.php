@@ -13,6 +13,7 @@ class MetaBoxTest extends CFDevTestCase
         parent::setUp();
         Functions\when('wp_unslash')->returnArg();
         Functions\when('sanitize_text_field')->returnArg();
+        Functions\when('wp_doing_ajax')->justReturn(false);
     }
 
     protected function tearDown(): void
@@ -35,7 +36,7 @@ class MetaBoxTest extends CFDevTestCase
         $_POST = [];
         $this->makeMetaBox()->savePost(1);
         // no wp_verify_nonce call expected — reaching here = early return worked
-        $this->assertTrue(true);
+        $this->addToAssertionCount(1);
     }
 
     public function testSavePostReturnsEarlyWhenNonceIsInvalid(): void
@@ -44,7 +45,7 @@ class MetaBoxTest extends CFDevTestCase
 
         $_POST = ['cfdev_nonce' => 'bad_nonce'];
         $this->makeMetaBox()->savePost(1);
-        $this->assertTrue(true);
+        $this->addToAssertionCount(1);
     }
 
     public function testSavePostReturnsEarlyForWrongPostType(): void
@@ -54,7 +55,7 @@ class MetaBoxTest extends CFDevTestCase
 
         $_POST = ['cfdev_nonce' => 'valid_nonce'];
         $this->makeMetaBox()->savePost(1);
-        $this->assertTrue(true);
+        $this->addToAssertionCount(1);
     }
 
     public function testSavePostReturnsEarlyWhenUserCannotEdit(): void
@@ -71,7 +72,7 @@ class MetaBoxTest extends CFDevTestCase
 
         $_POST = ['cfdev_nonce' => 'valid_nonce'];
         $this->makeMetaBox()->savePost(1);
-        $this->assertTrue(true);
+        $this->addToAssertionCount(1);
     }
 
     public function testSavePostSkipsWhenCfdevDataIsEmpty(): void
@@ -89,7 +90,7 @@ class MetaBoxTest extends CFDevTestCase
         // cfdev key absent: $values will be [] → !empty($values) is false → no save
         $_POST = ['cfdev_nonce' => 'valid_nonce'];
         $this->makeMetaBox()->savePost(1);
-        $this->assertTrue(true);
+        $this->addToAssertionCount(1);
     }
 
     // -------------------------------------------------------------------------

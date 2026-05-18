@@ -192,7 +192,7 @@ class PostSelectTest extends CFDevTestCase
     public function testOutputNoneOptionNotSelectedWhenValueSet(): void
     {
         $field = $this->makeField(['args' => ['show_option_none' => '— Select —']], $this->defaultPosts());
-        $output = $field->outputHtml(10);
+        $output = $field->outputHtml('10');
         $this->assertStringNotContainsString('value="0" selected="selected"', $output);
     }
 
@@ -208,13 +208,13 @@ class PostSelectTest extends CFDevTestCase
 
     public function testOutputSelectsMatchingPost(): void
     {
-        $output = $this->makeField([], $this->defaultPosts())->outputHtml(20);
+        $output = $this->makeField([], $this->defaultPosts())->outputHtml('20');
         $this->assertEquals(1, substr_count($output, 'selected="selected"'));
     }
 
     public function testOutputSelectedOptionIsCorrect(): void
     {
-        $output = $this->makeField([], $this->defaultPosts())->outputHtml(30);
+        $output = $this->makeField([], $this->defaultPosts())->outputHtml('30');
         $val_pos = strpos($output, 'value="30"');
         $sel_pos = strpos($output, 'selected="selected"');
         $this->assertLessThan($sel_pos, $val_pos);
@@ -222,7 +222,7 @@ class PostSelectTest extends CFDevTestCase
 
     public function testOutputNoSelectedWhenValueNotInPosts(): void
     {
-        $output = $this->makeField([], $this->defaultPosts())->outputHtml(999);
+        $output = $this->makeField([], $this->defaultPosts())->outputHtml('999');
         $this->assertEquals(0, substr_count($output, 'selected="selected"'));
     }
 
@@ -243,7 +243,7 @@ class PostSelectTest extends CFDevTestCase
     public function testOutputValueTakesPriorityOverDefault(): void
     {
         $field = $this->makeField(['default_value' => 10], $this->defaultPosts());
-        $output = $field->outputHtml(30);
+        $output = $field->outputHtml('30');
         $this->assertEquals(1, substr_count($output, 'selected="selected"'));
         $val_pos = strpos($output, 'value="30"');
         $sel_pos = strpos($output, 'selected="selected"');

@@ -8,7 +8,7 @@ use CFDev\Validation\ErrorBag;
 class Bundle extends FieldContainer
 {
     public array $fields = [];
-    public string $default_value = '';
+    public string|array $default_value = '';
 
     /**
      * Construct for bundle
@@ -25,20 +25,18 @@ class Bundle extends FieldContainer
         // Bundle data
         $this->default_value = isset($data['default_value']) ? $data['default_value'] : $this->default_value;
         // Bundle id
-        $this->id = isset($id) ? $this->buildId($id) : $this->id;
+        $this->id = $this->buildId($id);
     }
 
     /**
      * Outputs a bundle
      * 
      * @param   object          $post
-     * @param   string|bool          $meta_type
      *
      * @author  quidelantoine
      * @since   1.0.0
      *
      */
-
     public function output(object $post): void
     {
 //        $meta = $this->meta_type === 'user'
@@ -140,7 +138,7 @@ class Bundle extends FieldContainer
     {
         if ($field instanceof \CFDev\Fields\Hidden) {
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            echo $field->output($value, $post);
+            echo $field->output($value);
             return;
         }
 
@@ -181,11 +179,11 @@ class Bundle extends FieldContainer
             echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">+ ' . esc_html(__('Add', 'cfdev')) . '</a>';
             echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            echo $field->output($value, $post);
+            echo $field->output($value);
             echo '</ul>';
         } else {
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            echo $field->output($value, $post);
+            echo $field->output($value);
         }
     }
 //    public function output($post)
@@ -231,11 +229,11 @@ class Bundle extends FieldContainer
 //                                        echo '</a>';
 //                                        echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
 //                                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                                            echo $field->output($value, $post);
+//                                            echo $field->output($value);
 //                                        echo '</ul>';
 //                            } else {
 //                                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                                echo $field->output($value, $post);
+//                                echo $field->output($value);
 //                            }
 //                        } else {
 //                            echo '<em>' . esc_html(__('This input type doesn\'t support the bundle functionality (yet).', 'cfdev')) . '</em>';
@@ -249,7 +247,7 @@ class Bundle extends FieldContainer
 //                        echo '</tr>';
 //                    } else {
 //                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                        echo $field->output($value, $post);
+//                        echo $field->output($value);
 //                    }
 //                }
 //
@@ -293,11 +291,11 @@ class Bundle extends FieldContainer
 //                                        echo '</a>';
 //                                        echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
 //                                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                                            echo $field->output($value, $post);
+//                                            echo $field->output($value);
 //                                        echo '</ul>';
 //                            } else {
 //                                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                                echo $field->output($value, $post);
+//                                echo $field->output($value);
 //                            }
 //                        } else {
 //                            echo '<em>' . esc_html(__('This input type doesn\'t support the bundle functionality (yet).', 'cfdev')) . '</em>';
@@ -307,7 +305,7 @@ class Bundle extends FieldContainer
 //                        echo '</tr>';
 //                    } else {
 //                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                        echo $field->output($value, $post);
+//                        echo $field->output($value);
 //                    }
 //
 //                    $y++;
@@ -346,11 +344,11 @@ class Bundle extends FieldContainer
 //                                    echo '</a>';
 //                                    echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
 //                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                                        echo $field->output($value, $post);
+//                                        echo $field->output($value);
 //                                    echo '</ul>';
 //                        } else {
 //                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                            echo $field->output($value, $post);
+//                            echo $field->output($value);
 //                        }
 //                    } else {
 //                        echo '<em>' . esc_html(__('This input type doesn\'t support the bundle functionality (yet).', 'cfdev')) . '</em>';
@@ -360,7 +358,7 @@ class Bundle extends FieldContainer
 //                    echo '</tr>';
 //                } else {
 //                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-//                    echo $field->output($value, $post);
+//                    echo $field->output($value);
 //                }
 //            }
 //            echo '</table>';
@@ -374,12 +372,12 @@ class Bundle extends FieldContainer
     /**
      * Save bundle meta
      * 
-     * @param   int             $post_id
-     * @param   string          $value
+     * @param   int             $object_id
+     * @param   array           $values
      *
      * @author  quidelantoine
      * @since   1.0.0
-     * 
+     *
      */
     public function save($object_id, $values)
     {

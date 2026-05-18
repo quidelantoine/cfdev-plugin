@@ -25,7 +25,7 @@ class Time extends Field
         $formatted_value = !empty($value) && is_numeric($value) && $value > 0 ?
             esc_attr(gmdate(
                 isset($this->args['time_format']) ? $this->args['time_format'] : 'H:i',
-                $value
+                (int) $value
             )) :
             esc_attr($this->default_value);
 
@@ -38,8 +38,9 @@ class Time extends Field
             $this->outputExplanation();
     }
 
-    public function saveValue(mixed $value): string|array
+    public function saveValue(string|array $value): string|array
     {
-        return strtotime($value);
+        $timestamp = is_string($value) ? strtotime($value) : false;
+        return $timestamp !== false ? (string) $timestamp : '';
     }
 }

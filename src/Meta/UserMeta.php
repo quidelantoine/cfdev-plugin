@@ -40,7 +40,7 @@ class UserMeta extends Meta
         parent::__construct($title);
 
         $this->id           = $id;
-        $this->locations    = array( 'show_user_profile', 'edit_user_profile' );
+        $this->locations    = ! empty($locations) ? (array) $locations : ['show_user_profile', 'edit_user_profile'];
 
         // Chack if the class, function or method exist, otherwise use custom callback
         if (WPValidator::isWpCallback($data)) {

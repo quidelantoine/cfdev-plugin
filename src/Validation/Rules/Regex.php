@@ -13,6 +13,10 @@ final class Regex implements Validatable
 
     public function validate(mixed $value): bool
     {
+        if (! is_scalar($value) && $value !== null) {
+            return false;
+        }
+
         return (bool) preg_match($this->pattern, (string) $value);
     }
 

@@ -87,7 +87,10 @@ class Taxonomy extends ContentType
      */
     public function attach(): void
     {
-        register_taxonomy_for_object_type($this->name, $this->post_type);
+        //register_taxonomy_for_object_type($this->name, $this->post_type);
+        foreach ($this->post_type as $post_type) {
+            register_taxonomy_for_object_type($this->name, $post_type);
+        }
     }
 
     /**
@@ -172,13 +175,14 @@ class Taxonomy extends ContentType
             }
 
             if (! empty($this->args['admin_column_sortable'])) {
-                add_action('manage_edit-' . $post_type . '_sortable_columns', [$this, 'addSortableColumn'], 10, 2);
+                //add_action('manage_edit-' . $post_type . '_sortable_columns', [$this, 'addSortableColumn'], 10, 2);
+                add_filter('manage_edit-' . $post_type . '_sortable_columns', [$this, 'addSortableColumn'], 10, 1);
             }
         }
 
         if (! empty($this->args['admin_column_filter'])) {
             add_action('restrict_manage_posts', [$this, 'renderPostFilter']);
-            add_filter('parse_query', [$this, 'applyPostFilter']);
+            add_action('parse_query', [$this, 'applyPostFilter']);
         }
     }
 
@@ -266,23 +270,26 @@ class Taxonomy extends ContentType
      * @param  \WP_Query $query  Current query object
      * @return void
      */
-    public function applyPostFilter(\WP_Query $query): \WP_Query
+    public function applyPostFilter(\WP_Query $query): void
+    //public function applyPostFilter(\WP_Query $query): \WP_Query
     {
         global $pagenow;
 
         $vars = &$query->query_vars;
 
         if ($pagenow !== 'edit.php') {
-            return $query;
+            //return $query;
+            return;
         }
 
         if (isset($vars[$this->name]) && is_numeric($vars[$this->name]) && $vars[$this->name]) {
             $term = get_term_by('id', $vars[$this->name], $this->name);
-            if ($term && ! is_wp_error($term)) {
+            if ($term) {
+            //if ($term && ! is_wp_error($term)) {
                 $vars[$this->name] = $term->slug;
             }
         }
 
-        return $query;
+         //return $query;
     }
 }

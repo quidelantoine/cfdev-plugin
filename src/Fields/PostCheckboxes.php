@@ -32,7 +32,7 @@ class PostCheckboxes extends Field
 
     public function outputHtml(string|array $value): string
     {
-        if (!is_array($this->posts)) {
+        if (empty($this->posts)) {
             return $this->outputExplanation();
         }
 

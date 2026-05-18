@@ -188,7 +188,8 @@ class NoticeTest extends CFDevTestCase
     public function testConstructorDoesNotRegisterHookByItself(): void
     {
         \Brain\Monkey\Actions\expectAdded('admin_notices')->never();
-        new Notice('Test', 'info');
+        $notice = new Notice('Test', 'info');
+        unset($notice);
         $this->addToAssertionCount(1);
     }
 }

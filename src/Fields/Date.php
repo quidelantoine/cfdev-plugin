@@ -54,6 +54,7 @@ class Date extends Field
 
     public function saveValue(string|array $value): string|array
     {
-        return strtotime($value);
+        $timestamp = is_string($value) ? strtotime($value) : false;
+        return $timestamp !== false ? (string) $timestamp : '';
     }
 }

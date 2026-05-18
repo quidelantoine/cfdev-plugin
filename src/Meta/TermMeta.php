@@ -112,12 +112,12 @@ class TermMeta extends Meta
     /**
      * Add fields to the edit term form
      *
-     * @param   string      $term
+     * @param   \WP_Term    $term
      *
      * @author  quidelantoine
      * @since   1.0.0
      */
-    public function editFormFields($term)
+    public function editFormFields(\WP_Term $term)
     {
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
         $value = get_cfdev_term_meta($term->term_id, $term->taxonomy);
@@ -270,38 +270,35 @@ class TermMeta extends Meta
      * Used to add the column content to the column head
      *
      * @param   string          $row
-     * @param   integer         $column
-     * @param   integer         $term_id
-     * @return  mixed
+     * @param   string          $column
+     * @param   int             $term_id
+     * @return  string
      *
      * @author  quidelantoine
      * @since   1.0.0
      *
      */
-    public function addColumnContent($row, $column, $term_id)
+    public function addColumnContent(string $row, string $column, int $term_id): string
     {
         $screen = get_current_screen();
 
         if ($screen) {
             $taxonomy = $screen->taxonomy;
-
-            $meta = get_cfdev_term_meta($term_id, $taxonomy, $column);
+            $meta     = get_cfdev_term_meta($term_id, $taxonomy, (string) $column);
 
             foreach ($this->fields as $id_name => $field) {
-                if ($column == $id_name) {
+                if ($column === $id_name) {
                     if ($field->repeatable && $field->supports_repeatable) {
-                        echo esc_html(implode($meta, ', '));
-                    } else {
-                        if ($field instanceof \CFDev\Fields\Image) {
-                            echo wp_get_attachment_image($meta, array( 100, 100 ));
-                        } else {
-                            echo esc_html($meta);
-                        }
+                        return esc_html(implode(', ', (array) $meta));
                     }
-
-                    break;
+                    if ($field instanceof \CFDev\Fields\Image) {
+                        return wp_get_attachment_image((int) $meta, [100, 100]);
+                    }
+                    return esc_html((string) $meta);
                 }
             }
         }
+
+        return $row;
     }
 }

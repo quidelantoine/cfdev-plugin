@@ -16,17 +16,17 @@
 function register_cfdev_taxonomy($name, $post_type, $args = array(), $labels = array())
 {
     $taxonomy = new \CFDev\Taxonomy($name, $post_type, $args, $labels);
-    
+
     return $taxonomy;
 }
 
 /**
  * Get term meta
- * 
+ *
  * @param   int|string      $term       Can be the id or the slug of the term
  * @param   string          $taxonomy
- * @param   string          $key
- * @return  string
+ * @param   string|null     $key
+ * @return  mixed
  *
  * @author  quidelantoine
  * @since   1.0.0
@@ -51,12 +51,12 @@ function get_cfdev_term_meta($term, $taxonomy, $key = null)
         return [];
     }
 
-    return array_map(fn($v) => \CFDev\Field::decodeMetaValue($v[0]), $raw);
+    return array_map(fn($v) => \CFDev\Field::decodeMetaValue(maybe_unserialize($v[0])), $raw);
 }
 
 /**
  * Get term meta
- * 
+ *
  * @param   int|string      $term       Can be the id or the slug of the term
  * @param   string          $taxonomy
  * @param   string          $key

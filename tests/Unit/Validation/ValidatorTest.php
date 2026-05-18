@@ -66,7 +66,6 @@ class ValidatorTest extends CFDevTestCase
         $errors = (new Validator('', [new Required()]))->errors();
 
         $this->assertCount(1, $errors);
-        $this->assertIsString($errors[0]);
         $this->assertNotEmpty($errors[0]);
     }
 

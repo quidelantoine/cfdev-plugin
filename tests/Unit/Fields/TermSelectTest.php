@@ -126,7 +126,7 @@ class TermSelectTest extends CFDevTestCase
             }))
             ->andReturn('<select></select>');
 
-        $this->makeField()->outputHtml(5);
+        $this->makeField()->outputHtml('5');
     }
 
     public function testOutputUsesDefaultValueWhenEmpty(): void

@@ -22,19 +22,19 @@ est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur 
 
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
 
-
+=> faire test sur les champs avec balise script , simple guillemet et double guillemet
 
 
 => Faire un fichiers init-custom.php de base dans le plugins, mais avoir la possiblité de ecraser, (like woocommerce , ou theme enfant )
 
-
+= >css mieux aligner les champ ++
 => vérifier si il marche , tous , tester les fiedls pas dans la doc ??
 => Voir si marche aussi dans bundle tabs , et accordeon 
     => dans term et dans user ++
 => tester si cela marche si j'ajoute champ à woocommerce ??
 
 -> type hint +++   return too<
-
+=>
 // FAire une function AddMetaBoxAccordeon, AddMetaBoxTabs, AddMetaBoxBundle
 
 -> a verifier =>  echo esc_html(implode($meta, ', '));   Meta_Box
@@ -55,7 +55,7 @@ est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur 
         $this->container->get(AjaxHandler::class)->register();
         => a verifier et à enlever si besoin +++ 
 
-
+=> niveau de securité phpstan ????? 
 => minifier le code ,
     => Faire une version prod 
         = Ajouter dans la config ??? 'mode'  dev/prod
@@ -64,7 +64,7 @@ est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur 
 // FAire une function AddMetaBoxAccordeon, AddMetaBoxTabs, AddMetaBoxBundle
 //=> FAire un truc plus orienté objects ??
     // ->addField(), cx'est bien cela +++
-
+=> faire des tests sur column ? et les config de cuztom
 ## Rediger la docs
 
 => faire des docs pour les champs +++
@@ -140,7 +140,8 @@ vendor/bin/phpcs -i
 vendor/bin/phpcs -s
 vendor/bin/phpcbf
 
-
+# PHPstan
+vendor/bin/phpstan analyse src tests
 
 => treste test Bundle , accordeon, tab tabs
 

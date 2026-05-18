@@ -16,7 +16,7 @@ class Image extends Field
     {
         $preview_size   = $this->args['preview_size'] ?? null;
         $fallback_size  = $preview_size ?? apply_filters('cfdev_preview_size', 'medium');
-        $attachment_url = ! empty($value) ? wp_get_attachment_image_src($value, $fallback_size) : null;
+        $attachment_url = ! empty($value) ? wp_get_attachment_image_src((int) $value, $fallback_size) : null;
         $image          = $attachment_url ? '<img src="' . esc_url($attachment_url[0]) . '" />' : '';
 
         return implode('', [

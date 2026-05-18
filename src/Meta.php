@@ -51,9 +51,9 @@ abstract class Meta
     /**
      * Main callback for meta
      *
-     * @param   object          $post
-     * @param   object          $data
-     * @return  mixed
+     * @param   mixed           $object
+     * @param   array           $data
+     * @return  void
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -113,7 +113,7 @@ abstract class Meta
 
             if ($field instanceof \CFDev\Fields\Hidden) {
                 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                echo $field->output($value, $object);
+                echo $field->output($value);
                 continue;
             }
 
@@ -186,13 +186,15 @@ abstract class Meta
         // Loop through each meta box
         //if (! empty($this->data) && isset($_POST['cfdev'])) { // je le garde pour le moment
         if (!empty($this->data) && !empty($cfdev_data)) {
-            if ($this->data instanceof \CFDev\Fields\Bundle && $bundle = $this->data) {
+            if ($this->data instanceof \CFDev\Fields\Bundle) {
+                $bundle = $this->data;
                 if (isset($values[$bundle->id])) {
                     $bundle->save($object_id, $values[$bundle->id]);
                 }
             } elseif ($this->data instanceof \CFDev\Fields\Tabs || $this->data instanceof \CFDev\Fields\Accordion) {
                 foreach ($this->data->tabs as $tab) {
-                    if ($tab->fields instanceof \CFDev\Fields\Bundle && $bundle = $tab->fields) {
+                    if ($tab->fields instanceof \CFDev\Fields\Bundle) {
+                        $bundle = $tab->fields;
                         if (isset($values[$bundle->id])) {
                             $bundle->save($object_id, $values[$bundle->id]);
                         }
@@ -392,7 +394,7 @@ abstract class Meta
     /**
      * This array builds the complete array with the right key => value pairs
      *
-     * @param   array           $data
+     * @param   mixed           $data
      * @return  array
      *
      * @author  quidelantoine
@@ -477,13 +479,13 @@ abstract class Meta
     /**
      * Adds multipart support to form
      *
-     * @return  mixed
+     * @return  void
      *
      * @author  quidelantoine
      * @since   1.0.0
      *
      */
-    public static function editFormTag()
+    public static function editFormTag(): void
     {
         echo ' enctype="multipart/form-data"';
     }

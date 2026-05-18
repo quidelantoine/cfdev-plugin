@@ -57,7 +57,7 @@ class Datetime extends Field
         }
 
         // 3. Utilise gmdate() pour éviter les problèmes de fuseau horaire.
-        return esc_attr(gmdate($format, $value));
+        return esc_attr(gmdate($format, (int) $value));
     }
 
     public function validate(mixed $value): \CFDev\Validation\Validator
@@ -70,6 +70,7 @@ class Datetime extends Field
 
     public function saveValue(string|array $value): string|array
     {
-        return strtotime($value);
+        $timestamp = is_string($value) ? strtotime($value) : false;
+        return $timestamp !== false ? (string) $timestamp : '';
     }
 }

@@ -13,6 +13,10 @@ final class MinLength implements Validatable
 
     public function validate(mixed $value): bool
     {
+        if (! is_scalar($value) && $value !== null) {
+            return false;
+        }
+
         return strlen((string) $value) >= $this->min;
     }
 

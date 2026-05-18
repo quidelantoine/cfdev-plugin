@@ -27,7 +27,7 @@ class MultiSelect extends Field
             $html .= $this->buildNoneOption($value);
         }
 
-        if (is_array($this->options)) {
+        if (!empty($this->options)) {
             foreach ($this->options as $slug => $name) {
                 $html .= $this->buildOption($slug, $name, $value);
             }

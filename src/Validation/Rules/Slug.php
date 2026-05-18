@@ -8,7 +8,11 @@ final class Slug implements Validatable
 {
     public function validate(mixed $value): bool
     {
-        return (bool) preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $value);
+        if (! is_scalar($value) && $value !== null) {
+            return false;
+        }
+
+        return (bool) preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', (string) $value);
     }
 
     public function getError(): string

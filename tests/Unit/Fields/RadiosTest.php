@@ -12,6 +12,7 @@ class RadiosTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Radios
     {
         Functions\when('apply_filters')->returnArg(2);

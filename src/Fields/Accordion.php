@@ -6,6 +6,7 @@ use CFDev\Abstracts\FieldContainer;
 
 class Accordion extends FieldContainer
 {
+    /** @var array<string, \CFDev\Fields\Tab> */
     public array $tabs = [];
 
     public function __construct(string $id)
@@ -13,7 +14,7 @@ class Accordion extends FieldContainer
         $this->id = $id;
     }
 
-    public function output($post)
+    public function output(object $post): void
     {
         $tabs = $this->tabs;
 

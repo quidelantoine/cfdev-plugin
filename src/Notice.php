@@ -49,6 +49,7 @@ class Notice
         );
     }
 
+    /** @param array<string> $items */
     private function renderList(array $items): string
     {
         $lis = implode('', array_map(

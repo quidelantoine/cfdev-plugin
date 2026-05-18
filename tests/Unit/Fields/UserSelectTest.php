@@ -12,6 +12,7 @@ class UserSelectTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): UserSelect
     {
         Functions\when('apply_filters')->returnArg(2);

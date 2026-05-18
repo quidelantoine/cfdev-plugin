@@ -20,19 +20,22 @@ abstract class Meta
 
     abstract protected function resolveObjectId(): int;
 
-    public $id;
-    public $title;
-    public $callback;
-    public $data;
-    public $fields;
-    public $description;
+    public string $id = '';
+    public string $title = '';
+    /** @var callable|array<mixed>|string|null */
+    public mixed $callback = null;
+    /** @var mixed */
+    public mixed $data = null;
+    /** @var array<string, \CFDev\Field> */
+    public array $fields = [];
+    public string $description = '';
 
     protected static bool $noticeShown = false;
 
     /**
      * Construct for all meta types, creates title (and description)
      *
-     * @param   string|array    $title
+     * @param   string|array<string>    $title
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -60,6 +63,7 @@ abstract class Meta
      *
      */
 
+    /** @param array<mixed> $data */
     public function callback(mixed $object, array $data = []): void
     {
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
@@ -96,6 +100,7 @@ abstract class Meta
         echo '</div>';
     }
 
+    /** @param iterable<string, \CFDev\Field> $data */
     private function renderTable(iterable $data, object $object): void
     {
         echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
@@ -167,7 +172,8 @@ abstract class Meta
      * @author  quidelantoine
      * @since   1.0.0
      */
-    public function save(int $object_id, array $values)
+    /** @param array<mixed> $values */
+    public function save(int $object_id, array $values): void
     {
         if (!isset($_POST['cfdev_nonce'], $_POST['cfdev'])) {
             return;
@@ -218,7 +224,8 @@ abstract class Meta
      * @since   1.0.0
      *
      */
-    public static function isTabs($data)
+    /** @param array<mixed> $data */
+    public static function isTabs(array $data): bool
     {
         return isset($data[0]) && ( ! is_array($data[0]) ) && ( $data[0] == 'tabs' );
     }
@@ -233,7 +240,8 @@ abstract class Meta
      * @since   1.0.0
      *
      */
-    public static function isAccordion($data)
+    /** @param array<mixed> $data */
+    public static function isAccordion(array $data): bool
     {
         return isset($data[0]) && ( ! is_array($data[0]) ) && ( $data[0] == 'accordion' );
     }
@@ -248,7 +256,8 @@ abstract class Meta
      * @since   1.0.0
      *
      */
-    public static function isBundle($data)
+    /** @param array<mixed> $data */
+    public static function isBundle(array $data): bool
     {
         return isset($data[0]) && ( ! is_array($data[0]) ) && ( $data[0] == 'bundle' );
     }
@@ -366,6 +375,10 @@ abstract class Meta
     /**
      * @return array<string, array{label: string, errors: string[]}>
      */
+    /**
+     * @param  array<mixed>                                        $values
+     * @return array<string, array{label: string, errors: string[]}>
+     */
     private function validateBundle(\CFDev\Fields\Bundle $bundle, array $values): array
     {
         $errors = [];
@@ -395,13 +408,13 @@ abstract class Meta
      * This array builds the complete array with the right key => value pairs
      *
      * @param   mixed           $data
-     * @return  array
+     * @return  array<mixed>
      *
      * @author  quidelantoine
      * @since   1.0.0
      *
      */
-    public function build($data, $parent = null)
+    public function build(mixed $data, mixed $parent = null): mixed
     {
         $return = array();
 
@@ -471,7 +484,7 @@ abstract class Meta
         return $return;
     }
 
-    private function getClassFieldByType($type)
+    private function getClassFieldByType(string $type): string
     {
         return 'CFDev\\Fields\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $type)));
     }

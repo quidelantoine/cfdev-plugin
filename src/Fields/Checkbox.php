@@ -7,9 +7,13 @@ use CFDev\Field;
 class Checkbox extends Field
 {
     public bool $supports_bundle = true;
+    /** @var array<string> */
     public array $css_classes = array( 'cfdev-input' );
     public bool $supports_ajax         = true;
 
+    /**
+     * @param string|array<mixed> $value
+     */
     public function outputHtml(string|array $value): string
     {
         $checked = !empty($value)
@@ -32,7 +36,7 @@ class Checkbox extends Field
     }
 
     /**
-     * @param string|array $value
+     * @param string|array<mixed> $value
      * @return string
      */
     public function saveValue(string|array $value): string

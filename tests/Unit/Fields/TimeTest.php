@@ -12,6 +12,7 @@ class TimeTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Time
     {
         Functions\when('apply_filters')->returnArg(2);

@@ -10,9 +10,12 @@ class Datetime extends Field
     public bool $supports_ajax         = true;
     public bool $supports_bundle       = true;
 
+    /** @var array<string> */
     public array $css_classes            = array( 'js-cfdev-datetimepicker', 'cfdev-datetimepicker', 'datetimepicker', 'cfdev-input' );
+    /** @var array<string, mixed> */
     public array $data_attributes        = array( 'time-format' => null, 'date-format' => null );
 
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -21,6 +24,7 @@ class Datetime extends Field
         $this->data_attributes['time-format'] = DateFormatHelper::parse(isset($this->args['time_format']) ? $this->args['time_format'] : 'H:i');
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         // 1. Formate la valeur si elle n'est pas vide.
@@ -43,6 +47,7 @@ class Datetime extends Field
     /**
      * Formate un timestamp en date/heure selon les arguments.
      */
+    /** @param string|array<mixed> $value */
     protected function formatDatetime(string|array $value): string
     {
         // 1. Vérifie que $value est un timestamp valide.
@@ -68,6 +73,10 @@ class Datetime extends Field
         return parent::validate($date !== false ? $date->format('Y-m-d H:i') : $value);
     }
 
+    /**
+     * @param  string|array<mixed>  $value
+     * @return string|array<mixed>
+     */
     public function saveValue(string|array $value): string|array
     {
         $timestamp = is_string($value) ? strtotime($value) : false;

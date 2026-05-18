@@ -9,8 +9,10 @@ class MultiSelect extends Field
 {
     public bool $supports_bundle       = true;
     
+    /** @var array<string> */
     public array $css_classes            = array( 'cfdev-input cfdev-select cfdev-multi-select' );
-    
+
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -19,6 +21,7 @@ class MultiSelect extends Field
         $this->after           .= '[]';
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         $html = '';
@@ -43,6 +46,7 @@ class MultiSelect extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildNoneOption(string|array $value): string
     {
         return sprintf(
@@ -52,6 +56,7 @@ class MultiSelect extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildOption(string $slug, string $name, string|array $value): string
     {
         return sprintf(
@@ -62,6 +67,7 @@ class MultiSelect extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function resolveSelected(string|int $slug, string|array $value): string
     {
         $isSelected = match (true) {
@@ -73,6 +79,10 @@ class MultiSelect extends Field
         return $isSelected ? 'selected="selected"' : '';
     }
 
+    /**
+     * @param  string|array<mixed>  $value
+     * @return string|array<mixed>
+     */
     public function saveValue(string|array $value): string|array
     {
         return empty($value) ? '-1' : $value;

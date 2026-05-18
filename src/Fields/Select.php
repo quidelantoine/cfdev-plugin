@@ -11,9 +11,12 @@ class Select extends Field
     public bool $supports_ajax         = true;
     public bool $supports_bundle       = true;
 
+    /** @var array<string> */
     public array $css_classes            = array( 'cfdev-input cfdev-select' );
+    /** @var array<string, mixed> */
     public array $data_attributes        = array( 'default-value' => null );
 
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -21,6 +24,7 @@ class Select extends Field
         $this->data_attributes['default-value'] = $this->default_value;
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
 
@@ -47,6 +51,7 @@ class Select extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildNoneOption(string|array $value): string
     {
         $selected = empty($value) ? 'selected="selected"' : '';
@@ -58,6 +63,7 @@ class Select extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildOption(string $slug, string $name, string|array $value): string
     {
         $selected = (is_string($value) && $value !== '')

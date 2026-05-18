@@ -8,5 +8,6 @@ class Color extends Field
 {
     public bool $supports_ajax = true;
     public bool $supports_bundle = true;
+    /** @var array<string> */
     public array $css_classes = array( 'js-cfdev-colorpicker', 'cfdev-colorpicker', 'colorpicker', 'cfdev-input' );
 }

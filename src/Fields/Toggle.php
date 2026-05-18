@@ -8,8 +8,10 @@ class Toggle extends Field
 {
     public bool $supports_bundle = true;
     public bool $supports_ajax   = true;
+    /** @var array<string> */
     public array $css_classes    = ['cfdev-input'];
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         $is_on = ! empty($value)
@@ -33,6 +35,7 @@ class Toggle extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     public function saveValue(string|array $value): string
     {
         return empty($value) ? '-1' : $value;

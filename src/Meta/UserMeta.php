@@ -16,7 +16,8 @@ use CFDev\Validation\ErrorBag;
 
 class UserMeta extends Meta
 {
-    public $locations;
+    /** @var array<string> */
+    public array $locations;
 
     protected function metaType(): string
     {
@@ -35,7 +36,13 @@ class UserMeta extends Meta
      * @since   1.0.0
      * 
      */
-    public function __construct($id, $title, $locations, $data = array())
+    /**
+     * @param string               $id
+     * @param string|array<string> $title
+     * @param string|array<string> $locations
+     * @param array<mixed>         $data
+     */
+    public function __construct(string $id, $title, $locations, array $data = array())
     {
         parent::__construct($title);
 
@@ -72,6 +79,7 @@ class UserMeta extends Meta
      * @since   1.0.0
      * 
      */
+    /** @param array<mixed> $data */
     public function callback(mixed $user, $data = array()): void
     {
         echo '<h3>' . esc_html($this->title) . '</h3>';
@@ -86,7 +94,7 @@ class UserMeta extends Meta
      * @since   1.0.0
      *
      */
-    public function saveUser($user_id)
+    public function saveUser(int $user_id): void
     {
         // Verify nonce
         if (! ( isset($_POST['cfdev_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['cfdev_nonce'])), 'cfdev_meta') )) {
@@ -135,7 +143,8 @@ class UserMeta extends Meta
      * @author  quidelantoine
      * @since   1.0.0
      */
-    public function save($user_id, $values)
+    /** @param array<mixed> $values */
+    public function save(int $user_id, array $values): void
     {
         foreach ($this->fields as $id => $field) {
             if ($field->in_bundle) {
@@ -145,7 +154,7 @@ class UserMeta extends Meta
             $value = isset($values[$id]) ? $values[$id] : '';
             $value = apply_filters("cfdev_user_meta_save_$field->type", apply_filters('cfdev_user_meta_save', $value, $field, $user_id), $field, $user_id);
 
-            $field->save($user_id, $value, 'user');
+            $field->save($user_id, $value);
         }
     }
 }

@@ -8,10 +8,15 @@ use CFDev\Support\Str;
 class Checkboxes extends Field
 {
     public bool $supports_bundle = true;
-    
+
+    /** @var array<string> */
     public array $css_classes = array( 'cfdev-input' );
 
-    public function __construct($field, $parent)
+    /**
+     * @param array<mixed>  $field
+     * @param string|null   $parent
+     */
+    public function __construct(array $field, string|null $parent)
     {
         parent::__construct($field, $parent);
 
@@ -19,6 +24,9 @@ class Checkboxes extends Field
         $this->after        .= '[]';
     }
 
+    /**
+     * @param string|array<mixed> $value
+     */
     public function outputHtml(string|array $value): string
     {
         if (empty($this->options)) {
@@ -38,6 +46,7 @@ class Checkboxes extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildCheckbox(string $slug, string $name, string|array $value): string
     {
         $inputId = $this->id . $this->after_id . '_' . Str::uglify($slug);
@@ -60,6 +69,7 @@ class Checkboxes extends Field
         return $input . $label . '<br />';
     }
 
+    /** @param string|array<mixed> $value */
     private function resolveChecked(string $slug, string|array $value): string
     {
         $isChecked = match (true) {
@@ -72,8 +82,8 @@ class Checkboxes extends Field
     }
 
     /**
-     * @param string|array $value
-     * @return string|array
+     * @param string|array<mixed> $value
+     * @return string|array<mixed>
      */
     public function saveValue(string|array $value): string|array
     {

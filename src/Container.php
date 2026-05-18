@@ -6,6 +6,7 @@ use RuntimeException;
 
 final class Container
 {
+    /** @var array<string, mixed> */
     private array $bindings = [];
 
     public function bind(string $key, mixed $value): void

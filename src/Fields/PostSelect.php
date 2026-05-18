@@ -10,9 +10,12 @@ class PostSelect extends Field
     public bool $supports_ajax         = true;
     public bool $supports_bundle       = true;
 
+    /** @var array<string> */
     public array $css_classes            = array( 'cfdev-input cfdev-select cfdev-post-select' );
-    public $posts = [];   
+    /** @var array<\WP_Post> */
+    public array $posts = [];
 
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -30,6 +33,7 @@ class PostSelect extends Field
         $this->posts = get_posts($this->args);
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         $selected_value = ! empty($value) ? $value : $this->default_value;
@@ -44,15 +48,13 @@ class PostSelect extends Field
             );
         }
 
-        if (is_array($this->posts)) {
-            foreach ($this->posts as $post) {
-                $options .= sprintf(
-                    '<option value="%s" %s>%s</option>',
-                    esc_attr($post->ID),
-                    selected($selected_value, $post->ID, false),
-                    esc_html($post->post_title)
-                );
-            }
+        foreach ($this->posts as $post) {
+            $options .= sprintf(
+                '<option value="%s" %s>%s</option>',
+                esc_attr((string) $post->ID),
+                selected($selected_value, $post->ID, false),
+                esc_html($post->post_title)
+            );
         }
 
         return sprintf(

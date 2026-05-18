@@ -12,6 +12,7 @@ namespace CFDev\Validation;
  */
 final class ErrorBag
 {
+    /** @var array<string, array{label: string, errors: array<string>}>|null */
     private static ?array $runtime = null;
 
     private const PREFIX = 'cfdev_errors_';

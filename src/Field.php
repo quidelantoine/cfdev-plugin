@@ -23,8 +23,11 @@ class Field
     public string $description = '';
     public string $explanation = '';
     // Valeur/Options
+    /** @var string|array<mixed> */
     public string|array $default_value = '';
+    /** @var array<string, string> */
     public array $options = array(); // Only used for radio, checkboxes etc.
+    /** @var array<string, mixed> */
     public array $args = array(); // Specific args for the field
     // Flag Behavior
     public bool $underscore = true;
@@ -39,7 +42,9 @@ class Field
     public bool $admin_column_sortable  = false;
     public bool $admin_column_filter    = false;
     // Render
+    /** @var array<string, mixed> */
     public array $data_attributes = array();
+    /** @var array<string> */
     public array $css_classes = array();
     public string $pre = ''; // Before name
     public string $after = ''; // After name
@@ -51,13 +56,14 @@ class Field
     public bool $supports_ajax = false;
     // Validation
     public bool $required = false;
+    /** @var array<\CFDev\Contracts\Validatable> */
     protected array $rules = [];
 
     /**
      * Constructs a Custom_Field
      *
-     * @param   array           $field
-     * @param   string|null          $parent
+     * @param   array<mixed>    $field
+     * @param   string|null     $parent
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -104,7 +110,7 @@ class Field
     /**
      * Outputs a field based on its type
      *
-     * @param   string|array    $value
+     * @param   string|array<mixed>  $value
      * @return  mixed
      *
      * @author  quidelantoine
@@ -126,7 +132,7 @@ class Field
      * Output method
      * Defaults to a normal text field
      *
-     * @param   string|array    $value
+     * @param   string|array<mixed>  $value
      * @return  string
      *
      * @author  quidelantoine
@@ -152,7 +158,7 @@ class Field
     /**
      * Outputs the field, ready for repeatable functionality
      *
-     * @param   string|array    $value
+     * @param   string|array<mixed>  $value
      * @return  string
      *
      * @author  quidelantoine
@@ -195,7 +201,7 @@ class Field
     /**
      * Outputs the field, ready for ajax save
      *
-     * @param   string|array    $value
+     * @param   string|array<mixed>  $value
      * @return  string
      *
      * @author  quidelantoine
@@ -216,8 +222,8 @@ class Field
     /**
      * Saves the field value to the appropriate meta type
      *
-     * @param int $object_id
-     * @param string|array $value
+     * @param int              $object_id
+     * @param string|array<mixed> $value
      *
      * @return int|bool|\WP_Error
      *
@@ -263,9 +269,9 @@ class Field
     /**
      * Output save value
      *
-     * @param string|array $value
+     * @param string|array<mixed> $value
      *
-     * @return string|array
+     * @return string|array<mixed>
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -364,7 +370,7 @@ class Field
     /**
      * Outputs the field css classes
      *
-     * @param   array   $extra
+     * @param   array<string>   $extra
      * @return  string
      *
      * @author  quidelantoine
@@ -380,7 +386,7 @@ class Field
     /**
      * Outputs the field data attributes
      *
-     * @param   array           $extra
+     * @param   array<string, mixed>    $extra
      * @return  string
      *
      * @author  quidelantoine

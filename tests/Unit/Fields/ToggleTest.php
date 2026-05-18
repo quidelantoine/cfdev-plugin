@@ -12,6 +12,7 @@ class ToggleTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Toggle
     {
         Functions\when('apply_filters')->returnArg(2);

@@ -9,9 +9,12 @@ class Radios extends Field
 {
     public bool $supports_bundle       = true;
     
+    /** @var array<string> */
     public array $css_classes = array( 'cfdev-input' );
+    /** @var array<string, mixed> */
     public array $data_attributes = array( 'default-value' => null );
 
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -20,6 +23,7 @@ class Radios extends Field
         $this->after                            .= '[]';
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         if (empty($this->options)) {
@@ -40,6 +44,7 @@ class Radios extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildRadio(string $slug, string $name, string|array $value): string
     {
         $inputId = $this->id . $this->after_id . '_' . Str::uglify($slug);
@@ -63,6 +68,7 @@ class Radios extends Field
         return $input . ' ' . $label . '<br />';
     }
 
+    /** @param string|array<mixed> $value */
     private function resolveChecked(string $slug, string|array $value): string
     {
         if (empty($value)) {

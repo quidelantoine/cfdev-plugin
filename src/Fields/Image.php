@@ -10,8 +10,10 @@ class Image extends Field
     public bool $supports_ajax         = true;
     public bool $supports_bundle       = true;
 
+    /** @var array<string> */
     public array $css_classes            = array( 'cfdev-hidden', 'cfdev-input' );
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         $preview_size   = $this->args['preview_size'] ?? null;
@@ -31,6 +33,7 @@ class Image extends Field
         ]);
     }
 
+    /** @param string|array<mixed> $value */
     private function outputHiddenInput(string|array $value): string
     {
         return sprintf(
@@ -42,6 +45,7 @@ class Image extends Field
         );
     }
 
+    /** @param string|array<mixed>|null $preview_size */
     private function outputUploadButton(string|array|null $preview_size): string
     {
         $attributes = [

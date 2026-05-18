@@ -9,9 +9,10 @@ use CFDev\Validation\ErrorBag;
 class Tab extends FieldContainer
 {
     public string $title = '';
+    /** @var array<string, \CFDev\Field>|\CFDev\Fields\Bundle */
     public array|\CFDev\Fields\Bundle $fields = [];
 
-    public function __construct($title)
+    public function __construct(string $title)
     {
         $this->id       = Str::uglify($title);
         $this->title    = Str::beautify($title);

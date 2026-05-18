@@ -12,6 +12,7 @@ class WysiwygTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Wysiwyg
     {
         Functions\when('apply_filters')->returnArg(2);

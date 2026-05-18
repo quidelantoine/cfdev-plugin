@@ -10,9 +10,12 @@ class Date extends Field
     public bool $supports_ajax = true;
     public bool $supports_bundle = true;
 
+    /** @var array<string> */
     public array $css_classes = array( 'js-cfdev-datepicker', 'cfdev-datepicker', 'datepicker', 'cfdev-input' );
+    /** @var array<string, mixed> */
     public array $data_attributes = array( 'date-format' => null );
 
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -20,6 +23,7 @@ class Date extends Field
         $this->data_attributes['date-format'] = DateFormatHelper::parse(isset($this->args['date_format']) ? $this->args['date_format'] : 'm/d/Y');
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         $formatted_value = $this->formatDateValue($value);
@@ -52,6 +56,10 @@ class Date extends Field
         return parent::validate($date !== false ? $date->format('Y-m-d') : $value);
     }
 
+    /**
+     * @param  string|array<mixed>  $value
+     * @return string|array<mixed>
+     */
     public function saveValue(string|array $value): string|array
     {
         $timestamp = is_string($value) ? strtotime($value) : false;

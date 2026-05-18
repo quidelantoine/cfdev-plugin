@@ -12,6 +12,7 @@ class CheckboxesTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Checkboxes
     {
         Functions\when('apply_filters')->returnArg(2);

@@ -21,6 +21,10 @@ class TermCheckboxesTest extends CFDevTestCase
         ];
     }
 
+    /**
+     * @param array<string, mixed> $overrides
+     * @param array<int, object>   $terms
+     */
     private function makeField(array $overrides = [], array $terms = []): TermCheckboxes
     {
         Functions\when('apply_filters')->returnArg(2);
@@ -38,6 +42,7 @@ class TermCheckboxesTest extends CFDevTestCase
         return new TermCheckboxes(array_merge($defaults, $overrides), 'my_metabox');
     }
 
+    /** @return array<int, object> */
     private function defaultTerms(): array
     {
         return [

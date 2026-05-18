@@ -12,6 +12,7 @@ class ImageTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Image
     {
         Functions\when('apply_filters')->returnArg(2);

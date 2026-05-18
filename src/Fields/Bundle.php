@@ -7,20 +7,22 @@ use CFDev\Validation\ErrorBag;
 
 class Bundle extends FieldContainer
 {
+    /** @var array<string, \CFDev\Field> */
     public array $fields = [];
+    /** @var string|array<mixed> */
     public string|array $default_value = '';
 
     /**
      * Construct for bundle
      *
-     * @param   int         $id
-     * @param   array       $data
+     * @param   string      $id
+     * @param   array<mixed> $data
      *
      * @author  quidelantoine
      * @since   1.0.0
-     * 
+     *
      */
-    public function __construct($id, $data)
+    public function __construct(string $id, array $data)
     {
         // Bundle data
         $this->default_value = isset($data['default_value']) ? $data['default_value'] : $this->default_value;
@@ -67,6 +69,7 @@ class Bundle extends FieldContainer
         echo '</div>';
     }
 
+    /** @param array<mixed> $meta */
     private function renderMetaItems(array $meta, object $post, bool $showRemove): void
     {
         foreach ($meta as $i => $bundle) {
@@ -373,13 +376,13 @@ class Bundle extends FieldContainer
      * Save bundle meta
      * 
      * @param   int             $object_id
-     * @param   array           $values
+     * @param   array<mixed>    $values
      *
      * @author  quidelantoine
      * @since   1.0.0
      *
      */
-    public function save($object_id, $values)
+    public function save(int $object_id, array $values): void
     {
         $values = apply_filters("cfdev_" . $this->meta_type . "_meta_save_bundle_$this->id", $values, $this, $object_id);   
         $values = apply_filters('cfdev_' . $this->meta_type . '_meta_save_bundle', $values, $this, $object_id);
@@ -414,13 +417,14 @@ class Bundle extends FieldContainer
     /**
      * Build the id for the bundle
      *
+     * @param   string  $id
      * @return  string
      *
      * @author  quidelantoine
      * @since   1.0.0
-     * 
+     *
      */
-    public function buildId($id)
+    public function buildId(string $id): string
     {
         if (strpos($id, '_', 0) !== 0) {
             $id = '_' . $id;

@@ -12,8 +12,10 @@ use CFDev\Contracts\Validatable;
  */
 final class FileExtension implements Validatable
 {
+    /** @var array<string> */
     private array $allowed;
 
+    /** @param array<string> $extensions */
     public function __construct(array $extensions)
     {
         $this->allowed = array_map('strtolower', $extensions);

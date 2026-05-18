@@ -10,9 +10,10 @@ class TermSelect extends Field
     public bool $supports_ajax         = true;
     public bool $supports_bundle       = true;
     
-    public $dropdown;
-    public $value;
+    public string $dropdown = '';
+    public mixed $value = null;
 
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -30,12 +31,13 @@ class TermSelect extends Field
         $this->args['echo']     = 0;
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         $this->args['name']     = 'cfdev' . $this->pre . '[' . $this->id . ']' . $this->after . ( $this->repeatable ? '[]' : '' );
         $this->args['id']       = $this->id . $this->after_id;
         $this->args['selected'] = ( ! empty($value) ? $value : $this->default_value );
-        $this->dropdown         = wp_dropdown_categories($this->args);
+        $this->dropdown         = (string) wp_dropdown_categories($this->args);
 
         $output = $this->dropdown;
 

@@ -9,6 +9,7 @@ class Wysiwyg extends Field
     public bool $supports_ajax         = true;
     public bool $supports_bundle       = true;
     
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -24,6 +25,7 @@ class Wysiwyg extends Field
         $this->args['editor_class'] .= ' cfdev-input';
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         $this->args['textarea_name'] = sprintf(

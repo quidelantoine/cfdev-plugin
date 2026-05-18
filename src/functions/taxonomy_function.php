@@ -3,17 +3,17 @@
 /**
  * Registers a Taxonomy for a Post Type
  *
- * @param   string          $name
- * @param   string          $post_type
- * @param   array           $args
- * @param   array           $labels
- * @return  object          Taxonomy
+ * @param   string|array<string> $name
+ * @param   string               $post_type
+ * @param   array<mixed>         $args
+ * @param   array<string>        $labels
+ * @return  \CFDev\Taxonomy
  *
  * @author  quidelantoine
  * @since   1.0.0
  *
  */
-function register_cfdev_taxonomy($name, $post_type, $args = array(), $labels = array())
+function register_cfdev_taxonomy(string|array $name, string $post_type, array $args = array(), array $labels = array()): \CFDev\Taxonomy
 {
     $taxonomy = new \CFDev\Taxonomy($name, $post_type, $args, $labels);
 
@@ -31,7 +31,7 @@ function register_cfdev_taxonomy($name, $post_type, $args = array(), $labels = a
  * @author  quidelantoine
  * @since   1.0.0
  */
-function get_cfdev_term_meta($term, $taxonomy, $key = null)
+function get_cfdev_term_meta(int|string $term, string $taxonomy, ?string $key = null): mixed
 {
     if (empty($taxonomy) || empty($term)) {
         return false;
@@ -64,10 +64,10 @@ function get_cfdev_term_meta($term, $taxonomy, $key = null)
  * @author  quidelantoine
  * @since   1.0.0
  */
-function the_cfdev_term_meta($term, $taxonomy, $key = null)
+function the_cfdev_term_meta(int|string $term, string $taxonomy, ?string $key = null): void
 {
     if (empty($term) || empty($taxonomy)) {
-        return false;
+        return;
     }
 
     echo esc_html(get_cfdev_term_meta($term, $taxonomy, $key));

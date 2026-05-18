@@ -3,9 +3,9 @@
 /**
  * Registers a Post Type
  *
- * @param string|array $name
- * @param array $args
- * @param array $labels
+ * @param string|array<string> $name
+ * @param array<mixed>         $args
+ * @param array<string>        $labels
  * @return \CFDev\PostType|null PostType
  *
  * @author  quidelantoine

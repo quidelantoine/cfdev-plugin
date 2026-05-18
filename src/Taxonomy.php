@@ -271,7 +271,6 @@ class Taxonomy extends ContentType
      * @return void
      */
     public function applyPostFilter(\WP_Query $query): void
-    //public function applyPostFilter(\WP_Query $query): \WP_Query
     {
         global $pagenow;
 

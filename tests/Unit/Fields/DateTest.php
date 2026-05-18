@@ -12,6 +12,7 @@ class DateTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Date
     {
         Functions\when('apply_filters')->returnArg(2);

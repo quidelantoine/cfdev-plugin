@@ -13,6 +13,7 @@ class DatetimeTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Datetime
     {
         Functions\when('apply_filters')->returnArg(2);
@@ -204,7 +205,7 @@ class DatetimeTest extends CFDevTestCase
     // formatDatetime (via ReflectionMethod car protected)
     // -------------------------------------------------------------------------
 
-    private function callFormatDatetime($field, mixed $value): string
+    private function callFormatDatetime(Datetime $field, mixed $value): string
     {
         $method = new \ReflectionMethod($field, 'formatDatetime');
         $method->setAccessible(true);

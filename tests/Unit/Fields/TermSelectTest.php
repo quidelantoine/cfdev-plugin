@@ -12,6 +12,7 @@ class TermSelectTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): TermSelect
     {
         Functions\when('apply_filters')->returnArg(2);

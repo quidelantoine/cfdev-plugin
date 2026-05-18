@@ -10,7 +10,7 @@ includes:
 
 parameters:
     # Niveau de vérification (0 = basique, 9 = très strict)
-    level: 5
+    level: 6
 
     # Chemins à analyser (adapte selon la structure de ton plugin)
     paths:

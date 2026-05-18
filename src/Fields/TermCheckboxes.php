@@ -9,9 +9,11 @@ class TermCheckboxes extends Field
 {
     public bool $supports_bundle = true;
 
+    /** @var array<string> */
     public array $css_classes = array( 'cfdev-input' );
-    public $terms;
+    public mixed $terms = null;
 
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -31,6 +33,7 @@ class TermCheckboxes extends Field
         $this->after .= '[]';
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         if (!is_array($this->terms)) {
@@ -50,6 +53,7 @@ class TermCheckboxes extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildCheckbox(object $term, string|array $value): string
     {
         $termId    = $term->term_id;
@@ -71,6 +75,7 @@ class TermCheckboxes extends Field
         return $input . ' ' . $label . '<br />';
     }
 
+    /** @param string|array<mixed> $value */
     private function resolveChecked(int $termId, string|array $value): string
     {
         $isChecked = match (true) {
@@ -114,6 +119,10 @@ class TermCheckboxes extends Field
 //        return $output;
 //    }
 
+    /**
+     * @param  string|array<mixed>  $value
+     * @return string|array<mixed>
+     */
     public function saveValue(string|array $value): string|array
     {
         return empty($value) ? '-1' : $value;

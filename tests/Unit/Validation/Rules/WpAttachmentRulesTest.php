@@ -17,6 +17,8 @@ class WpAttachmentRulesTest extends CFDevTestCase
 
     /**
      * Mock a valid WP attachment with given properties.
+     *
+     * @param array<string, int> $meta
      */
     private function mockAttachment(
         int $id,

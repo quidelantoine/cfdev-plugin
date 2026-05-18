@@ -46,6 +46,7 @@ class WPValidatorTest extends CFDevTestCase
         $this->assertInstanceOf(\WP_Error::class, WPValidator::isReservedTerm($term));
     }
 
+    /** @return array<int, array<int, string>> */
     public static function reservedTermsProvider(): array
     {
         return [

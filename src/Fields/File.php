@@ -9,8 +9,10 @@ class File extends Field
     public bool $supports_ajax   = true;
     public bool $supports_bundle = true;
 
+    /** @var array<string> */
     public array $css_classes     = array( 'cfdev-hidden', 'cfdev-input' );
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         return $this->buildHiddenInput($value)
@@ -20,6 +22,7 @@ class File extends Field
             . $this->outputExplanation();
     }
 
+    /** @param string|array<mixed> $value */
     private function buildHiddenInput(string|array $value): string
     {
         return sprintf(
@@ -39,6 +42,7 @@ class File extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildRemoveLink(string|array $value): string
     {
         if (empty($value)) {
@@ -51,6 +55,7 @@ class File extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildPreview(string|array $value): string
     {
         return sprintf(
@@ -59,6 +64,7 @@ class File extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildFileLink(string|array $value): string
     {
         $attachment = self::getAttachmentByUrl($value);

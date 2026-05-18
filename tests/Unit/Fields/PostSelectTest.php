@@ -20,6 +20,10 @@ class PostSelectTest extends CFDevTestCase
         ];
     }
 
+    /**
+     * @param array<string, mixed> $overrides
+     * @param array<int, object>   $posts
+     */
     private function makeField(array $overrides = [], array $posts = []): PostSelect
     {
         Functions\when('apply_filters')->returnArg(2);
@@ -44,6 +48,7 @@ class PostSelectTest extends CFDevTestCase
         return new PostSelect(array_merge($defaults, $overrides), 'my_metabox');
     }
 
+    /** @return array<int, object> */
     private function defaultPosts(): array
     {
         return [

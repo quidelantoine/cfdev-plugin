@@ -15,10 +15,10 @@ use CFDev\Validation\ErrorBag;
 
 class TermMeta extends Meta
 {
-    public $taxonomies;
-    public $data;
-    public $fields;
-    public $locations;
+    /** @var array<string> */
+    public array $taxonomies;
+    /** @var array<string> */
+    public array $locations;
 
     protected function metaType(): string
     {
@@ -33,6 +33,10 @@ class TermMeta extends Meta
      *
      * @author  quidelantoine
      * @since   1.0.0
+     *
+     * @param string|array<string> $taxonomy
+     * @param array<mixed>         $data
+     * @param array<string>        $locations
      */
     public function __construct($taxonomy, $data = array(), $locations = array( 'add_form', 'edit_form' ))
     {
@@ -69,7 +73,7 @@ class TermMeta extends Meta
      * @author  quidelantoine
      * @since   1.0.0
      */
-    public function addFormFields($taxonomy)
+    public function addFormFields(string $taxonomy): void
     {
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
         echo '<input type="hidden" name="cfdev[__activate]" />';
@@ -117,7 +121,7 @@ class TermMeta extends Meta
      * @author  quidelantoine
      * @since   1.0.0
      */
-    public function editFormFields(\WP_Term $term)
+    public function editFormFields(\WP_Term $term): void
     {
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
         $value = get_cfdev_term_meta($term->term_id, $term->taxonomy);
@@ -180,7 +184,7 @@ class TermMeta extends Meta
      * @author  quidelantoine
      * @since   1.0.0
      */
-    public function saveTerm($term_id)
+    public function saveTerm(int $term_id): void
     {
         // Verify nonce
         if (! ( isset($_POST['cfdev_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['cfdev_nonce'])), 'cfdev_meta') )) {
@@ -228,6 +232,7 @@ class TermMeta extends Meta
         }
     }
 
+    /** @return string|array<string> */
     private function sanitizeFieldValue(mixed $raw, \CFDev\Field $field): string|array
     {
         if (is_array($raw)) {
@@ -255,7 +260,11 @@ class TermMeta extends Meta
      * @since   1.0.0
      *
      */
-    public function addColumn($columns)
+    /**
+     * @param  array<string, string> $columns
+     * @return array<string, string>
+     */
+    public function addColumn(array $columns): array
     {
         foreach ($this->fields as $id_name => $field) {
             if ($field->show_admin_column) {

@@ -40,6 +40,7 @@ final class WPValidator
     /**
      * @since   1.0.0
      */
+    /** @param string|array<mixed> $callback */
     public static function isWpCallback(string|array $callback): bool
     {
         if (!is_array($callback)) {

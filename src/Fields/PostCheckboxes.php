@@ -9,10 +9,12 @@ class PostCheckboxes extends Field
 {
     public bool $supports_bundle = true;
     
+    /** @var array<string> */
     public array $css_classes = array( 'cfdev-input' );
-
+    /** @var array<\WP_Post> */
     protected array $posts = array();
 
+    /** @param array<mixed> $field */
     public function __construct($field, $parent)
     {
         parent::__construct($field, $parent);
@@ -30,6 +32,7 @@ class PostCheckboxes extends Field
         $this->after .= '[]';
     }
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         if (empty($this->posts)) {
@@ -49,6 +52,7 @@ class PostCheckboxes extends Field
         );
     }
 
+    /** @param string|array<mixed> $value */
     private function buildCheckbox(object $post, string|array $value): string
     {
         $inputId = $this->id . $this->after_id . '_' . Str::uglify($post->post_title);
@@ -71,6 +75,7 @@ class PostCheckboxes extends Field
         return $input . $label . '<br />';
     }
 
+    /** @param string|array<mixed> $value */
     private function resolveChecked(int $id, string|array $value): string
     {
         $isChecked = match (true) {
@@ -82,6 +87,10 @@ class PostCheckboxes extends Field
         return $isChecked ? 'checked="checked"' : '';
     }
 
+    /**
+     * @param  string|array<mixed>  $value
+     * @return string|array<mixed>
+     */
     public function saveValue(string|array $value): string|array
     {
         return empty($value) ? '-1' : $value;

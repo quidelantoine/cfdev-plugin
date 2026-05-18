@@ -12,6 +12,7 @@ class HiddenTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): Hidden
     {
         Functions\when('apply_filters')->returnArg(2);

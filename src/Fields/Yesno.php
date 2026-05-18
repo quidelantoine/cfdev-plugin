@@ -7,8 +7,10 @@ use CFDev\Field;
 class Yesno extends Field
 {
     public bool $supports_bundle = true;
+    /** @var array<string> */
     public array $css_classes    = array( 'cfdev-input' );
 
+    /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
         $checked_value = ! empty($value) ? $value : $this->default_value;

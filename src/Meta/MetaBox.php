@@ -16,9 +16,10 @@ use CFDev\Validation\ErrorBag;
 
 class MetaBox extends Meta
 {
-    public $context;
-    public $priority;
-    public $post_types;
+    public string $context;
+    public string $priority;
+    /** @var array<string> */
+    public array $post_types;
 
     protected function metaType(): string
     {
@@ -28,12 +29,12 @@ class MetaBox extends Meta
     /**
      * Constructs the meta box
      *
-     * @param string $id
-     * @param string|array $title
-     * @param string $post_type
-     * @param array|string $data
-     * @param string $context
-     * @param string $priority
+     * @param string               $id
+     * @param string|array<string> $title
+     * @param string               $post_type
+     * @param array<mixed>|string  $data
+     * @param string               $context
+     * @param string               $priority
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -80,7 +81,7 @@ class MetaBox extends Meta
      * @since   1.0.0
      *
      */
-    public function addMetaBox()
+    public function addMetaBox(): void
     {
         foreach ($this->post_types as $post_type) {
             add_meta_box(
@@ -101,7 +102,7 @@ class MetaBox extends Meta
      * @since   1.0.0
      *
      */
-    public function savePost($post_id)
+    public function savePost(int $post_id): void
     {
         // Deny the wordpress autosave function
         if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || wp_doing_ajax()) {
@@ -146,10 +147,11 @@ class MetaBox extends Meta
     /**
      * Normal save method to save all the fields in a metabox
      *
+     * @param  array<mixed> $values
      * @author  quidelantoine
      * @since   1.0.0
      */
-    public function save($post_id, $values)
+    public function save(int $post_id, array $values): void
     {
         foreach ($this->fields as $id => $field) {
             if ($field->in_bundle) {
@@ -159,21 +161,21 @@ class MetaBox extends Meta
             $value = isset($values[$id]) ? $values[$id] : '';
             $value = apply_filters("cfdev_post_meta_save_$field->type", apply_filters('cfdev_post_meta_save', $value, $field, $post_id), $field, $post_id);
 
-            $field->save($post_id, $value, 'post');
+            $field->save($post_id, $value);
         }
     }
 
     /**
      * Used to add a column head to the Post Type's List Table
      *
-     * @param array $columns
-     * @return  array
+     * @param  array<string, string> $columns
+     * @return array<string, string>
      *
      * @author  quidelantoine
      * @since   1.0.0
      *
      */
-    public function addColumn($columns)
+    public function addColumn(array $columns): array
     {
         unset($columns['date']);
 
@@ -226,14 +228,14 @@ class MetaBox extends Meta
     /**
      * Used to make all columns sortable
      *
-     * @param array $columns
-     * @return  array
+     * @param  array<string, string> $columns
+     * @return array<string, string>
      *
      * @author  quidelantoine
      * @since   1.0.0
      *
      */
-    public function addSortableColumn($columns)
+    public function addSortableColumn(array $columns): array
     {
         if ($this->fields) {
             foreach ($this->fields as $id_name => $field) {

@@ -12,6 +12,7 @@ use CFDev\Contracts\Validatable;
  */
 final readonly class FileMime implements Validatable
 {
+    /** @param array<string> $allowed_mimes */
     public function __construct(
         private array $allowed_mimes
     ) {

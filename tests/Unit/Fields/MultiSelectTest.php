@@ -12,6 +12,7 @@ class MultiSelectTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** @param array<string, mixed> $overrides */
     private function makeField(array $overrides = []): MultiSelect
     {
         Functions\when('apply_filters')->returnArg(2);

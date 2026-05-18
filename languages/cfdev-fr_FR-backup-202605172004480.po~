@@ -1,0 +1,320 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Custom Field For Dev\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-17 20:00+0000\n"
+"PO-Revision-Date: 2026-05-17 20:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: Français\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.4; wp-6.9.4; php-8.5.5\n"
+"X-Domain: cfdev"
+
+#: src/PostType.php:93 src/PostType.php:117 src/Taxonomy.php:127
+#: src/Taxonomy.php:140
+#, php-format
+msgid "%s"
+msgstr ""
+
+#: src/PostType.php:95
+msgctxt "%s"
+msgid "Add New"
+msgstr ""
+
+#: src/PostType.php:100
+#, php-format
+msgid "%s Archive"
+msgstr ""
+
+#: src/Meta.php:294
+#, php-format
+msgid "%s field needs attention"
+msgid_plural "%s fields need attention"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/PostType.php:104
+#, php-format
+msgid "%s Parent"
+msgstr ""
+
+#: src/Meta.php:151 src/Fields/Bundle.php:57 src/Fields/Bundle.php:181
+#: src/Fields/Tab.php:159
+msgid "Add"
+msgstr ""
+
+#: src/PostType.php:96 src/Taxonomy.php:125
+#, php-format
+msgid "Add New %s"
+msgstr ""
+
+#: src/PostType.php:94 src/Taxonomy.php:120
+#, php-format
+msgid "All %s"
+msgstr ""
+
+#. Name of the plugin
+msgid "Custom Field For Dev"
+msgstr ""
+
+#: src/Taxonomy.php:197 src/Meta/MetaBox.php:186
+msgid "Date"
+msgstr ""
+
+#: src/PostType.php:97 src/Taxonomy.php:123
+#, php-format
+msgid "Edit %s"
+msgstr ""
+
+#: src/PostType.php:98
+#, php-format
+msgid "New %s"
+msgstr ""
+
+#: src/Taxonomy.php:126
+#, php-format
+msgid "New %s Name"
+msgstr ""
+
+#: src/Fields/Yesno.php:17
+msgid "No"
+msgstr ""
+
+#: src/PostType.php:102
+#, php-format
+msgid "No %s found"
+msgstr ""
+
+#: src/PostType.php:103
+#, php-format
+msgid "No %s found in trash"
+msgstr ""
+
+#: src/Taxonomy.php:121
+#, php-format
+msgid "Parent %s"
+msgstr ""
+
+#: src/Taxonomy.php:122
+#, php-format
+msgid "Parent %s:"
+msgstr ""
+
+#: src/PostType.php:91
+#, php-format
+msgctxt "post type general name"
+msgid "%s"
+msgstr ""
+
+#: src/PostType.php:92
+#, php-format
+msgctxt "post type singular name"
+msgid "%s"
+msgstr ""
+
+#: src/Fields/File.php:50 src/Config/Assets/AssetLoader.php:141
+msgid "Remove current file"
+msgstr ""
+
+#: src/Fields/Image.php:27 src/Config/Assets/AssetLoader.php:140
+msgid "Remove current image"
+msgstr ""
+
+#: src/Field.php:208
+msgid "Save"
+msgstr ""
+
+#: src/Config/Assets/AssetLoader.php:143
+msgid "Saved!"
+msgstr ""
+
+#: src/Config/Assets/AssetLoader.php:142
+msgid "Saving..."
+msgstr ""
+
+#: src/PostType.php:101 src/Taxonomy.php:119
+#, php-format
+msgid "Search %s"
+msgstr ""
+
+#: src/Fields/File.php:38
+msgid "Select file"
+msgstr ""
+
+#: src/Fields/Image.php:51
+msgid "Select image"
+msgstr "Selection image"
+
+#: src/Taxonomy.php:251
+#, php-format
+msgid "Show all %s"
+msgstr ""
+
+#: src/Taxonomy.php:117
+#, php-format
+msgctxt "taxonomy general name"
+msgid "%s"
+msgstr ""
+
+#: src/Taxonomy.php:118
+#, php-format
+msgctxt "taxonomy singular name"
+msgid "%s"
+msgstr ""
+
+#: src/Validation/Rules/DateAfter.php:39
+#, php-format
+msgid "This date must be after %s."
+msgstr ""
+
+#: src/Validation/Rules/DateBefore.php:34
+#, php-format
+msgid "This date must be before %s."
+msgstr ""
+
+#: src/Validation/Rules/DateAfterToday.php:38
+msgid "This date must be in the future."
+msgstr ""
+
+#: src/Validation/Rules/Regex.php:21
+msgid "This field has an invalid format."
+msgstr ""
+
+#: src/Validation/Rules/Required.php:17
+msgid "This field is required."
+msgstr "Le champ est requis"
+
+#: src/Validation/Rules/Numeric.php:17
+msgid "This field must be a number."
+msgstr ""
+
+#: src/Validation/Rules/Positive.php:16
+msgid "This field must be a positive number."
+msgstr ""
+
+#: src/Validation/Rules/Email.php:17
+msgid "This field must be a valid email address."
+msgstr ""
+
+#: src/Validation/Rules/Slug.php:16
+msgid "This field must be a valid slug (e.g. my-slug-123)."
+msgstr ""
+
+#: src/Validation/Rules/Url.php:16
+msgid "This field must be a valid URL."
+msgstr ""
+
+#: src/Validation/Rules/Uuid.php:19
+msgid "This field must be a valid UUID."
+msgstr ""
+
+#: src/Validation/Rules/MinLength.php:21
+msgid "This field must be at least %d characters."
+msgstr ""
+
+#: src/Validation/Rules/Min.php:21
+#, php-format
+msgid "This field must be at least %s."
+msgstr ""
+
+#: src/Validation/Rules/Max.php:21
+#, php-format
+msgid "This field must be at most %s."
+msgstr ""
+
+#: src/Validation/Rules/Between.php:24
+#, php-format
+msgid "This field must be between %s and %s."
+msgstr ""
+
+#: src/Validation/Rules/ExactLength.php:27
+msgid "This field must be exactly %d characters long."
+msgstr ""
+
+#: src/Validation/Rules/Contains.php:21
+#, php-format
+msgid "This field must contain \"%s\"."
+msgstr ""
+
+#: src/Validation/Rules/AlphaNumeric.php:16
+msgid "This field must contain only letters and numbers."
+msgstr ""
+
+#: src/Validation/Rules/Alpha.php:16
+msgid "This field must contain only letters."
+msgstr ""
+
+#: src/Validation/Rules/EndsWith.php:21
+#, php-format
+msgid "This field must end with \"%s\"."
+msgstr ""
+
+#: src/Validation/Rules/MaxLength.php:21
+msgid "This field must not exceed %d characters."
+msgstr ""
+
+#: src/Validation/Rules/StartsWith.php:21
+#, php-format
+msgid "This field must start with \"%s\"."
+msgstr ""
+
+#: src/Validation/Rules/FileExtension.php:67
+#, php-format
+msgid "This file must be one of the following types: %s."
+msgstr ""
+
+#: src/Validation/Rules/FileMime.php:59
+#, php-format
+msgid "This file type is not allowed. Accepted types: %s."
+msgstr ""
+
+#: src/Validation/Rules/ImageMinDimensions.php:70
+msgid "This image must be at least %dpx tall."
+msgstr ""
+
+#: src/Validation/Rules/ImageMinDimensions.php:56
+msgid "This image must be at least %dpx wide and %dpx tall."
+msgstr ""
+
+#: src/Validation/Rules/ImageMinDimensions.php:64
+msgid "This image must be at least %dpx wide."
+msgstr ""
+
+#: src/Validation/Rules/ImageExactDimensions.php:70
+msgid "This image must be exactly %dpx tall."
+msgstr ""
+
+#: src/Validation/Rules/ImageExactDimensions.php:64
+msgid "This image must be exactly %dpx wide."
+msgstr ""
+
+#: src/Validation/Rules/ImageExactDimensions.php:56
+msgid "This image must be exactly %dpx × %dpx."
+msgstr ""
+
+#: src/Fields/Bundle.php:176
+msgid "This input type doesn't support the bundle functionality (yet)."
+msgstr ""
+
+#: src/Taxonomy.php:124
+#, php-format
+msgid "Update %s"
+msgstr ""
+
+#: src/Support/WPValidator.php:37
+msgid "Use of a reserved term."
+msgstr ""
+
+#: src/PostType.php:99
+#, php-format
+msgid "View %s"
+msgstr ""
+
+#: src/Fields/Yesno.php:16
+msgid "Yes"
+msgstr "Oui"

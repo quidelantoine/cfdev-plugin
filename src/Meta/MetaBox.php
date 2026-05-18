@@ -1,0 +1,248 @@
+<?php
+
+namespace CFDev\Meta;
+
+use CFDev\Meta;
+use CFDev\Support\WPValidator;
+use CFDev\Validation\ErrorBag;
+
+/**
+ * Registers the meta boxes
+ *
+ * @author  quidelantoine
+ * @since   1.0.0
+ *
+ */
+
+class MetaBox extends Meta
+{
+    public $context;
+    public $priority;
+    public $post_types;
+
+    protected function metaType(): string
+    {
+        return 'post'; 
+    }
+
+    /**
+     * Constructs the meta box
+     *
+     * @param string $id
+     * @param string|array $title
+     * @param array|string $fields
+     * @param string $post_type_name
+     * @param string $context
+     * @param string $priority
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     *
+     */
+    public function __construct($id, $title, string $post_type, $data = array(), $context = 'normal', $priority = 'default')
+    {
+        if (!empty($title)) {
+            parent::__construct($title);
+
+            $this->id = $id;
+            $this->post_types = (array)$post_type;
+            $this->context = $context;
+            $this->priority = $priority;
+
+            // Check if the class, function or method exist, otherwise use custom callback
+            if (WPValidator::isWpCallback($data)) {
+                $this->callback = $data;
+            } else {
+                $this->callback = array($this, 'callback');
+
+                // Build the meta box and fields
+                $this->data = $this->build($data);
+
+                foreach ($this->post_types as $post_type) {
+                    add_filter('manage_' . $post_type . '_posts_columns', array($this, 'addColumn'));
+                    add_action('manage_' . $post_type . '_posts_custom_column', array($this, 'addColumnContent'), 10, 2);
+                    add_action('manage_edit-' . $post_type . '_sortable_columns', array($this, 'addSortableColumn'), 10, 2);
+                }
+
+                add_action('save_post', array($this, 'savePost'));
+                add_action('post_edit_form_tag', array($this, 'editFormTag'));
+                add_action('admin_notices', array($this, 'showValidationNotice'));
+            }
+
+            // Add the meta box
+            add_action('add_meta_boxes', array($this, 'addMetaBox'));
+        }
+    }
+
+    /**
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     *
+     */
+    public function addMetaBox()
+    {
+        foreach ($this->post_types as $post_type) {
+            add_meta_box(
+                $this->id,
+                $this->title,
+                $this->callback,
+                $post_type,
+                $this->context,
+                $this->priority
+            );
+        }
+    }
+
+    /**
+     * Hooks into the save hook for the newly registered Post Type
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     *
+     */
+    public function savePost($post_id)
+    {
+        // Deny the wordpress autosave function
+        if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || (defined('DOING_AJAX') && DOING_AJAX)) {
+            return;
+        }
+
+        // Verify nonce
+        if (!(isset($_POST['cfdev_nonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['cfdev_nonce'])), 'cfdev_meta'))) {
+            return;
+        }
+
+        // Is the post from the given post type?
+        if (!in_array(get_post_type($post_id), array_merge($this->post_types, array('revision')))) {
+            return;
+        }
+
+        // Is the current user capable to edit this post
+        if (!current_user_can(get_post_type_object(get_post_type($post_id))->cap->edit_post, $post_id)) {
+            return;
+        }
+
+        //$values = isset($_POST['cfdev']) ? $_POST['cfdev'] : array();
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        $values = isset($_POST['cfdev']) ? wp_unslash($_POST['cfdev']) : array();
+
+        if (!empty($values)) {
+            $errors = $this->validateFields($values);
+
+            if (!empty($errors)) {
+                ErrorBag::push('post', $post_id, $errors);
+            }
+
+            parent::save($post_id, $values);
+        }
+    }
+
+    protected function resolveObjectId(): int
+    {
+        return absint(get_the_ID());
+    }
+
+    /**
+     * Normal save method to save all the fields in a metabox
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     */
+    public function save($post_id, $values)
+    {
+        foreach ($this->fields as $id => $field) {
+            if ($field->in_bundle) {
+                continue;
+            }
+
+            $value = isset($values[$id]) ? $values[$id] : '';
+            $value = apply_filters("cfdev_post_meta_save_$field->type", apply_filters('cfdev_post_meta_save', $value, $field, $post_id), $field, $post_id);
+
+            $field->save($post_id, $value, 'post');
+        }
+    }
+
+    /**
+     * Used to add a column head to the Post Type's List Table
+     *
+     * @param array $columns
+     * @return  array
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     *
+     */
+    public function addColumn($columns)
+    {
+        unset($columns['date']);
+
+        foreach ($this->fields as $id_name => $field) {
+            if ($field->show_admin_column) {
+                $columns[$id_name] = $field->label;
+            }
+        }
+
+        $columns['date'] = __('Date', 'cfdev');
+        return $columns;
+    }
+
+    /**
+     * Used to add the column content to the column head
+     *
+     * @param string $column
+     * @param integer $post_id
+     * @return  mixed
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     *
+     */
+    public function addColumnContent($column, $post_id)
+    {
+        $meta = get_post_meta($post_id, $column, true);
+
+        if ($this->fields) {
+            foreach ($this->fields as $id_name => $field) {
+                if ($column == $id_name) {
+                    if ($field->repeatable && $field->supports_repeatable) {
+                        echo esc_html(implode($meta, ', '));
+                    } else {
+                        if ($field instanceof \CFDev\Fields\Image) {
+                            echo wp_get_attachment_image($meta, array(100, 100));
+                        } elseif ($field instanceof \CFDev\Fields\Radios) {
+                            echo isset($field->options[$meta[0]]) ? esc_html($field->options[$meta[0]]) : '';
+                        } else {
+                            echo esc_html($meta);
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Used to make all columns sortable
+     *
+     * @param array $columns
+     * @return  array
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     *
+     */
+    public function addSortableColumn($columns)
+    {
+        if ($this->fields) {
+            foreach ($this->fields as $id_name => $field) {
+                if ($field->admin_column_sortable) {
+                    $columns[$id_name] = $field->label;
+                }
+            }
+        }
+
+        return $columns;
+    }
+}

@@ -1,0 +1,23 @@
+<?php
+
+// src/Validation/Rules/Max_Length.php
+namespace CFDev\Validation\Rules;
+
+use CFDev\Contracts\Validatable;
+
+final class MaxLength implements Validatable
+{
+    public function __construct(private readonly int $max)
+    {
+    }
+
+    public function validate(mixed $value): bool
+    {
+        return strlen((string) $value) <= $this->max;
+    }
+
+    public function getError(): string
+    {
+        return sprintf(__('This field must not exceed %d characters.', 'cfdev'), $this->max);
+    }
+}

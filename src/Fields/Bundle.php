@@ -1,0 +1,433 @@
+<?php
+
+namespace CFDev\Fields;
+
+use CFDev\Abstracts\FieldContainer;
+use CFDev\Validation\ErrorBag;
+
+class Bundle extends FieldContainer
+{
+    public array $fields = [];
+    public string $default_value = '';
+
+    /**
+     * Construct for bundle
+     *
+     * @param   int         $id
+     * @param   array       $data
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     * 
+     */
+    public function __construct($id, $data)
+    {
+        // Bundle data
+        $this->default_value = isset($data['default_value']) ? $data['default_value'] : $this->default_value;
+        // Bundle id
+        $this->id = isset($id) ? $this->buildId($id) : $this->id;
+    }
+
+    /**
+     * Outputs a bundle
+     * 
+     * @param   object          $post
+     * @param   string|bool          $meta_type
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     *
+     */
+
+    public function output(object $post): void
+    {
+//        $meta = $this->meta_type === 'user'
+//            ? get_user_meta($post->ID, $this->id, true)
+//            : get_post_meta($post->ID, $this->id, true);
+        $meta = match ($this->meta_type) {
+            'user' => get_user_meta($post->ID, $this->id, true),
+            'term' => get_term_meta($post->ID, $this->id, true),
+            default => get_post_meta($post->ID, $this->id, true),
+        };
+        $meta = \CFDev\Field::decodeMetaValue($meta);
+
+        echo '<div id="' . esc_attr($this->id) . '" class="padding-wrap">';
+        echo '<a class="button-secondary cfdev-button js-cfdev-add-sortable'
+            . ' js-cfdev-add-bundle cfdev-add-sortable" href="#">'
+            . '+ ' . esc_html(__('Add', 'cfdev')) . '</a>';
+        echo '<ul class="js-cfdev-sortable cfdev-sortable js-cfdev-bundle" data-cfdev-sortable-type="bundle">';
+
+        if (!empty($meta) && is_array($meta) && isset($meta[0])) {
+            $this->renderMetaItems($meta, $post, count($meta) > 1);
+        } elseif (!empty($this->default_value)) {
+            $this->renderDefaultItems($post);
+        } else {
+            $this->renderEmptyItem($post);
+        }
+
+        echo '</ul>';
+        echo '</div>';
+    }
+
+    private function renderMetaItems(array $meta, object $post, bool $showRemove): void
+    {
+        foreach ($meta as $i => $bundle) {
+            echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
+            echo '<div class="cfdev-handle-sortable js-cfdev-handle-sortable"></div>';
+            echo '<fieldset>';
+            echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
+
+            foreach ($this->fields as $id => $field) {
+                $field->pre      = '[' . $this->id . '][' . $i . ']';
+                $field->after_id = '_' . $i;
+                $value           = $meta[$i][$id] ?? '';
+                $errorKey        = $this->id . '.' . $i . '.' . $id;
+
+                $this->renderField($field, $id, $value, $post, $errorKey);
+            }
+
+            echo '</table>';
+            echo '</fieldset>';
+            echo $showRemove ? '<div class="cfdev-remove-sortable js-cfdev-remove-sortable"></div>' : '';
+            echo '</li>';
+        }
+    }
+
+    private function renderDefaultItems(object $post): void
+    {
+        foreach ($this->default_value as $i => $default) {
+            echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
+            echo '<div class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable"></div>';
+            echo '<fieldset>';
+            echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
+
+            $y = 0;
+            foreach ($this->fields as $id => $field) {
+                $field->pre           = '[' . $this->id . '][' . $i . ']';
+                $field->after_id      = '_' . $i;
+                $field->default_value = $this->default_value[$i][$y] ?? '';
+
+                $this->renderField($field, $id, '', $post);
+                $y++;
+            }
+
+            echo '</table>';
+            echo '</fieldset>';
+            echo '</li>';
+        }
+    }
+
+    private function renderEmptyItem(object $post): void
+    {
+        echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
+        echo '<div class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable"></div>';
+        echo '<fieldset>';
+        echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
+
+        foreach ($this->fields as $id => $field) {
+            $field->pre      = '[' . $this->id . '][0]';
+            $field->after_id = '_0';
+
+            $this->renderField($field, $id, '', $post);
+        }
+
+        echo '</table>';
+        echo '</fieldset>';
+        echo '</li>';
+    }
+
+    private function renderField(\CFDev\Field $field, string $id, mixed $value, object $post, ?string $errorKey = null): void
+    {
+        if ($field instanceof \CFDev\Fields\Hidden) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $field->output($value, $post);
+            return;
+        }
+
+        $fieldErrors = $errorKey ? ErrorBag::forField($errorKey) : [];
+        $hasError    = !empty($fieldErrors);
+
+        echo sprintf('<tr%s>', $hasError ? ' class="cfdev-has-error"' : '');
+
+        echo sprintf(
+            '<th class="cfdev-th">
+            <label for="%s" class="cfdev-label">%s</label>%s
+            <div class="cfdev-description">%s</div>
+        </th>',
+            esc_attr($id . $field->after_id),
+            esc_html($field->label),
+            $field->required ? ' <span class="cfdev-required">*</span>' : '',
+            wp_kses_post($field->description)
+        );
+
+        echo '<td class="cfdev-td">';
+        $this->renderFieldOutput($field, $value, $post);
+
+        if ($hasError) {
+            echo '<p class="cfdev-field-error">' . esc_html(implode(' ', $fieldErrors)) . '</p>';
+        }
+
+        echo '</td></tr>';
+    }
+
+    private function renderFieldOutput(\CFDev\Field $field, mixed $value, object $post): void
+    {
+        if (!$field->supports_bundle) {
+            echo '<em>' . esc_html(__("This input type doesn't support the bundle functionality (yet).", 'cfdev')) . '</em>';
+            return;
+        }
+
+        if ($field->repeatable && $field->supports_repeatable) {
+            echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">+ ' . esc_html(__('Add', 'cfdev')) . '</a>';
+            echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $field->output($value, $post);
+            echo '</ul>';
+        } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $field->output($value, $post);
+        }
+    }
+//    public function output($post)
+//    {
+//        echo '<div class="padding-wrap">';
+//            echo '<a class="button-secondary cfdev-button js-cfdev-add-sortable js-cfdev-add-bundle cfdev-add-sortable" href="#">';
+//                echo sprintf('+ %s', esc_html(__('Add', 'cfdev')));
+//            echo '</a>';
+//
+//            echo '<ul class="js-cfdev-sortable cfdev-sortable js-cfdev-bundle" data-cfdev-sortable-type="bundle">';
+//
+//                $meta = $this->meta_type == 'user' ? get_user_meta($post->ID, $this->id, true) : get_post_meta($post->ID, $this->id, true);
+//
+//        if (! empty($meta) && isset($meta[0])) {
+//            $i = 0;
+//            foreach ($meta as $bundle) {
+//                echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
+//                    echo '<div class="cfdev-handle-sortable js-cfdev-handle-sortable"></div>';
+//                    echo '<fieldset>';
+//                    echo '<table border="0" cellading="0" cellspacing="0" class="form-table cfdev-table">';
+//
+//                foreach ($this->fields as $id => $field) {
+//                    $field->pre      = '[' . $this->id . '][' . $i . ']';
+//                    $field->after_id = '_' . $i;
+//                    $value           = isset($meta[$i][$id]) ? $meta[$i][$id] : '';
+//                    $error_key       = $this->id . '.' . $i . '.' . $id;
+//                    $field_errors    = ErrorBag::forField($error_key);
+//                    $has_error       = ! empty($field_errors);
+//
+//                    if (! $field instanceof \CFDev\Fields\Hidden) {
+//                        echo '<tr' . ( $has_error ? ' class="cfdev-has-error"' : '' ) . '>';
+//                            echo '<th class="cfdev-th">';
+//                                echo '<label for="' . esc_attr($id . $field->after_id) . '" class="cfdev-label">' . esc_html($field->label) . '</label>';
+//                                echo $field->required ? ' <span class="cfdev-required">*</span>' : '';
+//                                echo '<div class="cfdev-description">' . wp_kses_post($field->description) . '</div>';
+//                            echo '</th>';
+//                            echo '<td class="cfdev-td">';
+//
+//                        if ($field->supports_bundle) {
+//                            if ($field->repeatable && $field->supports_repeatable) {
+//                                        echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">';
+//                                            echo sprintf('+ %s', esc_html(__('Add', 'cfdev')));
+//                                        echo '</a>';
+//                                        echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
+//                                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                                            echo $field->output($value, $post);
+//                                        echo '</ul>';
+//                            } else {
+//                                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                                echo $field->output($value, $post);
+//                            }
+//                        } else {
+//                            echo '<em>' . esc_html(__('This input type doesn\'t support the bundle functionality (yet).', 'cfdev')) . '</em>';
+//                        }
+//
+//                        if ($has_error) {
+//                            echo '<p class="cfdev-field-error">' . esc_html(implode(' ', $field_errors)) . '</p>';
+//                        }
+//
+//                            echo '</td>';
+//                        echo '</tr>';
+//                    } else {
+//                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                        echo $field->output($value, $post);
+//                    }
+//                }
+//
+//                    echo '</table>';
+//                    echo '</fieldset>';
+//                    echo count($meta) > 1 ? '<div class="cfdev-remove-sortable js-cfdev-remove-sortable"></div>' : '';
+//                        echo '</li>';
+//
+//                        $i++;
+//            }
+//        } elseif (! empty($this->default_value)) {
+//            $i = 0;
+//
+//            foreach ($this->default_value as $default) {
+//                echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
+//                    echo '<div class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable"></div>';
+//                    echo '<fieldset>';
+//                    echo '<table border="0" cellading="0" cellspacing="0" class="form-table cfdev-table">';
+//
+//                        $fields = $this->fields;
+//                        $y      = 0;
+//
+//                foreach ($fields as $id => $field) {
+//                    $field->pre             = '[' . $this->id . '][' . $i . ']';
+//                    $field->after_id        = '_' . $i;
+//                    $field->default_value   = $this->default_value[$i][$y];
+//                    $value                  = '';
+//
+//                    if (! $field instanceof \CFDev\Fields\Hidden) {
+//                        echo '<tr>';
+//                            echo '<th class="cfdev-th">';
+//                                echo '<label for="' . esc_attr($id . $field->after_id) . '" class="cfdev-label">' . esc_html($field->label) . '</label>';
+//                                echo '<div class="cfdev-description">' . wp_kses_post($field->description) . '</div>';
+//                            echo '</th>';
+//                            echo '<td class="cfdev-td">';
+//
+//                        if ($field->supports_bundle) {
+//                            if ($field->repeatable && $field->supports_repeatable) {
+//                                        echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">';
+//                                            echo sprintf('+ %s', esc_html(__('Add', 'cfdev')));
+//                                        echo '</a>';
+//                                        echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
+//                                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                                            echo $field->output($value, $post);
+//                                        echo '</ul>';
+//                            } else {
+//                                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                                echo $field->output($value, $post);
+//                            }
+//                        } else {
+//                            echo '<em>' . esc_html(__('This input type doesn\'t support the bundle functionality (yet).', 'cfdev')) . '</em>';
+//                        }
+//
+//                        echo '</td>';
+//                        echo '</tr>';
+//                    } else {
+//                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                        echo $field->output($value, $post);
+//                    }
+//
+//                    $y++;
+//                }
+//
+//                echo '</table>';
+//                echo '</fieldset>';
+//                echo '</li>';
+//                $i++;
+//            }
+//        } else {
+//            echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
+//                echo '<div class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable"></div>';
+//                echo '<fieldset>';
+//                echo '<table border="0" cellading="0" cellspacing="0" class="form-table cfdev-table">';
+//
+//                    $fields = $this->fields;
+//
+//            foreach ($fields as $id => $field) {
+//                $field->pre         = '[' . $this->id . '][0]';
+//                $field->after_id    = '_0';
+//                $value              = '';
+//
+//                if (! $field instanceof \CFDev\Fields\Hidden) {
+//                    echo '<tr>';
+//                        echo '<th class="cfdev-th">';
+//                            echo '<label for="' . esc_attr($id . $field->after_id) . '" class="cfdev-label">' . esc_html($field->label) . '</label>';
+//                            echo '<div class="cfdev-description">' . wp_kses_post($field->description) . '</div>';
+//                        echo '</th>';
+//                        echo '<td class="cfdev-td">';
+//
+//                    if ($field->supports_bundle) {
+//                        if ($field->repeatable && $field->supports_repeatable) {
+//                                    echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">';
+//                                        echo sprintf('+ %s', esc_html(__('Add', 'cfdev')));
+//                                    echo '</a>';
+//                                    echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
+//                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                                        echo $field->output($value, $post);
+//                                    echo '</ul>';
+//                        } else {
+//                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                            echo $field->output($value, $post);
+//                        }
+//                    } else {
+//                        echo '<em>' . esc_html(__('This input type doesn\'t support the bundle functionality (yet).', 'cfdev')) . '</em>';
+//                    }
+//
+//                    echo '</td>';
+//                    echo '</tr>';
+//                } else {
+//                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+//                    echo $field->output($value, $post);
+//                }
+//            }
+//            echo '</table>';
+//            echo '</fieldset>';
+//            echo '</li>';
+//        }
+//        echo '</ul>';
+//        echo '</div>';
+//    }
+
+    /**
+     * Save bundle meta
+     * 
+     * @param   int             $post_id
+     * @param   string          $value
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     * 
+     */
+    public function save($object_id, $values)
+    {
+        $values = apply_filters("cfdev_" . $this->meta_type . "_meta_save_bundle_$this->id", $values, $this, $object_id);   
+        $values = apply_filters('cfdev_' . $this->meta_type . '_meta_save_bundle', $values, $this, $object_id);
+        $values = array_values(array_filter($values, 'is_array'));
+
+        foreach ($values as $row_id => $row) {
+            foreach ($row as $id => $value) {
+                if (isset($this->fields[$id])) {
+                    $values[$row_id][$id] = $this->fields[$id]->saveValue($value);
+                }
+            }
+        }
+
+        $json = wp_json_encode($values);
+
+        if (false === $json) {
+            return;
+        }
+
+        if ($this->meta_type == 'user') {
+            delete_user_meta($object_id, $this->id);
+            update_user_meta($object_id, $this->id, $json);
+        } elseif ($this->meta_type == 'term') {
+            delete_term_meta($object_id, $this->id);
+            update_term_meta($object_id, $this->id, $json);
+        } else {
+            delete_post_meta($object_id, $this->id);
+            update_post_meta($object_id, $this->id, $json);
+        }
+    }
+
+    /**
+     * Build the id for the bundle
+     *
+     * @return  string
+     *
+     * @author  quidelantoine
+     * @since   1.0.0
+     * 
+     */
+    public function buildId($id)
+    {
+        if (strpos($id, '_', 0) !== 0) {
+            $id = '_' . $id;
+        }
+
+        return $id;
+    }
+}

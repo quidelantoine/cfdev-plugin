@@ -1,0 +1,42 @@
+<?php
+
+namespace CFDev\Fields;
+
+use CFDev\Field;
+
+class Checkbox extends Field
+{
+    public bool $supports_bundle = true;
+    public array $css_classes = array( 'cfdev-input' );
+    public bool $supports_ajax         = true;
+
+    public function outputHtml(string|array $value): string
+    {
+        $checked = !empty($value)
+            ? checked($value, 'on', false)
+            : checked($this->default_value, 'on', false);
+
+        $input = sprintf(
+            '<input type="checkbox" %s %s %s %s />',
+            $this->outputName(),
+            $this->outputId(),
+            $this->outputCssClass(),
+            $checked
+        );
+
+        return sprintf(
+            '<div class="cfdev-checkbox-wrap">%s</div>%s',
+            $input,
+            $this->outputExplanation()
+        );
+    }
+
+    /**
+     * @param string|array $value
+     * @return string
+     */
+    public function saveValue(string|array $value): string
+    {
+        return empty($value) ? '-1' : $value;
+    }
+}

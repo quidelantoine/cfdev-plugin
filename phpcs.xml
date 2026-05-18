@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress PSR12 Custom">
+
+    <!-- Base PSR-12 -->
+    <!-- <rule ref="PSR12"/> -->
+    <!-- <rule ref="WordPress-VIP-Go"/> -->
+
+    <!-- Standard principal : WordPress-VIP-Go -->
+    <!-- <rule ref="WordPress-VIP-Go" /> -->
+    <rule ref="WordPress-VIP-Go">
+        <exclude name="Squiz.PHP.CommentedOutCode.Found" />
+
+
+<!--        <exclude name="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized" />-->
+<!--        <exclude name="WordPress.Security.NonceVerification.Recommended" />-->
+<!--        <exclude name="WordPress.Security.NonceVerification.Missing" />-->
+<!--        <exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />-->
+<!--        <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />-->
+<!--        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />-->
+<!--        <exclude name="PSR2.Classes.PropertyDeclaration.Underscore" />-->
+<!--        <exclude name="PSR2.Methods.MethodDeclaration.Underscore" />-->
+<!--        <exclude name="Generic.Files.LineLength.TooLong" />-->
+<!--        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />-->
+<!--        <exclude name="WordPress.Security.NonceVerification.Missing" />-->
+<!--        <exclude name="PSR1.Files.SideEffects.FoundWithSymbols" />-->
+
+        <!-- Exclure les sniffs JS pour éviter les warnings DEPRECATED de PHPCS 3.x -->
+        <exclude name="WordPressVIPMinimum.JS.StrippingTags" />
+        <exclude name="WordPressVIPMinimum.JS.HTMLExecutingFunctions" />
+        <exclude name="WordPressVIPMinimum.JS.DangerouslySetInnerHTML" />
+        <exclude name="WordPressVIPMinimum.JS.Window" />
+        <exclude name="WordPressVIPMinimum.JS.StringConcat" />
+        <exclude name="WordPressVIPMinimum.JS.InnerHTML" />
+
+
+    </rule>
+
+    <!-- Ajouter PSR12, mais en excluant les règles qui entrent en conflit -->
+    <rule ref="PSR12">
+
+    </rule>
+    <rule ref="Generic.Files.LineLength"> <!-- rule to override -->
+        <properties>
+            <property name="lineLimit" value="160"/> <!-- maximum line length -->
+        </properties>
+    </rule>
+
+    <!-- Scanner uniquement les fichiers PHP — évite le chargement des sniffs JS/CSS -->
+    <arg name="extensions" value="php"/>
+
+    <!-- Exclure certains dossiers lourds -->
+    <exclude-pattern>*.css</exclude-pattern>
+    <exclude-pattern>*.js</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/languages/*</exclude-pattern>
+<!--    <exclude-pattern>*/tests/*</exclude-pattern>-->
+    <!-- <exclude-pattern>*/inc/Classes/Cuztom/*</exclude-pattern> -->
+
+    <!-- Analyser uniquement les fichiers PHP -->
+    <file>.</file>
+
+</ruleset>

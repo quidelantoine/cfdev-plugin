@@ -1,0 +1,117 @@
+.cfdev{ width: 100%; }
+
+.cfdev .cfdev-box-description{ padding-bottom: 10px; border-bottom: 1px solid #dfdfdf; font-style: italic; }
+.cfdev .cfdev-tabs{ padding-top: 10px; }
+.cfdev .js-cfdev-remove-media{ display: inline-block; margin-left: 10px; }
+.cfdev .cfdev-ajax-save{ display: inline-block; vertical-align: middle; height: 23px; }
+
+/* Wraps */
+.cfdev .padding-wrap{ padding: 5px 0 0; }
+.cfdev .wp-editor-wrap{ margin-bottom: 10px; }
+.cfdev .cfdev-checkboxes-wrap{ margin-right: 10px; display: inline-block; vertical-align: middle; max-height: 100px; overflow: hidden scroll; }
+.cfdev .cfdev-checkbox-wrap{ margin-right: 10px; display: inline-block; vertical-align: middle; }
+
+/* Tabs */
+.cfdev .cfdev-tabs .ui-state-active{ border-color: #ccc; background: #fff; }
+.cfdev .cfdev-tabs .ui-state-active a{ color: #d54e21; }
+
+/* Table */
+.cfdev .cfdev-table{ width: 100%; margin-top: 0; }
+.cfdev .cfdev-table th{ font-weight: normal; text-align: left; vertical-align: top; }
+.cfdev .cfdev-table th label{ font-size: 12px; font-weight: bold; }
+.cfdev .cfdev-table th .cfdev-required{ color: red; }
+
+.cfdev .cfdev-table th .cfdev-description,
+.cfdev .cfdev-table td .cfdev-explanation{ font-size: 10px; font-style: italic; font-weight: normal; }
+.cfdev .cfdev-table td .cfdev-explanation{ display: block; }
+
+/* Sortable */
+.cfdev .cfdev-handle-sortable,
+.cfdev .cfdev-remove-sortable{ display: inline-block; vertical-align: middle; height: 16px; width: 16px; background: url('../images/jquery-ui/ui-icons_454545_256x240.png') no-repeat; }
+.cfdev .cfdev-handle-sortable{ background-position: -132px -48px; cursor: move; }
+.cfdev .cfdev-remove-sortable{ background-position: -77px -128px; cursor: pointer; }
+.cfdev .cfdev-sortable-item fieldset{ display: inline-block; vertical-align: middle; border: 1px solid #ccc; padding: 10px; border-radius: 2px; border-radius: 2px; border-radius: 2px; width: 90%; }
+
+/* Input */
+.cfdev textarea, 
+.cfdev input[type="text"]{ width: 80%; display: inline-block; vertical-align: middle; }
+.cfdev textarea{ height: 100px; }
+.cfdev select{ min-width: 160px; }
+.cfdev .cfdev-preview{ width: 100%; display: block; margin-top: 8px; }
+.cfdev .cfdev-preview img{ max-width: 100%; height: auto; }
+
+.cfdev .mceContentBody, 
+.cfdev .mceIframeContainer{ background: #fff !important; }
+.cfdev .mceStatusbar{ width: 100% !important; padding-left: 0 !important; text-indent: 10px; }
+.cfdev.form-field input[type="button"]{ width: auto; }
+
+/* Misc */
+.cfdev .cfdev-mime { display: inline-block; }
+.cfdev .cfdev-mime a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
+.cfdev .cfdev-mime .cfdev-file-svg { flex-shrink: 0; }
+.cfdev .cfdev-mime .cfdev-file-name { font-size: 13px; word-break: break-all; }
+.cfdev .wp-picker-container{ width: 100%; }
+
+.cfdev input[type="text"].wp-color-picker,
+.cfdev .wp-picker-clear{ width: auto; }
+.cfdev .iris-picker .iris-slider-offset{ position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: none; border: none; }
+
+/* Responsive wysiwyg editor */
+.cfdev .tmce-active table { max-width: none; }
+.cfdev .tmce-active table.mceLayout, .cfdev table.mceToolbar { width: 100% !important; height: auto !important; }
+.cfdev .tmce-active span.mceEditor { display: block !important; }
+.cfdev .mceToolbar div, .cfdev table.mceToolbar tr { white-space: normal; }
+.cfdev table.mceToolbar td { display: inline-block; white-space: normal; }
+
+/* Side meta box */
+#side-sortables .cfdev-table th{ padding: 0 0 10px; width: 30%; }
+#side-sortables .cfdev-table td{ padding: 0 0 10px; width: 70%; }
+
+#side-sortables .cfdev-table .cfdev-description,
+#side-sortables .cfdev-table .cfdev-explanation{ display: none; }
+
+#side-sortables .cfdev-table .cfdev-input,
+#side-sortables .cfdev-table .cfdev-checkbox-wrap,
+#side-sortables .cfdev-table .cfdev-checkboxes-wrap{ width: 100%; }
+
+#side-sortables .cfdev-table input[type="radio"].cfdev-input,
+#side-sortables .cfdev-table input[type="checkbox"].cfdev-input{ width: auto; }
+#side-sortables .cfdev-table .cfdev-colorpicker{ width: 80%; }
+#side-sortables .cfdev-table .cfdev-ajax-save{ clear: both; }
+#side-sortables .cfdev-table .cfdev-remove-media{ margin-left: 0; }
+
+/* Validation errors */
+.cfdev-field-error {
+    color: #d63638;
+    font-size: 12px;
+    margin: 6px 0 0;
+    display: block;
+}
+.cfdev-has-error > .cfdev-td {
+    border-left: 2px solid #d63638;
+    padding-left: 10px;
+}
+.cfdev-has-error .cfdev-input,
+.cfdev-has-error textarea,
+.cfdev-has-error select {
+    border-color: #d63638 !important;
+    box-shadow: 0 0 0 1px #d63638;
+}
+/* Toggle switch */
+.cfdev .cfdev-toggle-wrap { display: inline-block; vertical-align: middle; }
+.cfdev .cfdev-switch { position: relative; display: inline-block; width: 44px; height: 24px; margin: 0; }
+.cfdev .cfdev-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.cfdev .cfdev-switch-slider { position: absolute; cursor: pointer; inset: 0; background-color: #ccc; border-radius: 24px; transition: background-color .25s; }
+.cfdev .cfdev-switch-slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .25s; }
+.cfdev .cfdev-switch input:checked + .cfdev-switch-slider { background-color: var(--wp-admin-theme-color, #2271b1); }
+.cfdev .cfdev-switch input:checked + .cfdev-switch-slider:before { transform: translateX(20px); }
+.cfdev .cfdev-switch input:focus + .cfdev-switch-slider { box-shadow: 0 0 0 2px var(--wp-admin-theme-color, #2271b1); }
+
+/* Perso */
+
+.wp-core-ui .button-secondary.cfdev-button,
+.wp-core-ui .button.js-cfdev-upload {
+    background-color: green;
+    color: #fff;
+}
+

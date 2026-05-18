@@ -103,7 +103,7 @@ class Tab extends FieldContainer
         }
 
         /** @var \WP_Post $post */
-        echo '<table border="0" cellpadding="0" cellspacing="0" class="from-table cfdev-table">';
+        echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
 
         foreach ($this->fields as $id => $field) {
             $value = $this->resolveValue($post->ID, $id);

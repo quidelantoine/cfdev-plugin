@@ -79,13 +79,15 @@ class TermMeta extends Meta
         echo '<input type="hidden" name="cfdev[__activate]" />';
 
         if ($this->data instanceof \CFDev\Fields\Tabs || $this->data instanceof \CFDev\Fields\Accordion) {
+            echo '<div class="cfdev">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => 0]);
+            echo '</div>';
             return;
         }
 
         if ($this->data instanceof \CFDev\Fields\Bundle) {
-            echo '<div class="form-field">';
+            echo '<div class="form-field cfdev">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => 0]);
             echo '</div>';
@@ -97,7 +99,7 @@ class TermMeta extends Meta
             $value = '';
 
             if (! $field instanceof \CFDev\Fields\Hidden) {
-                echo '<div class="form-field">';
+                echo '<div class="form-field cfdev">';
                     echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">' . esc_html($field->label) . '</label>';
                     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo $field->output($value);
@@ -155,7 +157,7 @@ class TermMeta extends Meta
                 $has_error    = ! empty($field_errors);
 
                 echo '<tr class="cfdev form-field' . ($has_error ? ' cfdev-has-error' : '') . '">';
-                    echo '<th scope="row" valign="top">';
+                    echo '<th scope="row" valign="top" class="cfdev-th">';
                         echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">' . esc_html($field->label) . '</label>';
                     echo '</th>';
                     echo '<td class="cfdev-td">';

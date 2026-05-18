@@ -14,16 +14,25 @@
 /* Tabs */
 .cfdev .cfdev-tabs .ui-state-active{ border-color: #ccc; background: #fff; }
 .cfdev .cfdev-tabs .ui-state-active a{ color: #d54e21; }
+.cfdev .cfdev-tabs .ui-tabs-panel { padding: 12px 0 0; }
+.cfdev .cfdev-tabs .cfdev-table tr + tr td,
+.cfdev .cfdev-tabs .cfdev-table tr + tr th { padding-top: 10px; }
 
 /* Table */
 .cfdev .cfdev-table{ width: 100%; margin-top: 0; }
 .cfdev .cfdev-table th{ font-weight: normal; text-align: left; vertical-align: top; }
-.cfdev .cfdev-table th label{ font-size: 12px; font-weight: bold; }
-.cfdev .cfdev-table th .cfdev-required{ color: red; }
+
+.cfdev .cfdev-table th label,
+.cfdev .cfdev-th label { font-size: 12px; font-weight: bold; }
+
+.cfdev .cfdev-table th .cfdev-required,
+.cfdev .cfdev-th .cfdev-required { color: red; }
 
 .cfdev .cfdev-table th .cfdev-description,
-.cfdev .cfdev-table td .cfdev-explanation{ font-size: 10px; font-style: italic; font-weight: normal; }
-.cfdev .cfdev-table td .cfdev-explanation{ display: block; }
+.cfdev .cfdev-table td .cfdev-explanation,
+.cfdev .cfdev-description { font-size: 11px; font-style: italic; font-weight: normal; }
+.cfdev .cfdev-table td .cfdev-explanation,
+.cfdev .cfdev-description { display: block; margin-top: 4px; }
 
 /* Sortable */
 .cfdev .cfdev-handle-sortable,
@@ -32,6 +41,8 @@
 .cfdev .cfdev-remove-sortable{ background-position: -77px -128px; cursor: pointer; }
 .cfdev .cfdev-sortable-item fieldset{ display: inline-block; vertical-align: middle; border: 1px solid #ccc; padding: 10px; border-radius: 2px; border-radius: 2px; border-radius: 2px; width: 90%; }
 
+
+.cfdev fieldset {background-color: white;}
 /* Input */
 .cfdev textarea, 
 .cfdev input[type="text"]{ width: 80%; display: inline-block; vertical-align: middle; }

@@ -11,15 +11,6 @@ composer require quidelantoine/cfdev
 est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur +++, ou alors il faut aller plus loin ++
 # A faire 
 
-=> reparer les bundle ++++, relou alors que details marche bien ??? encore quand bundle dans tabs ( 1 bundle par tabs ) ??? 
-    => quand on ajoute un champ , plus rien ne marche 
-        => provlem dans function.js 
-
-=> le probleme viens du Wysiwig dans un bundle
-
-    => faire un git init, commit  regulirerent , si ia fais de la merde, possiblité de revenir au point de depart qui marche 
-
-
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
 
 => faire test sur les champs avec balise script , simple guillemet et double guillemet

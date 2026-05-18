@@ -2,12 +2,6 @@ includes:
     # Extension WordPress pour reconnaître les fonctions globales (__, _e, esc_html, etc.)
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 
-    # Niveau de strictness (5 = strict, 9 = maximal)
-    #- vendor/phpstan/phpstan-strict-rules/rules.neon
-
-    # Règles supplémentaires pour éviter les faux positifs
-    #- vendor/phpstan/phpstan-phpunit/rules.neon
-
 parameters:
     # Niveau de vérification (0 = basique, 9 = très strict)
     level: 8
@@ -25,30 +19,5 @@ parameters:
             - *.min.js
             - *.min.css
 
-    # Fichiers de stubs personnalisés (si besoin)
-    #stubFiles:
-       # - stubs/WordPress.php  # Si tu as des fonctions personnalisées
-
     # Ignorer les erreurs pour des fichiers spécifiques
     ignoreErrors: []
-
-    # Autoloading pour les classes (si tu utilises Composer)
-    #autoload_files:
-     #   - vendor/autoload.php
-
-    # Configuration pour les tests PHPUnit (si tu en as)
-    #phpunit:
-    #    phpunitConfigFile: phpunit.xml.dist
-
-    # Activer/désactiver des checks spécifiques
-    #checkMissingIterableValueType: false  # Utile si tu utilises des arrays sans typage strict
-    #checkFunctionNameCase: true          # Vérifie la casse des noms de fonctions
-    #checkMethodNameCase: true            # Vérifie la casse des noms de méthodes
-    #checkClassNameCase: true              # Vérifie la casse des noms de classes
-
-    # Gestion des erreurs
-    #reportUnmatchedIgnoredErrors: false  # Évite les warnings pour les @phpstan-ignore inutiles
-    #treatPhpDocTypesAsCertain: true      # Considère les types PHPDoc comme fiables
-
-    # Cache (améliore les performances)
-    #cacheDirectory: .phpstan/cache

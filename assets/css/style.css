@@ -14,7 +14,7 @@
 /* Tabs */
 .cfdev .cfdev-tabs .ui-state-active{ border-color: #ccc; background: #fff; }
 .cfdev .cfdev-tabs .ui-state-active a{ color: #d54e21; }
-.cfdev .cfdev-tabs .ui-tabs-panel { padding: 12px 0 0; }
+.cfdev .cfdev-tabs .ui-tabs-panel { padding: 12px 1rem 0; }
 .cfdev .cfdev-tabs .cfdev-table tr + tr td,
 .cfdev .cfdev-tabs .cfdev-table tr + tr th { padding-top: 10px; }
 
@@ -30,8 +30,12 @@
 
 .cfdev .cfdev-table th .cfdev-description,
 .cfdev .cfdev-table td .cfdev-explanation,
+.cfdev-td .cfdev-explanation,
+.form-field.cfdev .cfdev-explanation,
 .cfdev .cfdev-description { font-size: 11px; font-style: italic; font-weight: normal; }
 .cfdev .cfdev-table td .cfdev-explanation,
+.cfdev-td .cfdev-explanation,
+.form-field.cfdev .cfdev-explanation,
 .cfdev .cfdev-description { display: block; margin-top: 4px; }
 
 /* Sortable */

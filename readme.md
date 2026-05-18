@@ -12,18 +12,14 @@ composer require quidelantoine/cfdev
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
 -> reste eslint ??? et ci 
 
-=> faire test sur les champs avec balise script , simple guillemet et double guillemet
-
-=> AJouter Weblitzer\CFDev\ dans le namespace ++
-
--> type hint +++   return too<
-
 -> a verifier =>  echo esc_html(implode($meta, ', '));   Meta_Box
-=> Faire un champ sous titre simple pour separe les champs dans une metabox , mieux organiser
+
 
 => change color of metabox , custom design metaBox +++
 
-=> Lui demander ia , si il pense à d'autres type de champs ??? 
+=> Lui demander ia , si il pense à d'autres type de champs ???
+=> Faire un champ sous titre simple pour separe les champs dans une metabox , mieux organiser
+=> ask pour autre rukles pour les champs deja present
 
 
 => Faire plugins traduction loco translate pour générer fichier .mo et .po

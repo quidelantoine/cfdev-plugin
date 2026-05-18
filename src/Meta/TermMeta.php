@@ -2,6 +2,13 @@
 
 namespace Weblitzer\CFDev\Meta;
 
+use Weblitzer\CFDev\Field;
+use Weblitzer\CFDev\Fields\Accordion;
+use Weblitzer\CFDev\Fields\Bundle;
+use Weblitzer\CFDev\Fields\Hidden;
+use Weblitzer\CFDev\Fields\Image;
+use Weblitzer\CFDev\Fields\Tabs;
+use Weblitzer\CFDev\Fields\Wysiwyg;
 use Weblitzer\CFDev\Meta;
 use Weblitzer\CFDev\Validation\ErrorBag;
 
@@ -78,7 +85,7 @@ class TermMeta extends Meta
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
         echo '<input type="hidden" name="cfdev[__activate]" />';
 
-        if ($this->data instanceof \Weblitzer\CFDev\Fields\Tabs || $this->data instanceof \Weblitzer\CFDev\Fields\Accordion) {
+        if ($this->data instanceof Tabs || $this->data instanceof Accordion) {
             echo '<div class="cfdev">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => 0]);
@@ -86,7 +93,7 @@ class TermMeta extends Meta
             return;
         }
 
-        if ($this->data instanceof \Weblitzer\CFDev\Fields\Bundle) {
+        if ($this->data instanceof Bundle) {
             echo '<div class="form-field cfdev">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => 0]);
@@ -98,15 +105,14 @@ class TermMeta extends Meta
         foreach ($this->data as $id_name => $field) {
             $value = '';
 
-            if (! $field instanceof \Weblitzer\CFDev\Fields\Hidden) {
+            if (! $field instanceof Hidden) {
                 echo '<div class="form-field cfdev">';
                     echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">' . esc_html($field->label) . '</label>';
+                if (! empty($field->description)) {
+                    echo '<div class="cfdev-description description">' . wp_kses_post($field->description) . '</div>';
+                }
                     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo $field->output($value);
-
-                if (! empty($field->description)) {
-                    echo '<p class="cfdev-description">' . wp_kses_post($field->description) . '</p>';
-                }
                 echo '</div>';
             } else {
                 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -132,7 +138,7 @@ class TermMeta extends Meta
 
         echo '<input type="hidden" name="cfdev[__activate]" />';
 
-        if ($this->data instanceof \Weblitzer\CFDev\Fields\Tabs || $this->data instanceof \Weblitzer\CFDev\Fields\Accordion) {
+        if ($this->data instanceof Tabs || $this->data instanceof Accordion) {
             echo '<tr class="cfdev form-field"><td colspan="2">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => $term->term_id]);
@@ -140,7 +146,7 @@ class TermMeta extends Meta
             return;
         }
 
-        if ($this->data instanceof \Weblitzer\CFDev\Fields\Bundle) {
+        if ($this->data instanceof Bundle) {
             echo '<tr class="cfdev form-field"><td colspan="2">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => $term->term_id]);
@@ -152,20 +158,20 @@ class TermMeta extends Meta
         foreach ($this->data as $id_name => $field) {
             $value[$id_name] = isset($value[$id_name]) ? $value[$id_name] : '';
 
-            if (! $field instanceof \Weblitzer\CFDev\Fields\Hidden) {
+            if (! $field instanceof Hidden) {
                 $field_errors = ErrorBag::forField($id_name);
                 $has_error    = ! empty($field_errors);
 
                 echo '<tr class="cfdev form-field' . ($has_error ? ' cfdev-has-error' : '') . '">';
                     echo '<th scope="row" valign="top" class="cfdev-th">';
                         echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">' . esc_html($field->label) . '</label>';
+                if (! empty($field->description)) {
+                    echo '<div class="cfdev-description description">' . wp_kses_post($field->description) . '</div>';
+                }
                     echo '</th>';
                     echo '<td class="cfdev-td">';
                         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                         echo $field->output($value[$id_name]);
-                if (! empty($field->description)) {
-                    echo '<p class="description cfdev-description">' . wp_kses_post($field->description) . '</p>';
-                }
                 if ($has_error) {
                     echo '<p class="cfdev-field-error">' . esc_html(implode(' ', $field_errors)) . '</p>';
                 }
@@ -202,9 +208,9 @@ class TermMeta extends Meta
                 ErrorBag::push('term', $term_id, $errors);
             }
 
-            if ($this->data instanceof \Weblitzer\CFDev\Fields\Tabs || $this->data instanceof \Weblitzer\CFDev\Fields\Accordion) {
+            if ($this->data instanceof Tabs || $this->data instanceof Accordion) {
                 foreach ($this->data->tabs as $tab) {
-                    if ($tab->fields instanceof \Weblitzer\CFDev\Fields\Bundle) {
+                    if ($tab->fields instanceof Bundle) {
                         if (isset($values[$tab->fields->id])) {
                             $tab->fields->save($term_id, $values[$tab->fields->id]);
                         }
@@ -219,7 +225,7 @@ class TermMeta extends Meta
                 return;
             }
 
-            if ($this->data instanceof \Weblitzer\CFDev\Fields\Bundle) {
+            if ($this->data instanceof Bundle) {
                 if (isset($values[$this->data->id])) {
                     $this->data->save($term_id, $values[$this->data->id]);
                 }
@@ -235,12 +241,12 @@ class TermMeta extends Meta
     }
 
     /** @return string|array<string> */
-    private function sanitizeFieldValue(mixed $raw, \Weblitzer\CFDev\Field $field): string|array
+    private function sanitizeFieldValue(mixed $raw, Field $field): string|array
     {
         if (is_array($raw)) {
             return array_map('sanitize_text_field', $raw);
         }
-        if ($field instanceof \Weblitzer\CFDev\Fields\Wysiwyg) {
+        if ($field instanceof Wysiwyg) {
             return wp_kses_post($raw);
         }
         return sanitize_text_field($raw);
@@ -302,7 +308,7 @@ class TermMeta extends Meta
                     if ($field->repeatable && $field->supports_repeatable) {
                         return esc_html(implode(', ', (array) $meta));
                     }
-                    if ($field instanceof \Weblitzer\CFDev\Fields\Image) {
+                    if ($field instanceof Image) {
                         return wp_get_attachment_image((int) $meta, [100, 100]);
                     }
                     return esc_html((string) $meta);

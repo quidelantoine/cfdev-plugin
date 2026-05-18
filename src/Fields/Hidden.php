@@ -12,14 +12,15 @@ class Hidden extends Field
     /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
-        $value = strlen((string) $value) > 0 ? $value : $this->default_value;
+        $scalar  = is_string($value) ? $value : '';
+        $content = strlen($scalar) > 0 ? $scalar : $this->default_value;
 
         return sprintf(
             '<input type="hidden" %s %s %s value="%s" %s />%s',
             $this->outputName(),
             $this->outputId(),
             $this->outputCssClass(),
-            esc_attr($value),
+            esc_attr(is_string($content) ? $content : ''),
             $this->outputDataAttributes(),
             $this->outputExplanation()
         );

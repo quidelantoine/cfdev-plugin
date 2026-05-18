@@ -60,6 +60,7 @@ class PostType extends ContentType implements HasTaxonomy
      */
     public function register(): void
     {
+        /** @phpstan-ignore argument.type */
         register_post_type($this->name, $this->buildArgs());
     }
 

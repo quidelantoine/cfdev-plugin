@@ -56,6 +56,7 @@ class TermCheckboxes extends Field
     /** @param string|array<mixed> $value */
     private function buildCheckbox(object $term, string|array $value): string
     {
+        /** @var \WP_Term $term */
         $termId    = $term->term_id;
         $termName  = $term->name;
         $inputId   = $this->id . $this->after_id . '_' . Str::uglify($termName);
@@ -81,7 +82,7 @@ class TermCheckboxes extends Field
         $isChecked = match (true) {
             is_array($value)  => in_array($termId, $value),
             $value === '-1'   => false,
-            default           => in_array($termId, $this->default_value),
+            default           => in_array($termId, (array) $this->default_value),
         };
 
         return $isChecked ? 'checked="checked"' : '';

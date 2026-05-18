@@ -30,7 +30,7 @@ class File extends Field
             $this->outputName(),
             $this->outputId(),
             $this->outputCssClass(),
-            !empty($value) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : ''
+            is_string($value) && !empty($value) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : ''
         );
     }
 
@@ -67,9 +67,10 @@ class File extends Field
     /** @param string|array<mixed> $value */
     private function buildFileLink(string|array $value): string
     {
-        $attachment = self::getAttachmentByUrl($value);
+        $url        = is_string($value) ? $value : '';
+        $attachment = self::getAttachmentByUrl($url);
         $mime       = '';
-        $name       = basename((string) $value);
+        $name       = basename($url);
 
         if (is_object($attachment)) {
             $mime = $attachment->post_mime_type;
@@ -81,7 +82,7 @@ class File extends Field
         return sprintf(
             '<span class="cfdev-mime%s"><a target="_blank" href="%s">%s<span class="cfdev-file-name">%s</span></a></span>',
             $mime_class,
-            htmlspecialchars($value, ENT_QUOTES, 'UTF-8'),
+            htmlspecialchars($url, ENT_QUOTES, 'UTF-8'),
             self::getFileSvg($mime),
             htmlspecialchars($name, ENT_QUOTES, 'UTF-8')
         );

@@ -141,14 +141,15 @@ class Field
      */
     public function outputHtml(string|array $value): string
     {
-        $value = strlen($value) > 0 ? $value : $this->default_value;
+        $scalar  = is_string($value) ? $value : '';
+        $content = strlen($scalar) > 0 ? $scalar : (is_string($this->default_value) ? $this->default_value : '');
 
         $attributes = implode(' ', array_filter([
             'type="text"',
             $this->outputName(),
             $this->outputId(),
             $this->outputCssClass(),
-            'value="' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"',
+            'value="' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . '"',
             $this->outputDataAttributes(),
         ]));
 

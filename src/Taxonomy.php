@@ -219,7 +219,9 @@ class Taxonomy extends ContentType
 
         $terms = wp_get_post_terms($post_id, $this->name, ['fields' => 'names']);
 
-        echo esc_html(implode(', ', $terms));
+        if (is_array($terms)) {
+            echo esc_html(implode(', ', $terms));
+        }
     }
 
     /**
@@ -282,7 +284,7 @@ class Taxonomy extends ContentType
         }
 
         if (isset($vars[$this->name]) && is_numeric($vars[$this->name]) && $vars[$this->name]) {
-            $term = get_term_by('id', $vars[$this->name], $this->name);
+            $term = get_term_by('id', (int) $vars[$this->name], $this->name);
             if ($term) {
             //if ($term && ! is_wp_error($term)) {
                 $vars[$this->name] = $term->slug;

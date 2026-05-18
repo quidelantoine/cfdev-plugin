@@ -41,6 +41,7 @@ class Bundle extends FieldContainer
      */
     public function output(object $post): void
     {
+        /** @var \WP_Post $post */
 //        $meta = $this->meta_type === 'user'
 //            ? get_user_meta($post->ID, $this->id, true)
 //            : get_post_meta($post->ID, $this->id, true);
@@ -96,6 +97,10 @@ class Bundle extends FieldContainer
 
     private function renderDefaultItems(object $post): void
     {
+        if (!is_array($this->default_value)) {
+            return;
+        }
+
         foreach ($this->default_value as $i => $default) {
             echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
             echo '<div class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable"></div>';

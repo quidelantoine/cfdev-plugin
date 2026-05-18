@@ -84,13 +84,17 @@ class MetaBox extends Meta
     public function addMetaBox(): void
     {
         foreach ($this->post_types as $post_type) {
+            /** @var callable(): mixed $cb */
+            $cb = $this->callback;
+            /** @var 'core'|'default'|'high'|'low' $prio */
+            $prio = $this->priority;
             add_meta_box(
                 $this->id,
                 $this->title,
-                $this->callback,
+                $cb,
                 $post_type,
                 $this->context,
-                $this->priority
+                $prio
             );
         }
     }
@@ -120,7 +124,9 @@ class MetaBox extends Meta
         }
 
         // Is the current user capable to edit this post
-        if (!current_user_can(get_post_type_object(get_post_type($post_id))->cap->edit_post, $post_id)) {
+        $post_type_slug = get_post_type($post_id);
+        $post_type_obj  = $post_type_slug ? get_post_type_object($post_type_slug) : null;
+        if (!$post_type_obj || !current_user_can($post_type_obj->cap->edit_post, $post_id)) {
             return;
         }
 

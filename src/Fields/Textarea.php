@@ -16,14 +16,15 @@ class Textarea extends Field
     /** @param string|array<mixed> $value */
     public function outputHtml(array|string $value): string
     {
-        $content = strlen($value) > 0 ? $value : $this->default_value;
+        $scalar  = is_string($value) ? $value : '';
+        $content = strlen($scalar) > 0 ? $scalar : $this->default_value;
 
         return sprintf(
             '<textarea %s %s %s>%s</textarea>%s',
             $this->outputName(),
             $this->outputId(),
             $this->outputCssClass(),
-            $content,
+            is_string($content) ? $content : '',
             $this->outputExplanation()
         );
     }

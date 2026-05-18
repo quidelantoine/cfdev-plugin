@@ -97,14 +97,14 @@ class TextTest extends CFDevTestCase
     {
         $field  = $this->makeField();
         $result = $field->saveValue('Tom & Jerry');
-        $this->assertStringContainsString('&amp;', $result);
+        $this->assertStringContainsString('&amp;', is_string($result) ? $result : '');
     }
 
     public function testSaveValueQuotesEscaped(): void
     {
         $field  = $this->makeField();
         $result = $field->saveValue('"quoted"');
-        $this->assertStringContainsString('&quot;', $result);
+        $this->assertStringContainsString('&quot;', is_string($result) ? $result : '');
     }
 
     public function testSaveValueEmptyString(): void

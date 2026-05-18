@@ -65,6 +65,7 @@ class UserMeta extends Meta
         }
 
         foreach ($this->locations as $location) {
+            /** @phpstan-ignore argument.type */
             add_action($location, $this->callback);
         }
     }

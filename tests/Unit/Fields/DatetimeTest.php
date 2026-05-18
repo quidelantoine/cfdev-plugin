@@ -159,7 +159,7 @@ class DatetimeTest extends CFDevTestCase
     {
         $timestamp = mktime(14, 30, 0, 6, 15, 2024);
         $output    = $this->makeField()->outputHtml((string) $timestamp);
-        $this->assertStringContainsString(gmdate('m/d/Y H:i', $timestamp), $output);
+        $this->assertStringContainsString(gmdate('m/d/Y H:i', (int) $timestamp), $output);
     }
 
     public function testOutputFormatsTimestampWithCustomDateAndTimeFormat(): void
@@ -170,7 +170,7 @@ class DatetimeTest extends CFDevTestCase
             'time_format' => 'H:i:s',
         ]]);
         $output = $field->outputHtml((string) $timestamp);
-        $this->assertStringContainsString(gmdate('d/m/Y H:i:s', $timestamp), $output);
+        $this->assertStringContainsString(gmdate('d/m/Y H:i:s', (int) $timestamp), $output);
     }
 
     public function testOutputUsesDefaultValueWhenEmpty(): void
@@ -217,7 +217,7 @@ class DatetimeTest extends CFDevTestCase
         $timestamp = mktime(10, 0, 0, 1, 15, 2024);
         $field     = $this->makeField();
         $result    = $this->callFormatDatetime($field, $timestamp);
-        $this->assertSame(gmdate('m/d/Y H:i', $timestamp), $result);
+        $this->assertSame(gmdate('m/d/Y H:i', (int) $timestamp), $result);
     }
 
     public function testFormatDatetimeUsesCustomFormatsWhenBothSet(): void
@@ -228,7 +228,7 @@ class DatetimeTest extends CFDevTestCase
             'time_format' => 'H:i',
         ]]);
         $result = $this->callFormatDatetime($field, $timestamp);
-        $this->assertSame(gmdate('d/m/Y H:i', $timestamp), $result);
+        $this->assertSame(gmdate('d/m/Y H:i', (int) $timestamp), $result);
     }
 
     public function testFormatDatetimeReturnsDefaultValueWhenNonNumeric(): void

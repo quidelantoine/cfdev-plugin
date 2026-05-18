@@ -26,7 +26,7 @@ class Date extends Field
     /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {
-        $formatted_value = $this->formatDateValue($value);
+        $formatted_value = $this->formatDateValue(is_string($value) ? $value : '');
 
         return sprintf(
             '<input type="text" %s %s %s value="%s" %s />%s',
@@ -42,11 +42,11 @@ class Date extends Field
     private function formatDateValue(int|string $value): string
     {
         if (empty($value) || !is_numeric($value)) {
-            return esc_attr($this->default_value);
+            return esc_attr(is_string($this->default_value) ? $this->default_value : '');
         }
 
         $format = isset($this->args['date_format']) ? $this->args['date_format'] : 'm/d/Y';
-        return esc_attr(gmdate($format, $value));
+        return esc_attr(gmdate($format, (int) $value));
     }
 
     public function validate(mixed $value): \CFDev\Validation\Validator

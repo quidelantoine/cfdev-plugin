@@ -73,7 +73,7 @@ class MultiSelect extends Field
         $isSelected = match (true) {
             is_array($value)  => in_array($slug, $value),
             $value === '-1'   => false,
-            default           => in_array($slug, $this->default_value),
+            default           => in_array($slug, (array) $this->default_value),
         };
 
         return $isSelected ? 'selected="selected"' : '';

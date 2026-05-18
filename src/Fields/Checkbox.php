@@ -41,6 +41,6 @@ class Checkbox extends Field
      */
     public function saveValue(string|array $value): string
     {
-        return empty($value) ? '-1' : $value;
+        return is_string($value) && !empty($value) ? $value : '-1';
     }
 }

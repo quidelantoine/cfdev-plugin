@@ -38,15 +38,20 @@ function get_cfdev_term_meta(int|string $term, string $taxonomy, ?string $key = 
     }
 
     if (! is_numeric($term)) {
-        $term = get_term_by('slug', $term, $taxonomy);
-        $term = $term->term_id;
+        $termObj = get_term_by('slug', $term, $taxonomy);
+        if (! $termObj) {
+            return false;
+        }
+        $term = $termObj->term_id;
     }
+
+    $termId = (int) $term;
 
     if ($key) {
-        return \CFDev\Field::decodeMetaValue(get_term_meta($term, $key, true));
+        return \CFDev\Field::decodeMetaValue(get_term_meta($termId, $key, true));
     }
 
-    $raw = get_term_meta($term);
+    $raw = get_term_meta($termId);
     if (empty($raw)) {
         return [];
     }

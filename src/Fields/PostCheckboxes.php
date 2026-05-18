@@ -55,6 +55,7 @@ class PostCheckboxes extends Field
     /** @param string|array<mixed> $value */
     private function buildCheckbox(object $post, string|array $value): string
     {
+        /** @var \WP_Post $post */
         $inputId = $this->id . $this->after_id . '_' . Str::uglify($post->post_title);
 
         $input = sprintf(
@@ -81,7 +82,7 @@ class PostCheckboxes extends Field
         $isChecked = match (true) {
             is_array($value) => in_array($id, $value),
             $value === '-1'  => false,
-            default          => in_array($id, $this->default_value),
+            default          => in_array($id, (array) $this->default_value),
         };
 
         return $isChecked ? 'checked="checked"' : '';

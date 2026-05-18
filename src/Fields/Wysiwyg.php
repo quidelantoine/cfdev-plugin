@@ -35,7 +35,7 @@ class Wysiwyg extends Field
             $this->after
         );
 
-        $content = !empty($value) ? $value : $this->default_value;
+        $content = is_string($value) && !empty($value) ? $value : (is_string($this->default_value) ? $this->default_value : '');
         $editorId = $this->pre_id . $this->id . $this->after_id;
 
         return wp_editor($content, $editorId, $this->args) . $this->outputExplanation();

@@ -103,6 +103,7 @@ abstract class Meta
     /** @param iterable<string, \CFDev\Field> $data */
     private function renderTable(iterable $data, object $object): void
     {
+        /** @var object{ID: int} $object */
         echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
 
         foreach ($data as $id_name => $field) {
@@ -149,7 +150,7 @@ abstract class Meta
         echo '</table>';
     }
 
-    private function renderField(object $field, mixed $value, object $object): void
+    private function renderField(\CFDev\Field $field, mixed $value, object $object): void
     {
         if ($field->repeatable && $field->supports_repeatable) {
             echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">';
@@ -157,11 +158,11 @@ abstract class Meta
             echo '</a>';
             echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            echo $field->output($value, $object);
+            echo $field->output($value);
             echo '</ul>';
         } else {
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            echo $field->output($value, $object);
+            echo $field->output($value);
         }
     }
 
@@ -408,7 +409,7 @@ abstract class Meta
      * This array builds the complete array with the right key => value pairs
      *
      * @param   mixed           $data
-     * @return  array<mixed>
+     * @return  array<string, \CFDev\Field>|\CFDev\Fields\Tabs|\CFDev\Fields\Accordion|\CFDev\Fields\Bundle
      *
      * @author  quidelantoine
      * @since   1.0.0
@@ -428,18 +429,22 @@ abstract class Meta
                     $tab->meta_type = $this->metaType();
 
                     if (self::isBundle($fields[0])) {
+                        /** @phpstan-ignore assign.propertyType */
                         $tab->fields = $this->build($fields[0]);
                     } else {
+                        $tabFields = [];
                         foreach ($fields as $field) {
                             $class = $this->getClassFieldByType($field['type']);
                             if (class_exists($class)) {
                                 $field = new $class($field, $this->id);
+                                /** @var \CFDev\Field $field */
                                 $field->meta_type           = $this->metaType();
 
                                 $this->fields[$field->id]   = $field;
-                                $tab->fields[$field->id]    = $field;
+                                $tabFields[$field->id]      = $field;
                             }
                         }
+                        $tab->fields = $tabFields;
                     }
 
                     $tabs->tabs[$title] = $tab;
@@ -455,6 +460,7 @@ abstract class Meta
                     $class = $this->getClassFieldByType($field['type']);
                     if (class_exists($class)) {
                         $field = new $class($field, '');
+                        /** @var \CFDev\Field $field */
                         //$field->repeatable = false; je veux le garder au cas ou
                         $field->ajax            = false;
                         $field->meta_type       = $this->metaType();
@@ -472,6 +478,7 @@ abstract class Meta
                     $class = $this->getClassFieldByType($field['type']);
                     if (class_exists($class)) {
                         $field = new $class($field, $this->id);
+                        /** @var \CFDev\Field $field */
                         $field->meta_type           = $this->metaType();
 
                         $this->fields[$field->id]   = $field;

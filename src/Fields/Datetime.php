@@ -30,7 +30,7 @@ class Datetime extends Field
         // 1. Formate la valeur si elle n'est pas vide.
         $formatted_value = !empty($value) ?
             $this->formatDatetime($value) :
-            esc_attr($this->default_value);
+            esc_attr(is_string($this->default_value) ? $this->default_value : '');
 
         // 2. Construit le HTML.
         return sprintf(
@@ -52,7 +52,7 @@ class Datetime extends Field
     {
         // 1. Vérifie que $value est un timestamp valide.
         if (!is_numeric($value) || $value <= 0) {
-            return esc_attr($this->default_value);
+            return esc_attr(is_string($this->default_value) ? $this->default_value : '');
         }
 
         // 2. Détermine le format.

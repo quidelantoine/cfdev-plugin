@@ -31,7 +31,7 @@ class Time extends Field
                 isset($this->args['time_format']) ? $this->args['time_format'] : 'H:i',
                 (int) $value
             )) :
-            esc_attr($this->default_value);
+            esc_attr(is_string($this->default_value) ? $this->default_value : '');
 
         return '<input type="text" ' .
             $this->outputName() . ' ' .

@@ -98,6 +98,11 @@ class Tab extends FieldContainer
 
     private function renderTable(object $post): void
     {
+        if (!is_array($this->fields)) {
+            return;
+        }
+
+        /** @var \WP_Post $post */
         echo '<table border="0" cellpadding="0" cellspacing="0" class="from-table cfdev-table">';
 
         foreach ($this->fields as $id => $field) {

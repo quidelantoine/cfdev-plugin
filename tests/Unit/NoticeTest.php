@@ -11,7 +11,7 @@ class NoticeTest extends CFDevTestCase
     {
         ob_start();
         $notice->render();
-        return ob_get_clean();
+        return ob_get_clean() ?: '';
     }
 
     // -------------------------------------------------------------------------

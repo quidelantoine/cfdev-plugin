@@ -37,6 +37,7 @@ class TermSelect extends Field
         $this->args['name']     = 'cfdev' . $this->pre . '[' . $this->id . ']' . $this->after . ( $this->repeatable ? '[]' : '' );
         $this->args['id']       = $this->id . $this->after_id;
         $this->args['selected'] = ( ! empty($value) ? $value : $this->default_value );
+        /** @phpstan-ignore argument.type */
         $this->dropdown         = (string) wp_dropdown_categories($this->args);
 
         $output = $this->dropdown;

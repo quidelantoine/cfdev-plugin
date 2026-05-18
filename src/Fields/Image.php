@@ -41,7 +41,7 @@ class Image extends Field
             $this->outputName(),
             $this->outputId(),
             $this->outputCssClass(),
-            esc_attr(! empty($value) ? $value : '')
+            esc_attr(is_string($value) && !empty($value) ? $value : '')
         );
     }
 
@@ -59,7 +59,7 @@ class Image extends Field
         // Uniquement si preview_size est explicitement défini dans $this->args
         if ($preview_size !== null) {
             $attributes['data-cfdev-media-preview-size'] = is_array($preview_size)
-                ? esc_attr(wp_json_encode($preview_size))
+                ? esc_attr(wp_json_encode($preview_size) ?: '')
                 : esc_attr($preview_size);
         }
 

@@ -141,7 +141,7 @@ class TimeTest extends CFDevTestCase
     {
         $timestamp = mktime(14, 30, 0); // 14:30
         $output    = $this->makeField()->outputHtml((string) $timestamp);
-        $this->assertStringContainsString(gmdate('H:i', $timestamp), $output);
+        $this->assertStringContainsString(gmdate('H:i', (int) $timestamp), $output);
     }
 
     public function testOutputFormatsTimestampWithCustomFormat(): void
@@ -149,7 +149,7 @@ class TimeTest extends CFDevTestCase
         $timestamp = mktime(9, 5, 0); // 09:05
         $field     = $this->makeField(['args' => ['time_format' => 'H:i:s']]);
         $output    = $field->outputHtml((string) $timestamp);
-        $this->assertStringContainsString(gmdate('H:i:s', $timestamp), $output);
+        $this->assertStringContainsString(gmdate('H:i:s', (int) $timestamp), $output);
     }
 
     public function testOutputUsesDefaultValueWhenEmpty(): void

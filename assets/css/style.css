@@ -6,7 +6,7 @@
 .cfdev .cfdev-ajax-save{ display: inline-block; vertical-align: middle; height: 23px; }
 
 /* Wraps */
-.cfdev .padding-wrap{ padding: 5px 0 0; }
+.cfdev .padding-wrap{ padding: 5px 1rem 0; }
 .cfdev .wp-editor-wrap{ margin-bottom: 10px; }
 .cfdev .cfdev-checkboxes-wrap{ margin-right: 10px; display: inline-block; vertical-align: middle; max-height: 100px; overflow: hidden scroll; }
 .cfdev .cfdev-checkbox-wrap{ margin-right: 10px; display: inline-block; vertical-align: middle; }

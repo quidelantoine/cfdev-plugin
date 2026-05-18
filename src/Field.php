@@ -184,7 +184,7 @@ class Field
     private function buildSortableItem(string $item, bool $showRemoveButton): string
     {
         $handle  = '<div class="cfdev-handle-sortable js-cfdev-handle-sortable"></div>';
-        $content = $this->outputHtml($item);
+        $content = '<fieldset>' . $this->outputHtml($item) . '</fieldset>';
         $remove  = $showRemoveButton
             ? '<div class="js-cfdev-remove-sortable cfdev-remove-sortable"></div>'
             : '';

@@ -7,8 +7,9 @@ use CFDev\Support\DateFormatHelper;
 
 class Date extends Field
 {
-    public bool $supports_ajax = true;
-    public bool $supports_bundle = true;
+    public bool $supports_ajax        = true;
+    public bool $supports_bundle      = true;
+    public bool $supports_repeatable  = true;
 
     /** @var array<string> */
     public array $css_classes = array( 'js-cfdev-datepicker', 'cfdev-datepicker', 'datepicker', 'cfdev-input' );

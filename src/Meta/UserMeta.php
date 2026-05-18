@@ -18,36 +18,27 @@ class UserMeta extends Meta
 {
     /** @var array<string> */
     public array $locations;
+    public int $priority;
 
     protected function metaType(): string
     {
-        return 'user'; 
+        return 'user';
     }
 
     /**
-     * Constructor for User Meta
-     *
-     * @param   string          $id
-     * @param   string|array    $title
-     * @param   string|array    $locations
-     * @param   array           $data
-     *
-     * @author  quidelantoine
-     * @since   1.0.0
-     * 
-     */
-    /**
      * @param string               $id
      * @param string|array<string> $title
-     * @param string|array<string> $locations
      * @param array<mixed>         $data
+     * @param string|array<string> $locations
+     * @param int                  $priority   Hook priority — controls display order when multiple UserMeta sections exist
      */
-    public function __construct(string $id, $title, $locations, array $data = array())
+    public function __construct(string $id, $title, array $data = [], array|string $locations = [], int $priority = 10)
     {
         parent::__construct($title);
 
-        $this->id           = $id;
-        $this->locations    = ! empty($locations) ? (array) $locations : ['show_user_profile', 'edit_user_profile'];
+        $this->id       = $id;
+        $this->priority = $priority;
+        $this->locations = ! empty($locations) ? (array) $locations : ['show_user_profile', 'edit_user_profile'];
 
         // Chack if the class, function or method exist, otherwise use custom callback
         if (WPValidator::isWpCallback($data)) {
@@ -58,6 +49,8 @@ class UserMeta extends Meta
             // Build the meta box and fields
             $this->data = $this->build($data);
 
+            $this->setupAdminColumns();
+
             add_action('personal_options_update', array( $this, 'saveUser' ));
             add_action('edit_user_profile_update', array( $this, 'saveUser' ));
             add_action('user_edit_form_tag', array( $this, 'editFormTag' ));
@@ -66,7 +59,7 @@ class UserMeta extends Meta
 
         foreach ($this->locations as $location) {
             /** @phpstan-ignore argument.type */
-            add_action($location, $this->callback);
+            add_action($location, $this->callback, $this->priority);
         }
     }
 
@@ -130,6 +123,83 @@ class UserMeta extends Meta
                 $this->save($user_id, $values);
             }
         }
+    }
+
+    // =========================================================
+    // Admin Columns
+    // =========================================================
+
+    private function setupAdminColumns(): void
+    {
+        $hasColumn = false;
+
+        foreach ($this->fields as $field) {
+            if ($field->show_admin_column) {
+                $hasColumn = true;
+                break;
+            }
+        }
+
+        if (! $hasColumn) {
+            return;
+        }
+
+        add_filter('manage_users_columns', array($this, 'addColumn'));
+        add_filter('manage_users_custom_column', array($this, 'addColumnContent'), 10, 3);
+        add_filter('manage_users_sortable_columns', array($this, 'addSortableColumn'));
+    }
+
+    /**
+     * @param  array<string, string> $columns
+     * @return array<string, string>
+     */
+    public function addColumn(array $columns): array
+    {
+        foreach ($this->fields as $id_name => $field) {
+            if ($field->show_admin_column) {
+                $columns[$id_name] = $field->label;
+            }
+        }
+
+        return $columns;
+    }
+
+    public function addColumnContent(string $value, string $column, int $user_id): string
+    {
+        foreach ($this->fields as $id_name => $field) {
+            if ($column !== $id_name) {
+                continue;
+            }
+
+            $meta = \CFDev\Field::decodeMetaValue(get_user_meta($user_id, $column, true));
+
+            if ($field->repeatable && $field->supports_repeatable) {
+                return esc_html(implode(', ', (array) $meta));
+            }
+
+            if ($field instanceof \CFDev\Fields\Image) {
+                return wp_get_attachment_image((int) $meta, [100, 100]);
+            }
+
+            return esc_html((string) $meta);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param  array<string, string> $columns
+     * @return array<string, string>
+     */
+    public function addSortableColumn(array $columns): array
+    {
+        foreach ($this->fields as $id_name => $field) {
+            if ($field->admin_column_sortable) {
+                $columns[$id_name] = $field->label;
+            }
+        }
+
+        return $columns;
     }
 
     protected function resolveObjectId(): int

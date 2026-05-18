@@ -8,25 +8,50 @@ composer require quidelantoine/cfdev
 ```
 
 # Questions 
-est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur +++, ou alors il faut aller plus loin ++
+est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur +++, ou alors il faut aller plus loin ++andler , et du js aussi ++
+=> faire des tests sur column ? et les config de cuztom
+    -> qu'est ce que je garde , Faire une passe +++ 
+```php
+$box = new Cuztom_Meta_Box( $id, $title, $post_type, array(
+
+    // Parameters
+    array(
+        'id'                    => '_data_example',
+        'type'                  => 'text',
+        'label'                 => __('Example'),
+        'description'           => __('Field description'),
+        'explanation'           => __('Field explanations'),
+        'default_value'         => 'Default',
+        'options'               => array(),
+        'args'                  => array(),
+        'repeatable'            => false,
+        'ajax'                  => false,
+        'show_admin_column'     => false,
+        'admin_column_sortable' => false,
+        'admin_column_filter'   => false,
+    ),
+
+    // Text
+    array(
+        'id'        => '_data_text_field',
+        'type'      => 'text',
+        'label'     => 'Field Label',
+    ),
+
+    ...
+
+) );
+```
 # A faire 
 
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
+-> reste eslint ??? et ci 
 
 => faire test sur les champs avec balise script , simple guillemet et double guillemet
 
-
-=> Faire un fichiers init-custom.php de base dans le plugins, mais avoir la possiblité de ecraser, (like woocommerce , ou theme enfant )
-
-= >css mieux aligner les champ ++
-=> vérifier si il marche , tous , tester les fiedls pas dans la doc ??
-=> Voir si marche aussi dans bundle tabs , et accordeon 
-    => dans term et dans user ++
-=> tester si cela marche si j'ajoute champ à woocommerce ??
+=> AJouter Weblitzer\CFDev\ dans le namespace ++
 
 -> type hint +++   return too<
-=>
-// FAire une function AddMetaBoxAccordeon, AddMetaBoxTabs, AddMetaBoxBundle
 
 -> a verifier =>  echo esc_html(implode($meta, ', '));   Meta_Box
 => Faire un champ sous titre simple pour separe les champs dans une metabox , mieux organiser
@@ -39,7 +64,12 @@ est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur 
 => Faire plugins traduction loco translate pour générer fichier .mo et .po
     allemand, espagnol, chinois 
 
-=> AJouter Weblitzer\CFDev\ dans le namespace ++ 
+Faire une page admin cfdev
+    Sous forme de tabs.
+- cache -> vider le cache 
+- liste des groupes de champs
+       lecture des hooks ???
+- reglages
 
 => dans Initializer 
 // Je suis pas sûre que cela soit necessaire ??? 
@@ -55,7 +85,7 @@ est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur 
 // FAire une function AddMetaBoxAccordeon, AddMetaBoxTabs, AddMetaBoxBundle
 //=> FAire un truc plus orienté objects ??
     // ->addField(), cx'est bien cela +++
-=> faire des tests sur column ? et les config de cuztom
+
 ## Rediger la docs
 
 => faire des docs pour les champs +++
@@ -66,7 +96,14 @@ est ce que l'on garde ajax ?? pas necessaire ??? chiant ensuite avec les erreur 
 => FAire tests de tous les champs dans un bundle , dans un accordeaon , dans tabs ??
 => meme choses sur meta dans term et user ++++
 custom-meta.dev
+=> vérifier si il marche , tous , tester les fiedls pas dans la doc ??
+=> Voir si marche aussi dans bundle tabs , et accordeon
+=> dans term et dans user ++
+=> tester si cela marche si j'ajoute champ à woocommerce ??
 # Faire une partie pour remplacer custom init via des hooks ? ou autres 
+=> Faire un fichiers init-custom.php de base dans le plugins, mais avoir la possiblité de ecraser, (like woocommerce , ou theme enfant )
+=>
+// FAire une function AddMetaBoxAccordeon, AddMetaBoxTabs, AddMetaBoxBundle
 
 # Partie recuperation de donées 
 Creer un systeme de cache pour récupérer les donnees 

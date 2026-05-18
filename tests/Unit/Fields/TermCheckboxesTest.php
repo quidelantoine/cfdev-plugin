@@ -29,7 +29,7 @@ class TermCheckboxesTest extends CFDevTestCase
     {
         Functions\when('apply_filters')->returnArg(2);
         Functions\when('sanitize_title')->alias(function (string $title): string {
-            return strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $title), '-'));
+            return strtolower(trim((string) preg_replace('/[^a-z0-9]+/i', '-', $title), '-'));
         });
         Functions\when('get_terms')->justReturn($terms);
 

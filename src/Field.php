@@ -91,7 +91,7 @@ class Field
         // Mostly name of the meta-box
         $this->parent = $parent;
         // ID is used as id to select the field, if it's not in the $field parameter, the id will be generated
-        $this->id = $field['id'] ?? $this->buildId($this->name, $parent);
+        $this->id = $field['id'] ?? $this->buildId($this->name, $parent ?? '');
         // Auto-add Required rule if field is marked required
         if ($this->required) {
             $this->rules[] = new \CFDev\Validation\Rules\Required();

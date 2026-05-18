@@ -59,7 +59,7 @@ class Initializer
         $this->container->bind(AjaxHandler::class, new AjaxHandler());
 
         // Includes
-        self::$instance->includes();
+        $this->includes();
 
         // Start services
         $this->container->get(AssetLoader::class)->register();

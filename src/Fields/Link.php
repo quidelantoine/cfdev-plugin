@@ -19,7 +19,7 @@ class Link extends Field
         $base = "cfdev{$this->pre}[{$this->id}]";
 
         return sprintf(
-            '<div class="cfdev-link-wrap">'
+            '<div class="cfdev-link-wrap" %10$s>'
                 . '<input type="url" name="%1$s[url]" value="%2$s" placeholder="https://" class="cfdev-link-url" />'
                 . '<input type="text" name="%1$s[text]" value="%3$s" placeholder="%4$s" class="cfdev-link-text" />'
                 . '<select name="%1$s[target]" class="cfdev-link-target">'
@@ -35,7 +35,8 @@ class Link extends Field
             esc_html(__('Same tab', 'cfdev')),
             $target === '_blank' ? ' selected' : '',
             esc_html(__('New tab', 'cfdev')),
-            $this->outputExplanation()
+            $this->outputExplanation(),
+            $this->outputId()
         );
     }
 

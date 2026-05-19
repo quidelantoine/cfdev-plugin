@@ -23,11 +23,12 @@ class Gallery extends Field
         }
 
         return sprintf(
-            '<div class="cfdev-gallery-wrap js-cfdev-gallery" data-field-name="%s">'
+            '<div class="cfdev-gallery-wrap js-cfdev-gallery" data-field-name="%s" %s>'
                 . '<div class="cfdev-gallery-items js-cfdev-gallery-items cfdev-sortable">%s</div>'
                 . '<input type="button" class="button js-cfdev-gallery-add" value="%s" />'
             . '</div>%s',
             esc_attr(sprintf('cfdev[%s][]', $this->id)),
+            $this->outputId(),
             $items,
             esc_attr(__('Add images', 'cfdev')),
             $this->outputExplanation()

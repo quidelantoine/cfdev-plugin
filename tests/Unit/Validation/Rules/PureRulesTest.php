@@ -12,8 +12,10 @@ use Weblitzer\CFDev\Validation\Rules\Email;
 use Weblitzer\CFDev\Validation\Rules\EndsWith;
 use Weblitzer\CFDev\Validation\Rules\ExactLength;
 use Weblitzer\CFDev\Validation\Rules\Max;
+use Weblitzer\CFDev\Validation\Rules\MaxItems;
 use Weblitzer\CFDev\Validation\Rules\MaxLength;
 use Weblitzer\CFDev\Validation\Rules\Min;
+use Weblitzer\CFDev\Validation\Rules\MinItems;
 use Weblitzer\CFDev\Validation\Rules\MinLength;
 use Weblitzer\CFDev\Validation\Rules\Numeric;
 use Weblitzer\CFDev\Validation\Rules\Positive;
@@ -354,5 +356,92 @@ class PureRulesTest extends CFDevTestCase
     {
         Functions\when('is_email')->justReturn(false);
         $this->assertFalse((new Email())->validate('not-an-email'));
+    }
+
+    // -------------------------------------------------------------------------
+    // MinItems
+    // -------------------------------------------------------------------------
+
+    public function testMinItemsValidWithEnoughItems(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertTrue((new MinItems(2))->validate([1, 2]));
+        $this->assertTrue((new MinItems(2))->validate([1, 2, 3]));
+    }
+
+    public function testMinItemsFailsWithTooFewItems(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertFalse((new MinItems(2))->validate([1]));
+        $this->assertFalse((new MinItems(2))->validate([]));
+    }
+
+    public function testMinItemsFiltersEmptyValues(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertFalse((new MinItems(2))->validate(['', null, '-1']));
+        $this->assertTrue((new MinItems(2))->validate([1, '', 2]));
+    }
+
+    public function testMinItemsZeroPassesForNonArray(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertTrue((new MinItems(0))->validate(''));
+    }
+
+    public function testMinItemsOneFailsForNonArray(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertFalse((new MinItems(1))->validate(''));
+    }
+
+    public function testMinItemsReturnsError(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        Functions\when('__')->alias(fn($s) => $s);
+        $this->assertNotEmpty((new MinItems(2))->getError());
+    }
+
+    // -------------------------------------------------------------------------
+    // MaxItems
+    // -------------------------------------------------------------------------
+
+    public function testMaxItemsValidWithFewEnoughItems(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertTrue((new MaxItems(3))->validate([1, 2]));
+        $this->assertTrue((new MaxItems(3))->validate([1, 2, 3]));
+    }
+
+    public function testMaxItemsFailsWithTooManyItems(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertFalse((new MaxItems(2))->validate([1, 2, 3]));
+    }
+
+    public function testMaxItemsFiltersEmptyValues(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertTrue((new MaxItems(2))->validate([1, '', 2, null]));
+        $this->assertFalse((new MaxItems(2))->validate([1, 2, 3, '']));
+    }
+
+    public function testMaxItemsPassesForNonArray(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertTrue((new MaxItems(3))->validate('not-an-array'));
+    }
+
+    public function testMaxItemsPassesForEmptyArray(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        $this->assertTrue((new MaxItems(3))->validate([]));
+    }
+
+    public function testMaxItemsReturnsError(): void
+    {
+        Functions\when('_n')->returnArg(2);
+        Functions\when('__')->alias(fn($s) => $s);
+        $this->assertNotEmpty((new MaxItems(3))->getError());
     }
 }

@@ -105,6 +105,14 @@ class TermMeta extends Meta
         foreach ($this->data as $id_name => $field) {
             $value = '';
 
+            if ($field instanceof \Weblitzer\CFDev\Fields\Heading) {
+                echo '<div class="cfdev cfdev-heading-row">';
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo $field->outputHtml('');
+                echo '</div>';
+                continue;
+            }
+
             if (! $field instanceof Hidden) {
                 echo '<div class="form-field cfdev">';
                     echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">' . esc_html($field->label) . '</label>';
@@ -156,6 +164,14 @@ class TermMeta extends Meta
 
         /* Loop through $data */
         foreach ($this->data as $id_name => $field) {
+            if ($field instanceof \Weblitzer\CFDev\Fields\Heading) {
+                echo '<tr class="cfdev cfdev-heading-row"><td colspan="2">';
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo $field->outputHtml('');
+                echo '</td></tr>';
+                continue;
+            }
+
             $value[$id_name] = isset($value[$id_name]) ? $value[$id_name] : '';
 
             if (! $field instanceof Hidden) {
@@ -233,6 +249,9 @@ class TermMeta extends Meta
             }
 
             foreach ($this->fields as $id_name => $field) {
+                if ($field instanceof \Weblitzer\CFDev\Fields\Heading) {
+                    continue;
+                }
                 $raw       = $values[$field->id] ?? '';
                 $sanitized = $this->sanitizeFieldValue($raw, $field);
                 update_term_meta($term_id, $field->id, $field->saveValue($sanitized));

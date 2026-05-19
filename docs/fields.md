@@ -29,6 +29,150 @@ Champ texte sur une ligne.
 
 ---
 
+### `email`
+
+Champ e-mail. Validation de format automatique côté serveur (seulement si une valeur est saisie).
+
+```php
+['id' => 'contact_email', 'type' => 'email', 'label' => 'E-mail']
+
+// Requis + validation format
+['id' => 'contact_email', 'type' => 'email', 'label' => 'E-mail', 'required' => true]
+```
+
+| | |
+|---|---|
+| Valeur en base | `string` (sanitisée par `sanitize_email()`) |
+| Validation auto | format e-mail si valeur non vide |
+| `repeatable` | ✅ |
+| `ajax` | ✅ |
+| `bundle` | ✅ |
+
+Affichage front-end :
+
+```php
+$email = get_post_meta($post_id, '_contact_email', true);
+
+// Lien cliquable — antispambot() optionnel pour brouiller les adresses contre les bots
+echo '<a href="mailto:' . antispambot($email) . '">' . antispambot($email) . '</a>';
+```
+
+---
+
+### `url`
+
+Champ URL. Validation de format automatique côté serveur (seulement si une valeur est saisie).
+
+```php
+['id' => 'website', 'type' => 'url', 'label' => 'Site web']
+```
+
+| | |
+|---|---|
+| Valeur en base | `string` (sanitisée par `esc_url_raw()`) |
+| Validation auto | format URL si valeur non vide |
+| `repeatable` | ✅ |
+| `ajax` | ✅ |
+| `bundle` | ✅ |
+
+Affichage front-end :
+
+```php
+$website = get_post_meta($post_id, '_website', true);
+
+// esc_url() obligatoire à l'affichage
+echo '<a href="' . esc_url($website) . '">' . esc_html($website) . '</a>';
+```
+
+---
+
+### `tel`
+
+Champ numéro de téléphone. Aucune validation de format (les formats varient selon les pays).
+
+```php
+['id' => 'phone', 'type' => 'tel', 'label' => 'Téléphone']
+```
+
+| | |
+|---|---|
+| Valeur en base | `string` (sanitisée par `sanitize_text_field()`) |
+| `repeatable` | ✅ |
+| `ajax` | ✅ |
+| `bundle` | ✅ |
+
+Affichage front-end :
+
+```php
+$phone = get_post_meta($post_id, '_phone', true);
+
+// Lien cliquable sur mobile
+echo '<a href="tel:' . esc_attr($phone) . '">' . esc_html($phone) . '</a>';
+```
+
+---
+
+### `range`
+
+Slider avec affichage de la valeur courante. La valeur est mise à jour en temps réel à côté du curseur.
+
+```php
+['id' => 'opacity', 'type' => 'range', 'label' => 'Opacité']
+
+// Avec contraintes
+['id' => 'opacity', 'type' => 'range', 'label' => 'Opacité (%)', 'args' => [
+    'min'  => 0,
+    'max'  => 100,
+    'step' => 5,
+], 'default_value' => '50']
+```
+
+`args` : `min` (défaut `0`), `max` (défaut `100`), `step` (défaut `1`).
+
+| | |
+|---|---|
+| Valeur en base | `string` numérique |
+| `args` | `min`, `max`, `step` |
+| `repeatable` | ✅ |
+| `ajax` | ✅ |
+| `bundle` | ✅ |
+
+---
+
+### `number`
+
+Champ numérique. Accepte entiers et décimaux. Sauvegarde la valeur sous forme de chaîne numérique.
+
+```php
+['id' => 'price', 'type' => 'number', 'label' => 'Prix']
+
+// Avec contraintes
+['id' => 'qty', 'type' => 'number', 'label' => 'Quantité', 'args' => [
+    'min'  => 0,
+    'max'  => 999,
+    'step' => 1,
+]]
+
+// Décimaux
+['id' => 'rate', 'type' => 'number', 'label' => 'Taux', 'args' => [
+    'min'  => 0.0,
+    'max'  => 1.0,
+    'step' => 0.01,
+]]
+```
+
+`args` : `min`, `max`, `step` (tous optionnels).
+
+| | |
+|---|---|
+| Valeur en base | `string` numérique, ou `''` si invalide |
+| `args` | `min`, `max`, `step` |
+| `repeatable` | ✅ |
+| `ajax` | ✅ |
+| `bundle` | ✅ |
+
+---
+
 ### `textarea`
 
 Zone de texte multi-lignes, sans éditeur riche.
@@ -489,6 +633,42 @@ Liste déroulante d'utilisateurs. Sauvegarde l'ID de l'utilisateur.
 
 ---
 
+## Organisation visuelle
+
+### `heading`
+
+Titre de séparation visuelle. **Aucune donnée n'est sauvegardée.** Utilisé pour regrouper des champs dans une MetaBox sans passer par Tabs ou Accordion.
+
+```php
+['type' => 'heading', 'label' => 'Dimensions']
+
+// Avec une description sous le titre
+['type' => 'heading', 'label' => 'Médias', 'description' => 'Visuels du produit']
+```
+
+La clé `id` est optionnelle — un identifiant unique est généré automatiquement si omis.
+
+| | |
+|---|---|
+| Valeur en base | aucune |
+| `repeatable` | ❌ |
+| `ajax` | ❌ |
+| `bundle` | ❌ |
+
+Exemple complet dans une MetaBox :
+
+```php
+->addMetaBox('details', 'Fiche produit', [
+    ['type' => 'heading', 'label' => 'Informations'],
+    ['id' => 'ref',    'type' => 'text',  'label' => 'Référence'],
+    ['id' => 'price',  'type' => 'text',  'label' => 'Prix'],
+    ['type' => 'heading', 'label' => 'Médias', 'description' => 'Visuels du produit'],
+    ['id' => 'photo',  'type' => 'image', 'label' => 'Photo principale'],
+]);
+```
+
+---
+
 ## Layouts
 
 Ces trois types ne sont pas des champs — ce sont des **conteneurs** qui organisent d'autres champs. Ils se déclarent différemment (voir leur doc dédiée).
@@ -547,6 +727,11 @@ Organise les champs en sections dépliables (même syntaxe que `tabs`).
 | Type | Valeur en base | `options` | `repeatable` | `ajax` | `bundle` |
 |---|---|---|---|---|---|
 | `text` | string | — | ✅ | ✅ | ✅ |
+| `number` | string numérique | — | ✅ | ✅ | ✅ |
+| `range` | string numérique | — | ✅ | ✅ | ✅ |
+| `email` | string | — | ✅ | ✅ | ✅ |
+| `url` | string | — | ✅ | ✅ | ✅ |
+| `tel` | string | — | ✅ | ✅ | ✅ |
 | `textarea` | string | — | ✅ | ✅ | ✅ |
 | `wysiwyg` | string (HTML) | — | ❌ | ✅ | ✅ |
 | `hidden` | string | — | ❌ | ❌ | ❌ |
@@ -568,3 +753,4 @@ Organise les champs en sections dépliables (même syntaxe que `tabs`).
 | `term_select` | ID terme | — | ✅ | ✅ | ✅ |
 | `term_checkboxes` | array d'IDs | — | ❌ | ❌ | ✅ |
 | `user_select` | ID user | — | ✅ | ✅ | ✅ |
+| `heading` | aucune | — | ❌ | ❌ | ❌ |

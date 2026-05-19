@@ -95,6 +95,19 @@
 #side-sortables .cfdev-table .cfdev-ajax-save{ clear: both; }
 #side-sortables .cfdev-table .cfdev-remove-media{ margin-left: 0; }
 
+/* Range */
+.cfdev .cfdev-range-wrap { display: flex; align-items: center; gap: 10px; }
+.cfdev .cfdev-range-wrap input[type="range"] { flex: 1; }
+.cfdev .cfdev-range-output { min-width: 36px; text-align: center; font-weight: 600; font-size: 13px; }
+
+/* Heading separator */
+.cfdev .cfdev-heading-row td,
+.cfdev.cfdev-heading-row td { padding: 16px 0 4px; }
+.cfdev .cfdev-heading,
+.cfdev.cfdev-heading-row .cfdev-heading { margin: 0; padding: 0 0 6px; border-bottom: 1px solid #dfdfdf; font-size: 13px; font-weight: 600; }
+.cfdev .cfdev-heading-description,
+.cfdev.cfdev-heading-row .cfdev-heading-description { margin: 4px 0 0; }
+
 /* Validation errors */
 .cfdev-field-error {
     color: #d63638;

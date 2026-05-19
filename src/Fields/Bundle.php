@@ -150,6 +150,14 @@ class Bundle extends FieldContainer
             return;
         }
 
+        if ($field instanceof \Weblitzer\CFDev\Fields\Heading) {
+            echo '<tr class="cfdev-heading-row"><td colspan="2">';
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $field->outputHtml('');
+            echo '</td></tr>';
+            return;
+        }
+
         $fieldErrors = $errorKey ? ErrorBag::forField($errorKey) : [];
         $hasError    = !empty($fieldErrors);
 

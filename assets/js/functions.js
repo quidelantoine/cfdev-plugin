@@ -52,8 +52,15 @@ jQuery( function( $ ) {
 		// Tabs
 		$('.js-cfdev-tabs', object).tabs();
 
-		// Slider
+		// Slider (jQuery UI legacy)
 		$( '.js-slider', object ).slider();
+
+		// Range
+		$('.js-cfdev-range', object).each(function() {
+			$(this).siblings('.js-cfdev-range-output').text($(this).val());
+		}).on('input', function() {
+			$(this).siblings('.js-cfdev-range-output').text($(this).val());
+		});
 
 		// Accordion
 		$('.js-cfdev-accordion', object).accordion({

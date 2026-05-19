@@ -106,6 +106,14 @@ class Tab extends FieldContainer
         echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
 
         foreach ($this->fields as $id => $field) {
+            if ($field instanceof \Weblitzer\CFDev\Fields\Heading) {
+                echo '<tr class="cfdev-heading-row"><td colspan="2">';
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo $field->outputHtml('');
+                echo '</td></tr>';
+                continue;
+            }
+
             $value = $this->resolveValue($post->ID, $id);
 
             if ($field instanceof \Weblitzer\CFDev\Fields\Hidden) {

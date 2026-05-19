@@ -8,19 +8,28 @@ composer require quidelantoine/cfdev
 ```
 # A faire 
 
-
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
 -> reste eslint ??? et ci 
-
--> a verifier =>  echo esc_html(implode($meta, ', '));   Meta_Box
-
 
 => change color of metabox , custom design metaBox +++
 
 => Lui demander ia , si il pense à d'autres type de champs ???
-=> Faire un champ sous titre simple pour separe les champs dans une metabox , mieux organiser
-=> ask pour autre rukles pour les champs deja present
+✅ Faire un champ sous titre simple pour separe les champs dans une metabox , mieux organiser, aucun formulaire juste un titre
+=> ask pour autre rules pour les champs deja present
 
+Haute valeur, souvent demandés
+
+✅ Number — <input type="number"> avec options min, max, step. Évident mais manquant.
+✅ Email — <input type="email"> avec validation native + côté serveur. Idem pour Url et Tel.
+✅ Range — slider avec affichage de la valeur courante.
+- Gallery — sélection multiple d'images (tableau d'IDs), dans la lignée de Image.
+- Link — groupe url + texte + target (un mini-bundle sémantique pour les liens).
+
+  ---
+Relation / entités WordPress
+
+- PostMultiSelect — version multi du PostSelect existant (comme MultiSelect pour les taxonomies).
+- UserCheckboxes — pendant de TermCheckboxes / PostCheckboxes pour les utilisateurs.
 
 => Faire plugins traduction loco translate pour générer fichier .mo et .po
     allemand, espagnol, chinois 
@@ -32,12 +41,6 @@ Faire une page admin cfdev
        lecture des hooks ???
 - reglages
 
-=> dans Initializer 
-// Je suis pas sûre que cela soit necessaire ??? 
-        $this->container->get(AjaxHandler::class)->register();
-        => a verifier et à enlever si besoin +++ 
-
-=> niveau de securité phpstan ????? 
 => minifier le code ,
     => Faire une version prod 
         = Ajouter dans la config ??? 'mode'  dev/prod

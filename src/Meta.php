@@ -107,6 +107,14 @@ abstract class Meta
         echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
 
         foreach ($data as $id_name => $field) {
+            if ($field instanceof \Weblitzer\CFDev\Fields\Heading) {
+                echo '<tr class="cfdev-heading-row"><td colspan="2">';
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo $field->outputHtml('');
+                echo '</td></tr>';
+                continue;
+            }
+
             $value = match ($this->metaType()) {
                 'user'  => get_user_meta($object->ID, $id_name, true),
                 'term'  => get_term_meta($object->ID, $id_name, true),

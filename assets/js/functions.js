@@ -77,6 +77,45 @@ jQuery( function( $ ) {
 			}
 		});
 
+		// Gallery — sortable items
+		$('.js-cfdev-gallery-items', object).each(function() {
+			if (!$(this).data('ui-sortable')) {
+				$(this).sortable({ items: '> .js-cfdev-gallery-item' });
+			}
+		});
+
+		// Gallery — add images
+		$('.js-cfdev-gallery', object).on('click', '.js-cfdev-gallery-add', function(e) {
+			e.preventDefault();
+			var wrap  = $(this).closest('.js-cfdev-gallery');
+			var items = wrap.find('.js-cfdev-gallery-items');
+			var name  = wrap.data('field-name');
+
+			var uploader = wp.media({ title: 'Select Images', multiple: true, library: { type: 'image' } });
+
+			uploader.on('select', function() {
+				uploader.state().get('selection').each(function(attachment) {
+					var a   = attachment.toJSON();
+					var url = a.sizes && a.sizes.thumbnail ? a.sizes.thumbnail.url : a.url;
+					items.append(
+						'<div class="cfdev-gallery-item js-cfdev-gallery-item">' +
+						'<input type="hidden" name="' + name + '" value="' + a.id + '" />' +
+						'<img src="' + url + '" />' +
+						'<a href="#" class="cfdev-gallery-remove js-cfdev-gallery-remove">&times;</a>' +
+						'</div>'
+					);
+				});
+			});
+
+			uploader.open();
+		});
+
+		// Gallery — remove one image
+		$('.js-cfdev-gallery', object).on('click', '.js-cfdev-gallery-remove', function(e) {
+			e.preventDefault();
+			$(this).closest('.js-cfdev-gallery-item').remove();
+		});
+
 		// Remove current attached image
 		$('.cfdev-td, .form-field', object).on( 'click', '.js-cfdev-remove-media', function()
 		{
@@ -118,6 +157,7 @@ jQuery( function( $ ) {
 	        	//Extend the wp.media object
 		        _cfdev_uploader = wp.media.frames.file_frame = wp.media({
 		            multiple: false,
+		            library: type === 'image' ? { type: 'image' } : {},
 		        });
 
 		        // Send the data to the fields

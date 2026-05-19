@@ -633,6 +633,43 @@ Liste déroulante d'utilisateurs. Sauvegarde l'ID de l'utilisateur.
 
 ---
 
+### `gallery`
+
+Galerie d'images (sélection multiple via la médiathèque). **Stocke un tableau d'IDs d'attachments.**
+
+```php
+['id' => 'product_gallery', 'type' => 'gallery', 'label' => 'Galerie produit']
+
+// Avec explication
+[
+    'id'          => 'product_gallery',
+    'type'        => 'gallery',
+    'label'       => 'Galerie produit',
+    'explanation' => 'Sélectionnez jusqu\'à 10 images.',
+]
+```
+
+| | |
+|---|---|
+| Valeur en base | array d'IDs attachments |
+| `repeatable` | ❌ |
+| `ajax` | ❌ |
+| `bundle` | ❌ |
+
+**Affichage côté front :**
+
+```php
+$ids = get_cfdev_meta($post->ID, 'product_gallery', 'my_metabox');
+
+if (is_array($ids)) {
+    foreach ($ids as $id) {
+        echo wp_get_attachment_image($id, 'medium');
+    }
+}
+```
+
+---
+
 ## Organisation visuelle
 
 ### `heading`
@@ -746,6 +783,7 @@ Organise les champs en sections dépliables (même syntaxe que `tabs`).
 | `time` | timestamp | — | ✅ | ✅ | ✅ |
 | `datetime` | timestamp | — | ✅ | ✅ | ✅ |
 | `image` | ID attachment | — | ✅ | ✅ | ✅ |
+| `gallery` | array d'IDs | — | ❌ | ❌ | ❌ |
 | `file` | URL | — | ❌ | ✅ | ✅ |
 | `color` | hex string | — | ✅ | ✅ | ✅ |
 | `post_select` | ID post | — | ✅ | ✅ | ✅ |

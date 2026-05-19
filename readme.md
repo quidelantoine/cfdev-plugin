@@ -22,7 +22,7 @@ Haute valeur, souvent demandés
 ✅ Number — <input type="number"> avec options min, max, step. Évident mais manquant.
 ✅ Email — <input type="email"> avec validation native + côté serveur. Idem pour Url et Tel.
 ✅ Range — slider avec affichage de la valeur courante.
-- Gallery — sélection multiple d'images (tableau d'IDs), dans la lignée de Image.
+✅ Gallery — sélection multiple d'images (tableau d'IDs), dans la lignée de Image.
 - Link — groupe url + texte + target (un mini-bundle sémantique pour les liens).
 
   ---
@@ -40,6 +40,8 @@ Faire une page admin cfdev
 - liste des groupes de champs
        lecture des hooks ???
 - reglages
+- -> truc pour verifier que tous les id sont unique , eviter les doublons ++
+- _text_'.$str.'_main_image'
 
 => minifier le code ,
     => Faire une version prod 

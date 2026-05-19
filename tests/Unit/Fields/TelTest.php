@@ -15,7 +15,8 @@ class TelTest extends CFDevTestCase
         Functions\when('sanitize_title')->alias(function (string $title): string {
             return strtolower(trim((string) preg_replace('/[^a-z0-9]+/i', '-', $title), '-'));
         });
-        Functions\when('wp_strip_all_tags')->alias(fn(string $v): string => strip_tags($v)); // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter
+        // phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter
+        Functions\when('wp_strip_all_tags')->alias(fn(string $v): string => strip_tags($v));
         Functions\when('sanitize_text_field')->alias(fn(string $v): string => wp_strip_all_tags($v));
 
         $defaults = ['type' => 'tel', 'name' => 'my_tel', 'label' => 'Téléphone'];

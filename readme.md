@@ -8,13 +8,19 @@ composer require quidelantoine/cfdev
 ```
 # A faire 
 
+=> tou sles chaps n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
 -> reste eslint ??? et ci 
 
 => change color of metabox , custom design metaBox +++
 
-=> ask pour autre rules pour les champs deja present
+Avant de passer aux autres types, combler les gaps unitaires les plus utiles — notamment tester validateFields() et le flux ErrorBag. C'est de la pure logique PHP, rapide à écrire, et c'est ce qui protège le mieux contre
+les régressions au quotidien. Les tests d'intégration viendront quand le plugin sera plus mature.
 
+Gaps dans les tests unitaires existants :
+- Meta::validateFields() + ErrorBag → le flux complet validation → erreur → affichage
+- Bundle::save() / Bundle::renderField() avec de vraies données
+- MetaBox::savePost(), TermMeta::saveTerm() — la boucle sauvegarde complète
 
 => Faire plugins traduction loco translate pour générer fichier .mo et .po
     allemand, espagnol, chinois 
@@ -24,8 +30,8 @@ Faire une page admin cfdev
 - cache -> vider le cache 
 - liste des groupes de champs
        lecture des hooks ???
-- reglages
-- -> truc pour verifier que tous les id sont unique , eviter les doublons ++
+- réglages
+- -> truc pour verifier que tous les id sont unique , éviter les doublons ++
 - _text_'.$str.'_main_image'
 
 => minifier le code ,

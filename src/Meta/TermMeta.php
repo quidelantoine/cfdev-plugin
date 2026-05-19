@@ -26,6 +26,7 @@ class TermMeta extends Meta
     public array $taxonomies;
     /** @var array<string> */
     public array $locations;
+    public ?int $only_if_parent = null;
 
     protected function metaType(): string
     {
@@ -70,6 +71,18 @@ class TermMeta extends Meta
             add_filter('manage_edit-' . $taxonomy . '_columns', array( $this, 'addColumn' ));
             add_filter('manage_' . $taxonomy . '_custom_column', array( $this, 'addColumnContent' ), 10, 3);
         }
+
+        \Weblitzer\CFDev\Registry::register($this);
+    }
+
+    /**
+     * Restrict this section to terms whose direct parent matches the given term ID.
+     * On the add-term form, reads the parent from $_GET['parent'] if present.
+     */
+    public function onlyIfParent(int $parent_id): static
+    {
+        $this->only_if_parent = $parent_id;
+        return $this;
     }
 
     /**
@@ -82,6 +95,14 @@ class TermMeta extends Meta
      */
     public function addFormFields(string $taxonomy): void
     {
+        if ($this->only_if_parent !== null) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            $parent = isset($_GET['parent']) ? (int) $_GET['parent'] : 0;
+            if ($parent !== $this->only_if_parent) {
+                return;
+            }
+        }
+
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
         echo '<input type="hidden" name="cfdev[__activate]" />';
 
@@ -139,6 +160,10 @@ class TermMeta extends Meta
      */
     public function editFormFields(\WP_Term $term): void
     {
+        if ($this->only_if_parent !== null && $term->parent !== $this->only_if_parent) {
+            return;
+        }
+
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
         $value = get_cfdev_term_meta($term->term_id, $term->taxonomy);
 

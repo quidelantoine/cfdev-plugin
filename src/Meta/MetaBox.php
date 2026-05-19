@@ -24,6 +24,9 @@ class MetaBox extends Meta
     /** @var array<string> */
     public array $post_types;
 
+    public ?int $only_for_id = null;
+    public ?string $only_for_template = null;
+
     protected function metaType(): string
     {
         return 'post'; 
@@ -43,7 +46,7 @@ class MetaBox extends Meta
      * @since   1.0.0
      *
      */
-    public function __construct($id, $title, string $post_type, $data = array(), $context = 'normal', $priority = 'default')
+    public function __construct($id, $title, string|array $post_type, $data = array(), $context = 'normal', $priority = 'default')
     {
         if (!empty($title)) {
             parent::__construct($title);
@@ -74,8 +77,29 @@ class MetaBox extends Meta
             }
 
             // Add the meta box
-            add_action('add_meta_boxes', array($this, 'addMetaBox'));
+            add_action('add_meta_boxes', array($this, 'addMetaBox'), 10, 2);
+
+            \Weblitzer\CFDev\Registry::register($this);
         }
+    }
+
+    /**
+     * Restrict this meta box to a specific post ID.
+     */
+    public function onlyForId(int $id): static
+    {
+        $this->only_for_id = $id;
+        return $this;
+    }
+
+    /**
+     * Restrict this meta box to pages using a specific template slug.
+     * Example: 'template-home.php'
+     */
+    public function onlyForTemplate(string $template): static
+    {
+        $this->only_for_template = $template;
+        return $this;
     }
 
     /**
@@ -84,8 +108,12 @@ class MetaBox extends Meta
      * @since   1.0.0
      *
      */
-    public function addMetaBox(): void
+    public function addMetaBox(string $screen = '', ?\WP_Post $post = null): void
     {
+        if (! $this->matchesConditions($post)) {
+            return;
+        }
+
         foreach ($this->post_types as $post_type) {
             /** @var callable(): mixed $cb */
             $cb = $this->callback;
@@ -100,6 +128,20 @@ class MetaBox extends Meta
                 $prio
             );
         }
+    }
+
+    private function matchesConditions(?\WP_Post $post): bool
+    {
+        if ($post === null) {
+            return true;
+        }
+        if ($this->only_for_id !== null && $post->ID !== $this->only_for_id) {
+            return false;
+        }
+        if ($this->only_for_template !== null && get_page_template_slug($post->ID) !== $this->only_for_template) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -123,6 +165,11 @@ class MetaBox extends Meta
 
         // Is the post from the given post type?
         if (!in_array(get_post_type($post_id), array_merge($this->post_types, array('revision')))) {
+            return;
+        }
+
+        // Respect post ID condition
+        if ($this->only_for_id !== null && $post_id !== $this->only_for_id) {
             return;
         }
 

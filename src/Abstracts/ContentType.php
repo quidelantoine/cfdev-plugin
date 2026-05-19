@@ -51,6 +51,14 @@ abstract class ContentType implements Registerable, Supportable, HasMetaBox
     public array $args = [];
 
     /**
+     * Last MetaBox registered via addMetaBox(), used for condition proxying.
+     *
+     * @since   1.0.0
+     * @var   \Weblitzer\CFDev\Meta\MetaBox|null
+     */
+    private ?\Weblitzer\CFDev\Meta\MetaBox $lastMetaBox = null;
+
+    /**
      * Custom labels override
      *
      * @since   1.0.0
@@ -87,8 +95,32 @@ abstract class ContentType implements Registerable, Supportable, HasMetaBox
      */
     public function addMetaBox(string $id, string $title, array $fields = [], string $context = 'normal', string $priority = 'default'): static
     {
-        new \Weblitzer\CFDev\Meta\MetaBox($id, $title, $this->name, $fields, $context, $priority);
+        $this->lastMetaBox = new \Weblitzer\CFDev\Meta\MetaBox($id, $title, $this->name, $fields, $context, $priority);
 
+        return $this;
+    }
+
+    /**
+     * Restrict the last registered meta box to a specific post ID.
+     * Must be called immediately after addMetaBox().
+     *
+     * @since   1.0.0
+     */
+    public function onlyForId(int $id): static
+    {
+        $this->lastMetaBox?->onlyForId($id);
+        return $this;
+    }
+
+    /**
+     * Restrict the last registered meta box to pages using a specific template.
+     * Must be called immediately after addMetaBox().
+     *
+     * @since   1.0.0
+     */
+    public function onlyForTemplate(string $template): static
+    {
+        $this->lastMetaBox?->onlyForTemplate($template);
         return $this;
     }
 

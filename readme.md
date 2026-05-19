@@ -51,11 +51,23 @@ Faire une page admin cfdev
 
 => Select user => comment prendre que certain role ???, possible d'en prendre plusieurs roles  ??
 
+=> ecrire des tests pour la partie admin 
+=> ecrire aussi la docs 
+
+=> reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
 
 // lancer un truc security vulnerabilté via ia , faire la formation ia dyma
+
+=> revoir /home/quidel/Sites/2026/test5_frankenphp/app/wp-content/plugins/cfdev-plugin/src/demo/helpers.php 
+car dans la function qui se trouve dans le theme il y avais des trucs bien +++
+
+Faire un test avec les champ repetable sur tous pour faire le tests 
 ## Rediger la docs
 
 => revoir la doc dans son ensemble, le readme de base devra etre le point d'entree de toutes la doc avec installation 
+
+=> lui demander de faire un design avec logo pour mise en avant du plugin 
+
 
 ## Test 
 

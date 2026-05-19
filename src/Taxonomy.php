@@ -28,6 +28,14 @@ class Taxonomy extends ContentType
     public array $post_type;
 
     /**
+     * Last TermMeta registered via addTermMeta(), used for condition proxying.
+     *
+     * @since   1.0.0
+     * @var   \Weblitzer\CFDev\Meta\TermMeta|null
+     */
+    private ?\Weblitzer\CFDev\Meta\TermMeta $lastTermMeta = null;
+
+    /**
      * Registers or attaches a Custom Taxonomy
      *
      * @since   1.0.0
@@ -103,8 +111,20 @@ class Taxonomy extends ContentType
      */
     public function addTermMeta(array $data = [], array $locations = ['add_form', 'edit_form']): static
     {
-        new \Weblitzer\CFDev\Meta\TermMeta($this->name, $data, $locations);
+        $this->lastTermMeta = new \Weblitzer\CFDev\Meta\TermMeta($this->name, $data, $locations);
 
+        return $this;
+    }
+
+    /**
+     * Restrict the last registered term meta to terms whose parent matches the given term ID.
+     * Must be called immediately after addTermMeta().
+     *
+     * @since   1.0.0
+     */
+    public function onlyIfParent(int $parent_id): static
+    {
+        $this->lastTermMeta?->onlyIfParent($parent_id);
         return $this;
     }
 

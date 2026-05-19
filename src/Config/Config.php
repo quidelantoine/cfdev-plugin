@@ -25,6 +25,7 @@ final class Config
         public readonly string $dir,
         public readonly string $url,
         public readonly string $src_dir,
+        public readonly bool   $demo = false,
     ) {
     }
 }

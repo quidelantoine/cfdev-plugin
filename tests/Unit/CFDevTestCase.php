@@ -26,6 +26,7 @@ abstract class CFDevTestCase extends TestCase
 
     protected function tearDown(): void
     {
+        \Weblitzer\CFDev\Registry::reset();
         Monkey\tearDown();
         parent::tearDown();
     }

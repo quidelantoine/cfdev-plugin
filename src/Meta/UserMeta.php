@@ -24,6 +24,8 @@ class UserMeta extends Meta
     /** @var array<string> */
     public array $locations;
     public int $priority;
+    /** @var array<string> */
+    public array $only_for_roles = [];
 
     protected function metaType(): string
     {
@@ -66,6 +68,20 @@ class UserMeta extends Meta
             /** @phpstan-ignore argument.type */
             add_action($location, $this->callback, $this->priority);
         }
+
+        \Weblitzer\CFDev\Registry::register($this);
+    }
+
+    /**
+     * Restrict this section to users with at least one of the given roles.
+     * Example: ->onlyForRole('administrator') or ->onlyForRole(['editor', 'author'])
+     *
+     * @param string|array<string> $roles
+     */
+    public function onlyForRole(string|array $roles): static
+    {
+        $this->only_for_roles = array_merge($this->only_for_roles, (array) $roles);
+        return $this;
     }
 
     /**
@@ -81,6 +97,13 @@ class UserMeta extends Meta
     /** @param array<mixed> $data */
     public function callback(mixed $user, $data = array()): void
     {
+        if (! empty($this->only_for_roles)) {
+            $user_roles = (array) ($user->roles ?? []);
+            if (empty(array_intersect($this->only_for_roles, $user_roles))) {
+                return;
+            }
+        }
+
         echo '<h3>' . esc_html($this->title) . '</h3>';
 
         parent::callback($user, $data);

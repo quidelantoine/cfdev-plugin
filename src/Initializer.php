@@ -52,6 +52,7 @@ class Initializer
             dir:          untrailingslashit(plugin_dir_path($this->plugin_file)),
             url:          untrailingslashit(self::resolveUrl($this->plugin_file)),
             src_dir:      untrailingslashit(plugin_dir_path($this->plugin_file)) . '/src',
+            demo:         true,
         ));
         $this->container->bind(AssetLoader::class, new AssetLoader(
             $this->container->get(Config::class)
@@ -63,6 +64,8 @@ class Initializer
 
         // Start services
         $this->container->get(AssetLoader::class)->register();
+        \Weblitzer\CFDev\Admin\AdminMenu::register();
+        (new \Weblitzer\CFDev\Cache\CacheManager())->register();
         // Je susi pas sure que cela soit necessaire ??? , et pas fonctionnelle , a virer ????
         $this->container->get(AjaxHandler::class)->register();
     }
@@ -73,6 +76,19 @@ class Initializer
 
         require_once path_join($src, 'functions/post_type_function.php');
         require_once path_join($src, 'functions/taxonomy_function.php');
+
+        if ($this->container->get(Config::class)->demo) {
+            require_once path_join($src, 'demo/demo-fields.php');
+        }
+
+        // Theme fields — load cfdev-fields.php from the active theme if present
+        // Uses after_setup_theme so get_stylesheet_directory() is reliable
+        add_action('after_setup_theme', static function (): void {
+            $file = get_stylesheet_directory() . '/cfdev-fields.php';
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        }, 20);
     }
 
     /**

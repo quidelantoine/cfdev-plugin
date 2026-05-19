@@ -633,6 +633,46 @@ Liste déroulante d'utilisateurs. Sauvegarde l'ID de l'utilisateur.
 
 ---
 
+### `link`
+
+Groupe sémantique url + texte + cible. Stocke un tableau associatif `['url', 'text', 'target']` sérialisé en JSON.
+
+```php
+['id' => 'cta', 'type' => 'link', 'label' => 'Call to action']
+
+// Avec explication
+[
+    'id'          => 'cta',
+    'type'        => 'link',
+    'label'       => 'Call to action',
+    'explanation' => 'Lien affiché en bas de la fiche.',
+]
+```
+
+| | |
+|---|---|
+| Valeur en base | array `['url' => string, 'text' => string, 'target' => '_self'\|'_blank']` |
+| `repeatable` | ❌ |
+| `ajax` | ❌ |
+| `bundle` | ✅ |
+
+**Affichage côté front :**
+
+```php
+$link = get_cfdev_meta($post->ID, 'cta', 'my_metabox');
+
+if (is_array($link) && !empty($link['url'])) {
+    printf(
+        '<a href="%s" target="%s">%s</a>',
+        esc_url($link['url']),
+        esc_attr($link['target'] ?? '_self'),
+        esc_html($link['text'] ?: $link['url'])
+    );
+}
+```
+
+---
+
 ### `gallery`
 
 Galerie d'images (sélection multiple via la médiathèque). **Stocke un tableau d'IDs d'attachments.**
@@ -782,6 +822,7 @@ Organise les champs en sections dépliables (même syntaxe que `tabs`).
 | `date` | timestamp | — | ✅ | ✅ | ✅ |
 | `time` | timestamp | — | ✅ | ✅ | ✅ |
 | `datetime` | timestamp | — | ✅ | ✅ | ✅ |
+| `link` | array url/text/target | — | ❌ | ❌ | ✅ |
 | `image` | ID attachment | — | ✅ | ✅ | ✅ |
 | `gallery` | array d'IDs | — | ❌ | ❌ | ❌ |
 | `file` | URL | — | ❌ | ✅ | ✅ |

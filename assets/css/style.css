@@ -135,6 +135,12 @@
 .cfdev .cfdev-switch input:checked + .cfdev-switch-slider:before { transform: translateX(20px); }
 .cfdev .cfdev-switch input:focus + .cfdev-switch-slider { box-shadow: 0 0 0 2px var(--wp-admin-theme-color, #2271b1); }
 
+/* Link */
+.cfdev .cfdev-link-wrap { display: flex; gap: 8px; align-items: center; }
+.cfdev .cfdev-link-url { flex: 2; min-width: 0; }
+.cfdev .cfdev-link-text { flex: 1; min-width: 0; width: auto !important; }
+.cfdev .cfdev-link-target { flex-shrink: 0; min-width: 110px; }
+
 /* Gallery */
 .cfdev .cfdev-gallery-items { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; min-height: 10px; }
 .cfdev .cfdev-gallery-item { position: relative; width: 80px; height: 80px; cursor: move; }

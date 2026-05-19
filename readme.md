@@ -23,7 +23,7 @@ Haute valeur, souvent demandés
 ✅ Email — <input type="email"> avec validation native + côté serveur. Idem pour Url et Tel.
 ✅ Range — slider avec affichage de la valeur courante.
 ✅ Gallery — sélection multiple d'images (tableau d'IDs), dans la lignée de Image.
-- Link — groupe url + texte + target (un mini-bundle sémantique pour les liens).
+✅ Link — groupe url + texte + target (un mini-bundle sémantique pour les liens).
 
   ---
 Relation / entités WordPress

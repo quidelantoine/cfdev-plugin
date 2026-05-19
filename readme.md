@@ -29,7 +29,7 @@ Haute valeur, souvent demandés
 Relation / entités WordPress
 
 - PostMultiSelect — version multi du PostSelect existant (comme MultiSelect pour les taxonomies).
-- UserCheckboxes — pendant de TermCheckboxes / PostCheckboxes pour les utilisateurs.
+✅ UserCheckboxes — pendant de TermCheckboxes / PostCheckboxes pour les utilisateurs.
 
 => Faire plugins traduction loco translate pour générer fichier .mo et .po
     allemand, espagnol, chinois 

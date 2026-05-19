@@ -633,6 +633,46 @@ Liste déroulante d'utilisateurs. Sauvegarde l'ID de l'utilisateur.
 
 ---
 
+### `user_checkboxes`
+
+Cases à cocher listant les utilisateurs. Sauvegarde un tableau d'IDs (`'-1'` si aucun coché).
+
+```php
+['id' => 'reviewers', 'type' => 'user_checkboxes', 'label' => 'Relecteurs']
+
+// Filtrer par rôle
+['id' => 'editors', 'type' => 'user_checkboxes', 'label' => 'Éditeurs', 'args' => [
+    'role'    => 'editor',
+    'orderby' => 'display_name',
+]]
+```
+
+`args` accepte tous les arguments de `get_users()`.
+
+| | |
+|---|---|
+| Valeur en base | array d'IDs (`'-1'` si vide) |
+| `repeatable` | ❌ |
+| `ajax` | ❌ |
+| `bundle` | ✅ |
+
+**Affichage côté front :**
+
+```php
+$ids = get_cfdev_meta($post->ID, 'reviewers', 'my_metabox');
+
+if (is_array($ids)) {
+    foreach ($ids as $id) {
+        $user = get_userdata((int) $id);
+        if ($user) {
+            echo esc_html($user->display_name);
+        }
+    }
+}
+```
+
+---
+
 ### `link`
 
 Groupe sémantique url + texte + cible. Stocke un tableau associatif `['url', 'text', 'target']` sérialisé en JSON.
@@ -832,4 +872,5 @@ Organise les champs en sections dépliables (même syntaxe que `tabs`).
 | `term_select` | ID terme | — | ✅ | ✅ | ✅ |
 | `term_checkboxes` | array d'IDs | — | ❌ | ❌ | ✅ |
 | `user_select` | ID user | — | ✅ | ✅ | ✅ |
+| `user_checkboxes` | array d'IDs | — | ❌ | ❌ | ✅ |
 | `heading` | aucune | — | ❌ | ❌ | ❌ |

@@ -8,25 +8,36 @@ composer require quidelantoine/cfdev
 ```
 # A faire 
 
+
+=> j'ai fais les champs , et le reste (validation, sauvegarde) , repeatable , ajax, 
+    -> il faut faire une partie object , via des hooks ou non , pour init-cuztom
+        ->ajouter des groupes de champs, via des hooks , pourquoi pour pouvoir avoir acces a toutes les declaration, pour ensuite dans l'admin, donner accés à ces donéées, faire des stas et verifier que tous les champs n'ont pas le meme nomo (id) et pour le kiff d'avoir une vue d'ensemble ( un resume de tous les champs ajouter via le code afficher dans l'admin du plugins)
+=> peut etre faire l'admin avant pour une meilleur integration ensuite
+
+admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon 
+=> a faire en dernier , compliqué +++
+
+
+
+
 => tou sles chaps n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
+
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
 -> reste eslint ??? et ci 
 
 => change color of metabox , custom design metaBox +++
 
-Avant de passer aux autres types, combler les gaps unitaires les plus utiles — notamment tester validateFields() et le flux ErrorBag. C'est de la pure logique PHP, rapide à écrire, et c'est ce qui protège le mieux contre
-les régressions au quotidien. Les tests d'intégration viendront quand le plugin sera plus mature.
 
-Gaps dans les tests unitaires existants :
-- Meta::validateFields() + ErrorBag → le flux complet validation → erreur → affichage
-- Bundle::save() / Bundle::renderField() avec de vraies données
-- MetaBox::savePost(), TermMeta::saveTerm() — la boucle sauvegarde complète
+=> je garde le champ hidden , a quoi il peut servir (cas) , pour garder la données, pas vraiment car la donées est toujours 
 
-=> Faire plugins traduction loco translate pour générer fichier .mo et .po
+
+Gaps dans les tests unitaires existants :, refaire une demande pour completer ++
+
+=> Utiliser plugins traduction loco translate pour générer fichier .mo et .po
     allemand, espagnol, chinois 
 
 Faire une page admin cfdev
-    Sous forme de tabs.
+    Sous forme de tabs. qui ressemble à ACF ???? 
 - cache -> vider le cache 
 - liste des groupes de champs
        lecture des hooks ???
@@ -37,15 +48,14 @@ Faire une page admin cfdev
 => minifier le code ,
     => Faire une version prod 
         = Ajouter dans la config ??? 'mode'  dev/prod
-=> Select user => comment prendre que certain role ???
 
-// FAire une function AddMetaBoxAccordeon, AddMetaBoxTabs, AddMetaBoxBundle
-//=> FAire un truc plus orienté objects ??
-    // ->addField(), cx'est bien cela +++
+=> Select user => comment prendre que certain role ???, possible d'en prendre plusieurs roles  ??
 
+
+// lancer un truc security vulnerabilté via ia , faire la formation ia dyma
 ## Rediger la docs
 
-=> faire des docs pour les champs +++
+=> revoir la doc dans son ensemble, le readme de base devra etre le point d'entree de toutes la doc avec installation 
 
 ## Test 
 
@@ -57,11 +67,13 @@ custom-meta.dev
 => Voir si marche aussi dans bundle tabs , et accordeon
 => dans term et dans user ++
 => tester si cela marche si j'ajoute champ à woocommerce ??
+# Déclaration des champs 
 # Faire une partie pour remplacer custom init via des hooks ? ou autres 
-=> Faire un fichiers init-custom.php de base dans le plugins, mais avoir la possiblité de ecraser, (like woocommerce , ou theme enfant )
+=> Faire un fichiers *init-custom.php* de base dans le plugins, mais avoir la possiblité de ecraser, (like woocommerce , ou theme enfant )
 =>
 // FAire une function AddMetaBoxAccordeon, AddMetaBoxTabs, AddMetaBoxBundle
-
+//=> FAire un truc plus orienté objects ??
+// ->addField(), cx'est bien cela +++
 # Partie recuperation de donées 
 Creer un systeme de cache pour récupérer les donnees 
 

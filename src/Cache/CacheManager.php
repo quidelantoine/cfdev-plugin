@@ -26,7 +26,7 @@ final class CacheManager
 {
     public const TTL = 86400; // 24 h
 
-    private CacheStore    $store;
+    private CacheStore $store;
     private CacheResolver $resolver;
 
     public function __construct()
@@ -41,9 +41,9 @@ final class CacheManager
 
     public function register(): void
     {
-        add_action('save_post',     fn(int $id)                              => $this->invalidatePost($id));
-        add_action('edited_term',   fn(int $id, int $tt, string $tax)        => $this->invalidateTerm($id, $tax), 10, 3);
-        add_action('delete_term',   fn(int $id, int $tt, string $tax)        => $this->invalidateTerm($id, $tax), 10, 3);
+        add_action('save_post', fn(int $id)                              => $this->invalidatePost($id));
+        add_action('edited_term', fn(int $id, int $tt, string $tax)        => $this->invalidateTerm($id, $tax), 10, 3);
+        add_action('delete_term', fn(int $id, int $tt, string $tax)        => $this->invalidateTerm($id, $tax), 10, 3);
         add_action('profile_update', fn(int $id)                             => $this->invalidateUser($id));
     }
 
@@ -118,7 +118,7 @@ final class CacheManager
     // Generators
     // -------------------------------------------------------------------------
 
-    /** @return array<string, array<string, mixed>> */
+    /** @return array<string, mixed> */
     private function generatePost(int $post_id): array
     {
         $post_type = get_post_type($post_id);
@@ -137,7 +137,7 @@ final class CacheManager
         return ['post_id' => $post_id, 'generated_at' => time(), 'groups' => $groups];
     }
 
-    /** @return array<string, array<string, mixed>> */
+    /** @return array<string, mixed> */
     private function generateTerm(int $term_id, string $taxonomy): array
     {
         $groups = [];
@@ -155,7 +155,7 @@ final class CacheManager
         return ['term_id' => $term_id, 'taxonomy' => $taxonomy, 'generated_at' => time(), 'groups' => $groups];
     }
 
-    /** @return array<string, array<string, mixed>> */
+    /** @return array<string, mixed> */
     private function generateUser(int $user_id): array
     {
         $groups = [];

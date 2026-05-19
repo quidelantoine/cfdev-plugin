@@ -7,7 +7,13 @@
 composer require quidelantoine/cfdev
 ```
 # A faire 
+lancer ceci et corrigé 
+=> vendor/bin/phpcs -s
+=> vendor/bin/phpstan analyse
 
+=> Faire tests unitaire pour admin et systeme de cache +++
+
+=> revoir les champs DEMO , pour etre sur que je teste tous dans tou sles sens +++
 
 => j'ai fais les champs , et le reste (validation, sauvegarde) , repeatable , ajax, 
     -> il faut faire une partie object , via des hooks ou non , pour init-cuztom
@@ -18,9 +24,7 @@ admin, effacer les données des tables , si un nom de champ a etais modifié, co
 => a faire en dernier , compliqué +++
 
 
-
-
-=> tou sles chaps n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
+=> tous les champs n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
 
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
 -> reste eslint ??? et ci 

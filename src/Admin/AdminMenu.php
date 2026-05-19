@@ -30,10 +30,10 @@ final class AdminMenu
         );
 
         // Sub-pages (first one renames the parent item in the sidebar)
-        add_submenu_page('cfdev', __('Tableau de bord', 'cfdev'), __('Tableau de bord', 'cfdev'), 'manage_options', 'cfdev',          [DashboardPage::class, 'render']);
-        add_submenu_page('cfdev', __('Champs',           'cfdev'), __('Champs',           'cfdev'), 'manage_options', 'cfdev-fields',   [FieldsPage::class,    'render']);
-        add_submenu_page('cfdev', __('Réglages',         'cfdev'), __('Réglages',         'cfdev'), 'manage_options', 'cfdev-settings', [SettingsPage::class,  'render']);
-        add_submenu_page('cfdev', __('Cache',            'cfdev'), __('Cache',            'cfdev'), 'manage_options', 'cfdev-cache',    [CachePage::class,     'render']);
-        add_submenu_page('cfdev', __('Get Data',         'cfdev'), __('Get Data',         'cfdev'), 'manage_options', 'cfdev-getdata',  [GetDataPage::class,   'render']);
+        add_submenu_page('cfdev', __('Tableau de bord', 'cfdev'), __('Tableau de bord', 'cfdev'), 'manage_options', 'cfdev', [DashboardPage::class, 'render']);
+        add_submenu_page('cfdev', __('Champs', 'cfdev'), __('Champs', 'cfdev'), 'manage_options', 'cfdev-fields', [FieldsPage::class,    'render']);
+        add_submenu_page('cfdev', __('Réglages', 'cfdev'), __('Réglages', 'cfdev'), 'manage_options', 'cfdev-settings', [SettingsPage::class,  'render']);
+        add_submenu_page('cfdev', __('Cache', 'cfdev'), __('Cache', 'cfdev'), 'manage_options', 'cfdev-cache', [CachePage::class,     'render']);
+        add_submenu_page('cfdev', __('Get Data', 'cfdev'), __('Get Data', 'cfdev'), 'manage_options', 'cfdev-getdata', [GetDataPage::class,   'render']);
     }
 }

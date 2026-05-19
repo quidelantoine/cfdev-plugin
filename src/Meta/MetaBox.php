@@ -37,7 +37,7 @@ class MetaBox extends Meta
      *
      * @param string               $id
      * @param string|array<string> $title
-     * @param string               $post_type
+     * @param string|array<string> $post_type
      * @param array<mixed>|string  $data
      * @param string               $context
      * @param string               $priority

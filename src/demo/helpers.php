@@ -1,19 +1,19 @@
 <?php
 
-/**
- * CFDev Demo — generateArrayAllField()
- *
- * Génère un tableau de champs couvrant tous les types disponibles.
- * Protégé par function_exists : si le thème actif définit déjà cette fonction,
- * la version du thème est utilisée (pas de conflit).
- *
- * @param string               $name    Préfixe des IDs de champs
- * @param string               $block   Suffixe de bloc (ex: 'intro', 'media')
- * @param array<string, array> $rules   Règles de validation par type de champ
- * @param bool                 $ajax    Active le mode ajax sur les champs
- * @return array<int, array<string, mixed>>
- */
 if (! function_exists('generateArrayAllField')) {
+    /**
+     * CFDev Demo — generateArrayAllField()
+     *
+     * Génère un tableau de champs couvrant tous les types disponibles.
+     * Protégé par function_exists : si le thème actif définit déjà cette fonction,
+     * la version du thème est utilisée (pas de conflit).
+     *
+     * @param string                     $name   Préfixe des IDs de champs
+     * @param string                     $block  Suffixe de bloc (ex: 'intro', 'media')
+     * @param array<string, array<mixed>> $rules  Règles de validation par type de champ
+     * @param bool                       $ajax   Active le mode ajax sur les champs
+     * @return array<int, array<string, mixed>>
+     */
     function generateArrayAllField(string $name, string $block, array $rules = [], bool $ajax = true): array
     {
         $str = $name . '_' . $block;

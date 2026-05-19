@@ -134,7 +134,7 @@ final class CachePage extends AdminPage
                     <?php foreach ($files as $file) :
                         $info  = self::objectInfo($file, $store, $registry);
                         $stale = $file['age'] > CacheManager::TTL;
-                    ?>
+                        ?>
                     <tr class="<?php echo $stale ? 'cfdev-stale' : ''; ?>">
                         <td>
                             <span class="cfdev-object-label"><?php echo esc_html($info['label']); ?></span>
@@ -159,7 +159,7 @@ final class CachePage extends AdminPage
                         </td>
                         <td><?php echo esc_html(self::formatSize($file['size'])); ?></td>
                         <td><?php echo esc_html(self::formatAge($file['age'])); ?></td>
-                        <td><?php echo esc_html(wp_date('d/m/Y H:i', $file['modified'])); ?></td>
+                        <td><?php echo esc_html((string) wp_date('d/m/Y H:i', $file['modified'])); ?></td>
                         <td>
                             <form method="post" style="display:inline">
                                 <?php wp_nonce_field('cfdev_cache_flush', 'cfdev_cache_nonce'); ?>

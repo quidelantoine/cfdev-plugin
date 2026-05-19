@@ -24,6 +24,7 @@ final class CacheStore
         }
     }
 
+    /** @param array<string, mixed> $data */
     public function write(string $key, array $data): void
     {
         // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents

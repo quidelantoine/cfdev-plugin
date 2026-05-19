@@ -87,12 +87,12 @@ final class FieldsPage
             <nav class="nav-tab-wrapper cfdev-tabs-nav">
 
                 <?php foreach ($by_type as $pt => $entries) : ?>
-                <?php
+                    <?php
                     $pt_obj    = get_post_type_object($pt);
                     $pt_label  = $pt_obj ? $pt_obj->labels->name : ucfirst($pt);
                     $tab_id    = 'cfdev-tab-pt-' . $pt;
                     $is_active = ($tab_id === $first_tab);
-                ?>
+                    ?>
                 <a href="#<?php echo esc_attr($tab_id); ?>"
                    class="nav-tab<?php echo $is_active ? ' nav-tab-active' : ''; ?>"
                    data-cfdev-tab>
@@ -117,7 +117,7 @@ final class FieldsPage
             </nav>
 
             <?php foreach ($by_type as $pt => $entries) : ?>
-            <?php $tab_id = 'cfdev-tab-pt-' . $pt; ?>
+                <?php $tab_id = 'cfdev-tab-pt-' . $pt; ?>
             <div id="<?php echo esc_attr($tab_id); ?>"
                  class="cfdev-tab-panel"
                  <?php echo ($tab_id !== $first_tab) ? 'hidden' : ''; ?>>
@@ -189,20 +189,20 @@ final class FieldsPage
                 ?>
 
                 <?php if (! empty($entry['bundles']) && in_array($entry['layout'], ['tabs', 'accordion'], true)) : ?>
-                <?php
+                    <?php
                 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                echo self::layoutBadge('bundle');
-                ?>
+                    echo self::layoutBadge('bundle');
+                    ?>
                 <?php endif; ?>
 
                 <?php if (! empty($other_pts)) : ?>
                 <span class="cfdev-also-in">
                     <?php esc_html_e('Aussi dans :', 'cfdev'); ?>
                     <?php foreach ($other_pts as $pt) : ?>
-                    <?php
+                        <?php
                         $pt_obj   = get_post_type_object($pt);
                         $pt_label = $pt_obj ? $pt_obj->labels->name : ucfirst($pt);
-                    ?>
+                        ?>
                     <span class="cfdev-also-in__tag"><?php echo esc_html($pt_label); ?></span>
                     <?php endforeach; ?>
                 </span>
@@ -211,10 +211,10 @@ final class FieldsPage
                 <?php if (! empty($entry['conditions'])) : ?>
                 <span class="cfdev-conditions">
                     <?php foreach ($entry['conditions'] as $key => $value) : ?>
-                    <?php
+                        <?php
                     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                    echo self::conditionBadge($key, $value);
-                    ?>
+                        echo self::conditionBadge($key, $value);
+                        ?>
                     <?php endforeach; ?>
                 </span>
                 <?php endif; ?>
@@ -232,7 +232,6 @@ final class FieldsPage
             <div class="cfdev-group-body" hidden>
 
                 <?php if (! empty($entry['sections'])) : ?>
-
                     <?php foreach ($entry['sections'] as $section) : ?>
                     <div class="cfdev-section<?php echo $entry['layout'] === 'accordion' ? ' cfdev-section--accordion' : ''; ?>">
                         <div class="cfdev-section-title">
@@ -259,7 +258,6 @@ final class FieldsPage
                     <?php endforeach; ?>
 
                 <?php else : ?>
-
                     <?php if (! empty($entry['fields'])) : ?>
                         <?php self::renderFieldsTable($entry['fields'], $dup_ids); ?>
                     <?php endif; ?>
@@ -304,7 +302,7 @@ final class FieldsPage
             </thead>
             <tbody>
                 <?php foreach ($fields as $field_id => $field) : ?>
-                <?php $is_dup = in_array($field_id, $dup_ids, true); ?>
+                    <?php $is_dup = in_array($field_id, $dup_ids, true); ?>
                 <tr<?php echo $is_dup ? ' class="cfdev-dup"' : ''; ?>>
                     <td>
                         <code><?php echo esc_html($field_id); ?></code>

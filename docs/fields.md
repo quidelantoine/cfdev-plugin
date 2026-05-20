@@ -479,9 +479,43 @@ echo wp_get_attachment_image($id, 'large');
 
 ---
 
+### `image_alt`
+
+Image avec texte alternatif personnalisé. Associe un sélecteur d'image (médiathèque) à un champ texte pour l'attribut `alt`.
+
+**Priorité de l'alt (via le cache) :**
+1. Alt saisi dans le champ → utilisé en priorité
+2. Champ alt vide → fallback sur l'alt WordPress de l'attachment (`_wp_attachment_image_alt`)
+3. Alt WordPress vide → fallback sur le titre de l'attachment
+
+```php
+['id' => 'hero', 'type' => 'image_alt', 'label' => 'Image hero']
+```
+
+Récupération en front-end :
+```php
+$data = get_post_meta($post_id, 'hero', true);
+$data = json_decode($data, true);
+
+// Avec le cache
+$data = $cache->post($post_id)['groups']['my_metabox']['hero'] ?? [];
+// $data = ['id' => 42, 'alt' => 'Mon alt', 'full' => '...', 'medium' => '...', ...]
+
+echo '<img src="' . esc_url($data['full'] ?? '') . '" alt="' . esc_attr($data['alt'] ?? '') . '" />';
+```
+
+| | |
+|---|---|
+| Valeur en base | `string` JSON `{"id": int, "alt": string}` |
+| `repeatable` | ❌ |
+| `ajax` | ❌ |
+| `bundle` | ✅ |
+
+---
+
 ### `file`
 
-Sélecteur de fichier via la médiathèque. Sauvegarde l'URL du fichier.
+Sélecteur de fichier via la médiathèque. Sauvegarde l'ID de l'attachment.
 
 ```php
 ['id' => 'brochure', 'type' => 'file', 'label' => 'Brochure PDF']
@@ -489,7 +523,7 @@ Sélecteur de fichier via la médiathèque. Sauvegarde l'URL du fichier.
 
 | | |
 |---|---|
-| Valeur en base | `string` (URL) |
+| Valeur en base | `string` (ID attachment) |
 | `repeatable` | ❌ |
 | `ajax` | ✅ |
 | `bundle` | ✅ |
@@ -864,8 +898,9 @@ Organise les champs en sections dépliables (même syntaxe que `tabs`).
 | `datetime` | timestamp | — | ✅ | ✅ | ✅ |
 | `link` | array url/text/target | — | ❌ | ❌ | ✅ |
 | `image` | ID attachment | — | ✅ | ✅ | ✅ |
+| `image_alt` | JSON `{id, alt}` | — | ❌ | ❌ | ✅ |
 | `gallery` | array d'IDs | — | ❌ | ❌ | ❌ |
-| `file` | URL | — | ❌ | ✅ | ✅ |
+| `file` | ID attachment | — | ❌ | ✅ | ✅ |
 | `color` | hex string | — | ✅ | ✅ | ✅ |
 | `post_select` | ID post | — | ✅ | ✅ | ✅ |
 | `post_checkboxes` | array d'IDs | — | ❌ | ❌ | ✅ |

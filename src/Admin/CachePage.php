@@ -91,10 +91,14 @@ final class CachePage extends AdminPage
                     <span class="cfdev-cache-option__label">
                         <?php if ($cache_on) : ?>
                             <strong><?php esc_html_e('Cache actif', 'cfdev'); ?></strong>
-                            <span class="cfdev-cache-option__hint"><?php esc_html_e('— les données sont lues et écrites depuis les fichiers .tmp', 'cfdev'); ?></span>
+                            <span class="cfdev-cache-option__hint">
+                                <?php esc_html_e('— les données sont lues et écrites depuis les fichiers .tmp', 'cfdev'); ?>
+                            </span>
                         <?php else : ?>
                             <strong><?php esc_html_e('Cache inactif', 'cfdev'); ?></strong>
-                            <span class="cfdev-cache-option__hint"><?php esc_html_e('— données toujours lues en direct depuis la base (recommandé en développement)', 'cfdev'); ?></span>
+                            <span class="cfdev-cache-option__hint">
+                                <?php esc_html_e('— données toujours lues en direct depuis la base (recommandé en développement)', 'cfdev'); ?>
+                            </span>
                         <?php endif; ?>
                     </span>
                 </form>
@@ -220,7 +224,8 @@ final class CachePage extends AdminPage
         if (str_starts_with($key, 'user_')) {
             $id   = (int) substr($key, 5);
             $user = get_userdata($id);
-            return ['object_type' => 'user', 'subtype' => __('Utilisateur', 'cfdev'), 'id' => $id, 'label' => $user ? $user->display_name : '—', 'groups' => $groups];
+            $label = $user ? $user->display_name : '—';
+            return ['object_type' => 'user', 'subtype' => __('Utilisateur', 'cfdev'), 'id' => $id, 'label' => $label, 'groups' => $groups];
         }
 
         return ['object_type' => 'autre', 'subtype' => 'autre', 'id' => 0, 'label' => $key, 'groups' => $groups];

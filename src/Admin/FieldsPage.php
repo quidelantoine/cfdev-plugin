@@ -389,17 +389,17 @@ final class FieldsPage
     margin: 20px 0 16px;
 }
 .cfdev-header__title {
-    margin: 0; font-size: 23px;
+    margin: 0; padding: 0; font-size: 23px; line-height: 1;
     display: flex; align-items: center; gap: 10px;
 }
 .cfdev-logo {
-    background: #2271b1; color: #fff;
+    background: #8dc63f; color: #fff;
     font-size: 12px; font-weight: 800;
     padding: 4px 8px; border-radius: 4px; letter-spacing: -.5px;
 }
 .cfdev-header__count {
-    font-size: 13px; color: #787c82;
-    background: #f6f7f7; border: 1px solid #c3c4c7;
+    font-size: 13px; color: #5a4e3a;
+    background: #f0e8d8; border: 1px solid #d4c4a8;
     padding: 2px 10px; border-radius: 10px;
 }
 .cfdev-header__dups {
@@ -416,9 +416,10 @@ final class FieldsPage
 .cfdev-tab-count {
     display: inline-block; background: #dcdcde;
     border-radius: 10px; font-size: 11px; font-weight: 600;
-    padding: 1px 7px; margin-left: 5px; vertical-align: middle; color: #1d2327;
+    padding: 1px 7px; margin-left: 5px; vertical-align: middle;
+    position: relative; top: -1px; color: #1d2327;
 }
-.nav-tab-active .cfdev-tab-count { background: #2271b1; color: #fff; }
+.nav-tab-active .cfdev-tab-count { background: #8dc63f; color: #fff; }
 .cfdev-tab-panel { padding-top: 10px; }
 
 .cfdev-empty {
@@ -434,7 +435,7 @@ final class FieldsPage
     transition: box-shadow .1s ease;
 }
 .cfdev-group:hover { box-shadow: 0 1px 4px rgba(0,0,0,.07); }
-.cfdev-group.is-open { border-color: #2271b1; box-shadow: 0 0 0 1px #2271b1; }
+.cfdev-group.is-open { border-color: #8dc63f; box-shadow: 0 0 0 1px #8dc63f; }
 
 .cfdev-group-header {
     display: flex; align-items: center; flex-wrap: wrap;
@@ -443,8 +444,8 @@ final class FieldsPage
     outline: none;
 }
 .cfdev-group-header:hover  { background: #f6f7f7; }
-.cfdev-group-header:focus  { box-shadow: inset 0 0 0 2px #2271b1; }
-.cfdev-group.is-open .cfdev-group-header { background: #f0f6fc; }
+.cfdev-group-header:focus  { box-shadow: inset 0 0 0 2px #8dc63f; }
+.cfdev-group.is-open .cfdev-group-header { background: #f7faf0; }
 
 .cfdev-toggle-icon {
     font-size: 9px; color: #787c82; width: 14px; flex-shrink: 0;

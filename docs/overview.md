@@ -336,9 +336,9 @@ $data = $cache->term($term->term_id, 'courses');
 $data = $cache->user(get_current_user_id());
 
 // Accès aux données
-$titre  = $data['groups']['mon_groupe']['mon_champ']        ?? '';
-$image  = $data['groups']['mon_groupe']['mon_image']        ?? [];
-$slides = $data['groups']['mon_groupe']['mon_bundle']       ?? [];
+$titre  = $data['groups']['mon_groupe']['mon_champ']  ?? '';
+$image  = $data['groups']['mon_groupe']['mon_image']  ?? [];
+$slides = $data['groups']['mon_groupe']['mon_bundle'] ?? [];
 ```
 
 ### Structure retournée par type
@@ -347,11 +347,71 @@ $slides = $data['groups']['mon_groupe']['mon_bundle']       ?? [];
 |------|--------|
 | Texte, select, etc. | `string` brute |
 | `image` | `['id', 'alt', 'full', 'medium', 'thumbnail', …]` |
+| `image_alt` | `['id', 'alt', 'full', 'medium', …]` (alt personnalisé prioritaire) |
 | `gallery` | `[['id', 'alt', 'full', …], …]` |
 | `file` | `['id', 'url', 'filename']` |
 | `link` | `['url', 'text', 'target']` |
 | `checkboxes` / `multi_select` | `['val1', 'val2', …]` |
+| `radios` | `'val'` (string) |
 | `bundle` | `[['field_a' => val, 'field_b' => val], …]` |
+
+### Performance
+
+Le cache élimine toutes les requêtes SQL pour la récupération des données de champs.
+
+| Situation | Requêtes DB | Temps estimé |
+|-----------|-------------|--------------|
+| Cache actif, fichier valide | 0 | ~1–2 ms (lecture fichier) |
+| Cache actif, après une sauvegarde | N (régénération) | ~5–30 ms (selon le nombre de champs) |
+| Cache inactif | N par champ | idem |
+
+**Coût de la régénération :** lors du premier accès après une sauvegarde, CFDev relit tous les meta du post, résout les images (URL par taille), décode les bundles, et écrit le fichier. Ce coût est **unique et transparent** : la requête suivante relit le fichier.
+
+**Expiration automatique (TTL 24 h) :** même sans sauvegarde, un fichier de plus de 24 h est considéré périmé et régénéré à la prochaine requête. Utile pour les données dont la résolution peut évoluer (URLs signées, taxonomies modifiées en dehors de WordPress, etc.).
+
+### Invalidation manuelle
+
+L'invalidation automatique couvre les cas standards (save_post, edited_term, profile_update). Pour les cas hors WordPress (import en masse, modification directe en DB, script de migration) :
+
+```php
+$cache = new \Weblitzer\CFDev\Cache\CacheManager();
+
+// Invalider un post
+$cache->invalidatePost(42);
+
+// Invalider un terme
+$cache->invalidateTerm(7, 'category');
+
+// Invalider un utilisateur
+$cache->invalidateUser(1);
+
+// Vider tout le cache (ex: après un import)
+$nb = $cache->invalidateAll(); // retourne le nombre de fichiers supprimés
+```
+
+**Forcer la régénération immédiate** (invalide + relit en une seule passe) :
+
+```php
+$data = $cache->post(42, force: true);
+```
+
+### Sécurité
+
+Les fichiers `.tmp` sont stockés dans `wp-content/uploads/cfdev-cache/`.
+
+**Protection HTTP automatique :** à la création du répertoire, CFDev génère un `.htaccess` qui bloque l'accès direct au répertoire (Apache / LiteSpeed). Les données ne sont jamais exposées via HTTP.
+
+**Sur Nginx** : le `.htaccess` n'est pas lu. Ajoutez cette règle dans votre configuration serveur :
+
+```nginx
+location ~* /wp-content/uploads/cfdev-cache/ {
+    deny all;
+}
+```
+
+**Données sensibles :** le cache contient l'ensemble des valeurs de champs en JSON non chiffré. Si des champs stockent des données personnelles ou confidentielles, assurez-vous que :
+- les permissions du répertoire uploads sont correctes (`755` répertoires, `644` fichiers)
+- l'accès SSH/FTP au serveur est restreint
 
 ---
 

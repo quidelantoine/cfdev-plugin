@@ -25,12 +25,13 @@ class File extends Field
     /** @param string|array<mixed> $value */
     private function buildHiddenInput(string|array $value): string
     {
+        $id  = is_numeric($value) ? (int) $value : 0;
         return sprintf(
             '<input type="hidden" %s %s %s value="%s" />',
             $this->outputName(),
             $this->outputId(),
             $this->outputCssClass(),
-            is_string($value) && !empty($value) ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : ''
+            $id > 0 ? $id : ''
         );
     }
 
@@ -67,16 +68,23 @@ class File extends Field
     /** @param string|array<mixed> $value */
     private function buildFileLink(string|array $value): string
     {
-        $url        = is_string($value) ? $value : '';
-        $attachment = self::getAttachmentByUrl($url);
-        $mime       = '';
-        $name       = basename($url);
-
-        if (is_object($attachment)) {
-            $mime = $attachment->post_mime_type;
-            $name = $attachment->post_title;
+        if (is_numeric($value) && (int) $value > 0) {
+            // New format: attachment ID.
+            $id   = (int) $value;
+            $url  = (string) wp_get_attachment_url($id);
+            $post = get_post($id);
+        } else {
+            // Legacy: URL stored directly.
+            $url  = is_string($value) ? $value : '';
+            $post = self::getAttachmentByUrl($url);
         }
 
+        if ($url === '') {
+            return '';
+        }
+
+        $mime       = $post ? $post->post_mime_type : '';
+        $name       = $post ? $post->post_title : basename($url);
         $mime_class = $mime ? ' mime-' . str_replace('/', '_', $mime) : '';
 
         return sprintf(

@@ -6,14 +6,23 @@
 ```bash
 composer require quidelantoine/cfdev
 ```
-# A faire 
-lancer ceci et corrigé 
-=> vendor/bin/phpcs -s
-=> vendor/bin/phpstan analyse
 
+# test 
+```bash
+vendor/bin/phpcs -s
+vendor/bin/phpstan analyse
+vendor/bin/phpunit
+```
+
+# A faire 
+=> Voir la docs dans le back-office, grace au fichier md 
+
+
+=> FAire une pai aussi pour recuperer les donées , l'activer ou non dans l'administration 
+=> Pour les headless+++ a ajouter a la doc et à l'overview 
 => Faire tests unitaire pour admin et systeme de cache +++
 
-=> revoir les champs DEMO , pour etre sur que je teste tous dans tou sles sens +++
+=> revoir les champs DEMO , pour etre sur que je teste tous dans tous les sens +++
 
 => j'ai fais les champs , et le reste (validation, sauvegarde) , repeatable , ajax, 
     -> il faut faire une partie object , via des hooks ou non , pour init-cuztom
@@ -22,7 +31,7 @@ lancer ceci et corrigé
 
 admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon 
 => a faire en dernier , compliqué +++
-
+=> faire un test avec les champs de type repetable
 
 => tous les champs n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
 

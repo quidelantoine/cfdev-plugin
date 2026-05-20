@@ -12,8 +12,8 @@
 .cfdev .cfdev-checkbox-wrap{ margin-right: 10px; display: inline-block; vertical-align: middle; }
 
 /* Tabs */
-.cfdev .cfdev-tabs .ui-state-active{ border-color: #ccc; background: #fff; }
-.cfdev .cfdev-tabs .ui-state-active a{ color: #d54e21; }
+.cfdev .cfdev-tabs .ui-state-active{ border-color: #8dc63f; background: #fff; }
+.cfdev .cfdev-tabs .ui-state-active a{ color: #8dc63f; }
 .cfdev .cfdev-tabs .ui-tabs-panel { padding: 12px 1rem 0; }
 .cfdev .cfdev-tabs .cfdev-table tr + tr td,
 .cfdev .cfdev-tabs .cfdev-table tr + tr th { padding-top: 10px; }
@@ -104,7 +104,7 @@
 .cfdev .cfdev-heading-row td,
 .cfdev.cfdev-heading-row td { padding: 16px 0 4px; }
 .cfdev .cfdev-heading,
-.cfdev.cfdev-heading-row .cfdev-heading { margin: 0; padding: 0 0 6px; border-bottom: 1px solid #dfdfdf; font-size: 13px; font-weight: 600; }
+.cfdev.cfdev-heading-row .cfdev-heading { margin: 0; padding: 0 0 6px; border-bottom: 2px solid #8dc63f; font-size: 13px; font-weight: 600; color: #333333; }
 .cfdev .cfdev-heading-description,
 .cfdev.cfdev-heading-row .cfdev-heading-description { margin: 4px 0 0; }
 
@@ -150,9 +150,20 @@
 
 /* Perso */
 
-.wp-core-ui .button-secondary.cfdev-button,
-.wp-core-ui .button.js-cfdev-upload {
-    background-color: green;
-    color: #fff;
+.wp-core-ui .button.js-cfdev-upload,
+.wp-core-ui .button.js-cfdev-gallery-add,
+.wp-core-ui .button-secondary.cfdev-button {
+    background: #8dc63f !important;
+    border-color: #6fa32e !important;
+    color: #fff !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+.wp-core-ui .button.js-cfdev-upload:hover,
+.wp-core-ui .button.js-cfdev-gallery-add:hover,
+.wp-core-ui .button-secondary.cfdev-button:hover {
+    background: #7ab234 !important;
+    border-color: #5a8a22 !important;
+    color: #fff !important;
 }
 

@@ -27,14 +27,19 @@ if (! function_exists('generateArrayAllField')) {
         };
 
         return [
-            $field(['id' => '_text_' . $str . '_text',           'type' => 'text',            'label' => 'Text_' . $name,            'explanation' => 'Champ texte court',  'required' => true]),
-            $field(['id' => '_text_' . $str . '_textarea',       'type' => 'textarea',        'label' => 'Textarea_' . $name,        'explanation' => 'Texte long']),
+            $field(['id' => '_text_' . $str . '_text', 'type' => 'text', 'label' => 'Text_' . $name,
+                    'explanation' => 'Champ texte court', 'required' => true]),
+            $field(['id' => '_text_' . $str . '_textarea', 'type' => 'textarea',
+                    'label' => 'Textarea_' . $name, 'explanation' => 'Texte long']),
 
             $field(['type' => 'heading', 'label' => 'Dimensions']),
 
-            $field(['id' => '_text_' . $str . '_qty',            'type' => 'number',          'label' => 'Quantité',   'args' => ['min' => 0,   'max' => 999,  'step' => 1]]),
-            $field(['id' => '_text_' . $str . '_rate',           'type' => 'number',          'label' => 'Taux',       'args' => ['min' => 0.0, 'max' => 1.0,  'step' => 0.01]]),
-            $field(['id' => '_text_' . $str . '_range',          'type' => 'range',           'label' => 'Opacité (%)', 'args' => ['min' => 0, 'max' => 100, 'step' => 10], 'default_value' => '100']),
+            $field(['id' => '_text_' . $str . '_qty',   'type' => 'number', 'label' => 'Quantité',
+                    'args' => ['min' => 0, 'max' => 999, 'step' => 1]]),
+            $field(['id' => '_text_' . $str . '_rate',  'type' => 'number', 'label' => 'Taux',
+                    'args' => ['min' => 0.0, 'max' => 1.0, 'step' => 0.01]]),
+            $field(['id' => '_text_' . $str . '_range', 'type' => 'range',  'label' => 'Opacité (%)',
+                    'args' => ['min' => 0, 'max' => 100, 'step' => 10], 'default_value' => '100']),
 
             $field(['id' => '_text_' . $str . '_email',          'type' => 'email',           'label' => 'E-mail']),
             $field(['id' => '_text_' . $str . '_website',        'type' => 'url',             'label' => 'Site web']),
@@ -43,6 +48,9 @@ if (! function_exists('generateArrayAllField')) {
             $field(['type' => 'heading', 'label' => 'Médias']),
 
             $field(['id' => '_img_'  . $str . '_main_image',     'type' => 'image',           'label' => 'Image principale']),
+            $field(['id' => '_img_'  . $str . '_book_cover', 'type' => 'image_alt', 'label' => 'Couverture']),
+
+
             $field(['id' => '_text_' . $str . '_gallery',        'type' => 'gallery',         'label' => 'Galerie', 'explanation' => 'Images supplémentaires']),
             $field(['id' => '_text_' . $str . '_file',           'type' => 'file',            'label' => 'Fichier']),
             $field(['id' => '_text_' . $str . '_cta',            'type' => 'link',            'label' => 'Bouton principal']),
@@ -52,11 +60,16 @@ if (! function_exists('generateArrayAllField')) {
 
             $field(['id' => '_text_' . $str . '_toggle',         'type' => 'toggle',          'label' => 'Toggle', 'default_value' => '']),
             $field(['id' => '_text_' . $str . '_checkbox',       'type' => 'checkbox',        'label' => 'Checkbox_' . $name]),
-            $field(['id' => '_text_' . $str . '_checkboxes',     'type' => 'checkboxes',      'label' => 'Checkboxes_' . $name, 'options' => ['v1' => 'Valeur 1', 'v2' => 'Valeur 2', 'v3' => 'Valeur 3']]),
-            $field(['id' => '_text_' . $str . '_radios',         'type' => 'radios',          'label' => 'Radios_' . $name,    'options' => ['v1' => 'Valeur 1', 'v2' => 'Valeur 2', 'v3' => 'Valeur 3']]),
+            $field(['id' => '_text_' . $str . '_checkboxes', 'type' => 'checkboxes', 'label' => 'Checkboxes_' . $name,
+                    'options' => ['v1' => 'Valeur 1', 'v2' => 'Valeur 2', 'v3' => 'Valeur 3']]),
+            $field(['id' => '_text_' . $str . '_radios', 'type' => 'radios', 'label' => 'Radios_' . $name,
+                    'options' => ['v1' => 'Valeur 1', 'v2' => 'Valeur 2', 'v3' => 'Valeur 3']]),
             $field(['id' => '_text_' . $str . '_yesno',          'type' => 'yesno',           'label' => 'Yesno_' . $name]),
-            $field(['id' => '_text_' . $str . '_select',         'type' => 'select',          'label' => 'Select_' . $name,    'options' => ['v1' => 'Valeur 1', 'v2' => 'Valeur 2', 'v3' => 'Valeur 3'], 'args' => ['show_option_none' => '-- Choisir --']]),
-            $field(['id' => '_text_' . $str . '_multiselect',    'type' => 'multi_select',    'label' => 'MultiSelect_' . $name, 'options' => ['v1' => 'Valeur 1', 'v2' => 'Valeur 2', 'v3' => 'Valeur 3']]),
+            $field(['id' => '_text_' . $str . '_select', 'type' => 'select', 'label' => 'Select_' . $name,
+                    'options' => ['v1' => 'Valeur 1', 'v2' => 'Valeur 2', 'v3' => 'Valeur 3'],
+                    'args'    => ['show_option_none' => '-- Choisir --']]),
+            $field(['id' => '_text_' . $str . '_multiselect', 'type' => 'multi_select', 'label' => 'MultiSelect_' . $name,
+                    'options' => ['v1' => 'Valeur 1', 'v2' => 'Valeur 2', 'v3' => 'Valeur 3']]),
 
             $field(['type' => 'heading', 'label' => 'Contenu riche']),
 
@@ -71,12 +84,18 @@ if (! function_exists('generateArrayAllField')) {
 
             $field(['type' => 'heading', 'label' => 'Relations']),
 
-            $field(['id' => '_post_' . $str . '_checkboxespost', 'type' => 'post_checkboxes', 'label' => 'Posts (cases)',    'args' => ['post_type' => 'post']]),
-            $field(['id' => '_post_' . $str . '_selectpost',     'type' => 'post_select',     'label' => 'Post (select)',    'args' => ['post_type' => 'post', 'show_option_none' => '-- Choisir --']]),
-            $field(['id' => '_term_' . $str . '_checkboxesterm', 'type' => 'term_checkboxes', 'label' => 'Termes (cases)',   'args' => ['taxonomy' => 'category']]),
-            $field(['id' => '_term_' . $str . '_selectterm',     'type' => 'term_select',     'label' => 'Terme (select)',   'args' => ['taxonomy' => 'category', 'show_option_none' => '-- Choisir --']]),
-            $field(['id' => '_user_' . $str . '_selectuser',     'type' => 'user_select',     'label' => 'Utilisateur',     'args' => ['show_option_none' => '-- Choisir --']]),
-            $field(['id' => '_user_' . $str . '_reviewers',      'type' => 'user_checkboxes', 'label' => 'Relecteurs',      'args' => ['role' => 'administrator', 'orderby' => 'display_name']]),
+            $field(['id' => '_post_' . $str . '_checkboxespost', 'type' => 'post_checkboxes',
+                    'label' => 'Posts (cases)', 'args' => ['post_type' => 'post']]),
+            $field(['id' => '_post_' . $str . '_selectpost', 'type' => 'post_select', 'label' => 'Post (select)',
+                    'args' => ['post_type' => 'post', 'show_option_none' => '-- Choisir --']]),
+            $field(['id' => '_term_' . $str . '_checkboxesterm', 'type' => 'term_checkboxes',
+                    'label' => 'Termes (cases)', 'args' => ['taxonomy' => 'category']]),
+            $field(['id' => '_term_' . $str . '_selectterm', 'type' => 'term_select', 'label' => 'Terme (select)',
+                    'args' => ['taxonomy' => 'category', 'show_option_none' => '-- Choisir --']]),
+            $field(['id' => '_user_' . $str . '_selectuser', 'type' => 'user_select', 'label' => 'Utilisateur',
+                    'args' => ['show_option_none' => '-- Choisir --']]),
+            $field(['id' => '_user_' . $str . '_reviewers', 'type' => 'user_checkboxes', 'label' => 'Relecteurs',
+                    'args' => ['role' => 'administrator', 'orderby' => 'display_name']]),
         ];
     }
 }

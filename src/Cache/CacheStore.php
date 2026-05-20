@@ -22,6 +22,19 @@ final class CacheStore
         if (! is_dir($this->dir)) {
             wp_mkdir_p($this->dir);
         }
+
+        if (! file_exists($this->dir . '.htaccess')) {
+            $this->writeHtaccess();
+        }
+    }
+
+    private function writeHtaccess(): void
+    {
+        // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+        file_put_contents(
+            $this->dir . '.htaccess',
+            "# CFDev cache — deny direct HTTP access\n<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n    Order deny,allow\n    Deny from all\n</IfModule>\n"
+        );
     }
 
     /** @param array<string, mixed> $data */

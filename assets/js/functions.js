@@ -185,7 +185,7 @@ jQuery( function( $ ) {
 					else
 					{
 						preview.html('<span class="cfdev-mime"><a href="' + attachment.url + '" target="_blank">' + cfdevFileSvg(attachment.mime) + '<span class="cfdev-file-name">' + attachment.title + '</span></a></span>' );
-						hidden.val( attachment.url );
+						hidden.val( attachment.id );
 					}
 	        	});
 

@@ -85,13 +85,14 @@ class FileTest extends CFDevTestCase
 
     public function testOutputHiddenInputContainsValue(): void
     {
-        $this->mockAttachment(5, (object)[
+        Functions\when('wp_get_attachment_url')->justReturn('https://example.com/doc.pdf');
+        Functions\when('get_post')->justReturn((object)[
             'post_title'     => 'My Doc',
             'post_mime_type' => 'application/pdf',
         ]);
 
-        $output = $this->makeField()->outputHtml('https://example.com/doc.pdf');
-        $this->assertStringContainsString('value="https://example.com/doc.pdf"', $output);
+        $output = $this->makeField()->outputHtml('5');
+        $this->assertStringContainsString('value="5"', $output);
     }
 
     public function testOutputHiddenInputEmptyWhenNoValue(): void

@@ -60,17 +60,17 @@ abstract class AdminPage
     margin: 20px 0 20px;
 }
 .cfdev-header__title {
-    margin: 0; font-size: 23px;
+    margin: 0; padding: 0; font-size: 23px; line-height: 1;
     display: flex; align-items: center; gap: 10px;
 }
 .cfdev-logo {
-    background: #2271b1; color: #fff;
+    background: #8dc63f; color: #fff;
     font-size: 12px; font-weight: 800;
     padding: 4px 8px; border-radius: 4px; letter-spacing: -.5px;
 }
 .cfdev-header__sub {
-    font-size: 13px; color: #787c82;
-    background: #f6f7f7; border: 1px solid #c3c4c7;
+    font-size: 13px; color: #5a4e3a;
+    background: #f0e8d8; border: 1px solid #d4c4a8;
     padding: 2px 10px; border-radius: 10px;
 }
 

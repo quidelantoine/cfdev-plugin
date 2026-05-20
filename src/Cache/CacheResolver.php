@@ -33,12 +33,14 @@ final class CacheResolver
 
         return match ($type) {
             'image'                         => $this->image($raw),
+            'image_alt'                     => $this->imageAlt($raw),
             'gallery'                       => $this->gallery($raw),
             'file'                          => $this->file($raw),
             'link'                          => $this->link($raw),
             'checkboxes', 'multi_select',
             'post_checkboxes', 'term_checkboxes',
             'user_checkboxes'               => $this->multiValue($raw),
+            'radios'                        => $this->singleValue($raw),
             default                         => $raw,
         };
     }
@@ -99,6 +101,29 @@ final class CacheResolver
         return $result;
     }
 
+    /** @return array<string, mixed> */
+    private function imageAlt(mixed $raw): array
+    {
+        $data = is_array($raw) ? $raw : [];
+        if (empty($data) && is_string($raw) && $raw !== '') {
+            $decoded = json_decode($raw, true);
+            $data    = is_array($decoded) ? $decoded : [];
+        }
+
+        $id = (int) ($data['id'] ?? 0);
+        if ($id <= 0) {
+            return [];
+        }
+
+        $result     = $this->image($id);
+        $custom_alt = trim((string) ($data['alt'] ?? ''));
+        if ($custom_alt !== '') {
+            $result['alt'] = $custom_alt;
+        }
+
+        return $result;
+    }
+
     /** @return array<int, array<string, mixed>> */
     private function gallery(mixed $raw): array
     {
@@ -112,13 +137,22 @@ final class CacheResolver
     /** @return array<string, mixed> */
     private function file(mixed $raw): array
     {
-        $id = (int) $raw;
+        // New format: attachment ID stored as numeric string.
+        $id = is_numeric($raw) ? (int) $raw : 0;
+
+        // Legacy fallback: URL was stored directly (data before this change).
+        if ($id <= 0 && is_string($raw) && $raw !== '') {
+            // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.attachment_url_to_postid_attachment_url_to_postid
+            $id = attachment_url_to_postid($raw);
+        }
+
         if ($id <= 0) {
             return [];
         }
+
         return [
             'id'       => $id,
-            'url'      => wp_get_attachment_url($id),
+            'url'      => (string) wp_get_attachment_url($id),
             'filename' => basename((string) get_attached_file($id)),
         ];
     }
@@ -137,6 +171,20 @@ final class CacheResolver
     private function multiValue(mixed $raw): array
     {
         return is_array($raw) ? array_values($raw) : $this->toArray($raw);
+    }
+
+    private function singleValue(mixed $raw): string
+    {
+        if (is_array($raw)) {
+            return (string) ($raw[0] ?? '');
+        }
+        if (is_string($raw) && $raw !== '') {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) {
+                return (string) ($decoded[0] ?? '');
+            }
+        }
+        return (string) $raw;
     }
 
     // -------------------------------------------------------------------------

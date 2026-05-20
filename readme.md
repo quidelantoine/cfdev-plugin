@@ -1,10 +1,19 @@
 # Pour CFDev : "CFDev – Code-First Custom Meta Fields For Wordpress" Custom Meta For Dev
 
+# En cours
 
+=> et le js dans le fichier function.js ?? c'est pas mieux
+=> lancer les tests avant commit 
+- => commit 
+
+=> creation de l'api 
+=> POur api, donner accés au element que si il on la metabox d'aatcher dans le registry
+=> erire les test unitaire directe
+=> ecrire la doc ,
 # installation 
 
 ```bash
-composer require quidelantoine/cfdev
+composer require quidelantoine/cfdev # c'est le projet
 ```
 
 # test 
@@ -15,12 +24,15 @@ vendor/bin/phpunit
 ```
 
 # A faire 
+tou sle stexte dans des __(''); devrais etre en anglais dans le code , je ferais un mo po pour les frenchy ensuite
 
+=> Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien
 
 => FAire une API aussi pour recuperer les donées , l'activer ou non dans l'administration
 => Pour les headless+++ a ajouter a la doc et à l'overview 
 
-
+=> dans l'admin partie champ, il faudrais pouvoir afficher le resulats d'un print_r des données de ce metabox par exemple , ceci à la demande dans une modale, evite de le faire dans le front 
+=> ok et les data du print r en mode profiler de symfony, avec onglet s'ouvre qui intelegement pour une lecture facilité. peux s'appuyer sur le cache aussi ++
 
 => revoir les champs DEMO , pour etre sur que je teste tous dans tous les sens +++
 -> A terminer +++ 
@@ -30,8 +42,7 @@ vendor/bin/phpunit
         ->ajouter des groupes de champs, via des hooks , pourquoi pour pouvoir avoir acces a toutes les declaration, pour ensuite dans l'admin, donner accés à ces donéées, faire des stas et verifier que tous les champs n'ont pas le meme nomo (id) et pour le kiff d'avoir une vue d'ensemble ( un resume de tous les champs ajouter via le code afficher dans l'admin du plugins)
 => peut etre faire l'admin avant pour une meilleur integration ensuite
 
-admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon 
-=> a faire en dernier , compliqué +++
+
 => faire un test avec les champs de type repetable
 
 => tous les champs n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
@@ -68,6 +79,9 @@ Faire une page admin cfdev
 => ecrire des tests pour la partie admin 
 => ecrire aussi la docs 
 
+=> variable css sur style.css => comment améliiorer le css, est ok pour le responsive ?? 
+est utile d'utiliser vite.js pour gerer le css et js le prefixe css , le js valide partout , , on garde jquery ? 
+
 => reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
 
 // lancer un truc security vulnerabilté via ia , faire la formation ia dyma
@@ -75,18 +89,15 @@ Faire une page admin cfdev
 => revoir /home/quidel/Sites/2026/test5_frankenphp/app/wp-content/plugins/cfdev-plugin/src/demo/helpers.php 
 car dans la function qui se trouve dans le theme il y avais des trucs bien +++
 
-Faire un test avec les champ repetable sur tous pour faire le tests 
+
 ## Rediger la docs
-
-=> revoir la doc dans son ensemble, le readme de base devra etre le point d'entree de toutes la doc avec installation 
-
-=> lui demander de faire un design avec logo pour mise en avant du plugin 
-
+=> revoir la doc dans son ensemble, le readme de base devra etre le point d'entree de toutes la doc avec installation
+=> lui demander de faire un design avec logo pour mise en avant du plugin
 => Voir la docs dans le back-office, grace au fichier md
 => faire une doc en francais et une en anglais, comment bien gerer ceci
 => comment gerer cela avec md dans depot et aussi avec le md sur l'admin du site faire une partie documentation
 ## Test 
-
+=> Faire un test avec les champ repetable sur tous pour faire le tests
 => test bundle dans term et user ????  et accordeon et tabs ???? et validation
 => FAire tests de tous les champs dans un bundle , dans un accordeaon , dans tabs ??
 => meme choses sur meta dans term et user ++++
@@ -97,25 +108,11 @@ custom-meta.dev
 => tester si cela marche si j'ajoute champ à woocommerce ??
 
 X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html sinon on va devoir changer souvent
-# Déclaration des champs 
-# Faire une partie pour remplacer custom init via des hooks ? ou autres 
-=> Faire un fichiers *init-custom.php* de base dans le plugins, mais avoir la possiblité de ecraser, (like woocommerce , ou theme enfant )
-=>
-// FAire une function AddMetaBoxAccordeon, AddMetaBoxTabs, AddMetaBoxBundle
-//=> FAire un truc plus orienté objects ??
-// ->addField(), cx'est bien cela +++
-# Partie recuperation de donées 
-Creer un systeme de cache pour récupérer les donnees 
-
-=> Pour les files
-=> la donner stocker et le chemin du fichier mais si on est en local , cela garde localhost, et donc quand on passe en prod sur un serveur il faut refaire une passe sur les champ file pour mettre à jour +++
 
 
-=> Faire des function pour recuperer les données => retrieve data
-=> ajouter function plus cool plus les bundles , etc ... et les select serialize
-=> serialize to json ?? posiible en base ded onées , cela donne quoi reelmment ??? => Cela Implique beaucoup de choses +++
+# A voir plus tard 
 
-=> attention les donées sont en json maintenant, // je crois que cela deconne a caudse de cela +++
+- admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
 
 # autres plugins idee
 

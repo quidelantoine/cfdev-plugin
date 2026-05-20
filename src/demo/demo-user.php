@@ -4,15 +4,18 @@
  * CFDev Demo — User meta (sections 11-13)
  */
 
+use Weblitzer\CFDev\Meta\UserMeta;
+use Weblitzer\CFDev\Validation\Rules\Required;
+
 // ── 11. User meta flat — tous les utilisateurs ────────────────────────
-new \Weblitzer\CFDev\Meta\UserMeta(
+new UserMeta(
     'cfdev_demo_user',
     '[DEMO] Profil',
     generateArrayAllField('demo', 'user')
 );
 
 // ── 12. User meta Tabs ────────────────────────────────────────────────
-new \Weblitzer\CFDev\Meta\UserMeta('cfdev_demo_user_tabs', '[DEMO] Profil — Tabs', [
+new UserMeta('cfdev_demo_user_tabs', '[DEMO] Profil — Tabs', [
     'tabs',
     [
         'Infos'  => generateArrayAllField('demo', 'user_tab_a'),
@@ -24,9 +27,9 @@ new \Weblitzer\CFDev\Meta\UserMeta('cfdev_demo_user_tabs', '[DEMO] Profil — Ta
 ]);
 
 // ── 13. User meta Bundle ──────────────────────────────────────────────
-new \Weblitzer\CFDev\Meta\UserMeta('cfdev_demo_user_bundle', '[DEMO] Profil — Bundle', [
+new UserMeta('cfdev_demo_user_bundle', '[DEMO] Profil — Bundle', [
     'bundle',
     generateArrayAllField('demo', 'user_bundle', [
-        'text' => [new \Weblitzer\CFDev\Validation\Rules\Required()],
+        'text' => [new Required()],
     ]),
 ]);

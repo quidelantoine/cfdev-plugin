@@ -103,6 +103,14 @@ class AssetLoader implements Registerable
             $this->config->version,
             true
         );
+
+        wp_register_script(
+            'cfdev-registry',
+            $this->config->url . '/assets/js/admin-registry.js',
+            [],
+            $this->config->version,
+            true
+        );
     }
 
     /**
@@ -111,7 +119,7 @@ class AssetLoader implements Registerable
      * @since   1.0.0
      * @return void
      */
-    public function enqueueScripts(): void
+    public function enqueueScripts(string $hook): void
     {
         if (function_exists('wp_enqueue_media')) {
             wp_enqueue_media();
@@ -122,6 +130,15 @@ class AssetLoader implements Registerable
         wp_enqueue_script('media-upload');
 
         $this->localizeScripts();
+
+        if ($hook === 'cfdev_page_cfdev-fields') {
+            wp_enqueue_script('cfdev-registry');
+            wp_localize_script('cfdev-registry', 'cfdevInspect', [
+                'ajaxUrl'     => admin_url('admin-ajax.php'),
+                'nonce'       => wp_create_nonce('cfdev_inspect'),
+                'nonceSearch' => wp_create_nonce('cfdev_search'),
+            ]);
+        }
     }
 
     /**

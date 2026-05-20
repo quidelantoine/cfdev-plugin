@@ -462,6 +462,12 @@ class Field
         return $this;
     }
 
+    /** @return array<\Weblitzer\CFDev\Contracts\Validatable> */
+    public function getRules(): array
+    {
+        return $this->rules;
+    }
+
     /**
      * Validates the field value against all rules
      *

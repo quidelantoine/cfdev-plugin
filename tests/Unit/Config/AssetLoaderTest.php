@@ -177,7 +177,7 @@ class AssetLoaderTest extends CFDevTestCase
             $enqueued[] = $handle;
         });
 
-        (new AssetLoader($this->config()))->enqueueScripts();
+        (new AssetLoader($this->config()))->enqueueScripts('');
 
         $this->assertContains('cfdev', $enqueued);
     }
@@ -195,7 +195,7 @@ class AssetLoaderTest extends CFDevTestCase
             }
         );
 
-        (new AssetLoader($this->config()))->enqueueScripts();
+        (new AssetLoader($this->config()))->enqueueScripts('');
 
         $this->assertArrayHasKey('ajax_url', $localized);
         $this->assertArrayHasKey('nonce', $localized);
@@ -215,7 +215,7 @@ class AssetLoaderTest extends CFDevTestCase
             }
         );
 
-        (new AssetLoader($this->config()))->enqueueScripts();
+        (new AssetLoader($this->config()))->enqueueScripts('');
 
         $this->assertSame('cfdev', $handle);
     }

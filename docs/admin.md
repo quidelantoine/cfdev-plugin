@@ -1,68 +1,166 @@
 # CFDev — Interface d'administration
 
-CFDev ajoute un menu **CFDev** dans la barre latérale de WordPress. Les pages sont accessibles uniquement aux utilisateurs ayant la capacité `manage_options`.
+CFDev ajoute un menu **CFDev** dans la barre latérale WordPress. Toutes les pages requièrent la capacité `manage_options`.
 
 ---
 
 ## Pages disponibles
 
-### Tableau de bord (`/wp-admin/admin.php?page=cfdev`)
-
-Vue d'ensemble du plugin. Réservée à un usage futur (statistiques, état général, liens rapides).
-
----
-
-### Champs (`/wp-admin/admin.php?page=cfdev-fields`)
-
-Liste tous les groupes de champs enregistrés via `Registry`, organisés par contexte.
-
-**Onglets :**
-
-| Onglet | Contenu |
-|--------|---------|
-| Posts | Un sous-onglet par post type (ex. `Page`, `Article`, `Leçon`) |
-| Terms | Groupes assignés aux taxonomies |
-| Users | Groupes assignés aux profils utilisateur |
-
-**Informations affichées par groupe :**
-
-- **Titre** du groupe, badge de layout (`[flat]`, `[tabs]`, `[accordion]`, `[bundle]`)
-- **Cibles** : tags affichant les post types / taxonomies / `all users`
-- **Conditions** : badge `[Conditionnel]` si le groupe a un `onlyForTemplate` ou `onlyForPost`
-- **Aussi dans :** liste des autres post types si le groupe est multi-cible
-- **Champs** dans un tableau : nom, type, obligatoire
-- **Sections** (tabs/accordion) : chaque onglet ou section affiché avec son titre ; les bundles imbriqués ont leur propre bloc
+| URL | Rôle |
+|-----|------|
+| `?page=cfdev` | Tableau de bord (vue d'ensemble) |
+| `?page=cfdev-fields` | Groupes de champs — registre complet + inspecteur |
+| `?page=cfdev-cache` | Cache — activation, liste des fichiers, vidage |
+| `?page=cfdev-settings` | Réglages globaux |
 
 ---
 
-### Réglages (`/wp-admin/admin.php?page=cfdev-settings`)
+## Page "Groupes de champs"
 
-Page réservée aux futurs réglages globaux du plugin.
+### Organisation
+
+Les groupes sont répartis en onglets par contexte :
+
+- **Un onglet par post type** déclaré (`Page`, `Article`, `Book`…)
+- **Termes** — groupes assignés à des taxonomies
+- **Utilisateurs** — groupes assignés aux profils
+
+Chaque groupe est un bloc rétractable affichant :
+
+| Élément | Description |
+|---------|-------------|
+| Titre + ID | Nom humain et identifiant machine (`code`) |
+| Badge de layout | `flat` / `tabs` / `accordion` / `bundle` |
+| "Aussi dans" | Autres post types ciblés (si multi-cible) |
+| Conditions | Badges `ID : 1`, `Template : …`, `Rôle : editor`… |
+| Nb de champs | Total flat + champs de bundles |
+| ⚙ Inspecter | Lance l'inspecteur de données pour ce groupe |
+
+### Tableau des champs
+
+En dépliant un groupe, on voit un tableau par section / bundle :
+
+| ID | Type | Label | Validation |
+|----|------|-------|------------|
+| `hero_title` | `text` | Titre hero | `requis` `min-length: 3` |
+| `hero_image` | `image` | Image | `requis` |
+| `hero_qty`   | `text` | Quantité | `min: 1` `max: 99` |
+
+La colonne **Validation** affiche un badge par règle active sur le champ :
+
+- `requis` (vert) — champ obligatoire
+- `min: 5`, `max: 100` — valeur numérique min/max
+- `min-length: 3`, `max-length: 255` — longueur de chaîne
+- `between: 1, 10` — intervalle
+- `email`, `url`, `slug`, `numeric`, `alpha`, `alpha-numeric`
+- `regex: /^[a-z]+$/` — expression régulière avec son pattern
+- `file-extension: jpg|png|webp`, `file-mime: image/jpeg`
+- `max-items: 5`, `min-items: 1` — pour les bundles / galeries
+- `date-after: 2024-01-01`, `date-before-today`
+- `image-min-dimensions: 800, 600`, `image-exact-dimensions: 1920, 1080`
 
 ---
 
-### Cache (`/wp-admin/admin.php?page=cfdev-cache`)
+## L'inspecteur — outil dev clé
 
-Visualisation, gestion et activation du cache fichiers.
+Le bouton **⚙ Inspecter** sur chaque groupe ouvre une modale sombre affichant les données réelles du groupe pour un objet choisi, directement depuis l'admin.
 
-**Toggle en haut de page :** active ou désactive le système de cache `.tmp` dans `wp-content/uploads/cfdev-cache/`.
+### À quoi ça sert
+
+- Vérifier qu'un champ est bien enregistré après une saisie
+- Voir exactement la structure PHP retournée par `CacheManager` (images résolues, bundles, etc.)
+- Copier le chemin d'accès à un champ en un clic pour l'utiliser dans un template
+- Diagnostiquer rapidement un champ vide, une galerie mal résolue, un bundle cassé
+- Observer l'état du cache (HIT / GENERATED / OFF) sans fouiller les fichiers `.tmp`
+
+### Sélection de l'objet
+
+Quand le groupe n'est pas lié à un objet fixe, un `<select>` apparaît dans la barre de la modale.
+
+Il est **pré-filtré selon les conditions du groupe** :
+
+| Condition déclarée | Ce qui s'affiche dans le select |
+|---|---|
+| Aucune | Tous les objets du post type / taxonomie / utilisateurs (max 100) |
+| `onlyForTemplate('tpl-about.php')` | Uniquement les pages avec ce template |
+| `onlyForRoles('editor')` | Uniquement les éditeurs |
+| `onlyIfParent(5)` (TermMeta) | Uniquement les termes enfants du terme #5 |
+
+Pour les groupes avec `onlyForId(42)` : le select est masqué et les données de la page #42 sont chargées directement — pas de choix à faire.
+
+**Changer la sélection** recharge automatiquement les données sans délai.
+
+### Lecture des données
+
+Les données s'affichent sous forme d'arbre interactif (style Symfony Profiler) :
+
+```
+▼ array(3)
+    ⎘  hero_title   ⇒  "Bienvenue sur CFDev"  (22)
+    ⎘  hero_image   ⇒  ▶ object(5)
+    ⎘  hero_slides  ⇒  ▼ array(2)
+                          ⎘  0  ⇒  ▶ object(2)
+                          ⎘  1  ⇒  ▶ object(2)
+```
+
+- **▶ / ▼** : cliquer sur le badge ouvre/ferme le niveau
+- **(22)** : longueur de la chaîne
+- **Couleurs** : clés en violet, strings en vert, nombres en bleu, null en gris…
+
+### Copier un chemin
+
+Chaque ligne a un bouton ⎘ qui copie le chemin PHP complet dans le presse-papiers :
+
+```
+⎘ → $group['hero_image']['medium']
+⎘ → $group['hero_slides'][0]['slide_title']
+```
+
+Un snippet d'accès global est aussi disponible en haut de la modale :
+
+```php
+$data  = (new \Weblitzer\CFDev\Cache\CacheManager())->post(42);
+$group = $data['groups']['home_hero'] ?? [];
+```
+
+Le bouton ⎘ à côté du snippet copie ces deux lignes d'un seul clic.
+
+### Badge de cache
+
+En haut à droite de la modale :
+
+| Badge | Signification |
+|-------|---------------|
+| `CACHE HIT — il y a 3min` | Les données viennent du fichier `.tmp` |
+| `GENERATED` | Données générées en direct (cache OFF ou fichier absent/expiré) |
+| `CACHE OFF` | Le cache est désactivé dans les réglages |
+
+### ↺ Régénérer
+
+Force la régénération des données (équivalent à `force: true` dans `CacheManager`). Utile pour voir les données fraîches après une modification sans vider tout le cache.
+
+---
+
+## Page "Cache"
+
+### Toggle activer/désactiver
 
 | État | Comportement |
 |------|-------------|
-| **Actif** | Données lues depuis le fichier si présent et non expiré (TTL 24 h). Nouveau fichier écrit après génération. |
-| **Inactif** | Données toujours lues en direct depuis la base. Aucun fichier créé ni lu. |
+| **Actif** | Données lues depuis `.tmp` si présent et non expiré (TTL 24 h). Fichier écrit après génération. |
+| **Inactif** | Données lues en direct depuis la base. Aucun fichier créé ni lu. |
 
 > **Recommandation :** désactiver en développement, activer en production.
 
-Le cache est invalidé automatiquement à chaque sauvegarde (article, terme, utilisateur).
+L'invalidation est automatique sur `save_post`, `edited_term`, `delete_term`, `profile_update`.
 
-**Tableau des fichiers :**
+### Tableau des fichiers
 
 | Colonne | Description |
 |---------|-------------|
-| Objet | Titre de l'article / nom du terme / nom de l'utilisateur + nom du fichier `.tmp` |
-| Type | Post type réel (ex. `Page`, `Leçon`) ou taxonomie, ou `Utilisateur` |
-| Groupes | Tags avec les titres des groupes de champs présents dans ce fichier |
+| Objet | Titre / nom / display name + nom du fichier `.tmp` |
+| Type | Post type réel (`Page`, `Leçon`…), taxonomie, ou `Utilisateur` |
+| Groupes | Tags avec les titres des groupes présents dans ce fichier cache |
 | Taille | Taille du fichier JSON |
 | Âge | Temps écoulé depuis la génération |
 | Modifié | Date et heure de dernière écriture |
@@ -70,180 +168,51 @@ Le cache est invalidé automatiquement à chaque sauvegarde (article, terme, uti
 
 Les lignes dont l'âge dépasse 24 h affichent un badge **Expiré**.
 
----
-
-### Get Data (`/wp-admin/admin.php?page=cfdev-getdata`)
-
-Page de debug pour visualiser les données cachées. Réservée à un usage futur.
+> La colonne "Groupes" ne liste que les groupes **dont les conditions correspondent** à cet objet. Un article standard n'affiche pas un groupe conditionné à la page d'accueil.
 
 ---
 
-## Système de cache — Utilisation dans les templates
+## Utilisation dans les templates
 
-### Prérequis
-
-Le cache doit être **activé** sur la page Cache de l'admin. Sans cela, `CacheManager` génère les données en direct sans les stocker (comportement identique, sans gain de performance).
-
-> Même avec le cache désactivé, la syntaxe d'appel est identique — pas besoin de changer le code du template pour passer de dev à prod.
-
----
-
-### Post — texte, image, fichier
+### Récupérer les données d'un post
 
 ```php
 $cache = new \Weblitzer\CFDev\Cache\CacheManager();
 $data  = $cache->post(get_the_ID());
 
-$hero     = $data['groups']['home_hero'] ?? [];
-$titre    = $hero['hero_title']    ?? '';
-$image    = $hero['hero_image']    ?? [];
-$fichier  = $hero['hero_file']     ?? [];
+$hero  = $data['groups']['home_hero'] ?? [];
+$titre = $hero['hero_title'] ?? '';
+$image = $hero['hero_image'] ?? [];
 
-// Image : toutes les tailles générées par WordPress sont disponibles
-// $image = ['id' => 15, 'alt' => 'Photo hero', 'full' => '…', 'medium' => '…', 'thumbnail' => '…']
-echo '<img src="' . esc_url($image['medium'] ?? $image['full'] ?? '') . '" alt="' . esc_attr($image['alt'] ?? '') . '">';
-
-// Fichier
-// $fichier = ['id' => 8, 'url' => '…/doc.pdf', 'filename' => 'doc.pdf']
-echo '<a href="' . esc_url($fichier['url'] ?? '') . '">' . esc_html($fichier['filename'] ?? '') . '</a>';
+echo '<img src="' . esc_url($image['medium'] ?? $image['full'] ?? '') . '"
+          alt="' . esc_attr($image['alt'] ?? '') . '">';
 ```
 
----
-
-### Post — galerie
+### Terme / taxonomie
 
 ```php
-$cache   = new \Weblitzer\CFDev\Cache\CacheManager();
-$data    = $cache->post(get_the_ID());
-$gallery = $data['groups']['mon_groupe']['ma_gallery'] ?? [];
+$cache  = new \Weblitzer\CFDev\Cache\CacheManager();
+$data   = $cache->term($term->term_id, 'courses');
+$module = $data['groups']['courses'] ?? [];
 
-// $gallery = [
-//   ['id' => 12, 'alt' => 'Photo 1', 'full' => '…', 'medium' => '…'],
-//   ['id' => 14, 'alt' => 'Photo 2', 'full' => '…', 'medium' => '…'],
-// ]
-
-foreach ($gallery as $img) {
-    echo '<img src="' . esc_url($img['medium'] ?? $img['full']) . '" alt="' . esc_attr($img['alt']) . '">';
-}
-
-// Taille préférée avec fallback sur full
-$src = $img['large'] ?? $img['medium-large'] ?? $img['medium'] ?? $img['full'] ?? '';
+$resume = $module['m_term_resume_module'] ?? '';
+$image  = $module['m_term_img_module']    ?? [];
 ```
 
----
-
-### CPT Leçons — récupérer les meta d'une leçon
-
-Champs déclarés dans `cfdev/fields/lessons.php` — groupe `meta_home_intro` :
+### Utilisateur
 
 ```php
-$cache       = new \Weblitzer\CFDev\Cache\CacheManager();
-$lesson_data = $cache->post($lesson->ID);
-$intro       = $lesson_data['groups']['meta_home_intro'] ?? [];
-
-$texte3 = $intro['_text_home_partner_text3'] ?? '';  // text (obligatoire)
-$texte1 = $intro['_text_home_partner_text1'] ?? '';  // textarea
-```
-
----
-
-### Taxonomie Modules — récupérer les meta d'un module
-
-Champs déclarés dans `cfdev/fields/courses.php` — groupe `courses` :
-
-```php
-$cache       = new \Weblitzer\CFDev\Cache\CacheManager();
-$module_data = $cache->term($term->term_id, 'courses');
-$module      = $module_data['groups']['courses'] ?? [];
-
-$ordre   = $module['m_term_order_module']           ?? '';  // select (1–15)
-$image   = $module['m_term_img_module']              ?? [];  // image résolue
-$resume  = $module['m_term_resume_module']           ?? '';  // textarea
-$content = $module['_m_term_resume_module_wysiwyg']  ?? '';  // wysiwyg HTML
-```
-
----
-
-### Modules + Leçons — pattern archive taxonomy
-
-Page d'archive d'un module : afficher les infos du module puis ses leçons avec leurs meta.
-
-```php
-$cache = new \Weblitzer\CFDev\Cache\CacheManager();
-$term  = get_queried_object();  // terme actuel (archive taxonomy)
-
-// Meta du module
-$module_data = $cache->term($term->term_id, 'courses');
-$module      = $module_data['groups']['courses'] ?? [];
-
-$image   = $module['m_term_img_module']   ?? [];
-$resume  = $module['m_term_resume_module'] ?? '';
-
-if (! empty($image)) {
-    echo '<img src="' . esc_url($image['medium'] ?? $image['full']) . '" alt="' . esc_attr($image['alt']) . '">';
-}
-echo '<p>' . esc_html($resume) . '</p>';
-
-// Leçons du module, triées par menu_order
-$lessons = get_posts([
-    'post_type'      => 'lessons',
-    'posts_per_page' => -1,
-    'orderby'        => 'menu_order',
-    'order'          => 'ASC',
-    'tax_query'      => [[
-        'taxonomy' => 'courses',
-        'field'    => 'term_id',
-        'terms'    => $term->term_id,
-    ]],
-]);
-
-foreach ($lessons as $lesson) {
-    $lesson_data = $cache->post($lesson->ID);
-    $intro       = $lesson_data['groups']['meta_home_intro'] ?? [];
-
-    echo '<h3>' . esc_html($lesson->post_title) . '</h3>';
-    echo '<p>'  . esc_html($intro['_text_home_partner_text3'] ?? '') . '</p>';
-}
-```
-
----
-
-### User meta
-
-Champs déclarés dans `cfdev/fields/user-profile.php` (groupe `profile`) et `cfdev/fields/user-formation.php` (groupe `meta_user_weblitzer`).
-
-```php
-$cache = new \Weblitzer\CFDev\Cache\CacheManager();
-$data  = $cache->user(get_current_user_id());
-
-// Groupe profil
+$cache  = new \Weblitzer\CFDev\Cache\CacheManager();
+$data   = $cache->user(get_current_user_id());
 $profil = $data['groups']['profile'] ?? [];
+
 $poste  = $profil['job_title'] ?? '';
 $avatar = $profil['avatar']    ?? [];
-
-// Afficher l'avatar
-if (! empty($avatar)) {
-    echo '<img src="' . esc_url($avatar['thumbnail'] ?? $avatar['full']) . '" alt="' . esc_attr($avatar['alt']) . '">';
-}
-
-// Groupe formation
-$formation  = $data['groups']['meta_user_weblitzer'] ?? [];
-$can_access = (bool) ($formation['user_pay_courses'] ?? false);
-$user_poste = $formation['user_poste'] ?? '';
-
-if ($can_access) {
-    // Afficher les leçons accessibles
-}
 ```
-
----
 
 ### Bundle (lignes répétables)
 
 ```php
-$cache = new \Weblitzer\CFDev\Cache\CacheManager();
-$data  = $cache->post(get_the_ID());
-
 $slides = $data['groups']['home_hero']['hero_slides'] ?? [];
 
 // $slides = [
@@ -254,51 +223,43 @@ $slides = $data['groups']['home_hero']['hero_slides'] ?? [];
 foreach ($slides as $slide) {
     $img = $slide['slide_image'] ?? [];
     echo '<h4>' . esc_html($slide['slide_title'] ?? '') . '</h4>';
-    echo '<img src="' . esc_url($img['medium'] ?? $img['full'] ?? '') . '" alt="' . esc_attr($img['alt'] ?? '') . '">';
+    echo '<img src="' . esc_url($img['medium'] ?? $img['full'] ?? '') . '"
+              alt="' . esc_attr($img['alt'] ?? '') . '">';
 }
 ```
-
----
 
 ### Forcer la régénération
 
 ```php
-// Ignorer le cache existant et régénérer immédiatement
 $data = $cache->post(42, force: true);
 $data = $cache->term(7, 'courses', force: true);
 $data = $cache->user(1, force: true);
 ```
 
----
-
 ### Invalidation manuelle
 
 ```php
-$cache = new \Weblitzer\CFDev\Cache\CacheManager();
-
 $cache->invalidatePost(42);
 $cache->invalidateTerm(7, 'courses');
 $cache->invalidateUser(1);
-$cache->invalidateAll();  // supprime tous les fichiers, retourne le nombre supprimé
+$cache->invalidateAll();  // retourne le nombre de fichiers supprimés
 ```
-
-L'invalidation automatique se déclenche sur `save_post`, `edited_term`, `delete_term` et `profile_update`.
 
 ---
 
-## Structure des champs résolus
+## Structure des données résolues
 
 | Type CFDev | Structure retournée |
 |------------|---------------------|
-| `text`, `textarea`, `select`, `yesno`, etc. | Valeur brute (string) |
+| `text`, `textarea`, `select`, `toggle`, `yesno`… | Valeur brute (`string`) |
 | `image` | `['id' => int, 'alt' => string, 'full' => string, 'medium' => string, 'thumbnail' => string, …]` |
-| `gallery` | `[ ['id' => …, 'alt' => …, 'full' => …, …], … ]` |
+| `gallery` | `[ ['id' => …, 'alt' => …, 'full' => …], … ]` |
 | `file` | `['id' => int, 'url' => string, 'filename' => string]` |
 | `link` | `['url' => string, 'text' => string, 'target' => string]` |
 | `checkboxes` / `multi_select` | `['val1', 'val2', …]` |
 | `bundle` | `[ ['field_a' => val, 'field_b' => val], … ]` — tableau de lignes |
 
-> **Note :** l'`alt` d'une image est lu depuis la médiathèque WordPress (`_wp_attachment_image_alt`). Si non renseigné, fallback automatique sur le titre du fichier dans la médiathèque.
+> L'`alt` d'une image est lu depuis `_wp_attachment_image_alt`. Si vide, fallback sur le titre du fichier dans la médiathèque.
 
 ---
 
@@ -308,23 +269,19 @@ Chaque fichier est un JSON dans `wp-content/uploads/cfdev-cache/`.
 
 **Convention de nommage :**
 
-| Objet | Clé |
-|-------|-----|
-| Post ID 42 | `post_42` |
-| Term ID 7, taxonomie `courses` | `term_courses_7` |
-| User ID 1 | `user_1` |
+| Objet | Clé fichier |
+|-------|-------------|
+| Post ID 42 | `post_42.tmp` |
+| Term ID 7, taxonomie `courses` | `term_courses_7.tmp` |
+| User ID 1 | `user_1.tmp` |
 
-**Exemple** `post_42.tmp` :
+**Exemple** `post_42.tmp` — seuls les groupes dont les conditions correspondent à ce post sont présents :
 
 ```json
 {
     "post_id": 42,
     "generated_at": 1747612800,
     "groups": {
-        "meta_home_intro": {
-            "_text_home_partner_text3": "Texte 3",
-            "_text_home_partner_text1": "Texte long ici"
-        },
         "home_hero": {
             "hero_title": "Bienvenue",
             "hero_image": {
@@ -334,11 +291,13 @@ Chaque fichier est un JSON dans `wp-content/uploads/cfdev-cache/`.
                 "medium": "https://example.com/wp-content/uploads/hero-300x200.jpg",
                 "thumbnail": "https://example.com/wp-content/uploads/hero-150x150.jpg"
             },
-            "hero_gallery": [
-                { "id": 16, "alt": "Slide 1", "full": "…", "medium": "…" },
-                { "id": 17, "alt": "Slide 2", "full": "…", "medium": "…" }
+            "hero_slides": [
+                { "slide_title": "Slide 1", "slide_image": { "id": 16, "full": "…" } },
+                { "slide_title": "Slide 2", "slide_image": { "id": 17, "full": "…" } }
             ]
         }
     }
 }
 ```
+
+Un groupe conditionné à une autre page (ex. `onlyForId(1)` sur la page d'accueil) **n'apparaît pas** dans ce fichier si le post #42 n'est pas la page d'accueil.

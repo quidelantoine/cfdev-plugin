@@ -329,20 +329,26 @@
 }
 .cfdev-fields-table thead th:first-child { width: 30%; }
 .cfdev-fields-table thead th:nth-child(2) { width: 14%; }
-.cfdev-fields-table thead th:last-child   { width: 70px; text-align: center; }
+.cfdev-fields-table thead th:last-child   { width: 180px; }
 .cfdev-fields-table tbody td {
     padding: 8px 14px; border-bottom: 1px solid #f0f0f1; vertical-align: middle;
 }
 .cfdev-fields-table tbody tr:last-child td { border-bottom: none; }
 .cfdev-fields-table tbody tr:hover td { background: #fafafa; }
 .cfdev-fields-table tbody tr.cfdev-dup td { background: #fff8f8; }
-.cfdev-fields-table tbody td:last-child   { text-align: center; }
+.cfdev-rules-cell { line-height: 1.8; }
 .cfdev-fields-table code {
     font-family: Consolas, monospace; font-size: 12px;
     background: #f6f7f7; padding: 1px 5px; border-radius: 3px; color: #50575e;
 }
 .cfdev-dup-badge    { color: #d63638; margin-left: 5px; }
 .cfdev-required-check { color: #00a32a; font-weight: 700; font-size: 15px; }
+.cfdev-rule-badge {
+    display: inline-block; font-size: 11px; line-height: 1;
+    padding: 2px 7px; border-radius: 10px; margin: 2px 2px 2px 0;
+    background: #f0f0f1; color: #50575e; white-space: nowrap;
+}
+.cfdev-rule-badge--required { background: #edfaef; color: #00a32a; font-weight: 600; }
 
 .cfdev-type {
     display: inline-block; font-size: 11px;
@@ -484,4 +490,159 @@
 }
 .cfdev-toggle-wrap input:checked + .cfdev-toggle-slider { background: #00a32a; }
 .cfdev-toggle-wrap input:checked + .cfdev-toggle-slider::after { transform: translateX(18px); }
+
+/* ── Inspector button ───────────────────────────────────────────────────── */
+.cfdev-btn-inspect {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 11px !important;
+    padding: 2px 8px !important;
+    height: auto !important;
+    line-height: 1.6 !important;
+    opacity: .7;
+    transition: opacity .15s;
+}
+.cfdev-btn-inspect:hover { opacity: 1; }
+
+/* ── Inspector modal ────────────────────────────────────────────────────── */
+.cfdev-modal {
+    position: fixed; inset: 0; z-index: 100000;
+    display: flex; align-items: center; justify-content: center;
+}
+.cfdev-modal[hidden] { display: none; }
+
+.cfdev-modal-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0, 0, 0, .55);
+}
+.cfdev-modal-box {
+    position: relative;
+    border-radius: 6px;
+    width: min(92vw, 860px);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, .6);
+    overflow: hidden;
+}
+.cfdev-modal-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px;
+    flex-shrink: 0;
+}
+.cfdev-modal-title {
+    margin: 0; font-size: 15px; font-weight: 600; flex: 1;
+    display: flex; align-items: center; gap: 8px;
+}
+
+/* Cache badge */
+.cfdev-cache-badge {
+    display: inline-flex; align-items: center;
+    height: 26px; padding: 0 9px; border-radius: 3px;
+    font-size: 11px; font-weight: 700; letter-spacing: .4px;
+    box-sizing: border-box;
+}
+
+/* ── Profiler dark theme ────────────────────────────────────────────────── */
+
+/* Modal header — dark */
+.cfdev-modal-box {
+    background: #1e1e2e;
+    color: #cdd6f4;
+}
+.cfdev-modal-header {
+    background: #181825;
+    border-bottom-color: #313244;
+}
+.cfdev-modal-title    { color: #cdd6f4; }
+.cfdev-modal-group-id { color: #6c7086; }
+.cfdev-modal-close    { color: #6c7086; height: 26px; padding: 0 9px; box-sizing: border-box; display: inline-flex; align-items: center; }
+.cfdev-modal-close:hover { background: #313244; color: #cdd6f4; }
+
+.cfdev-btn-regen { color: #cba6f7 !important; border-color: #45475a !important; background: transparent !important; height: 26px; padding: 0 9px; box-sizing: border-box; display: inline-flex; align-items: center; }
+.cfdev-btn-regen:hover { background: #313244 !important; border-color: #cba6f7 !important; }
+.cfdev-btn-regen:disabled { opacity: .3; }
+
+.cfdev-modal-meta-label { color: #6c7086; }
+
+/* Cache badges — dark variants */
+.cfdev-cache-badge--hit  { background: #1c3a2a; color: #a6e3a1; border: 1px solid #2d5a40; }
+.cfdev-cache-badge--miss { background: #3a3020; color: #f9e2af; border: 1px solid #5a4a2a; }
+.cfdev-cache-badge--off  { background: #2a2a3a; color: #6c7086; border: 1px solid #45475a; }
+
+/* Object selector toolbar */
+.cfdev-inspect-toolbar {
+    padding: 10px 16px;
+    background: #181825;
+    border-bottom: 1px solid #313244;
+}
+.cfdev-object-select {
+    min-width: 280px; max-width: 100%; box-sizing: border-box;
+    background: #1e1e2e; border: 1px solid #45475a; border-radius: 4px;
+    color: #cdd6f4; padding: 5px 10px; font-size: 13px;
+    cursor: pointer; outline: none;
+}
+.cfdev-object-select:focus { border-color: #cba6f7; }
+.cfdev-object-select option { background: #1e1e2e; color: #cdd6f4; }
+
+/* Output area — full dark */
+.cfdev-inspect-output {
+    flex: 1; overflow: auto; padding: 16px 20px;
+    background: #1e1e2e;
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px; line-height: 1.8;
+}
+.cfdev-inspect-hint  { color: #585b70; font-family: inherit; margin: 0; }
+.cfdev-inspect-error { color: #f38ba8; font-family: inherit; margin: 0; }
+
+/* PHP snippet block */
+.cfdev-snippet {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: #11111b; border: 1px solid #313244; border-radius: 5px;
+    padding: 12px 14px; margin-bottom: 16px;
+}
+.cfdev-snippet-code {
+    flex: 1; margin: 0;
+    font-family: inherit; font-size: 12px; line-height: 1.65;
+    color: #cdd6f4; white-space: pre;
+}
+
+/* Copy buttons */
+.cfdev-copy-btn {
+    background: none; border: 1px solid #585b70; cursor: pointer;
+    padding: 2px 6px; border-radius: 3px; font-size: 13px; line-height: 1;
+    color: #585b70; flex-shrink: 0; transition: all .15s;
+}
+.cfdev-copy-btn:hover { background: #313244; border-color: #585b70; color: #cdd6f4; }
+
+/* Per-field copy icon — always visible, brighter on hover */
+.cfdev-copy-path {
+    opacity: .85; margin-right: 5px;
+    font-size: 11px; padding: 1px 4px;
+    vertical-align: middle; transition: opacity .1s;
+}
+.cfdev-tree li:hover > .cfdev-copy-path,
+.cfdev-tree-children li:hover > .cfdev-copy-path { opacity: 1; }
+
+/* ── Tree renderer ──────────────────────────────────────────────────────── */
+.cfdev-tree, .cfdev-tree-children {
+    list-style: none; margin: 0; padding-left: 20px;
+}
+.cfdev-tree { padding-left: 0; }
+.cfdev-tree li { margin: 1px 0; }
+.cfdev-tree-key   { color: #cba6f7; font-weight: 600; }
+.cfdev-tree-arrow { color: #45475a; margin: 0 2px; }
+
+.cfdev-tree-toggle { cursor: pointer; user-select: none; display: inline; }
+.cfdev-tree-toggle:hover .cfdev-tv { text-decoration: underline dotted; }
+.cfdev-tree-caret  { display: inline-block; width: 14px; color: #585b70; font-size: 9px; }
+
+/* Type value colors — Catppuccin Mocha */
+.cfdev-tv--str  { color: #a6e3a1; }
+.cfdev-tv--num  { color: #89b4fa; }
+.cfdev-tv--bool { color: #fab387; font-style: italic; }
+.cfdev-tv--null { color: #45475a; font-style: italic; }
+.cfdev-tv--arr  { color: #b4befe; }
+.cfdev-tv--obj  { color: #f9e2af; }
+.cfdev-tv-meta  { color: #7f849c; font-size: 11px; }
 

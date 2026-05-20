@@ -4,7 +4,9 @@
  * CFDev Demo — Page meta boxes
  */
 
-$pageType = new \Weblitzer\CFDev\PostType('page');
+use Weblitzer\CFDev\PostType;
+
+$pageType = new PostType('page');
 
 // ── Flat — tous les types de champs ──────────────────────────────────
 $pageType->addMetaBox('cfdev_demo_page_flat', '[DEMO] Page — Tous les champs', generateArrayAllField('demo', 'page_flat'))

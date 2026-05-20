@@ -18,6 +18,9 @@ class FieldsPageTest extends CFDevTestCase
         Functions\when('esc_attr_e')->returnArg(1);
         Functions\when('esc_html_e')->returnArg(1);
         Functions\when('get_post_type_object')->justReturn(null);
+        Functions\when('wp_create_nonce')->justReturn('test-nonce');
+        Functions\when('admin_url')->justReturn('https://example.com/wp-admin/admin-ajax.php');
+        Functions\when('wp_json_encode')->alias('json_encode');
     }
 
     private function captureRender(): string
@@ -76,10 +79,10 @@ class FieldsPageTest extends CFDevTestCase
         $this->assertGreaterThanOrEqual(2, substr_count($output, 'cfdev-empty'));
     }
 
-    public function testRenderOutputsInlineScript(): void
+    public function testRenderOutputsInspectModal(): void
     {
         $output = $this->captureRender();
-        $this->assertStringContainsString('cfdev-registry-js', $output);
+        $this->assertStringContainsString('cfdev-inspect-modal', $output);
     }
 
     // -------------------------------------------------------------------------

@@ -135,7 +135,7 @@ final class FieldsPage
 
         </div>
         <?php
-        self::scripts();
+        self::inspectModal();
     }
 
     // -------------------------------------------------------------------------
@@ -171,6 +171,14 @@ final class FieldsPage
         $other_pts = $current_pt !== ''
             ? array_values(array_filter($entry['targets'], fn($t) => $t !== $current_pt))
             : [];
+
+        $conditions     = $entry['conditions'] ?? [];
+        $default_tax    = $entry['meta_type'] === 'term' ? ($entry['targets'][0] ?? '') : '';
+        $is_fixed       = isset($conditions['post_id']);
+        $default_id     = $is_fixed
+            ? (int) $conditions['post_id']
+            : self::firstObjectId($entry['meta_type'], $entry['targets'], $conditions);
+        $object_options = $is_fixed ? [] : self::objectOptions($entry['meta_type'], $entry['targets'], $default_tax, $conditions);
         ?>
         <div class="cfdev-group">
 
@@ -225,6 +233,17 @@ final class FieldsPage
                         $total
                     )); ?>
                 </span>
+
+                <button type="button" class="cfdev-btn-inspect button button-small"
+                        data-meta-type="<?php echo esc_attr($entry['meta_type']); ?>"
+                        data-group-id="<?php echo esc_attr($entry['id']); ?>"
+                        data-targets="<?php echo esc_attr(implode(',', $entry['targets'])); ?>"
+                        data-default-id="<?php echo esc_attr((string) $default_id); ?>"
+                        data-default-tax="<?php echo esc_attr($default_tax); ?>"
+                        data-options="<?php echo esc_attr((string) wp_json_encode($object_options)); ?>"
+                        data-fixed="<?php echo $is_fixed ? '1' : '0'; ?>">
+                    <?php esc_html_e('⚙ Inspecter', 'cfdev'); ?>
+                </button>
 
             </div>
 
@@ -296,7 +315,7 @@ final class FieldsPage
                     <th><?php esc_html_e('ID', 'cfdev'); ?></th>
                     <th><?php esc_html_e('Type', 'cfdev'); ?></th>
                     <th><?php esc_html_e('Label', 'cfdev'); ?></th>
-                    <th><?php esc_html_e('Requis', 'cfdev'); ?></th>
+                    <th><?php esc_html_e('Validation', 'cfdev'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -316,10 +335,13 @@ final class FieldsPage
                         ?>
                     </td>
                     <td><?php echo esc_html($field['label']); ?></td>
-                    <td>
+                    <td class="cfdev-rules-cell">
                         <?php if ($field['required']) : ?>
-                        <span class="cfdev-required-check" aria-label="<?php esc_attr_e('requis', 'cfdev'); ?>">✓</span>
+                        <span class="cfdev-rule-badge cfdev-rule-badge--required">requis</span>
                         <?php endif; ?>
+                        <?php foreach ($field['rules'] ?? [] as $rule) : ?>
+                        <span class="cfdev-rule-badge"><?php echo esc_html($rule); ?></span>
+                        <?php endforeach; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -371,44 +393,177 @@ final class FieldsPage
         );
     }
 
-    private static function scripts(): void
+    /**
+     * Returns the ID of the first available object for a given meta type, targets, and conditions.
+     *
+     * @param  string[]             $targets     Post types, taxonomies, or empty for users.
+     * @param  array<string, mixed> $conditions  Registry entry conditions.
+     */
+    private static function firstObjectId(string $meta_type, array $targets, array $conditions = []): int
     {
-        // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo '
-<script id="cfdev-registry-js">
-(function () {
-    // Tab switching
-    var tabs   = document.querySelectorAll(".cfdev-tabs-nav .nav-tab");
-    var panels = document.querySelectorAll(".cfdev-tab-panel");
-
-    tabs.forEach(function (tab) {
-        tab.addEventListener("click", function (e) {
-            e.preventDefault();
-            var target = this.getAttribute("href");
-            panels.forEach(function (p) { p.hidden = true; });
-            document.querySelector(target).hidden = false;
-            tabs.forEach(function (t) { t.classList.remove("nav-tab-active"); });
-            this.classList.add("nav-tab-active");
-        });
-    });
-
-    // Group expand / collapse
-    document.querySelectorAll(".cfdev-group-header").forEach(function (header) {
-        function toggle() {
-            var group  = header.closest(".cfdev-group");
-            var body   = group.querySelector(".cfdev-group-body");
-            var isOpen = !body.hidden;
-            body.hidden = isOpen;
-            group.classList.toggle("is-open", !isOpen);
-            header.setAttribute("aria-expanded", String(!isOpen));
+        if ($meta_type === 'post' && ! empty($targets)) {
+            $args = [
+                'post_type'      => $targets,
+                'post_status'    => ['publish', 'draft', 'private'],
+                'posts_per_page' => 1,
+                'no_found_rows'  => true,
+                'orderby'        => 'modified',
+                'order'          => 'DESC',
+            ];
+            if (isset($conditions['template'])) {
+                $args['meta_key']   = '_wp_page_template';
+                // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+                $args['meta_value'] = $conditions['template'];
+            }
+            $q    = new \WP_Query($args);
+            $post = $q->posts[0] ?? null;
+            return $post instanceof \WP_Post ? $post->ID : 0;
         }
-        header.addEventListener("click", toggle);
-        header.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
-        });
-    });
-}());
-</script>';
-        // phpcs:enable
+
+        if ($meta_type === 'term' && ! empty($targets)) {
+            $args = [
+                'taxonomy'   => $targets,
+                'number'     => 1,
+                'fields'     => 'ids',
+                'hide_empty' => false,
+                'orderby'    => 'id',
+                'order'      => 'DESC',
+            ];
+            if (isset($conditions['parent_id'])) {
+                $args['parent'] = (int) $conditions['parent_id'];
+            }
+            $terms = get_terms($args);
+            return is_array($terms) && ! empty($terms) ? (int) $terms[0] : 0;
+        }
+
+        if ($meta_type === 'user') {
+            $args = ['number' => 1, 'fields' => 'ID', 'orderby' => 'ID', 'order' => 'DESC'];
+            if (! empty($conditions['roles'])) {
+                $args['role__in'] = (array) $conditions['roles'];
+            }
+            $users = get_users($args);
+            return ! empty($users) ? (int) $users[0] : 0;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns all available objects for a meta type, filtered by conditions.
+     *
+     * @param  string[]             $targets     Post types or taxonomies.
+     * @param  array<string, mixed> $conditions  Registry entry conditions.
+     * @return array<int, array{id: int, label: string, meta: string}>
+     */
+    private static function objectOptions(string $meta_type, array $targets, string $taxonomy, array $conditions = []): array
+    {
+        if ($meta_type === 'post' && ! empty($targets)) {
+            $args = [
+                'post_type'      => $targets,
+                'post_status'    => ['publish', 'draft', 'private'],
+                'posts_per_page' => 100,
+                'no_found_rows'  => true,
+                'orderby'        => 'title',
+                'order'          => 'ASC',
+            ];
+            if (isset($conditions['template'])) {
+                $args['meta_key']   = '_wp_page_template';
+                // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+                $args['meta_value'] = $conditions['template'];
+            }
+            $q    = new \WP_Query($args);
+            $opts = [];
+            foreach ($q->posts as $post) {
+                if ($post instanceof \WP_Post) {
+                    $opts[] = [
+                        'id'    => $post->ID,
+                        'label' => $post->post_title !== '' ? $post->post_title : '(sans titre)',
+                        'meta'  => $post->post_type,
+                    ];
+                }
+            }
+            return $opts;
+        }
+
+        if ($meta_type === 'term' && ! empty($targets)) {
+            $tax  = $taxonomy !== '' ? $taxonomy : ($targets[0] ?? '');
+            $args = [
+                'taxonomy'   => $tax !== '' ? $tax : $targets,
+                'number'     => 100,
+                'hide_empty' => false,
+                'orderby'    => 'name',
+                'order'      => 'ASC',
+            ];
+            if (isset($conditions['parent_id'])) {
+                $args['parent'] = (int) $conditions['parent_id'];
+            }
+            $terms = get_terms($args);
+            $opts  = [];
+            if (is_array($terms)) {
+                foreach ($terms as $term) {
+                    $opts[] = [
+                        'id'    => $term->term_id,
+                        'label' => $term->name,
+                        'meta'  => $term->taxonomy,
+                    ];
+                }
+            }
+            return $opts;
+        }
+
+        if ($meta_type === 'user') {
+            $args = ['number' => 100, 'fields' => 'all', 'orderby' => 'display_name', 'order' => 'ASC'];
+            if (! empty($conditions['roles'])) {
+                $args['role__in'] = (array) $conditions['roles'];
+            }
+            $users = get_users($args);
+            $opts  = [];
+            foreach ($users as $user) {
+                $opts[] = [
+                    'id'    => $user->ID,
+                    'label' => $user->display_name,
+                    'meta'  => $user->user_login,
+                ];
+            }
+            return $opts;
+        }
+
+        return [];
+    }
+
+    private static function inspectModal(): void
+    {
+        ?>
+        <div id="cfdev-inspect-modal" class="cfdev-modal" hidden aria-modal="true" role="dialog"
+             aria-labelledby="cfdev-modal-title">
+            <div class="cfdev-modal-overlay"></div>
+            <div class="cfdev-modal-box">
+
+                <div class="cfdev-modal-header">
+                    <h2 class="cfdev-modal-title" id="cfdev-modal-title">
+                        <span class="cfdev-modal-meta-label"></span>
+                        <code class="cfdev-modal-group-id"></code>
+                    </h2>
+                    <span id="cfdev-inspect-cache-badge" class="cfdev-cache-badge" hidden></span>
+                    <button type="button" id="cfdev-inspect-force" class="button button-small cfdev-btn-regen">
+                        &#x21BA; <?php esc_html_e('Régénérer', 'cfdev'); ?>
+                    </button>
+                    <button type="button" class="cfdev-modal-close"
+                            aria-label="<?php esc_attr_e('Fermer', 'cfdev'); ?>">&#x2715;</button>
+                </div>
+
+                <div id="cfdev-inspect-toolbar" class="cfdev-inspect-toolbar" hidden>
+                    <select id="cfdev-object-select" class="cfdev-object-select">
+                        <option value="0"><?php esc_html_e('— choisir —', 'cfdev'); ?></option>
+                    </select>
+                </div>
+
+                <div id="cfdev-inspect-output" class="cfdev-inspect-output">
+                    <p class="cfdev-inspect-hint"><?php esc_html_e('Chargement…', 'cfdev'); ?></p>
+                </div>
+
+            </div>
+        </div>
+        <?php
     }
 }

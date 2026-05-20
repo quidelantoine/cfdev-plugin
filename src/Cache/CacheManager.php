@@ -41,10 +41,10 @@ final class CacheManager
 
     public function register(): void
     {
-        add_action('save_post', fn(int $id)                              => $this->invalidatePost($id));
-        add_action('edited_term', fn(int $id, int $tt, string $tax)        => $this->invalidateTerm($id, $tax), 10, 3);
-        add_action('delete_term', fn(int $id, int $tt, string $tax)        => $this->invalidateTerm($id, $tax), 10, 3);
-        add_action('profile_update', fn(int $id)                             => $this->invalidateUser($id));
+        add_action('save_post', fn(int $id)                          => $this->invalidatePost($id));
+        add_action('edited_term', fn(int $id, int $tt, string $tax)  => $this->invalidateTerm($id, $tax), 10, 3);
+        add_action('delete_term', fn(int $id, int $tt, string $tax)  => $this->invalidateTerm($id, $tax), 10, 3);
+        add_action('profile_update', fn(int $id)                     => $this->invalidateUser($id));
     }
 
     // -------------------------------------------------------------------------
@@ -115,6 +115,41 @@ final class CacheManager
     }
 
     // -------------------------------------------------------------------------
+    // Inspector (admin debug tool)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Resolves an object's field data and returns it alongside cache metadata.
+     * Used by the admin inspector modal (wp_ajax_cfdev_inspect).
+     *
+     * @return array{data: array<string, mixed>, cache: array{enabled: bool, hit: bool, age: int|null}}
+     */
+    public function inspect(string $object_type, int $object_id, string $taxonomy = '', bool $force = false): array
+    {
+        $enabled = $this->isEnabled();
+
+        $key = match ($object_type) {
+            'term'  => 'term_' . $taxonomy . '_' . $object_id,
+            'user'  => 'user_' . $object_id,
+            default => 'post_' . $object_id,
+        };
+
+        $hit = $enabled && ! $force && $this->store->exists($key) && $this->store->age($key) < self::TTL;
+        $age = $hit ? $this->store->age($key) : null;
+
+        $data = match ($object_type) {
+            'term'  => $this->term($object_id, $taxonomy, $force),
+            'user'  => $this->user($object_id, $force),
+            default => $this->post($object_id, $force),
+        };
+
+        return [
+            'data'  => $data,
+            'cache' => ['enabled' => $enabled, 'hit' => $hit, 'age' => $age],
+        ];
+    }
+
+    // -------------------------------------------------------------------------
     // Generators
     // -------------------------------------------------------------------------
 
@@ -131,6 +166,15 @@ final class CacheManager
             if (! in_array($post_type, $entry['targets'], true)) {
                 continue;
             }
+
+            $cond = $entry['conditions'] ?? [];
+            if (isset($cond['post_id']) && (int) $cond['post_id'] !== $post_id) {
+                continue;
+            }
+            if (isset($cond['template']) && get_page_template_slug($post_id) !== $cond['template']) {
+                continue;
+            }
+
             $groups[$entry['id']] = $this->resolveEntry($entry, $post_id, 'post');
         }
 
@@ -149,6 +193,15 @@ final class CacheManager
             if (! in_array($taxonomy, $entry['targets'], true)) {
                 continue;
             }
+
+            $cond = $entry['conditions'] ?? [];
+            if (isset($cond['parent_id'])) {
+                $term = get_term($term_id, $taxonomy);
+                if (! $term instanceof \WP_Term || (int) $term->parent !== (int) $cond['parent_id']) {
+                    continue;
+                }
+            }
+
             $groups[$entry['id']] = $this->resolveEntry($entry, $term_id, 'term');
         }
 
@@ -164,6 +217,16 @@ final class CacheManager
             if ($entry['meta_type'] !== 'user') {
                 continue;
             }
+
+            $cond = $entry['conditions'] ?? [];
+            if (! empty($cond['roles'])) {
+                $user       = get_userdata($user_id);
+                $user_roles = $user ? (array) $user->roles : [];
+                if (empty(array_intersect((array) $cond['roles'], $user_roles))) {
+                    continue;
+                }
+            }
+
             $groups[$entry['id']] = $this->resolveEntry($entry, $user_id, 'user');
         }
 

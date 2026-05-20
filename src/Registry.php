@@ -251,10 +251,42 @@ class Registry
     /** @return array<string, mixed> */
     private static function fieldEntry(\Weblitzer\CFDev\Field $field): array
     {
+        $rules = [];
+        foreach ($field->getRules() as $rule) {
+            if ($rule instanceof \Weblitzer\CFDev\Validation\Rules\Required) {
+                continue;
+            }
+            $rules[] = self::describeRule($rule);
+        }
+
         return [
             'type'     => $field->type,
             'label'    => $field->label,
             'required' => $field->required,
+            'rules'    => $rules,
         ];
+    }
+
+    private static function describeRule(\Weblitzer\CFDev\Contracts\Validatable $rule): string
+    {
+        $rc   = new \ReflectionClass($rule);
+        $slug = strtolower((string) preg_replace('/(?<!^)[A-Z]/', '-$0', $rc->getShortName()));
+        $ctor = $rc->getConstructor();
+
+        if ($ctor === null || empty($ctor->getParameters())) {
+            return $slug;
+        }
+
+        $values = [];
+        foreach ($ctor->getParameters() as $param) {
+            if (! $rc->hasProperty($param->getName())) {
+                continue;
+            }
+            $prop     = $rc->getProperty($param->getName());
+            $raw      = $prop->getValue($rule);
+            $values[] = is_array($raw) ? implode('|', $raw) : (string) $raw;
+        }
+
+        return $values ? $slug . ': ' . implode(', ', $values) : $slug;
     }
 }

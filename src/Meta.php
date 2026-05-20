@@ -410,6 +410,105 @@ abstract class Meta
     }
 
     // =========================================================
+    // REST API
+    // =========================================================
+
+    /**
+     * Registers fields flagged with `rest: true` into the WP REST API via register_meta().
+     * Only runs when the global cfdev_rest_enabled option is truthy (default: true).
+     *
+     * @param string $object_type  'post', 'term', or 'user'
+     * @param string $subtype      Post type, taxonomy, or '' for users
+     */
+    protected function registerRestMeta(string $object_type, string $subtype = ''): void
+    {
+        add_action('rest_api_init', function () use ($object_type, $subtype): void {
+            $this->doRegisterRestMeta($object_type, $subtype);
+        });
+    }
+
+    /**
+     * Calls register_meta() for every field flagged with `rest: true`.
+     * Extracted for testability — called by the rest_api_init closure.
+     * When object-level conditions are set (onlyForId, onlyForTemplate, onlyIfParent),
+     * the fields are still registered globally but a rest_prepare_* filter strips them
+     * from responses where the object does not match the condition.
+     */
+    public function doRegisterRestMeta(string $object_type, string $subtype = ''): void
+    {
+        if ((int) get_option(\Weblitzer\CFDev\Admin\RestPage::OPTION_REST, 1) === 0) {
+            return;
+        }
+        $registered = [];
+
+        foreach ($this->fields as $field) {
+            if (! $field->rest || $field->in_bundle) {
+                continue;
+            }
+            $args = [
+                'show_in_rest' => true,
+                'single'       => true,
+                'type'         => $field->restType(),
+            ];
+            if ($subtype !== '') {
+                $args['object_subtype'] = $subtype;
+            }
+            register_meta($object_type, $field->id, $args);
+            $registered[] = $field->id;
+        }
+
+        // Register bundles flagged with rest: true (stored as a single JSON string)
+        foreach ($this->doRestBundles() as $bundle) {
+            $args = ['show_in_rest' => true, 'single' => true, 'type' => 'string'];
+            if ($subtype !== '') {
+                $args['object_subtype'] = $subtype;
+            }
+            register_meta($object_type, $bundle->id, $args);
+            $registered[] = $bundle->id;
+        }
+
+        if (! empty($registered)) {
+            $this->addRestConditionFilter($object_type, $subtype, $registered);
+        }
+    }
+
+    /**
+     * Returns all Bundle instances in this meta group that are flagged with rest: true.
+     * Covers direct bundles and bundles nested inside Tabs or Accordion.
+     *
+     * @return array<\Weblitzer\CFDev\Fields\Bundle>
+     */
+    public function doRestBundles(): array
+    {
+        $bundles = [];
+
+        if ($this->data instanceof \Weblitzer\CFDev\Fields\Bundle && $this->data->rest) {
+            $bundles[] = $this->data;
+        } elseif ($this->data instanceof \Weblitzer\CFDev\Fields\Tabs || $this->data instanceof \Weblitzer\CFDev\Fields\Accordion) {
+            foreach ($this->data->tabs as $tab) {
+                if ($tab->fields instanceof \Weblitzer\CFDev\Fields\Bundle && $tab->fields->rest) {
+                    $bundles[] = $tab->fields;
+                }
+            }
+        }
+
+        return $bundles;
+    }
+
+    /**
+     * Adds a rest_prepare_* filter to strip conditioned fields from REST responses
+     * that do not match the declared object-level condition.
+     * No-op by default; overridden by MetaBox and TermMeta when conditions are set.
+     *
+     * @param string        $object_type  'post', 'term', or 'user'
+     * @param string        $subtype      Post type, taxonomy slug, or ''
+     * @param array<string> $field_ids    Meta keys to strip when condition fails
+     */
+    protected function addRestConditionFilter(string $object_type, string $subtype, array $field_ids): void
+    {
+    }
+
+    // =========================================================
     // Build
     // =========================================================
 
@@ -463,6 +562,11 @@ abstract class Meta
                 $bundle_id   = is_string($data[1]) ? $data[1] : $this->id;
                 $fields_list = is_string($data[1]) ? ($data[2] ?? []) : $data[1];
                 $bundle      = new \Weblitzer\CFDev\Fields\Bundle($bundle_id, $data);
+                // Detect rest: true in options (4th element with ID, 3rd without)
+                $bundle_opts = is_string($data[1]) ? ($data[3] ?? []) : ($data[2] ?? []);
+                if (is_array($bundle_opts) && ! empty($bundle_opts['rest'])) {
+                    $bundle->rest = true;
+                }
 
                 foreach ($fields_list as $field) {
                     $class = $this->getClassFieldByType($field['type']);

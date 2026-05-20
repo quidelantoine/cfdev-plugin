@@ -11,6 +11,7 @@ class Bundle extends FieldContainer
     public array $fields = [];
     /** @var string|array<mixed> */
     public string|array $default_value = '';
+    public bool $rest = false;
 
     /**
      * Construct for bundle

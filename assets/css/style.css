@@ -418,6 +418,11 @@
 .cfdev-cache-option__label strong { display: inline; }
 .cfdev-cache-option__hint { color: #787c82; }
 
+.cfdev-rest-toggles { display: flex; flex-direction: column; margin-bottom: 24px; }
+.cfdev-rest-toggles .cfdev-cache-option { margin-bottom: 0; border-radius: 0; border-bottom-width: 0; }
+.cfdev-rest-toggles .cfdev-cache-option:first-child { border-radius: 4px 4px 0 0; }
+.cfdev-rest-toggles .cfdev-cache-option:last-child  { border-radius: 0 0 4px 4px; border-bottom-width: 1px; }
+
 .cfdev-cache-toolbar {
     display: flex; align-items: center; gap: 16px;
     margin-bottom: 16px;
@@ -623,6 +628,35 @@
 }
 .cfdev-tree li:hover > .cfdev-copy-path,
 .cfdev-tree-children li:hover > .cfdev-copy-path { opacity: 1; }
+
+/* ── Bundle fields modal (light theme override) ─────────────────────────── */
+#cfdev-rest-bundle-modal .cfdev-modal-box {
+    background: #fff;
+    color: #1d2327;
+}
+#cfdev-rest-bundle-modal .cfdev-modal-header {
+    background: #f6f7f7;
+    border-bottom: 1px solid #dcdcde;
+}
+#cfdev-rest-bundle-modal .cfdev-modal-title { color: #1d2327; }
+#cfdev-rest-bundle-modal .cfdev-modal-close { color: #646970; }
+#cfdev-rest-bundle-modal .cfdev-modal-close:hover { background: #f0f0f1; color: #1d2327; }
+
+#cfdev-rest-bundle-modal .description {
+    margin: 0;
+    padding: 10px 20px 12px;
+    background: #f0f6fc;
+    border-left: 3px solid #72aee6;
+    color: #1d2327;
+    font-style: normal;
+    flex-shrink: 0;
+}
+
+#cfdev-rest-bundle-body {
+    flex: 1;
+    overflow: auto;
+    padding: 0 20px 20px;
+}
 
 /* ── Tree renderer ──────────────────────────────────────────────────────── */
 .cfdev-tree, .cfdev-tree-children {

@@ -224,4 +224,5 @@ $postType->addMetaBox('cfdev_demo_bundle', '[DEMO] Bundle', [
         'text'   => [new Required()],
         'select' => [new Required()],
     ]),
+    ['rest' => true]
 ]);

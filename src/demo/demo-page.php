@@ -24,7 +24,7 @@ $pageType->addMetaBox('cfdev_demo_tabs', '[DEMO] Tabs', [
     [
         'Onglet A' => generateArrayAllField('demo', 'tab_a'),
         'Onglet B' => [
-            ['id' => '_demo_tab_b_file',  'type' => 'file',  'label' => 'Fichier', 'required' => true],
+            ['id' => '_demo_tab_b_file',  'type' => 'file',  'label' => 'Fichier', 'required' => true, 'rest' => true],
             ['id' => '_demo_tab_b_image', 'type' => 'image', 'label' => 'Image'],
         ],
     ],

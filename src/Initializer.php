@@ -66,6 +66,7 @@ class Initializer
         $this->container->get(AssetLoader::class)->register();
         \Weblitzer\CFDev\Admin\AdminMenu::register();
         (new \Weblitzer\CFDev\Cache\CacheManager())->register();
+        (new \Weblitzer\CFDev\Rest\CfdevRestApi())->register();
         // Je susi pas sure que cela soit necessaire ??? , et pas fonctionnelle , a virer ????
         $this->container->get(AjaxHandler::class)->register();
     }

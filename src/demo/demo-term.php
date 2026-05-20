@@ -33,7 +33,7 @@ new TermMeta('category', 'Catégorie — Accordéon with Bundle', [
     [
         'Infos'   => generateArrayAllField('demo', 'term_acc_a'),
         'Galerie' => [
-            ['bundle', generateArrayAllField('demo', 'term_acc_bundle')],
+            ['bundle', generateArrayAllField('demo', 'term_acc_bundle'),['rest' => true]],
         ],
     ],
 ]);

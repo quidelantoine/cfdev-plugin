@@ -66,6 +66,7 @@ class MetaBox extends Meta
                 $this->data = $this->build($data);
 
                 foreach ($this->post_types as $post_type) {
+                    $this->registerRestMeta('post', $post_type);
                     add_filter('manage_' . $post_type . '_posts_columns', array($this, 'addColumn'));
                     add_action('manage_' . $post_type . '_posts_custom_column', array($this, 'addColumnContent'), 10, 2);
                     add_filter('manage_edit-' . $post_type . '_sortable_columns', array($this, 'addSortableColumn'), 10, 1);
@@ -100,6 +101,43 @@ class MetaBox extends Meta
     {
         $this->only_for_template = $template;
         return $this;
+    }
+
+    /**
+     * Strips conditioned REST fields from responses where the post does not match
+     * the onlyForId / onlyForTemplate condition.
+     *
+     * @param string        $object_type  Always 'post' for MetaBox
+     * @param string        $subtype      Post type slug (e.g. 'page')
+     * @param array<string> $field_ids    Meta keys registered with show_in_rest
+     */
+    protected function addRestConditionFilter(string $object_type, string $subtype, array $field_ids): void
+    {
+        if ($this->only_for_id === null && $this->only_for_template === null) {
+            return;
+        }
+        add_filter(
+            'rest_prepare_' . $subtype,
+            function (\WP_REST_Response $response, \WP_Post $post) use ($field_ids): \WP_REST_Response {
+                $matches = true;
+                if ($this->only_for_id !== null && $post->ID !== $this->only_for_id) {
+                    $matches = false;
+                }
+                if ($matches && $this->only_for_template !== null) {
+                    $matches = get_page_template_slug($post->ID) === $this->only_for_template;
+                }
+                if (! $matches) {
+                    $meta = $response->data['meta'] ?? [];
+                    foreach ($field_ids as $id) {
+                        unset($meta[$id]);
+                    }
+                    $response->data['meta'] = $meta;
+                }
+                return $response;
+            },
+            10,
+            2
+        );
     }
 
     /**

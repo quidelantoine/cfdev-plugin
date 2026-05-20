@@ -16,6 +16,7 @@ use Weblitzer\CFDev\Registry;
  */
 final class CachePage extends AdminPage
 {
+    public const OPTION_CACHE = 'cfdev_cache_enabled';
     public static function render(): void
     {
         if (! current_user_can('manage_options')) {
@@ -27,7 +28,7 @@ final class CachePage extends AdminPage
             isset($_POST['cfdev_cache_option_nonce'])
             && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['cfdev_cache_option_nonce'])), 'cfdev_cache_option')
         ) {
-            update_option(SettingsPage::OPTION_CACHE, isset($_POST['cfdev_cache_enabled']) ? '1' : '0');
+            update_option(self::OPTION_CACHE, isset($_POST['cfdev_cache_enabled']) ? '1' : '0');
             add_settings_error('cfdev_cache', 'saved', __('Réglage enregistré.', 'cfdev'), 'success');
         }
 
@@ -49,7 +50,7 @@ final class CachePage extends AdminPage
             }
         }
 
-        $cache_on = (bool) get_option(SettingsPage::OPTION_CACHE, false);
+        $cache_on = (bool) get_option(self::OPTION_CACHE, false);
         $store    = (new CacheManager())->store();
         $files    = $store->listAll();
         $registry = array_column(Registry::all(), null, 'id');

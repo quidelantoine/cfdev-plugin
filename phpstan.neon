@@ -1,6 +1,8 @@
 includes:
     # Extension WordPress pour reconnaître les fonctions globales (__, _e, esc_html, etc.)
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
+    # Faux positifs connus : propriétés WordPress existantes absentes des stubs
+    - phpstan-baseline.neon
 
 parameters:
     # Niveau de vérification (0 = basique, 9 = très strict)
@@ -18,6 +20,7 @@ parameters:
             - node_modules/*
             - *.min.js
             - *.min.css
+            - tests/bootstrap.php
 
     # Ignorer les erreurs pour des fichiers spécifiques
     ignoreErrors: []

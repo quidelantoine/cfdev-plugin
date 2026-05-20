@@ -124,6 +124,7 @@ abstract class ContentType implements Registerable, Supportable, HasMetaBox
         return $this;
     }
 
+
     /**
      * Adds support for one or more post type features
      *

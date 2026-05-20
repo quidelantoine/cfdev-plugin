@@ -58,6 +58,7 @@ class TermMeta extends Meta
         $this->data = $this->build($data);
 
         foreach ($this->taxonomies as $taxonomy) {
+            $this->registerRestMeta('term', $taxonomy);
             if (in_array('add_form', $this->locations)) {
                 add_action($taxonomy . '_add_form_fields', array( $this, 'addFormFields' ));
                 add_action('created_' . $taxonomy, array( $this, 'saveTerm' ));
@@ -85,6 +86,36 @@ class TermMeta extends Meta
     {
         $this->only_if_parent = $parent_id;
         return $this;
+    }
+
+    /**
+     * Strips conditioned REST fields from term responses where the term's parent
+     * does not match the onlyIfParent condition.
+     *
+     * @param string        $object_type  Always 'term' for TermMeta
+     * @param string        $subtype      Taxonomy slug (e.g. 'category')
+     * @param array<string> $field_ids    Meta keys registered with show_in_rest
+     */
+    protected function addRestConditionFilter(string $object_type, string $subtype, array $field_ids): void
+    {
+        if ($this->only_if_parent === null) {
+            return;
+        }
+        add_filter(
+            'rest_prepare_' . $subtype,
+            function (\WP_REST_Response $response, \WP_Term $term) use ($field_ids): \WP_REST_Response {
+                if ($term->parent !== $this->only_if_parent) {
+                    $meta = $response->data['meta'] ?? [];
+                    foreach ($field_ids as $id) {
+                        unset($meta[$id]);
+                    }
+                    $response->data['meta'] = $meta;
+                }
+                return $response;
+            },
+            10,
+            2
+        );
     }
 
     public function setTitle(string $title): static

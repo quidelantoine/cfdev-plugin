@@ -21,6 +21,7 @@ if (! function_exists('generateArrayAllField')) {
         $field = function (array $config) use ($rules, $ajax): array {
             $type                  = $config['type'];
             $config['ajax']        = $config['ajax'] ?? $ajax;
+            $config['rest']        = true;
             $config['description'] = $config['description'] ?? 'Description test';
             $config['explanation'] = $config['explanation'] ?? 'Explanation test';
             return isset($rules[$type])
@@ -43,7 +44,9 @@ if (! function_exists('generateArrayAllField')) {
             $field(['id' => '_text_' . $str . '_range', 'type' => 'range',  'label' => 'Opacité (%)',
                     'args' => ['min' => 0, 'max' => 100, 'step' => 10], 'default_value' => '100']),
 
-            $field(['id' => '_text_' . $str . '_email',          'type' => 'email',           'label' => 'E-mail']),
+            $field(['id' => '_text_' . $str . '_email',          'type' => 'email',           'label' => 'E-mail'
+                //, 'rest' => true
+            ]),
             $field(['id' => '_text_' . $str . '_website',        'type' => 'url',             'label' => 'Site web']),
             $field(['id' => '_text_' . $str . '_phone',          'type' => 'tel',             'label' => 'Téléphone']),
 

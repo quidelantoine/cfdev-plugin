@@ -275,7 +275,7 @@ final class CacheManager
 
     private function isEnabled(): bool
     {
-        return (bool) get_option(\Weblitzer\CFDev\Admin\SettingsPage::OPTION_CACHE, false);
+        return (bool) get_option(\Weblitzer\CFDev\Admin\CachePage::OPTION_CACHE, false);
     }
 
     /**

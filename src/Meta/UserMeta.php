@@ -56,6 +56,7 @@ class UserMeta extends Meta
             // Build the meta box and fields
             $this->data = $this->build($data);
 
+            $this->registerRestMeta('user');
             $this->setupAdminColumns();
 
             add_action('personal_options_update', array( $this, 'saveUser' ));

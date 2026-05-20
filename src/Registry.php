@@ -80,6 +80,79 @@ class Registry
     }
 
     /**
+     * Returns all fields flagged with `rest: true`, grouped by meta box.
+     *
+     * Each entry: { id, title, meta_type, targets, fields }
+     * where fields is a map of field_id => { label, type, rest_type }
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function restFields(): array
+    {
+        $result = [];
+        foreach (self::$metas as $meta) {
+            $restFields = [];
+
+            foreach ($meta->fields as $field_id => $field) {
+                if ($field->rest && ! $field->in_bundle && ! ($field instanceof Heading)) {
+                    $restFields[$field_id] = [
+                        'label'     => $field->label,
+                        'type'      => $field->type,
+                        'rest_type' => $field->restType(),
+                    ];
+                }
+            }
+
+            foreach ($meta->doRestBundles() as $bundle) {
+                $restFields[$bundle->id] = [
+                    'label'     => $bundle->id,
+                    'type'      => 'bundle',
+                    'rest_type' => 'string',
+                ];
+            }
+
+            $sections = self::restSections($meta);
+            $bundles  = self::restBundles($meta);
+
+            if (empty($restFields) && empty($sections) && empty($bundles)) {
+                continue;
+            }
+            [$meta_type, $targets] = self::resolveTypeAndTargets($meta);
+            $result[] = [
+                'id'         => $meta->id,
+                'title'      => $meta->title ?: $meta->id,
+                'meta_type'  => $meta_type,
+                'targets'    => $targets,
+                'layout'     => self::resolveLayout($meta),
+                'fields'     => $restFields,
+                'bundles'    => $bundles,
+                'sections'   => $sections,
+                'conditions' => self::resolveConditions($meta),
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Returns true if at least one Meta is registered for the given meta_type + target.
+     *
+     * Pass an empty $target to match any target (used for user meta which has no subtype).
+     */
+    public static function hasEntriesFor(string $meta_type, string $target = ''): bool
+    {
+        foreach (self::$metas as $meta) {
+            [$type, $targets] = self::resolveTypeAndTargets($meta);
+            if ($type !== $meta_type) {
+                continue;
+            }
+            if ($target === '' || in_array($target, $targets, true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Clears all registered entries. Use in tests to prevent state bleed.
      */
     public static function reset(): void
@@ -233,6 +306,62 @@ class Registry
         }
 
         return [];
+    }
+
+    /** @return array<string, array{fields: array<string, array<string, mixed>>}> */
+    private static function restBundles(Meta $meta): array
+    {
+        $result = [];
+        foreach ($meta->doRestBundles() as $bundle) {
+            $result[$bundle->id] = ['fields' => self::bundleFields($bundle)];
+        }
+        return $result;
+    }
+
+    /**
+     * @return array<int, array{title: string, fields: array<string, array<string, mixed>>, bundle_id: string|null}>
+     */
+    private static function restSections(Meta $meta): array
+    {
+        if (! ($meta->data instanceof Tabs) && ! ($meta->data instanceof Accordion)) {
+            return [];
+        }
+
+        $rest_bundle_ids = array_map(fn(Bundle $b) => $b->id, $meta->doRestBundles());
+        $sections        = [];
+
+        foreach ($meta->data->tabs as $tab) {
+            if ($tab->fields instanceof Bundle) {
+                if (in_array($tab->fields->id, $rest_bundle_ids, true)) {
+                    $sections[] = [
+                        'title'     => $tab->title,
+                        'fields'    => [],
+                        'bundle_id' => $tab->fields->id,
+                    ];
+                }
+            } else {
+                $fields = [];
+                foreach ((array) $tab->fields as $field_id => $field) {
+                    if ($field instanceof Heading || ! $field->rest) {
+                        continue;
+                    }
+                    $fields[$field_id] = [
+                        'label'     => $field->label,
+                        'type'      => $field->type,
+                        'rest_type' => $field->restType(),
+                    ];
+                }
+                if (! empty($fields)) {
+                    $sections[] = [
+                        'title'     => $tab->title,
+                        'fields'    => $fields,
+                        'bundle_id' => null,
+                    ];
+                }
+            }
+        }
+
+        return $sections;
     }
 
     /** @return array<string, array<string, mixed>> */

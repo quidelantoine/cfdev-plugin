@@ -54,6 +54,8 @@ class Field
     public bool $supports_repeatable = false;
     public bool $supports_bundle = false;
     public bool $supports_ajax = false;
+    // REST API
+    public bool $rest = false;
     // Validation
     public bool $required = false;
     /** @var array<\Weblitzer\CFDev\Contracts\Validatable> */
@@ -80,6 +82,7 @@ class Field
         $this->options          = $field['options'] ?? $this->options;
         $this->args             = $field['args'] ?? $this->args;
         $this->underscore       = $field['underscore'] ?? $this->underscore;
+        $this->rest             = $field['rest'] ?? $this->rest;
         $this->required         = $field['required'] ?? $this->required;
         $this->repeatable       = $field['repeatable'] ?? $this->repeatable;
         $this->ajax             = $field['ajax'] ?? $this->ajax;
@@ -499,5 +502,13 @@ class Field
     public function buildId(string $name, string $parent): string
     {
         return apply_filters('cfdev_build_id', ( $this->underscore ? '_' : '' ) . ( ! empty($parent) ? Str::uglify($parent) . '_' : '' ) . Str::uglify($name));
+    }
+
+    public function restType(): string
+    {
+        return match ($this->type) {
+            'number' => 'number',
+            default  => 'string',
+        };
     }
 }

@@ -32,6 +32,58 @@
         });
     });
 
+    /* ── Bundle fields modal (REST page only) ─────────────── */
+    var bModal = document.getElementById("cfdev-rest-bundle-modal");
+    if (bModal) {
+        var bKeyEl  = document.getElementById("cfdev-rest-bundle-key");
+        var bBodyEl = document.getElementById("cfdev-rest-bundle-body");
+
+        function epLink(url, txt) {
+            if (!url) return "<code>" + esc(txt) + "</code>";
+            return "<a href=\"" + esc(url) + "\" target=\"_blank\" rel=\"noopener noreferrer\"><code>" + esc(txt) + "</code></a>";
+        }
+
+        document.addEventListener("click", function (e) {
+            var btn = e.target.closest(".cfdev-bundle-fields-btn");
+            if (btn) {
+                var key      = btn.dataset.cfdevBundleKey    || "";
+                var fields   = JSON.parse(btn.dataset.cfdevBundleFields || "[]");
+                var epCurl   = btn.dataset.cfdevEpCfdevUrl   || "";
+                var epCtxt   = btn.dataset.cfdevEpCfdevTxt   || "";
+                var epNurl   = btn.dataset.cfdevEpNativeUrl  || "";
+                var epNtxt   = btn.dataset.cfdevEpNativeTxt  || "";
+                var native   = (btn.dataset.cfdevMetaType    || "") !== "user";
+
+                bKeyEl.textContent = key;
+
+                var html = "<table class=\"widefat striped cfdev-rest-table\"><thead><tr>"
+                         + "<th>Clé meta</th><th>Label</th><th>Type REST</th>"
+                         + "</tr></thead><tbody>";
+
+                fields.forEach(function (f) {
+                    html += "<tr>"
+                          + "<td><code>" + esc(f.id) + "</code></td>"
+                          + "<td>" + esc(f.label) + "</td>"
+                          + "<td><span class=\"cfdev-rule-badge\">" + esc(f.rest_type) + "</span></td>"
+                          + "</tr>";
+                });
+
+                html += "</tbody></table>";
+                bBodyEl.innerHTML = html;
+                bModal.hidden = false;
+                return;
+            }
+            if (e.target.closest("#cfdev-rest-bundle-modal .cfdev-modal-close")
+                || e.target.closest("#cfdev-rest-bundle-modal .cfdev-modal-overlay")) {
+                bModal.hidden = true;
+            }
+        });
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && !bModal.hidden) { bModal.hidden = true; }
+        });
+    }
+
     /* ── Inspector modal ───────────────────────────────────── */
     var AJAX_URL   = (window.cfdevInspect || {}).ajaxUrl     || "";
     var NONCE      = (window.cfdevInspect || {}).nonce       || "";

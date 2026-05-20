@@ -131,7 +131,7 @@ class AssetLoader implements Registerable
 
         $this->localizeScripts();
 
-        if ($hook === 'cfdev_page_cfdev-fields') {
+        if (in_array($hook, ['cfdev_page_cfdev-fields', 'cfdev_page_cfdev-rest'], true)) {
             wp_enqueue_script('cfdev-registry');
             wp_localize_script('cfdev-registry', 'cfdevInspect', [
                 'ajaxUrl'     => admin_url('admin-ajax.php'),

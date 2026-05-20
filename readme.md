@@ -1,15 +1,11 @@
 # Pour CFDev : "CFDev – Code-First Custom Meta Fields For Wordpress" Custom Meta For Dev
-
+amelioration du code ( interafce , duplication content), ok pour l'architecture du pluging ?
 # En cours
 
-=> et le js dans le fichier function.js ?? c'est pas mieux
-=> lancer les tests avant commit 
-- => commit 
+=> refaire une verif api, demande ecrire des tests unitaires pour la partie api
 
-=> creation de l'api 
-=> POur api, donner accés au element que si il on la metabox d'aatcher dans le registry
-=> erire les test unitaire directe
-=> ecrire la doc ,
+=> dna sgroupe de champ => inspecter , faire un truc code ,dans une autre modal,  avec le code tout pres pour afficher les donéées, foreach si besoin, esc_html et autres , un truc simple mais propre ++ , Faire un presentation standars par champ ++
+
 # installation 
 
 ```bash
@@ -27,6 +23,8 @@ vendor/bin/phpunit
 tou sle stexte dans des __(''); devrais etre en anglais dans le code , je ferais un mo po pour les frenchy ensuite
 
 => Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien
+
+js full vanilla ??, utilisation de vite.js , pour prefixage css et js polyfills
 
 => FAire une API aussi pour recuperer les donées , l'activer ou non dans l'administration
 => Pour les headless+++ a ajouter a la doc et à l'overview 

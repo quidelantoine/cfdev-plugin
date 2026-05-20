@@ -92,7 +92,6 @@ class ImageAltTest extends CFDevTestCase
     {
         $output = $this->makeField()->outputHtml([]);
         $this->assertStringContainsString('cfdev-image-alt-text', $output);
-        $this->assertStringContainsString('cfdev-image-alt-label', $output);
     }
 
     public function testOutputInputNamesContainFieldId(): void

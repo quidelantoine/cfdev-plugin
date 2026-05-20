@@ -18,7 +18,6 @@ final class GetDataPage extends AdminPage
             return;
         }
 
-        self::baseStyles();
         ?>
         <div class="wrap">
             <?php self::header(__('Get Data', 'cfdev'), __('Debug', 'cfdev')); ?>

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * CFDev Demo — Post meta boxes (sections 1, 4)
+ */
+
 use Weblitzer\CFDev\PostType;
 use Weblitzer\CFDev\Validation\Rules\Alpha;
 use Weblitzer\CFDev\Validation\Rules\AlphaNumeric;
@@ -30,14 +34,10 @@ use Weblitzer\CFDev\Validation\Rules\StartsWith;
 use Weblitzer\CFDev\Validation\Rules\Url;
 use Weblitzer\CFDev\Validation\Rules\Uuid;
 
-/**
- * CFDev Demo — Post meta boxes (sections 1, 4)
- */
-
-$post = new PostType('post');
+$postType = new PostType('post');
 
 // ── 1. Flat — tous les types de champs + couverture maximale des Rules ───
-$post->addMetaBox(
+$postType->addMetaBox(
     'cfdev_demo_flat',
     '[DEMO] Tous les champs — Tests Validation/Rules',
     generateArrayAllField('demo', 'flat', [
@@ -196,7 +196,7 @@ $post->addMetaBox(
 );
 
 // ── Rules avancées : Alpha, AlphaNumeric, ExactLength, Slug, Uuid, ImageExactDimensions ──
-$post->addMetaBox('cfdev_demo_extra_rules', '[DEMO] Rules avancées', [
+$postType->addMetaBox('cfdev_demo_extra_rules', '[DEMO] Rules avancées', [
     ['id' => '_demo_extra_alpha',    'type' => 'text',  'label' => 'Alphabétique uniquement',
         'explanation' => 'Uniquement des lettres (a-z, A-Z), pas d\'espaces ni chiffres',
         'rules' => [new Alpha()]],
@@ -218,7 +218,7 @@ $post->addMetaBox('cfdev_demo_extra_rules', '[DEMO] Rules avancées', [
 ]);
 
 // ── Bundle — tous les champs en lignes répétables ──────────────────────
-$post->addMetaBox('cfdev_demo_bundle', '[DEMO] Bundle', [
+$postType->addMetaBox('cfdev_demo_bundle', '[DEMO] Bundle', [
     'bundle',
     generateArrayAllField('demo', 'bundle', [
         'text'   => [new Required()],

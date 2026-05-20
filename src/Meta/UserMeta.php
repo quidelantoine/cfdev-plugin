@@ -104,9 +104,12 @@ class UserMeta extends Meta
             }
         }
 
-        echo '<h3>' . esc_html($this->title) . '</h3>';
-
+        echo '<div class="cfdev-postbox">';
+        echo '<div class="cfdev-postbox-header"><h2 class="cfdev-postbox-title">'
+            . esc_html($this->title) . '</h2></div>';
+        echo '<div class="cfdev-postbox-inside">';
         parent::callback($user, $data);
+        echo '</div></div>';
     }
 
     /**

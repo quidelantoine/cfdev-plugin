@@ -101,7 +101,7 @@ abstract class Meta
     }
 
     /** @param iterable<string, \Weblitzer\CFDev\Field> $data */
-    private function renderTable(iterable $data, object $object): void
+    protected function renderTable(iterable $data, object $object): void
     {
         /** @var object{ID: int} $object */
         echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';

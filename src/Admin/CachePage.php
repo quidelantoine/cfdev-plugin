@@ -54,8 +54,6 @@ final class CachePage extends AdminPage
         $files    = $store->listAll();
         $registry = array_column(Registry::all(), null, 'id');
 
-        self::baseStyles();
-        self::pageStyles();
         settings_errors('cfdev_cache');
         ?>
         <div class="wrap">
@@ -277,105 +275,5 @@ final class CachePage extends AdminPage
             _n('%d j', '%d j', $d, 'cfdev'),
             $d
         );
-    }
-
-    private static function pageStyles(): void
-    {
-        // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo '
-<style id="cfdev-cache-css">
-/* Cache option toggle */
-.cfdev-cache-option {
-    display: flex; align-items: center;
-    background: #fff; border: 1px solid #dcdcde;
-    border-radius: 4px; padding: 14px 18px;
-    margin-bottom: 18px; gap: 14px;
-}
-.cfdev-cache-option__form { display: flex; align-items: center; gap: 12px; margin: 0; }
-.cfdev-cache-option__label { font-size: 13px; line-height: 1.5; }
-.cfdev-cache-option__label strong { display: inline; }
-.cfdev-cache-option__hint { color: #787c82; }
-
-/* Toggle switch */
-.cfdev-toggle-wrap {
-    position: relative; display: inline-flex;
-    align-items: center; cursor: pointer; flex-shrink: 0;
-}
-.cfdev-toggle-wrap input[type="checkbox"] {
-    position: absolute; opacity: 0; width: 0; height: 0;
-}
-.cfdev-toggle-slider {
-    width: 40px; height: 22px;
-    background: #c3c4c7; border-radius: 22px;
-    transition: background .2s;
-}
-.cfdev-toggle-slider::after {
-    content: ""; position: absolute;
-    width: 16px; height: 16px; border-radius: 50%;
-    background: #fff; top: 3px; left: 3px;
-    transition: transform .2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,.3);
-}
-.cfdev-toggle-wrap input:checked + .cfdev-toggle-slider { background: #00a32a; }
-.cfdev-toggle-wrap input:checked + .cfdev-toggle-slider::after { transform: translateX(18px); }
-
-/* Toolbar */
-.cfdev-cache-toolbar {
-    display: flex; align-items: center; gap: 16px;
-    margin-bottom: 16px;
-}
-.cfdev-cache-dir code {
-    font-size: 11px; color: #787c82;
-    background: #f6f7f7; padding: 2px 7px; border-radius: 3px;
-}
-
-/* Table */
-.cfdev-cache-table { border-radius: 3px; overflow: hidden; }
-.cfdev-cache-table thead th {
-    font-size: 11px; text-transform: uppercase;
-    letter-spacing: .5px; color: #50575e;
-    background: #f6f7f7; font-weight: 600;
-}
-.cfdev-cache-table tbody tr.cfdev-stale td { background: #fff8f0; }
-.cfdev-cache-table code { font-size: 11px; color: #787c82; }
-
-/* Object cell */
-.cfdev-object-label { display: block; font-weight: 600; font-size: 13px; color: #1d2327; }
-.cfdev-object-key   { display: block; margin-top: 2px; }
-
-/* Badges */
-.cfdev-badge-stale {
-    display: inline-block; font-size: 10px; font-weight: 700;
-    background: #fef3cd; color: #7a5c00;
-    border: 1px solid #f5d78e; padding: 1px 6px;
-    border-radius: 10px; margin-left: 6px; vertical-align: middle;
-}
-
-/* Type pills */
-.cfdev-type-pill {
-    display: inline-block; font-size: 11px; font-weight: 600;
-    padding: 2px 8px; border-radius: 10px; white-space: nowrap;
-}
-.cfdev-type-pill--post  { background: #e7f3ff; color: #0a4b78; }
-.cfdev-type-pill--term  { background: #e8f5e9; color: #1b5e20; }
-.cfdev-type-pill--user  { background: #f3e5f5; color: #4a148c; }
-.cfdev-type-pill--autre { background: #f0f0f1; color: #50575e; }
-
-/* Groups */
-.cfdev-groups-cell { max-width: 260px; }
-.cfdev-group-tag {
-    display: inline-block; font-size: 11px;
-    background: #f0f0f1; color: #3c434a;
-    border: 1px solid #dcdcde; padding: 1px 7px;
-    border-radius: 3px; margin: 1px 2px 1px 0;
-}
-.cfdev-no-groups { color: #c3c4c7; }
-
-/* Buttons */
-.cfdev-btn-del { color: #d63638 !important; padding: 0 !important; }
-.cfdev-btn-del:hover { color: #8a2424 !important; }
-.cfdev-btn-flush:disabled { opacity: .5; cursor: default; }
-</style>';
-        // phpcs:enable
     }
 }

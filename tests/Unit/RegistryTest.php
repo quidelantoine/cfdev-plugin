@@ -41,7 +41,7 @@ class RegistryTest extends CFDevTestCase
     /** @param array<mixed> $fields */
     private function makeTermMeta(string $taxonomy = 'genre', array $fields = []): TermMeta
     {
-        return new TermMeta($taxonomy, $fields);
+        return new TermMeta($taxonomy, '', $fields);
     }
 
     // Explicit 'id' bypasses buildId() so the key is always predictable in tests

@@ -33,7 +33,9 @@ final class CacheStore
         // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
         file_put_contents(
             $this->dir . '.htaccess',
-            "# CFDev cache — deny direct HTTP access\n<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n    Order deny,allow\n    Deny from all\n</IfModule>\n"
+            "# CFDev cache — deny direct HTTP access\n" .
+            "<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n" .
+            "<IfModule !mod_authz_core.c>\n    Order deny,allow\n    Deny from all\n</IfModule>\n"
         );
     }
 

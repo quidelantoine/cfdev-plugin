@@ -4,19 +4,20 @@
  * CFDev Demo — Page meta boxes
  */
 
-$page = new \Weblitzer\CFDev\PostType('page');
+$pageType = new \Weblitzer\CFDev\PostType('page');
 
 // ── Flat — tous les types de champs ──────────────────────────────────
-$page->addMetaBox('cfdev_demo_page_flat', '[DEMO] Page — Tous les champs', generateArrayAllField('demo', 'page_flat'))->onlyForTemplate('template-home.php');
+$pageType->addMetaBox('cfdev_demo_page_flat', '[DEMO] Page — Tous les champs', generateArrayAllField('demo', 'page_flat'))
+    ->onlyForTemplate('template-home.php');
 
 // ── Bundle — tous les champs en lignes répétables ─────────────────────
-$page->addMetaBox('cfdev_demo_page_bundle', '[DEMO] Page — Bundle', [
+$pageType->addMetaBox('cfdev_demo_page_bundle', '[DEMO] Page — Bundle', [
     'bundle',
     generateArrayAllField('demo', 'page_bundle'),
 ])->onlyForTemplate('template-home.php');
 
 // ── Tabs — onglets avec champs plats ──────────────────────────────────
-$page->addMetaBox('cfdev_demo_tabs', '[DEMO] Tabs', [
+$pageType->addMetaBox('cfdev_demo_tabs', '[DEMO] Tabs', [
     'tabs',
     [
         'Onglet A' => generateArrayAllField('demo', 'tab_a'),
@@ -28,7 +29,7 @@ $page->addMetaBox('cfdev_demo_tabs', '[DEMO] Tabs', [
 ])->onlyForTemplate('template-home.php');
 
 // ── 3. Tabs + Bundle ──────────────────────────────────────────────────
-$page->addMetaBox('cfdev_demo_tabs_bundle', '[DEMO] Tabs avec bundle', [
+$pageType->addMetaBox('cfdev_demo_tabs_bundle', '[DEMO] Tabs avec bundle', [
     'tabs',
     [
         'Tab avec bundle' => [
@@ -42,7 +43,7 @@ $page->addMetaBox('cfdev_demo_tabs_bundle', '[DEMO] Tabs avec bundle', [
 ])->onlyForTemplate('template-home.php');
 
 // ── 5. Accordion — sections repliables ───────────────────────────────
-$page->addMetaBox('cfdev_demo_accordion', '[DEMO] Accordéon', [
+$pageType->addMetaBox('cfdev_demo_accordion', '[DEMO] Accordéon', [
     'accordion',
     [
         'Section A' => generateArrayAllField('demo', 'acc_a'),
@@ -54,7 +55,7 @@ $page->addMetaBox('cfdev_demo_accordion', '[DEMO] Accordéon', [
 ])->onlyForTemplate('template-home.php');
 
 // ── 6. Accordion + Bundle ────────────────────────────────────────────
-$page->addMetaBox('cfdev_demo_accordion_bundle', '[DEMO] Accordéon avec bundle', [
+$pageType->addMetaBox('cfdev_demo_accordion_bundle', '[DEMO] Accordéon avec bundle', [
     'accordion',
     [
         'Section avec bundle' => [

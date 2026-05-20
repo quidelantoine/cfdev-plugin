@@ -16,7 +16,8 @@ vendor/bin/phpunit
 
 # A faire 
 => Voir la docs dans le back-office, grace au fichier md 
-
+=> faire une doc en francais et une en anglais, comment bien gerer ceci
+    => comment gerer cela avec md dans depot et aussi avec le md sur l'admin du site faire une partie documentation
 
 => FAire une pai aussi pour recuperer les donées , l'activer ou non dans l'administration 
 => Pour les headless+++ a ajouter a la doc et à l'overview 

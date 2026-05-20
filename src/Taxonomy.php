@@ -109,9 +109,9 @@ class Taxonomy extends ContentType
      * @param  array<string> $locations Form locations: 'add_form', 'edit_form'
      * @return static
      */
-    public function addTermMeta(array $data = [], array $locations = ['add_form', 'edit_form']): static
+    public function addTermMeta(array $data = [], string $title = '', array $locations = ['add_form', 'edit_form']): static
     {
-        $this->lastTermMeta = new \Weblitzer\CFDev\Meta\TermMeta($this->name, $data, $locations);
+        $this->lastTermMeta = new \Weblitzer\CFDev\Meta\TermMeta($this->name, $title, $data, $locations);
 
         return $this;
     }

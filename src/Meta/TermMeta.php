@@ -46,8 +46,10 @@ class TermMeta extends Meta
      * @param array<mixed>         $data
      * @param array<string>        $locations
      */
-    public function __construct($taxonomy, $data = array(), $locations = array( 'add_form', 'edit_form' ))
+    public function __construct($taxonomy, string $title = '', $data = array(), $locations = array( 'add_form', 'edit_form' ))
     {
+        parent::__construct($title);
+
         $this->taxonomies   = (array) $taxonomy;
         $this->locations    = (array) $locations;
         $this->id           = (string) current($this->taxonomies);
@@ -85,6 +87,21 @@ class TermMeta extends Meta
         return $this;
     }
 
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    private function resolveTitle(string $taxonomy): string
+    {
+        if ($this->title !== '') {
+            return $this->title;
+        }
+        $obj = get_taxonomy($taxonomy);
+        return $obj ? $obj->labels->singular_name : ucfirst($taxonomy);
+    }
+
     /**
      * Add fields to the add term form
      *
@@ -106,48 +123,23 @@ class TermMeta extends Meta
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
         echo '<input type="hidden" name="cfdev[__activate]" />';
 
+        echo '<div class="cfdev-postbox">';
+        echo '<div class="cfdev-postbox-header"><h2 class="cfdev-postbox-title">'
+            . esc_html($this->resolveTitle($taxonomy)) . '</h2></div>';
+        echo '<div class="cfdev-postbox-inside">';
+        echo '<div class="cfdev" data-object-id="0" data-meta-type="term">';
+
         if ($this->data instanceof Tabs || $this->data instanceof Accordion) {
-            echo '<div class="cfdev">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => 0]);
-            echo '</div>';
-            return;
-        }
-
-        if ($this->data instanceof Bundle) {
-            echo '<div class="form-field cfdev">';
+        } elseif ($this->data instanceof Bundle) {
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => 0]);
-            echo '</div>';
-            return;
+        } else {
+            $this->renderTable($this->data, (object) ['ID' => 0]);
         }
 
-        /* Loop through $data */
-        foreach ($this->data as $id_name => $field) {
-            $value = '';
-
-            if ($field instanceof \Weblitzer\CFDev\Fields\Heading) {
-                echo '<div class="cfdev cfdev-heading-row">';
-                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                echo $field->outputHtml('');
-                echo '</div>';
-                continue;
-            }
-
-            if (! $field instanceof Hidden) {
-                echo '<div class="form-field cfdev">';
-                    echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">' . esc_html($field->label) . '</label>';
-                if (! empty($field->description)) {
-                    echo '<div class="cfdev-description description">' . wp_kses_post($field->description) . '</div>';
-                }
-                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                    echo $field->output($value);
-                echo '</div>';
-            } else {
-                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                echo $field->output($value);
-            }
-        }
+        echo '</div></div></div>';
     }
 
     /**
@@ -165,64 +157,29 @@ class TermMeta extends Meta
         }
 
         wp_nonce_field('cfdev_meta', 'cfdev_nonce');
-        $value = get_cfdev_term_meta($term->term_id, $term->taxonomy);
-
         ErrorBag::load('term', (int) $term->term_id);
-
         echo '<input type="hidden" name="cfdev[__activate]" />';
 
+        echo '<tr class="cfdev form-field"><td colspan="2">';
+        echo '<div class="cfdev-postbox">';
+        echo '<div class="cfdev-postbox-header"><h2 class="cfdev-postbox-title">'
+            . esc_html($this->resolveTitle($term->taxonomy)) . '</h2></div>';
+        echo '<div class="cfdev-postbox-inside">';
+        echo '<div class="cfdev" data-object-id="' . esc_attr((string) $term->term_id)
+            . '" data-meta-type="term">';
+
         if ($this->data instanceof Tabs || $this->data instanceof Accordion) {
-            echo '<tr class="cfdev form-field"><td colspan="2">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => $term->term_id]);
-            echo '</td></tr>';
-            return;
-        }
-
-        if ($this->data instanceof Bundle) {
-            echo '<tr class="cfdev form-field"><td colspan="2">';
+        } elseif ($this->data instanceof Bundle) {
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->data->output((object) ['ID' => $term->term_id]);
-            echo '</td></tr>';
-            return;
+        } else {
+            $this->renderTable($this->data, (object) ['ID' => $term->term_id]);
         }
 
-        /* Loop through $data */
-        foreach ($this->data as $id_name => $field) {
-            if ($field instanceof \Weblitzer\CFDev\Fields\Heading) {
-                echo '<tr class="cfdev cfdev-heading-row"><td colspan="2">';
-                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                echo $field->outputHtml('');
-                echo '</td></tr>';
-                continue;
-            }
-
-            $value[$id_name] = isset($value[$id_name]) ? $value[$id_name] : '';
-
-            if (! $field instanceof Hidden) {
-                $field_errors = ErrorBag::forField($id_name);
-                $has_error    = ! empty($field_errors);
-
-                echo '<tr class="cfdev form-field' . ($has_error ? ' cfdev-has-error' : '') . '">';
-                    echo '<th scope="row" valign="top" class="cfdev-th">';
-                        echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">' . esc_html($field->label) . '</label>';
-                if (! empty($field->description)) {
-                    echo '<div class="cfdev-description description">' . wp_kses_post($field->description) . '</div>';
-                }
-                    echo '</th>';
-                    echo '<td class="cfdev-td">';
-                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        echo $field->output($value[$id_name]);
-                if ($has_error) {
-                    echo '<p class="cfdev-field-error">' . esc_html(implode(' ', $field_errors)) . '</p>';
-                }
-                    echo '</td>';
-                echo '</tr>';
-            } else {
-                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                echo $field->output($value);
-            }
-        }
+        echo '</div></div></div>';
+        echo '</td></tr>';
     }
 
     /**

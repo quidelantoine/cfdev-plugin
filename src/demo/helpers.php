@@ -19,8 +19,10 @@ if (! function_exists('generateArrayAllField')) {
         $str = $name . '_' . $block;
 
         $field = function (array $config) use ($rules, $ajax): array {
-            $type           = $config['type'];
-            $config['ajax'] = $ajax;
+            $type                  = $config['type'];
+            $config['ajax']        = $config['ajax'] ?? $ajax;
+            $config['description'] = $config['description'] ?? 'Description test';
+            $config['explanation'] = $config['explanation'] ?? 'Explanation test';
             return isset($rules[$type])
                 ? array_merge($config, ['rules' => $rules[$type]])
                 : $config;

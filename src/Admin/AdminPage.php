@@ -44,47 +44,4 @@ abstract class AdminPage
         </div>
         <?php
     }
-
-    // -------------------------------------------------------------------------
-    // Base styles (shared across all pages)
-    // -------------------------------------------------------------------------
-
-    protected static function baseStyles(): void
-    {
-        // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo '
-<style id="cfdev-base-css">
-/* ── Shared CFDev admin styles ───────────────────────────────────── */
-.cfdev-header {
-    display: flex; align-items: center; gap: 12px;
-    margin: 20px 0 20px;
-}
-.cfdev-header__title {
-    margin: 0; padding: 0; font-size: 23px; line-height: 1;
-    display: flex; align-items: center; gap: 10px;
-}
-.cfdev-logo {
-    background: #8dc63f; color: #fff;
-    font-size: 12px; font-weight: 800;
-    padding: 4px 8px; border-radius: 4px; letter-spacing: -.5px;
-}
-.cfdev-header__sub {
-    font-size: 13px; color: #5a4e3a;
-    background: #f0e8d8; border: 1px solid #d4c4a8;
-    padding: 2px 10px; border-radius: 10px;
-}
-
-/* ── Placeholder ─────────────────────────────────────────────────── */
-.cfdev-placeholder {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 12px; padding: 60px 20px;
-    background: #fff; border: 1px solid #c3c4c7;
-    border-radius: 3px; color: #787c82; text-align: center;
-    max-width: 480px; margin: 0 auto;
-}
-.cfdev-placeholder__icon { font-size: 36px; opacity: .35; }
-.cfdev-placeholder__text { margin: 0; font-size: 14px; }
-</style>';
-        // phpcs:enable
-    }
 }

@@ -19,7 +19,6 @@ final class SettingsPage extends AdminPage
             return;
         }
 
-        self::baseStyles();
         ?>
         <div class="wrap">
             <?php self::header(__('Réglages', 'cfdev')); ?>

@@ -647,4 +647,9 @@ jQuery( function( $ ) {
 		}, 400);
 	});
 
+	// Postbox toggle (term & user meta)
+	$(document).on('click', '.cfdev-postbox-header', function () {
+		$(this).closest('.cfdev-postbox').toggleClass('is-closed');
+	});
+
 });

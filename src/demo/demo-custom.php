@@ -5,7 +5,7 @@
  */
 
 // ── CPT : Leçons ───────────────────────────────────────────────────────
-register_cfdev_post_type('lessons', [
+$lessons = register_cfdev_post_type('lessons', [
     'public'          => true,
     'capability_type' => 'post',
     'hierarchical'    => true,
@@ -22,8 +22,11 @@ register_cfdev_post_type('lessons', [
     'add_new_item'  => 'Ajouter une leçon',
     'edit_item'     => 'Éditer la leçon',
     'all_items'     => 'Toutes les leçons',
-])
-->addMetaBox('meta_home_intro', 'Introduction', require __DIR__ . '/cfdev/fields/lessons.php');
+]);
+
+if ($lessons !== null) {
+    $lessons->addMetaBox('meta_home_intro', 'Introduction', require __DIR__ . '/cfdev/fields/lessons.php');
+}
 
 // ── Taxonomie : Modules (courses) ──────────────────────────────────────
 register_cfdev_taxonomy('courses', 'lessons', [

@@ -5,10 +5,10 @@
  */
 
 // ── 8. Term meta flat — taxonomy 'category' ───────────────────────────
-new \Weblitzer\CFDev\Meta\TermMeta('category', generateArrayAllField('demo', 'term'));
+new \Weblitzer\CFDev\Meta\TermMeta('category', 'Catégorie — Tous les champs', generateArrayAllField('demo', 'term'));
 
 // ── 9. Term meta Tabs — taxonomy 'category' ───────────────────────────
-new \Weblitzer\CFDev\Meta\TermMeta('category', [
+new \Weblitzer\CFDev\Meta\TermMeta('category', 'Catégorie — Tabs', [
     'tabs',
     [
         'Onglet A' => generateArrayAllField('demo', 'term_tab_a'),
@@ -20,7 +20,7 @@ new \Weblitzer\CFDev\Meta\TermMeta('category', [
 ]);
 
 // ── 10. Term meta Accordion+Bundle — taxonomy 'category' ──────────────
-new \Weblitzer\CFDev\Meta\TermMeta('category', [
+new \Weblitzer\CFDev\Meta\TermMeta('category', 'Catégorie — Accordéon with Bundle', [
     'accordion',
     [
         'Infos'   => generateArrayAllField('demo', 'term_acc_a'),
@@ -29,3 +29,4 @@ new \Weblitzer\CFDev\Meta\TermMeta('category', [
         ],
     ],
 ]);
+// pour le css, c'est pareil, bcp de css dans les fichiers de l'Admin, pourquoi pas le mettre dans style.css

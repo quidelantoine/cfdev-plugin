@@ -17,7 +17,6 @@ final class DashboardPage extends AdminPage
             return;
         }
 
-        self::baseStyles();
         ?>
         <div class="wrap">
             <?php self::header(__('Tableau de bord', 'cfdev')); ?>

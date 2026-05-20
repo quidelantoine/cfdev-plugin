@@ -15,15 +15,15 @@ vendor/bin/phpunit
 ```
 
 # A faire 
-=> Voir la docs dans le back-office, grace au fichier md 
-=> faire une doc en francais et une en anglais, comment bien gerer ceci
-    => comment gerer cela avec md dans depot et aussi avec le md sur l'admin du site faire une partie documentation
 
-=> FAire une pai aussi pour recuperer les donées , l'activer ou non dans l'administration 
+
+=> FAire une API aussi pour recuperer les donées , l'activer ou non dans l'administration
 => Pour les headless+++ a ajouter a la doc et à l'overview 
-=> Faire tests unitaire pour admin et systeme de cache +++
+
+
 
 => revoir les champs DEMO , pour etre sur que je teste tous dans tous les sens +++
+-> A terminer +++ 
 
 => j'ai fais les champs , et le reste (validation, sauvegarde) , repeatable , ajax, 
     -> il faut faire une partie object , via des hooks ou non , pour init-cuztom
@@ -82,7 +82,9 @@ Faire un test avec les champ repetable sur tous pour faire le tests
 
 => lui demander de faire un design avec logo pour mise en avant du plugin 
 
-
+=> Voir la docs dans le back-office, grace au fichier md
+=> faire une doc en francais et une en anglais, comment bien gerer ceci
+=> comment gerer cela avec md dans depot et aussi avec le md sur l'admin du site faire une partie documentation
 ## Test 
 
 => test bundle dans term et user ????  et accordeon et tabs ???? et validation
@@ -93,6 +95,8 @@ custom-meta.dev
 => Voir si marche aussi dans bundle tabs , et accordeon
 => dans term et dans user ++
 => tester si cela marche si j'ajoute champ à woocommerce ??
+
+X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html sinon on va devoir changer souvent
 # Déclaration des champs 
 # Faire une partie pour remplacer custom init via des hooks ? ou autres 
 => Faire un fichiers *init-custom.php* de base dans le plugins, mais avoir la possiblité de ecraser, (like woocommerce , ou theme enfant )

@@ -29,4 +29,3 @@ new \Weblitzer\CFDev\Meta\TermMeta('category', 'Catégorie — Accordéon with B
         ],
     ],
 ]);
-// pour le css, c'est pareil, bcp de css dans les fichiers de l'Admin, pourquoi pas le mettre dans style.css

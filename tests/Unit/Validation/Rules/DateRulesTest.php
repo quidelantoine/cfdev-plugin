@@ -33,6 +33,12 @@ class DateRulesTest extends CFDevTestCase
         $this->assertFalse((new DateAfter('2020-01-01'))->validate('not-a-date'));
     }
 
+    public function testDateAfterGetError(): void
+    {
+        $error = (new DateAfter('2020-01-01'))->getError();
+        $this->assertStringContainsString('2020-01-01', $error);
+    }
+
     // -------------------------------------------------------------------------
     // Date_Before
     // -------------------------------------------------------------------------
@@ -50,6 +56,12 @@ class DateRulesTest extends CFDevTestCase
     public function testDateBeforeAfter(): void
     {
         $this->assertFalse((new DateBefore('2030-01-01'))->validate('2031-01-01'));
+    }
+
+    public function testDateBeforeGetError(): void
+    {
+        $error = (new DateBefore('2030-01-01'))->getError();
+        $this->assertStringContainsString('2030-01-01', $error);
     }
 
     // -------------------------------------------------------------------------
@@ -71,5 +83,10 @@ class DateRulesTest extends CFDevTestCase
     {
         $past = gmdate('Y-m-d', strtotime('-1 day'));
         $this->assertFalse((new DateAfterToday())->validate($past));
+    }
+
+    public function testDateAfterTodayGetError(): void
+    {
+        $this->assertNotEmpty((new DateAfterToday())->getError());
     }
 }

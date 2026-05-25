@@ -228,6 +228,14 @@ class TermMeta extends Meta
             return;
         }
 
+        // Respect parent condition
+        if ($this->only_if_parent !== null) {
+            $term = get_term($term_id);
+            if (! $term instanceof \WP_Term || $term->parent !== $this->only_if_parent) {
+                return;
+            }
+        }
+
         if (! empty($this->data) && isset($_POST['cfdev'])) {
             // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
             $values = is_array($_POST['cfdev']) ? wp_unslash($_POST['cfdev']) : [];

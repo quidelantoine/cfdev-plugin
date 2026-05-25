@@ -211,6 +211,11 @@ class MetaBox extends Meta
             return;
         }
 
+        // Respect template condition
+        if ($this->only_for_template !== null && get_page_template_slug($post_id) !== $this->only_for_template) {
+            return;
+        }
+
         // Is the current user capable to edit this post
         $post_type_slug = get_post_type($post_id);
         $post_type_obj  = $post_type_slug ? get_post_type_object($post_type_slug) : null;

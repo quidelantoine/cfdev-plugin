@@ -69,6 +69,13 @@ class WpAttachmentRulesTest extends CFDevTestCase
         $this->assertFalse((new FileMime(['image/jpeg']))->validate(-1));
     }
 
+    public function testFileMimeGetError(): void
+    {
+        $error = (new FileMime(['image/jpeg', 'image/png']))->getError();
+        $this->assertStringContainsString('image/jpeg', $error);
+        $this->assertStringContainsString('image/png', $error);
+    }
+
     // -------------------------------------------------------------------------
     // File_Extension
     // -------------------------------------------------------------------------
@@ -95,6 +102,13 @@ class WpAttachmentRulesTest extends CFDevTestCase
     {
         $this->mockNonAttachment();
         $this->assertFalse((new FileExtension(['jpg']))->validate(42));
+    }
+
+    public function testFileExtensionGetError(): void
+    {
+        $error = (new FileExtension(['jpg', 'png']))->getError();
+        $this->assertStringContainsString('jpg', $error);
+        $this->assertStringContainsString('png', $error);
     }
 
     // -------------------------------------------------------------------------
@@ -143,6 +157,25 @@ class WpAttachmentRulesTest extends CFDevTestCase
         $this->assertFalse((new ImageMinDimensions(800, 600))->validate(42));
     }
 
+    public function testImageMinDimensionsGetErrorBothDimensions(): void
+    {
+        $error = (new ImageMinDimensions(800, 600))->getError();
+        $this->assertStringContainsString('800', $error);
+        $this->assertStringContainsString('600', $error);
+    }
+
+    public function testImageMinDimensionsGetErrorWidthOnly(): void
+    {
+        $error = (new ImageMinDimensions(width: 800))->getError();
+        $this->assertStringContainsString('800', $error);
+    }
+
+    public function testImageMinDimensionsGetErrorHeightOnly(): void
+    {
+        $error = (new ImageMinDimensions(height: 600))->getError();
+        $this->assertStringContainsString('600', $error);
+    }
+
     // -------------------------------------------------------------------------
     // Image_Exact_Dimensions
     // -------------------------------------------------------------------------
@@ -175,5 +208,24 @@ class WpAttachmentRulesTest extends CFDevTestCase
     {
         $this->mockNonAttachment();
         $this->assertFalse((new ImageExactDimensions(1200, 630))->validate(42));
+    }
+
+    public function testImageExactDimensionsGetErrorBothDimensions(): void
+    {
+        $error = (new ImageExactDimensions(1200, 630))->getError();
+        $this->assertStringContainsString('1200', $error);
+        $this->assertStringContainsString('630', $error);
+    }
+
+    public function testImageExactDimensionsGetErrorWidthOnly(): void
+    {
+        $error = (new ImageExactDimensions(width: 1200))->getError();
+        $this->assertStringContainsString('1200', $error);
+    }
+
+    public function testImageExactDimensionsGetErrorHeightOnly(): void
+    {
+        $error = (new ImageExactDimensions(height: 630))->getError();
+        $this->assertStringContainsString('630', $error);
     }
 }

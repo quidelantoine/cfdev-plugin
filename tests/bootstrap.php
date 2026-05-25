@@ -18,11 +18,13 @@ if (! defined('HOUR_IN_SECONDS')) {
 if (! class_exists('WP_Error')) {
     class WP_Error
     {
+        public readonly mixed $data;
         public function __construct(
             public readonly string $code = '',
             public readonly string $message = '',
-            public readonly mixed $data = '',
+            mixed $data = '',
         ) {
+            $this->data = $data;
         }
         public function get_error_code(): string
         {
@@ -31,6 +33,10 @@ if (! class_exists('WP_Error')) {
         public function get_error_message(): string
         {
             return $this->message;
+        }
+        public function get_error_data(string|int $code = ''): mixed
+        {
+            return $this->data;
         }
     }
 }
@@ -41,11 +47,16 @@ if (! class_exists('WP_REST_Request')) {
     class WP_REST_Request
     {
         /** @var array<string, mixed> */
-        private array $params;
-        /** @param array<string, mixed> $params */
-        public function __construct(array $params = [])
+        private array $params = [];
+        /** @param array<string, mixed> $attributes */
+        public function __construct(string $method = '', string $route = '', array $attributes = [])
         {
-            $this->params = $params;
+            $this->params = $attributes;
+        }
+        /** @param mixed $value */
+        public function set_param(string $key, $value): void
+        {
+            $this->params[$key] = $value;
         }
         public function get_param(string $key): mixed
         {

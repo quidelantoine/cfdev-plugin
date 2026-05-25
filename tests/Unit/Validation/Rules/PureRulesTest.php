@@ -52,6 +52,11 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Required())->validate('0'));
     }
 
+    public function testRequiredGetError(): void
+    {
+        $this->assertNotEmpty((new Required())->getError());
+    }
+
     // -------------------------------------------------------------------------
     // Alpha
     // -------------------------------------------------------------------------
@@ -76,6 +81,11 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Alpha())->validate(''));
     }
 
+    public function testAlphaGetError(): void
+    {
+        $this->assertNotEmpty((new Alpha())->getError());
+    }
+
     // -------------------------------------------------------------------------
     // Alpha_Numeric
     // -------------------------------------------------------------------------
@@ -88,6 +98,11 @@ class PureRulesTest extends CFDevTestCase
     public function testAlphaNumericWithSpecialChar(): void
     {
         $this->assertFalse((new AlphaNumeric())->validate('Hello!'));
+    }
+
+    public function testAlphaNumericGetError(): void
+    {
+        $this->assertNotEmpty((new AlphaNumeric())->getError());
     }
 
     // -------------------------------------------------------------------------
@@ -114,6 +129,11 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Slug())->validate('my-slug-'));
     }
 
+    public function testSlugGetError(): void
+    {
+        $this->assertNotEmpty((new Slug())->getError());
+    }
+
     // -------------------------------------------------------------------------
     // Regex
     // -------------------------------------------------------------------------
@@ -126,6 +146,11 @@ class PureRulesTest extends CFDevTestCase
     public function testRegexNoMatch(): void
     {
         $this->assertFalse((new Regex('/^\d{5}$/'))->validate('ABC'));
+    }
+
+    public function testRegexGetError(): void
+    {
+        $this->assertNotEmpty((new Regex('/^\d+$/'))->getError());
     }
 
     // -------------------------------------------------------------------------
@@ -147,6 +172,12 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new ExactLength(5))->validate('750011'));
     }
 
+    public function testExactLengthGetError(): void
+    {
+        $error = (new ExactLength(5))->getError();
+        $this->assertStringContainsString('5', $error);
+    }
+
     // -------------------------------------------------------------------------
     // Min / Max / Between
     // -------------------------------------------------------------------------
@@ -162,6 +193,12 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Min(18))->validate(17));
     }
 
+    public function testMinGetError(): void
+    {
+        $error = (new Min(18))->getError();
+        $this->assertStringContainsString('18', $error);
+    }
+
     public function testMaxValid(): void
     {
         $this->assertTrue((new Max(100))->validate(100));
@@ -171,6 +208,12 @@ class PureRulesTest extends CFDevTestCase
     public function testMaxInvalid(): void
     {
         $this->assertFalse((new Max(100))->validate(101));
+    }
+
+    public function testMaxGetError(): void
+    {
+        $error = (new Max(100))->getError();
+        $this->assertStringContainsString('100', $error);
     }
 
     public function testBetweenValid(): void
@@ -195,6 +238,13 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Between(1, 10))->validate('abc'));
     }
 
+    public function testBetweenGetError(): void
+    {
+        $error = (new Between(1, 10))->getError();
+        $this->assertStringContainsString('1', $error);
+        $this->assertStringContainsString('10', $error);
+    }
+
     // -------------------------------------------------------------------------
     // Positive
     // -------------------------------------------------------------------------
@@ -215,6 +265,11 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Positive())->validate(-1));
     }
 
+    public function testPositiveGetError(): void
+    {
+        $this->assertNotEmpty((new Positive())->getError());
+    }
+
     // -------------------------------------------------------------------------
     // Url
     // -------------------------------------------------------------------------
@@ -229,6 +284,11 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Url())->validate('not-a-url'));
     }
 
+    public function testUrlGetError(): void
+    {
+        $this->assertNotEmpty((new Url())->getError());
+    }
+
     // -------------------------------------------------------------------------
     // Uuid
     // -------------------------------------------------------------------------
@@ -241,6 +301,11 @@ class PureRulesTest extends CFDevTestCase
     public function testUuidInvalid(): void
     {
         $this->assertFalse((new Uuid())->validate('not-a-uuid'));
+    }
+
+    public function testUuidGetError(): void
+    {
+        $this->assertNotEmpty((new Uuid())->getError());
     }
 
     // -------------------------------------------------------------------------
@@ -263,6 +328,12 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new MinLength(1))->validate(''));
     }
 
+    public function testMinLengthGetError(): void
+    {
+        $error = (new MinLength(3))->getError();
+        $this->assertStringContainsString('3', $error);
+    }
+
     public function testMaxLengthValid(): void
     {
         $this->assertTrue((new MaxLength(5))->validate('hello'));
@@ -277,6 +348,12 @@ class PureRulesTest extends CFDevTestCase
     public function testMaxLengthEmptyStringAlwaysPasses(): void
     {
         $this->assertTrue((new MaxLength(5))->validate(''));
+    }
+
+    public function testMaxLengthGetError(): void
+    {
+        $error = (new MaxLength(5))->getError();
+        $this->assertStringContainsString('5', $error);
     }
 
     // -------------------------------------------------------------------------
@@ -308,6 +385,11 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Numeric())->validate(''));
     }
 
+    public function testNumericGetError(): void
+    {
+        $this->assertNotEmpty((new Numeric())->getError());
+    }
+
     // -------------------------------------------------------------------------
     // Contains / StartsWith / EndsWith
     // -------------------------------------------------------------------------
@@ -322,6 +404,12 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new Contains('@'))->validate('no-at-sign'));
     }
 
+    public function testContainsGetError(): void
+    {
+        $error = (new Contains('@'))->getError();
+        $this->assertStringContainsString('@', $error);
+    }
+
     public function testStartsWithValid(): void
     {
         $this->assertTrue((new StartsWith('https://'))->validate('https://example.com'));
@@ -332,6 +420,12 @@ class PureRulesTest extends CFDevTestCase
         $this->assertFalse((new StartsWith('https://'))->validate('http://example.com'));
     }
 
+    public function testStartsWithGetError(): void
+    {
+        $error = (new StartsWith('https://'))->getError();
+        $this->assertStringContainsString('https://', $error);
+    }
+
     public function testEndsWithValid(): void
     {
         $this->assertTrue((new EndsWith('.pdf'))->validate('document.pdf'));
@@ -340,6 +434,12 @@ class PureRulesTest extends CFDevTestCase
     public function testEndsWithInvalid(): void
     {
         $this->assertFalse((new EndsWith('.pdf'))->validate('document.docx'));
+    }
+
+    public function testEndsWithGetError(): void
+    {
+        $error = (new EndsWith('.pdf'))->getError();
+        $this->assertStringContainsString('.pdf', $error);
     }
 
     // -------------------------------------------------------------------------
@@ -356,6 +456,11 @@ class PureRulesTest extends CFDevTestCase
     {
         Functions\when('is_email')->justReturn(false);
         $this->assertFalse((new Email())->validate('not-an-email'));
+    }
+
+    public function testEmailGetError(): void
+    {
+        $this->assertNotEmpty((new Email())->getError());
     }
 
     // -------------------------------------------------------------------------

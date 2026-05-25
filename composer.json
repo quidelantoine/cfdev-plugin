@@ -19,7 +19,9 @@
     "brain/monkey": "^2.7",
     "automattic/vipwpcs": "^3.0",
     "phpstan/phpstan": "^2.1",
-    "szepeviktor/phpstan-wordpress": "^2.0"
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "wp-phpunit/wp-phpunit": "^7.0",
+    "phpunit/phpcov": "^13.0"
   },
   "config": {
     "allow-plugins": {

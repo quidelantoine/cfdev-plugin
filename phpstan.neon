@@ -13,6 +13,12 @@ parameters:
         - src
         - tests
 
+    bootstrapFiles:
+        - tests/Integration/stubs/phpstan-wp-test-stubs.php
+
+    stubFiles:
+        - tests/Integration/stubs/WP_REST_Request_stub.php
+
     # Exclure certains fichiers/dossiers (ex: vendor, node_modules)
     excludePaths:
         analyse:
@@ -21,6 +27,10 @@ parameters:
             - *.min.js
             - *.min.css
             - tests/bootstrap.php
+            - tests/Integration/stubs/phpstan-wp-test-stubs.php
+            - tests/Integration/stubs/WP_REST_Request_stub.php
+            - tests/Integration/stubs/phpunitpolyfills-autoload.php
+            - tests/Integration/stubs/Yoast/*
 
     # Ignorer les erreurs pour des fichiers spécifiques
     ignoreErrors: []

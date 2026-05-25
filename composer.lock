@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f2648aacdd04cafdf595dd887d21a87",
+    "content-hash": "b95f37cbc0583b69e841a4e4dcb2e122",
     "packages": [],
     "packages-dev": [
         {
@@ -1307,6 +1307,70 @@
                 }
             ],
             "time": "2026-02-06T04:37:53+00:00"
+        },
+        {
+            "name": "phpunit/phpcov",
+            "version": "13.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpcov.git",
+                "reference": "334ea12622ede25e8f490861b524742ea86fdc5f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpcov/zipball/334ea12622ede25e8f490861b524742ea86fdc5f",
+                "reference": "334ea12622ede25e8f490861b524742ea86fdc5f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.4",
+                "phpunit/php-code-coverage": "^14.1.3",
+                "phpunit/php-file-iterator": "^7.0.0",
+                "sebastian/cli-parser": "^5.0.0",
+                "sebastian/diff": "^8.1.0",
+                "sebastian/version": "^7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^13.1.6"
+            },
+            "bin": [
+                "phpcov"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "13.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "CLI frontend for php-code-coverage",
+            "homepage": "https://github.com/sebastianbergmann/phpcov",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/phpcov/issues",
+                "source": "https://github.com/sebastianbergmann/phpcov/tree/13.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-04-18T05:56:42+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -2802,6 +2866,54 @@
                 }
             ],
             "time": "2025-11-25T12:08:04+00:00"
+        },
+        {
+            "name": "wp-phpunit/wp-phpunit",
+            "version": "7.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wp-phpunit/wp-phpunit.git",
+                "reference": "06828a65f8276e31368fbe4c5f3d445332abc4c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wp-phpunit/wp-phpunit/zipball/06828a65f8276e31368fbe4c5f3d445332abc4c5",
+                "reference": "06828a65f8276e31368fbe4c5f3d445332abc4c5",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "__loaded.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Evan Mattson",
+                    "email": "me@aaemnnost.tv"
+                },
+                {
+                    "name": "WordPress Community",
+                    "homepage": "https://wordpress.org/about/"
+                }
+            ],
+            "description": "WordPress core PHPUnit library",
+            "homepage": "https://github.com/wp-phpunit",
+            "keywords": [
+                "phpunit",
+                "test",
+                "wordpress"
+            ],
+            "support": {
+                "docs": "https://github.com/wp-phpunit/docs",
+                "issues": "https://github.com/wp-phpunit/issues",
+                "source": "https://github.com/wp-phpunit/wp-phpunit"
+            },
+            "time": "2026-05-21T02:56:35+00:00"
         }
     ],
     "aliases": [],

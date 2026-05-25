@@ -410,7 +410,9 @@ class Bundle extends FieldContainer
             }
         }
 
-        $json = wp_json_encode($values);
+        // JSON_UNESCAPED_UNICODE : évite les séquences \uXXXX
+        // que wp_unslash() (appelé par update_*_meta) corrompt en uXXXX.
+        $json = wp_json_encode($values, JSON_UNESCAPED_UNICODE);
 
         if (false === $json) {
             return;

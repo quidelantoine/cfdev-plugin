@@ -69,7 +69,11 @@ class CfdevRestApiTest extends CFDevTestCase
     /** @param array<string, mixed> $params */
     private function request(array $params): \WP_REST_Request
     {
-        return new \WP_REST_Request($params);
+        $request = new \WP_REST_Request('GET', '/test');
+        foreach ($params as $key => $value) {
+            $request->set_param((string) $key, $value);
+        }
+        return $request;
     }
 
     // =========================================================================

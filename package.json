@@ -1,0 +1,13 @@
+{
+  "name": "cfdev-plugin-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run --browser chrome --spec 'cypress/e2e/01-login.cy.js,cypress/e2e/02-flat-fields.cy.js,cypress/e2e/03-validation.cy.js,cypress/e2e/04-bundle.cy.js,cypress/e2e/05-post-tabs.cy.js,cypress/e2e/06-post-accordion.cy.js,cypress/e2e/07-term-meta.cy.js,cypress/e2e/08-user-meta.cy.js,cypress/e2e/09-rest-api.cy.js,cypress/e2e/10-admin-pages.cy.js,cypress/e2e/11-front-end.cy.js'",
+    "cy:run:headed": "cypress run --browser chrome --headed"
+  },
+  "devDependencies": {
+    "cypress": "^13.14.2"
+  }
+}

@@ -2,3 +2,9 @@
 /node_modules/
 /.phpunit.cache/coverage/
 /coverage
+
+# Cypress
+/cypress.env.json
+/cypress/videos/
+/cypress/screenshots/
+/cypress/downloads/

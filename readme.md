@@ -67,6 +67,15 @@ vendor/bin/phpstan analyse src tests
 ./vendor/bin/phpunit --testsuite Unit
 ./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
 
+npm run cy:run  
+npx cypress open --browser chrome
+
+# Tests fonctionnels E2E — Cypress (nécessite docker compose up -d)
+npm install                                              # première fois seulement
+npm run cy:open                                          # Test Runner interactif
+npm run cy:run                                           # headless CI (Chrome)
+npx cypress run --spec "cypress/e2e/02-flat-fields.cy.js" --browser chrome  # spec unique
+
 # Coverage — Unit (rapide, sans DB)
 docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
 php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-php coverage/unit.cov --no-progress

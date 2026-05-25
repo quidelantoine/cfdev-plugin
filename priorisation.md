@@ -4,13 +4,27 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
+test  cypress sur les donées recuperer sur le front via le cacheManager et Registry !?, il faut aussi parler de l'api je pense ? SUr le plugin il faut tester quoi d'autres  encore ?
+│ Priorité  │         Spec         │                   Valeur                   │
+├───────────┼──────────────────────┼────────────────────────────────────────────┤
+│ 🥇        │ 09-rest-api.cy.js    │ Vérifie le pipeline complet save→cache→API │
+├───────────┼──────────────────────┼────────────────────────────────────────────┤
+│ 🥈        │ 10-admin-pages.cy.js │ Registry + Inspector + Cache flush         │
+├───────────┼──────────────────────┼────────────────────────────────────────────┤
+│ 🥉        │ Front-end            │ Seulement si le thème affiche les données  │
+├───────────┼──────────────────────┼────────────────────────────────────────────┤
+│ Plus tard │ Conditions/rôles     │ Edge cases, moins critiques                │
+Comme je lance les tests j'ai plus besoin du dossier demo ???, plus besoin de le lancer dans initilizer, il faut lancer les test cypres et c'est ok ??? ne fais rien sans en discuter ensemble avant
 
-test fonctionelle  CYPRESS 
+
+test fonctionelle CYPRESS => long ?????
 
 Mettre des icone au debut des champs pour aider à l'ui/ux
+=> Faire les champs de meme plaine largeur sur tous les supports , flat, bundle, accordeon, tabs pour post, term, user, homogeiniser les largeur de champs.
 
 => duplicate code ????
-
+=> changer les dachicons dashicons-lightbulb , 
+trouver un logo ++ perso ????
 => Test woocommerce isOK ??
 ## 🧪 Règle d'or — Les tests sont une priorité permanente
 
@@ -19,7 +33,6 @@ Mettre des icone au debut des champs pour aider à l'ui/ux
 > Exception : tests Admin HTML — à faire en dernier car liés au HTML qui change souvent.
 
 **Gaps à combler en continu :**
-- [ ] Compléter les tests unitaires existants (gaps identifiés)
 - [ ] Tests repeatable sur tous les types de champs
 - [ ] Tests bundle dans term et user
 - [ ] Tests accordéon et tabs dans term, user, bundle
@@ -52,7 +65,7 @@ Mettre des icone au debut des champs pour aider à l'ui/ux
 | 6 | **REST API endpoint** — cache déjà là = 80% fait | Tests endpoints, auth, format JSON |
 | 7 | **Admin : IDs uniques** — détection doublons | Tests détection collision |
 | 8 | **Admin CFDev visible admins uniquement** | Tests de capacité/rôle |
-| 9 | **Compatibilité PHP/WP** — définir + documenter | — |
+
 
 ---
 

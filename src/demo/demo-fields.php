@@ -20,4 +20,5 @@ add_action('init', static function (): void {
     require __DIR__ . '/demo-term.php';
     require __DIR__ . '/demo-user.php';
     require __DIR__ . '/demo-custom.php';
+    require __DIR__ . '/demo-cypress.php';
 });

@@ -29,6 +29,18 @@ composer install
 
 # Install dependencies (production — no dev packages, optimized autoloader)
 composer install --no-dev --optimize-autoloader --classmap-authoritative
+
+# Install Cypress (first time)
+npm install
+
+# Open Cypress Test Runner (interactive)
+npm run cy:open
+
+# Run all E2E tests headlessly
+npm run cy:run
+
+# Run a single spec
+npx cypress run --spec "cypress/e2e/02-flat-fields.cy.js" --browser chrome
 ```
 
 ## Architecture

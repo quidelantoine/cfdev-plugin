@@ -95,10 +95,74 @@ cat src/auth.ts | claude -p "Explique cette fonction"
 
 ## Compatibilité
 
-> ⚠️ À définir — voir [AFAIRE.md](./AFAIRE.md#compatibilité)
+| | Minimum | Recommandé |
+|---|---|---|
+| **PHP** | 8.2 | 8.3+ |
+| **WordPress** | 6.5 | 6.5+ |
 
-- PHP : version minimale à déterminer
-- WordPress : version minimale à déterminer
+Plancher PHP 8.2 : `readonly class` utilisé dans `FileMime` (`readonly` properties seules = 8.1).
+Plancher WP technique : 5.3 (`wp_date()`). Minimum officiel fixé à 6.5 (avril 2024) pour cibler les installations actives.
+
+---
+
+## Gestion des versions
+
+### Vérifier la compatibilité PHP
+
+```bash
+# Signale toute syntaxe absente avant la version cible (ex : 8.0-)
+vendor/bin/phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 8.0- src/
+
+# Ou via phpcs.xml (testVersion déjà configuré à 8.0-)
+vendor/bin/phpcs src/
+```
+
+Pour changer le plancher, modifier `testVersion` dans `phpcs.xml` :
+
+```xml
+<config name="testVersion" value="8.2-"/>
+```
+
+### Trouver le plancher WordPress
+
+Pas d'outil automatique équivalent pour WP. Méthode manuelle :
+
+```bash
+# Lister toutes les fonctions/classes WP utilisées dans src/
+grep -roh --include="*.php" -P '(?<!\w)(wp_\w+|WP_\w+|register_\w+|add_\w+|get_\w+|update_\w+|delete_\w+)\(' src/ \
+  | sort -u
+grep -roh --include="*.php" -P '\b(wp_\w+|WP_\w+|register_\w+|add_meta_box|get_term_meta|update_term_meta|delete_term_meta|get_user_meta|update_user_meta)\(' src/ | sort -u
+
+# Puis vérifier chaque fonction sur https://developer.wordpress.org/reference/
+# La plus récente détermine le plancher.
+```
+
+Fonctions déterminantes pour ce plugin :
+
+| Fonction | Introduite |
+|----------|-----------|
+| `get_term_meta` / `update_term_meta` | WP 4.4 |
+| `register_rest_route` / `WP_REST_*` | WP 4.4 |
+| `register_meta` avec `object_subtype` | WP 4.9.8 |
+| `wp_date()` | **WP 5.3** ← plancher actuel |
+
+### Mettre à jour les headers après un changement
+
+Dans `cfdev-plugin.php` :
+
+```php
+/**
+ * Requires PHP:      8.2
+ * Requires at least: 6.5
+ * Tested up to:      7.0
+ */
+```
+
+Et vérifier que le runtime check est cohérent :
+
+```php
+if (version_compare(PHP_VERSION, '8.2', '<')) { ... }
+```
 
 ---
 

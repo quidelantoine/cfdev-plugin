@@ -17,7 +17,7 @@ use Weblitzer\CFDev\Validation\Rules\MaxLength;
 use Weblitzer\CFDev\Validation\Rules\Min;
 use Weblitzer\CFDev\Validation\Rules\MinItems;
 use Weblitzer\CFDev\Validation\Rules\MinLength;
-use Weblitzer\CFDev\Validation\Rules\Numeric;
+use Weblitzer\CFDev\Validation\Rules\IsNumeric;
 use Weblitzer\CFDev\Validation\Rules\Positive;
 use Weblitzer\CFDev\Validation\Rules\Regex;
 use Weblitzer\CFDev\Validation\Rules\Required;
@@ -362,32 +362,32 @@ class PureRulesTest extends CFDevTestCase
 
     public function testNumericValidInteger(): void
     {
-        $this->assertTrue((new Numeric())->validate(42));
+        $this->assertTrue((new IsNumeric())->validate(42));
     }
 
     public function testNumericValidFloat(): void
     {
-        $this->assertTrue((new Numeric())->validate(3.14));
+        $this->assertTrue((new IsNumeric())->validate(3.14));
     }
 
     public function testNumericValidStringNumber(): void
     {
-        $this->assertTrue((new Numeric())->validate('42'));
+        $this->assertTrue((new IsNumeric())->validate('42'));
     }
 
     public function testNumericInvalidString(): void
     {
-        $this->assertFalse((new Numeric())->validate('abc'));
+        $this->assertFalse((new IsNumeric())->validate('abc'));
     }
 
     public function testNumericEmptyString(): void
     {
-        $this->assertFalse((new Numeric())->validate(''));
+        $this->assertFalse((new IsNumeric())->validate(''));
     }
 
     public function testNumericGetError(): void
     {
-        $this->assertNotEmpty((new Numeric())->getError());
+        $this->assertNotEmpty((new IsNumeric())->getError());
     }
 
     // -------------------------------------------------------------------------

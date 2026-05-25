@@ -57,6 +57,10 @@
 <!--    <exclude-pattern>*/tests/*</exclude-pattern>-->
     <!-- <exclude-pattern>*/inc/Classes/Cuztom/*</exclude-pattern> -->
 
+    <!-- Compatibilité PHP/WP : signale les fonctions/syntaxes absentes avant la version cible -->
+    <config name="testVersion" value="8.2-"/>
+    <rule ref="PHPCompatibilityWP"/>
+
     <!-- Analyser uniquement les fichiers PHP -->
     <file>.</file>
 

@@ -1,11 +1,10 @@
 <?php
 
-// src/Validation/Rules/Numeric.php
 namespace Weblitzer\CFDev\Validation\Rules;
 
 use Weblitzer\CFDev\Contracts\Validatable;
 
-final class Numeric implements Validatable
+final class IsNumeric implements Validatable
 {
     public function validate(mixed $value): bool
     {

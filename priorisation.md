@@ -4,13 +4,16 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
+
+test fonctionelle  CYPRESS 
+
 Mettre des icone au debut des champs pour aider à l'ui/ux
 
 => duplicate code ????
 
-= >couverture des tests, methodes ??
 
 => ask php et wp version limit
+=> gerer version wordpress aussi  +++ 
 => Test woocommerce isOK ??
 ## 🧪 Règle d'or — Les tests sont une priorité permanente
 

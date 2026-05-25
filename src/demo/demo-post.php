@@ -25,7 +25,7 @@ use Weblitzer\CFDev\Validation\Rules\MaxLength;
 use Weblitzer\CFDev\Validation\Rules\Min;
 use Weblitzer\CFDev\Validation\Rules\MinItems;
 use Weblitzer\CFDev\Validation\Rules\MinLength;
-use Weblitzer\CFDev\Validation\Rules\Numeric;
+use Weblitzer\CFDev\Validation\Rules\IsNumeric;
 use Weblitzer\CFDev\Validation\Rules\Positive;
 use Weblitzer\CFDev\Validation\Rules\Regex;
 use Weblitzer\CFDev\Validation\Rules\Required;
@@ -62,7 +62,7 @@ $postType->addMetaBox(
         // Rules: Required, Numeric, Positive, Min, Max
         'number' => [
             new Required(),
-            new Numeric(),
+            new IsNumeric(),
             new Positive(),
             new Min(1),
             new Max(500),

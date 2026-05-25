@@ -14,7 +14,7 @@ use Weblitzer\CFDev\Validation\Rules\Max;
 use Weblitzer\CFDev\Validation\Rules\MaxLength;
 use Weblitzer\CFDev\Validation\Rules\Min;
 use Weblitzer\CFDev\Validation\Rules\MinLength;
-use Weblitzer\CFDev\Validation\Rules\Numeric;
+use Weblitzer\CFDev\Validation\Rules\IsNumeric;
 
 /**
  * Vérifie que les règles de validation avancées (hors Required) bloquent la
@@ -154,7 +154,7 @@ class ValidationRulesTest extends IntegrationTestCase
     public function testNumericFailsOnNonNumericValue(): void
     {
         $box = new MetaBox('val_num', 'Val', 'article', [
-            ['type' => 'number', 'id' => 'quantite', 'label' => 'Quantité', 'rules' => [new Numeric()]],
+            ['type' => 'number', 'id' => 'quantite', 'label' => 'Quantité', 'rules' => [new IsNumeric()]],
         ]);
 
         $this->postWith(['quantite' => 'abc']);
@@ -292,7 +292,7 @@ class ValidationRulesTest extends IntegrationTestCase
     public function testNumericPassesInUserMeta(): void
     {
         $um = new UserMeta('profil', 'Profil', [
-            ['type' => 'number', 'id' => 'age_user', 'label' => 'Âge', 'rules' => [new Numeric(), new Min(18)]],
+            ['type' => 'number', 'id' => 'age_user', 'label' => 'Âge', 'rules' => [new IsNumeric(), new Min(18)]],
         ]);
 
         $this->postWith(['age_user' => '25']);

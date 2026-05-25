@@ -110,10 +110,10 @@ Plancher WP technique : 5.3 (`wp_date()`). Minimum officiel fixé à 6.5 (avril 
 ### Vérifier la compatibilité PHP
 
 ```bash
-# Signale toute syntaxe absente avant la version cible (ex : 8.0-)
-vendor/bin/phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 8.0- src/
+# Signale toute syntaxe absente avant la version cible (ex : 8.2-)
+vendor/bin/phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 8.2- src/
 
-# Ou via phpcs.xml (testVersion déjà configuré à 8.0-)
+# Ou via phpcs.xml (testVersion déjà configuré à 8.2-)
 vendor/bin/phpcs src/
 ```
 

@@ -11,9 +11,6 @@ Mettre des icone au debut des champs pour aider à l'ui/ux
 
 => duplicate code ????
 
-
-=> ask php et wp version limit
-=> gerer version wordpress aussi  +++ 
 => Test woocommerce isOK ??
 ## 🧪 Règle d'or — Les tests sont une priorité permanente
 

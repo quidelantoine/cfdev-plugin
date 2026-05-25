@@ -43,15 +43,19 @@
 .cfdev .cfdev-remove-sortable{ display: inline-block; vertical-align: middle; height: 16px; width: 16px; background: url('../images/jquery-ui/ui-icons_454545_256x240.png') no-repeat; }
 .cfdev .cfdev-handle-sortable{ background-position: -132px -48px; cursor: move; }
 .cfdev .cfdev-remove-sortable{ background-position: -77px -128px; cursor: pointer; }
-.cfdev .cfdev-sortable-item fieldset{ display: inline-block; vertical-align: middle; border: 1px solid #ccc; padding: 10px; border-radius: 2px; border-radius: 2px; border-radius: 2px; width: 90%; }
+.cfdev .cfdev-sortable-item fieldset{ display: block; border: 1px solid #ccc; padding: 10px; border-radius: 2px; width: 100%; box-sizing: border-box; }
 
 
 .cfdev fieldset {background-color: white;}
-/* Input */
-.cfdev textarea, 
-.cfdev input[type="text"]{ width: 80%; display: inline-block; vertical-align: middle; }
-.cfdev textarea{ height: 100px; }
-.cfdev select{ min-width: 160px; }
+/* Input — tous les champs texte prennent la pleine largeur du td.
+   Checkbox / radio exclus : leur rendu natif ne supporte pas box-sizing. */
+.cfdev input.cfdev-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.cfdev textarea.cfdev-input { width: 100%; display: block; box-sizing: border-box; }
+.cfdev textarea.cfdev-input { height: 100px; }
+.cfdev select.cfdev-input   { width: 100%; display: block; min-width: 0; box-sizing: border-box; }
+
+/* Range : géré par son propre flex-wrapper */
+.cfdev input[type="range"].cfdev-input { width: auto; display: block; flex: 1; }
 .cfdev .cfdev-preview{ width: 100%; display: block; margin-top: 8px; }
 .cfdev .cfdev-preview img{ max-width: 100%; height: auto; }
 
@@ -137,8 +141,8 @@
 
 /* Link */
 .cfdev .cfdev-link-wrap { display: flex; gap: 8px; align-items: center; }
-.cfdev .cfdev-link-url { flex: 2; min-width: 0; }
-.cfdev .cfdev-link-text { flex: 1; min-width: 0; width: auto !important; }
+.cfdev .cfdev-link-url  { flex: 2; min-width: 0; width: auto; }
+.cfdev .cfdev-link-text { flex: 1; min-width: 0; width: auto; }
 .cfdev .cfdev-link-target { flex-shrink: 0; min-width: 110px; }
 
 /* Gallery */

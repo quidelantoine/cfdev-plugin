@@ -4,27 +4,17 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
-test  cypress sur les donées recuperer sur le front via le cacheManager et Registry !?, il faut aussi parler de l'api je pense ? SUr le plugin il faut tester quoi d'autres  encore ?
-│ Priorité  │         Spec         │                   Valeur                   │
-├───────────┼──────────────────────┼────────────────────────────────────────────┤
-│ 🥇        │ 09-rest-api.cy.js    │ Vérifie le pipeline complet save→cache→API │
-├───────────┼──────────────────────┼────────────────────────────────────────────┤
-│ 🥈        │ 10-admin-pages.cy.js │ Registry + Inspector + Cache flush         │
-├───────────┼──────────────────────┼────────────────────────────────────────────┤
-│ 🥉        │ Front-end            │ Seulement si le thème affiche les données  │
-├───────────┼──────────────────────┼────────────────────────────────────────────┤
-│ Plus tard │ Conditions/rôles     │ Edge cases, moins critiques                │
-Comme je lance les tests j'ai plus besoin du dossier demo ???, plus besoin de le lancer dans initilizer, il faut lancer les test cypres et c'est ok ??? ne fais rien sans en discuter ensemble avant
-
-
-test fonctionelle CYPRESS => long ?????
+test cypress peut t'on aller encore plus loin ?
 
 Mettre des icone au debut des champs pour aider à l'ui/ux
-=> Faire les champs de meme plaine largeur sur tous les supports , flat, bundle, accordeon, tabs pour post, term, user, homogeiniser les largeur de champs.
+=> Faire les champs de meme pleine largeur sur tous les supports , flat, bundle, accordeon, tabs pour post, term, user, homogeniser les largeur de champs.
 
 => duplicate code ????
+
 => changer les dachicons dashicons-lightbulb , 
+
 trouver un logo ++ perso ????
+
 => Test woocommerce isOK ??
 ## 🧪 Règle d'or — Les tests sont une priorité permanente
 

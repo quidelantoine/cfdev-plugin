@@ -4,6 +4,7 @@
 
 [![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
 [![WordPress 6.5+](https://img.shields.io/badge/WordPress-6.5%2B-blue)](https://wordpress.org/)
+[![Works with WooCommerce](https://img.shields.io/badge/WooCommerce-works%20with-96588a)](docs/en/woocommerce.md)
 
 **[English docs](docs/en/installation.md)** · **[Lire en français](docs/fr/readme-fr.md)**
 
@@ -107,6 +108,7 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 | [REST API](docs/en/rest-api.md) | Expose fields via WP REST API |
 | [Repeatable & AJAX](docs/en/repeatable.md) | Repeatable fields and AJAX loading |
 | [Admin Columns](docs/en/admin-columns.md) | Custom columns in post/term/user lists |
+| [WooCommerce](docs/en/woocommerce.md) | Custom fields on products and product categories |
 
 ### Français
 
@@ -122,6 +124,7 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 | [REST API](docs/fr/rest-api.md) | Exposer les champs via WP REST API |
 | [Répétable & AJAX](docs/fr/repeatable.md) | Champs répétables et chargement AJAX |
 | [Colonnes admin](docs/fr/colonnes-admin.md) | Colonnes dans les listes post/terme/user |
+| [WooCommerce](docs/fr/woocommerce.md) | Champs personnalisés sur les produits et catégories |
 
 ---
 

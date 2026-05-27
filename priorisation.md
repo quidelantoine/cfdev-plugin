@@ -38,7 +38,7 @@ Tous les champs sont tester , unitaire, integration et fonctionnel ???
 
 => faire un test avec les champs de type repetable
 
-=> Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
+=> Mettre en place ci , phpcs , linter etc , phpstan , eslint , SOnarQUbe ++ 
 -> reste eslint ??? et ci
 
 
@@ -66,9 +66,7 @@ X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html 
 > Exception : tests Admin HTML — à faire en dernier car liés au HTML qui change souvent.
 
 **Gaps à combler en continu :**
-- [ ] Tests repeatable sur tous les types de champs
-- [ ] Tests bundle dans term et user
-- [ ] Tests accordéon et tabs dans term, user, bundle
+- [ ] Tests repeatable sur tous les
 - [ ] Tests validation dans tous les contextes
 - [ ] Test WooCommerce
 - [ ] Tests Admin HTML ← en dernier uniquement

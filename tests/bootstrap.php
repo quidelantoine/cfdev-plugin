@@ -94,6 +94,7 @@ if (! class_exists('WP_Post')) {
     class WP_Post
     {
         public int $ID = 0;
+        public string $post_title = '';
         public string $post_type = 'post';
         public string $post_status = 'publish';
     }
@@ -102,6 +103,8 @@ if (! class_exists('WP_Term')) {
     class WP_Term
     {
         public int $term_id = 0;
+        public string $name = '';
+        public string $slug = '';
         public string $taxonomy = '';
         public int $parent = 0;
     }
@@ -110,6 +113,7 @@ if (! class_exists('WP_User')) {
     class WP_User
     {
         public int $ID = 0;
+        public string $display_name = '';
         /** @var array<string> */
         public array $roles = [];
     }

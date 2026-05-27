@@ -3,6 +3,7 @@
 namespace Weblitzer\CFDev;
 
 use Weblitzer\CFDev\Notice;
+use Weblitzer\CFDev\Support\RendersFieldRow;
 use Weblitzer\CFDev\Support\Str;
 use Weblitzer\CFDev\Validation\ErrorBag;
 
@@ -16,6 +17,7 @@ use Weblitzer\CFDev\Validation\ErrorBag;
 
 abstract class Meta
 {
+    use RendersFieldRow;
     abstract protected function metaType(): string;
 
     abstract protected function resolveObjectId(): int;
@@ -132,27 +134,11 @@ abstract class Meta
             }
 
             echo '<tr' . ($has_error ? ' class="cfdev-has-error"' : '') . '>';
-            echo '<th class="cfdev-th">';
-            echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">';
-            echo $field->fieldIconHtml(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fieldIconHtml() uses esc_attr() internally
-            echo esc_html($field->label) . '</label>';
-            echo $field->required ? ' <span class="cfdev-required">*</span>' : '';
-            echo '<div class="cfdev-description description">'
-                . wp_kses_post($field->description)
-                . '</div>';
-            echo '</th>';
+            $this->renderThHtml($id_name, $field);
             echo '<td class="cfdev-td">';
-
             $this->renderField($field, $value, $object);
-
-            if ($has_error) {
-                echo '<p class="cfdev-field-error">'
-                    . esc_html(implode(' ', $field_errors))
-                    . '</p>';
-            }
-
-            echo '</td>';
-            echo '</tr>';
+            $this->renderFieldErrors($field_errors);
+            echo '</td></tr>';
         }
 
         echo '</table>';
@@ -161,9 +147,8 @@ abstract class Meta
     private function renderField(\Weblitzer\CFDev\Field $field, mixed $value, object $object): void
     {
         if ($field->repeatable && $field->supports_repeatable) {
-            echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">';
-            echo sprintf('+ %s', esc_html(__('Add', 'cfdev')));
-            echo '</a>';
+            echo '<button type="button" class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable">'
+                . '+ ' . esc_html(__('Add', 'cfdev')) . '</button>';
             echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo $field->output($value);

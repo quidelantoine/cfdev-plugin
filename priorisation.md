@@ -4,7 +4,15 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
+=> Revoir la doc dans son ensemble +++ 
 
+renommer le fichier readme.md actuelle afin de le conserver,
+en creer un nouveau readme.md comme point d'entree du plugings,
+
+il faudrais des liens vers la documenation de CFDev,
+Pour le moment la docs et dans /docs posiible conserver ses fichiers aussi dans un autre nom de dossier ,
+Et refaire un dossier  docs toutes neuve a partir de la doc existante. qui suive les liens  de readme.md à la racine du plugin.
+Faire un doc en angalis et une en francais
 
 ===========
 Mieux erire le js faire une passe dessus ? 
@@ -14,13 +22,35 @@ js full vanilla ??, utilisation de vite.js,  et js polyfills
 ==============
 Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans 
 =================
-**** Mettre des icone au debut des champs pour aider à l'ui/ux, si possible utiliser les icone deja sur wordpress ou via le pluging,
-commit message ???
-
 
 
 =====================
-=> duplicate code ????, interface utile ? architecture is ok ???
+
+
+refactor(arch): reduce duplication — SelectBase, CheckboxesBase, RendersFieldRow trait, Renderable/Saveable interfaces
+
+Step 1 — Relation field bases
+- Abstracts\CheckboxesBase: shared outputHtml(), resolveChecked(), saveValue(), initCheckboxes()
+  PostCheckboxes, TermCheckboxes, UserCheckboxes extend it (→ ~120 lines removed)
+- Abstracts\WpDropdownSelectBase: shared outputHtml(), renderDropdown() abstract
+  TermSelect, UserSelect extend it (→ ~30 lines removed)
+- PostSelect unchanged (manual <select> rendering, different pattern)
+
+Step 2 — Row rendering trait
+- Support\RendersFieldRow: renderThHtml() + renderFieldErrors()
+  Used in Meta, Bundle, Tab (→ duplicated <th> block removed 3×)
+- Fix: Meta label class cfdev_label → cfdev-label (was inconsistent)
+- Fix: Meta repeatable "Add" button: <a href="#"> → <button type="button">
+
+Step 3 — Contracts
+- Contracts\Renderable: declares outputHtml(string|array $value): string
+- Contracts\Saveable: declares save(int $objectId, string|array $value): int|bool|\WP_Error
+- Field implements Renderable, Saveable
+- FieldContainer: abstract output(object $post): void enforced on all layout containers
+- Tab::output() gains default $type = 'tabs' to satisfy FieldContainer contract
+- FieldContainerTest: anonymous class stub implements output()
+
+
 ========================
 trouver un logo ++ perso ????
 
@@ -35,7 +65,8 @@ Tous les champs sont tester , unitaire, integration et fonctionnel ???
 
 => Test woocommerce isOK ?? compatible woocommerce ???
 
-=> Ok en terme de test ?? 
+=> Ok en terme de test ??
+=> duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
 ## 🧪 Règle d'or — Les tests sont une priorité permanente
 
 > La base de tests est déjà solide : +1200 assertions existantes.

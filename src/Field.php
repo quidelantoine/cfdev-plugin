@@ -2,6 +2,8 @@
 
 namespace Weblitzer\CFDev;
 
+use Weblitzer\CFDev\Contracts\Renderable;
+use Weblitzer\CFDev\Contracts\Saveable;
 use Weblitzer\CFDev\Support\Str;
 use Weblitzer\CFDev\Validation\Validator;
 
@@ -13,7 +15,7 @@ use Weblitzer\CFDev\Validation\Validator;
  *
  */
 
-class Field
+class Field implements Renderable, Saveable
 {
     // Identification
     public string $id = '';

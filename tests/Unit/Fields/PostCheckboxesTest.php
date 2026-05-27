@@ -12,12 +12,12 @@ class PostCheckboxesTest extends CFDevTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
-    private function makePost(int $id, string $title): object
+    private function makePost(int $id, string $title): \WP_Post
     {
-        return (object) [
-            'ID'         => $id,
-            'post_title' => $title,
-        ];
+        $post             = new \WP_Post();
+        $post->ID         = $id;
+        $post->post_title = $title;
+        return $post;
     }
 
     /**

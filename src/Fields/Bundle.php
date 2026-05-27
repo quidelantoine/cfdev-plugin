@@ -3,10 +3,12 @@
 namespace Weblitzer\CFDev\Fields;
 
 use Weblitzer\CFDev\Abstracts\FieldContainer;
+use Weblitzer\CFDev\Support\RendersFieldRow;
 use Weblitzer\CFDev\Validation\ErrorBag;
 
 class Bundle extends FieldContainer
 {
+    use RendersFieldRow;
     /** @var array<string, \Weblitzer\CFDev\Field> */
     public array $fields = [];
     /** @var string|array<mixed> */
@@ -172,20 +174,10 @@ class Bundle extends FieldContainer
         $hasError    = !empty($fieldErrors);
 
         echo sprintf('<tr%s>', $hasError ? ' class="cfdev-has-error"' : '');
-
-        echo '<th class="cfdev-th"><label for="' . esc_attr($id . $field->after_id) . '" class="cfdev-label">';
-        echo $field->fieldIconHtml(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fieldIconHtml() uses esc_attr() internally
-        echo esc_html($field->label) . '</label>';
-        echo $field->required ? ' <span class="cfdev-required">*</span>' : '';
-        echo '<div class="cfdev-description">' . wp_kses_post($field->description) . '</div></th>';
-
+        $this->renderThHtml($id . $field->after_id, $field);
         echo '<td class="cfdev-td">';
         $this->renderFieldOutput($field, $value, $post);
-
-        if ($hasError) {
-            echo '<p class="cfdev-field-error">' . esc_html(implode(' ', $fieldErrors)) . '</p>';
-        }
-
+        $this->renderFieldErrors($fieldErrors);
         echo '</td></tr>';
     }
 

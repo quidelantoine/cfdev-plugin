@@ -3,11 +3,13 @@
 namespace Weblitzer\CFDev\Fields;
 
 use Weblitzer\CFDev\Abstracts\FieldContainer;
+use Weblitzer\CFDev\Support\RendersFieldRow;
 use Weblitzer\CFDev\Support\Str;
 use Weblitzer\CFDev\Validation\ErrorBag;
 
 class Tab extends FieldContainer
 {
+    use RendersFieldRow;
     public string $title = '';
     /** @var array<string, \Weblitzer\CFDev\Field>|\Weblitzer\CFDev\Fields\Bundle */
     public array|\Weblitzer\CFDev\Fields\Bundle $fields = [];
@@ -79,7 +81,7 @@ class Tab extends FieldContainer
 //    }
 
 
-    public function output(object $post, string $type): void
+    public function output(object $post, string $type = 'tabs'): void
     {
         if ($type === 'accordion') {
             echo '<h3>' . esc_html($this->title) . '</h3>';
@@ -144,20 +146,10 @@ class Tab extends FieldContainer
         $hasError    = !empty($fieldErrors);
 
         echo sprintf('<tr%s>', $hasError ? ' class="cfdev-has-error"' : '');
-
-        echo '<th class="cfdev-th"><label for="' . esc_attr($id) . '" class="cfdev-label">';
-        echo $field->fieldIconHtml(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fieldIconHtml() uses esc_attr() internally
-        echo esc_html($field->label) . '</label>';
-        echo $field->required ? ' <span class="cfdev-required">*</span>' : '';
-        echo '<div class="cfdev-description">' . wp_kses_post($field->description) . '</div></th>';
-
+        $this->renderThHtml($id, $field);
         echo '<td class="cfdev-td">';
         $this->renderFieldOutput($field, $value);
-
-        if ($hasError) {
-            echo '<p class="cfdev-field-error">' . esc_html(implode(' ', $fieldErrors)) . '</p>';
-        }
-
+        $this->renderFieldErrors($fieldErrors);
         echo '</td></tr>';
     }
 

@@ -1,0 +1,113 @@
+# CFDev — Champs meta personnalisés code-first pour WordPress
+
+> Déclarez vos champs en PHP. Pas d'interface admin à configurer. Pas de dérive de config en base de données.
+
+[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
+[![WordPress 6.5+](https://img.shields.io/badge/WordPress-6.5%2B-blue)](https://wordpress.org/)
+
+**[English](../../readme.md)** · **[Documentation française](installation.md)**
+
+---
+
+## C'est quoi CFDev ?
+
+CFDev est un plugin WordPress qui vous permet d'enregistrer des post types personnalisés, des taxonomies et des champs meta entièrement en PHP — pas d'interface admin, pas de config en base, pas de casse-tête au déploiement.
+
+```php
+register_cfdev_post_type(['book', 'books'], ['public' => true])
+    ->addTaxonomy('genre')
+    ->addMetaBox('book_details', 'Détails du livre', [
+        ['id' => 'subtitle',  'type' => 'text',   'label' => 'Sous-titre',       'required' => true],
+        ['id' => 'cover',     'type' => 'image',  'label' => 'Couverture'],
+        ['id' => 'pages',     'type' => 'number', 'label' => 'Nombre de pages'],
+        ['id' => 'published', 'type' => 'date',   'label' => 'Date de parution'],
+    ]);
+```
+
+---
+
+## Pourquoi CFDev ?
+
+| | CFDev | ACF |
+|---|---|---|
+| Configuration dans le code (versionnable) | ✅ | ❌ |
+| Validation serveur (25+ règles) | ✅ | ❌ |
+| Cache fichier intégré (données résolues) | ✅ | ❌ |
+| Zéro dérive de config (dev→prod) | ✅ | ❌ |
+| Sans bloat (~60 Ko) | ✅ | ❌ |
+
+---
+
+## Prérequis
+
+| | Minimum | Recommandé |
+|---|---|---|
+| PHP | 8.2 | 8.3+ |
+| WordPress | 6.5 | dernière version |
+
+---
+
+## Installation
+
+```bash
+composer require quidelantoine/cfdev
+```
+
+**Build production :**
+
+```bash
+composer install --no-dev --optimize-autoloader --classmap-authoritative
+```
+
+---
+
+## Démarrage rapide
+
+Créez un fichier dans votre thème (ex. `cfdev-fields.php`) et chargez-le, ou utilisez `functions.php` :
+
+```php
+add_action('init', static function (): void {
+
+    register_cfdev_post_type('product', ['public' => true])
+        ->addMetaBox('product_info', 'Infos produit', [
+            ['id' => 'price',    'type' => 'number', 'label' => 'Prix',          'required' => true],
+            ['id' => 'photo',    'type' => 'image',  'label' => 'Photo'],
+            ['id' => 'brochure', 'type' => 'file',   'label' => 'Brochure PDF'],
+        ]);
+
+});
+```
+
+Lire les données dans votre template :
+
+```php
+$cache   = new \Weblitzer\CFDev\Cache\CacheManager();
+$data    = $cache->post(get_the_ID());
+$product = $data['groups']['product_info'] ?? [];
+
+echo esc_html($product['price'] ?? '');
+echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc_attr($product['photo']['alt'] ?? '') . '">';
+```
+
+---
+
+## Documentation
+
+| Guide | Description |
+|---|---|
+| [Installation](docs/fr/installation.md) | Prérequis, installation, build production |
+| [Démarrage rapide](docs/fr/demarrage-rapide.md) | Premier post type, meta box et template |
+| [Types de champs](docs/fr/champs.md) | Tous les types de champs avec options |
+| [Layouts](docs/fr/layouts.md) | Bundle, Tabs, Accordion |
+| [Validation](docs/fr/validation.md) | 25+ règles de validation intégrées |
+| [Cache](docs/fr/cache.md) | Cache fichier — activation, invalidation, perf |
+| [Interface admin](docs/fr/admin.md) | Pages admin CFDev (Champs, Cache) |
+| [REST API](docs/fr/rest-api.md) | Exposer les champs via WP REST API |
+| [Répétable & AJAX](docs/fr/repeatable.md) | Champs répétables et chargement AJAX |
+| [Colonnes admin](docs/fr/colonnes-admin.md) | Colonnes dans les listes post/terme/user |
+
+---
+
+## Licence
+
+GPL-2.0-or-later

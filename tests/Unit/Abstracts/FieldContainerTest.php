@@ -10,7 +10,9 @@ class FieldContainerTest extends CFDevTestCase
     private function make(): FieldContainer
     {
         return new class extends FieldContainer {
-            public function output(object $post): void {}
+            public function output(object $post): void
+            {
+            }
         };
     }
 

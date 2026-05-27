@@ -1,0 +1,157 @@
+# Admin UI
+
+[← README](../../readme.md) · [Français](../fr/admin.md)
+
+CFDev adds a **CFDev** menu to the WordPress admin sidebar. All pages require the `manage_options` capability.
+
+---
+
+## Pages
+
+| URL | Role |
+|---|---|
+| `?page=cfdev` | Dashboard (overview) |
+| `?page=cfdev-fields` | Field groups — full registry + inspector |
+| `?page=cfdev-cache` | Cache — toggle, file list, flush |
+| `?page=cfdev-settings` | Global settings |
+
+---
+
+## Fields page
+
+### Organization
+
+Groups are organized in tabs by context:
+
+- **One tab per post type** declared (`Page`, `Post`, `Book`…)
+- **Terms** — groups assigned to taxonomies
+- **Users** — groups assigned to user profiles
+
+Each group is a collapsible block showing:
+
+| Element | Description |
+|---|---|
+| Title + ID | Human name and machine identifier |
+| Layout badge | `flat` / `tabs` / `accordion` / `bundle` |
+| "Also in" | Other post types targeted (if multi-target) |
+| Conditions | `ID: 1`, `Template: …`, `Role: editor`… badges |
+| Field count | Total flat + bundle fields |
+| ⚙ Inspect | Opens the data inspector for this group |
+
+### Field table
+
+Expanding a group shows a table per section / bundle:
+
+| ID | Type | Label | Validation |
+|---|---|---|---|
+| `hero_title` | `text` | Hero title | `required` `min-length: 3` |
+| `hero_image` | `image` | Image | `required` |
+
+The **Validation** column shows one badge per active rule.
+
+---
+
+## The Inspector — developer tool
+
+The **⚙ Inspect** button on each group opens a dark modal showing the live data for a chosen object, straight from the admin.
+
+### What it's for
+
+- Verify a field was saved correctly after editing
+- See exactly the PHP structure returned by `CacheManager` (resolved images, bundles, etc.)
+- Copy a field access path in one click to use in a template
+- Quickly diagnose an empty field, broken gallery, or corrupted bundle
+- Check cache state (HIT / GENERATED / OFF) without inspecting `.tmp` files
+
+### Object selection
+
+When the group is not scoped to a fixed object, a `<select>` appears in the modal header.
+
+It is **pre-filtered to match the group's conditions**:
+
+| Declared condition | What appears in the select |
+|---|---|
+| None | All objects of the post type / taxonomy / users (max 100) |
+| `onlyForTemplate('tpl-about.php')` | Only pages with that template |
+| `onlyForRoles('editor')` | Only editors |
+| `onlyIfParent(5)` (TermMeta) | Only child terms of term #5 |
+
+For groups with `onlyForId(42)`: the select is hidden and post #42's data loads directly.
+
+Changing the selection reloads data instantly.
+
+### Data tree
+
+Data is displayed as an interactive tree (Symfony Profiler style):
+
+```
+▼ array(3)
+    ⎘  hero_title   ⇒  "Welcome to CFDev"  (17)
+    ⎘  hero_image   ⇒  ▶ object(5)
+    ⎘  hero_slides  ⇒  ▼ array(2)
+                          ⎘  0  ⇒  ▶ object(2)
+                          ⎘  1  ⇒  ▶ object(2)
+```
+
+- **▶ / ▼** — click the badge to expand/collapse
+- **(17)** — string length
+- Colors: keys in purple, strings in green, numbers in blue, null in grey
+
+### Copy a path
+
+Each line has a ⎘ button that copies the full PHP access path to the clipboard:
+
+```
+⎘ → $group['hero_image']['medium']
+⎘ → $group['hero_slides'][0]['slide_title']
+```
+
+A global access snippet is shown at the top of the modal:
+
+```php
+$data  = (new \Weblitzer\CFDev\Cache\CacheManager())->post(42);
+$group = $data['groups']['home_hero'] ?? [];
+```
+
+### Cache badge
+
+| Badge | Meaning |
+|---|---|
+| `CACHE HIT — 3 min ago` | Data served from `.tmp` file |
+| `GENERATED` | Data generated live (cache OFF or file missing/expired) |
+| `CACHE OFF` | Cache is disabled in settings |
+
+### ↺ Regenerate
+
+Forces data regeneration (equivalent to `force: true` in `CacheManager`). Use after editing to see fresh data without flushing the whole cache.
+
+---
+
+## Cache page
+
+### Toggle
+
+| State | Behavior |
+|---|---|
+| **On** | Data read from `.tmp` if present and not expired (TTL 24 h). File written after generation. |
+| **Off** | Data read directly from the database. No file created or read. |
+
+Recommended: off during development, on in production.
+
+Automatic invalidation runs on `save_post`, `edited_term`, `delete_term`, `profile_update`.
+
+### File table
+
+| Column | Description |
+|---|---|
+| Object | Title / name / display name + `.tmp` filename |
+| Type | Real post type, taxonomy, or `User` |
+| Groups | Tags listing the groups present in this cache file |
+| Size | JSON file size |
+| Age | Time since generation |
+| Modified | Last write date and time |
+| Action | **Delete** button to invalidate individual files |
+
+Rows older than 24 h show an **Expired** badge.
+
+> The "Groups" column only lists groups **whose conditions match** the object. A standard post won't show a group conditioned to the home page.

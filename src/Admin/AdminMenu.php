@@ -18,7 +18,7 @@ final class AdminMenu
 
     public static function build(): void
     {
-        // Main entry → Dashboard
+        // Main entry → Dashboard (field groups list)
         add_menu_page(
             __('CFDev', 'cfdev'),
             'CFDev',
@@ -31,9 +31,7 @@ final class AdminMenu
 
         // Sub-pages (first one renames the parent item in the sidebar)
         add_submenu_page('cfdev', __('Dashboard', 'cfdev'), __('Dashboard', 'cfdev'), 'manage_options', 'cfdev', [DashboardPage::class, 'render']);
-        add_submenu_page('cfdev', __('Fields', 'cfdev'), __('Fields', 'cfdev'), 'manage_options', 'cfdev-fields', [FieldsPage::class, 'render']);
-        add_submenu_page('cfdev', __('Cache', 'cfdev'), __('Cache', 'cfdev'), 'manage_options', 'cfdev-cache', [CachePage::class,  'render']);
-        add_submenu_page('cfdev', __('REST API', 'cfdev'), __('REST API', 'cfdev'), 'manage_options', 'cfdev-rest', [RestPage::class,      'render']);
-        add_submenu_page('cfdev', __('Get Data', 'cfdev'), __('Get Data', 'cfdev'), 'manage_options', 'cfdev-getdata', [GetDataPage::class,   'render']);
+        add_submenu_page('cfdev', __('Cache', 'cfdev'), __('Cache', 'cfdev'), 'manage_options', 'cfdev-cache', [CachePage::class, 'render']);
+        add_submenu_page('cfdev', __('REST API', 'cfdev'), __('REST API', 'cfdev'), 'manage_options', 'cfdev-rest', [RestPage::class, 'render']);
     }
 }

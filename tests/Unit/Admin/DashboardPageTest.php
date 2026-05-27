@@ -3,16 +3,16 @@
 namespace Weblitzer\CFDev\Tests\Unit\Admin;
 
 use Brain\Monkey\Functions;
-use Weblitzer\CFDev\Admin\FieldsPage;
+use Weblitzer\CFDev\Admin\DashboardPage;
 use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 
-class FieldsPageTest extends CFDevTestCase
+class DashboardPageTest extends CFDevTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Additional WP functions used by FieldsPage::render()
+        // Additional WP functions used by DashboardPage::render()
         Functions\when('current_user_can')->justReturn(true);
         Functions\when('_n')->returnArg(1);
         Functions\when('esc_attr_e')->returnArg(1);
@@ -26,7 +26,7 @@ class FieldsPageTest extends CFDevTestCase
     private function captureRender(): string
     {
         ob_start();
-        FieldsPage::render();
+        DashboardPage::render();
         return (string) ob_get_clean();
     }
 

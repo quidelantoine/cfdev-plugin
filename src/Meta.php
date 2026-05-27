@@ -18,6 +18,7 @@ use Weblitzer\CFDev\Validation\ErrorBag;
 abstract class Meta
 {
     use RendersFieldRow;
+
     abstract protected function metaType(): string;
 
     abstract protected function resolveObjectId(): int;

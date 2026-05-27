@@ -3,11 +3,11 @@
 namespace Weblitzer\CFDev\Tests\Integration\Admin;
 
 use ReflectionMethod;
-use Weblitzer\CFDev\Admin\FieldsPage;
+use Weblitzer\CFDev\Admin\DashboardPage;
 use Weblitzer\CFDev\Tests\Integration\IntegrationTestCase;
 
 /**
- * Integration tests for FieldsPage code-snippet generation.
+ * Integration tests for DashboardPage code-snippet generation.
  *
  * Unit tests (CodeSnippetTest) verify content (security functions, structure).
  * These tests verify that every generated snippet is syntactically valid PHP —
@@ -20,7 +20,7 @@ class CodeSnippetSyntaxTest extends IntegrationTestCase
     /** @param array<string,mixed> $entry */
     private static function snippet(array $entry, bool $raw = false): string
     {
-        $m      = new ReflectionMethod(FieldsPage::class, 'codeSnippet');
+        $m      = new ReflectionMethod(DashboardPage::class, 'codeSnippet');
         $result = $m->invoke(null, $entry, $raw);
         return is_string($result) ? $result : '';
     }

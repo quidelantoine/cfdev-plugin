@@ -9,6 +9,7 @@ use Weblitzer\CFDev\Validation\ErrorBag;
 class Bundle extends FieldContainer
 {
     use RendersFieldRow;
+
     /** @var array<string, \Weblitzer\CFDev\Field> */
     public array $fields = [];
     /** @var string|array<mixed> */

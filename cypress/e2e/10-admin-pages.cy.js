@@ -1,7 +1,7 @@
 /**
  * Tests CFDev Admin Pages: Registry, Inspector, Cache flush.
  *
- * Registry (/wp-admin/admin.php?page=cfdev-fields):
+ * Registry (/wp-admin/admin.php?page=cfdev):
  *   - Tab nav: post types (page/post), Terms, Users
  *   - Group cards: expand → fields table
  *   - Inspector modal: AJAX data load, cache badge, close
@@ -22,7 +22,7 @@ describe('CFDev — Admin Pages', () => {
   // ── Registry: structure + group expand ──────────────────────────────────
 
   it('Registry — header count, tab nav, group expand and fields table', () => {
-    cy.visit('/wp-admin/admin.php?page=cfdev-fields')
+    cy.visit('/wp-admin/admin.php?page=cfdev')
 
     // Header: title + group count badge
     cy.get('.cfdev-header__title').should('contain', 'Field groups')
@@ -68,7 +68,7 @@ describe('CFDev — Admin Pages', () => {
   // ── Registry: Inspector modal ────────────────────────────────────────────
 
   it('Registry — Inspector modal loads field data via AJAX and closes', () => {
-    cy.visit('/wp-admin/admin.php?page=cfdev-fields')
+    cy.visit('/wp-admin/admin.php?page=cfdev')
 
     // Activate the post tab
     cy.get('a[href="#cfdev-tab-pt-post"]').click()

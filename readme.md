@@ -1,37 +1,49 @@
 # CFDev — Code-First Custom Meta Fields for WordPress
 
-Plugin WordPress pour déclarer des champs personnalisés (meta fields) entièrement par le code.
+> Declare custom fields in PHP. No admin UI configuration. No database config drift.
+
+[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
+[![WordPress 6.5+](https://img.shields.io/badge/WordPress-6.5%2B-blue)](https://wordpress.org/)
+
+**[English docs](docs/en/installation.md)** · **[Lire en français](docs/fr/readme-fr.md)**
 
 ---
 
-## CFDev vs ACF
+## What is CFDev?
 
-### Ce que CFDev fait mieux
+CFDev is a WordPress plugin that lets you register custom post types, taxonomies, and meta fields entirely through PHP code — no admin UI, no database config, no deployment headaches.
 
-| Aspect | CFDev | ACF |
-|--------|-------|-----|
-| **API code-first** | PHP fluent, lisible, versionnable | `acf_add_local_field_group()` = tableau énorme et verbeux |
-| **Validation serveur** | Système de Rules complet (Required, MinLength, Regex, ImageMinDimensions…) | Quasi inexistant — valide seulement `required` |
-| **Cache intégré** | CacheManager/CacheStore avec invalidation automatique | Rien — `get_field()` tape la DB à chaque appel |
-| **Poids** | Léger, zéro bloat | ACF Free = 3 Mo+, Pro = encore plus |
-| **Déployable** | Code PHP = pas de migration de config en DB | Config stockée en DB — problème deploy dev→prod |
+```php
+register_cfdev_post_type(['book', 'books'], ['public' => true])
+    ->addTaxonomy('genre')
+    ->addMetaBox('book_details', 'Book Details', [
+        ['id' => 'subtitle',  'type' => 'text',    'label' => 'Subtitle',       'required' => true],
+        ['id' => 'cover',     'type' => 'image',   'label' => 'Cover Image'],
+        ['id' => 'pages',     'type' => 'number',  'label' => 'Page Count'],
+        ['id' => 'published', 'type' => 'date',    'label' => 'Published Date'],
+    ]);
+```
 
-### Ce qu'ACF a que CFDev n'a pas encore
+---
 
-| Priorité | Fonctionnalité | Description |
-|----------|---------------|-------------|
-| 🔴 Critique | **Conditional logic** | Afficher/masquer un champ selon la valeur d'un autre |
-| 🔴 Critique | **Options pages** | Page de réglages globaux dans `wp_options` (header, footer, réseaux sociaux…) |
-| 🔴 Critique | **Flexible Content** | Comme le bundle, mais chaque ligne peut être d'un type différent (hero, texte+image, galerie…) |
-| 🔴 Critique | **REST API** | Exposer les champs résolus via `/wp-json` — indispensable pour headless / Next.js |
-| 🟡 Important | **Règles de localisation** | Par rôle, par auteur, par valeur de champ, par statut de post |
-| 🟡 Important | **Champ Relationship** | Relation bidirectionnelle entre posts |
-| 🟡 Important | **Champ Group** | Conteneur nommé pour grouper visuellement des champs |
-| ⚪ Mineur | **Champs niche** | `password`, `oembed`, `button_group`, `page_link` |
-| ⚪ Mineur | **Export JSON/PHP** | Snapshot portable des définitions |
-| ⚪ Mineur | **Formulaires frontend** | Rendre les champs hors admin |
+## Why CFDev?
 
-> **Verdict** : CFDev est meilleur qu'ACF sur tout ce qu'il fait (validation, cache, lisibilité du code). Le périmètre fonctionnel reste le chantier principal — voir [AFAIRE.md](./AFAIRE.md#-gap-acf--fonctionnalit%C3%A9s-manquantes).
+| | CFDev | ACF |
+|---|---|---|
+| Configuration in code (versionable) | ✅ | ❌ |
+| Server-side validation (25+ rules) | ✅ | ❌ |
+| Built-in file cache (resolved data) | ✅ | ❌ |
+| Zero DB config drift (dev→prod) | ✅ | ❌ |
+| No-bloat (~60 KB) | ✅ | ❌ |
+
+---
+
+## Requirements
+
+| | Minimum | Recommended |
+|---|---|---|
+| PHP | 8.2 | 8.3+ |
+| WordPress | 6.5 | latest |
 
 ---
 
@@ -41,368 +53,96 @@ Plugin WordPress pour déclarer des champs personnalisés (meta fields) entière
 composer require quidelantoine/cfdev
 ```
 
-### Build production
+**Production build:**
 
 ```bash
 composer install --no-dev --optimize-autoloader --classmap-authoritative
 ```
 
-Ou dans `composer.json` :
-
-```json
-"config": {
-    "optimize-autoloader": true,
-    "classmap-authoritative": true
-}
-```
-
 ---
 
-## Commandes de développement
+## Quick Start
 
-```bash
-# Qualité de code
-vendor/bin/phpcs -s # vendor/bin/phpcbf
-vendor/bin/phpstan analyse src tests
-./vendor/bin/phpunit --testsuite Unit
-./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
-
-npm run cy:run  
-npx cypress open --browser chrome
-
-# Tests fonctionnels E2E — Cypress (nécessite docker compose up -d)
-npm install                                              # première fois seulement
-npm run cy:open                                          # Test Runner interactif
-npm run cy:run                                           # headless CI (Chrome)
-npx cypress run --spec "cypress/e2e/02-flat-fields.cy.js" --browser chrome  # spec unique
-
-# Coverage — Unit (rapide, sans DB)
-docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
-php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-php coverage/unit.cov --no-progress
-
-# Coverage — Integration (nécessite docker compose up -d db)
-docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
-php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap-docker.php --coverage-php coverage/integration.cov --no-progress
-
-# Fusion + rapport HTML (nécessite d'avoir lancé les deux commandes ci-dessus)
-docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
-php -d pcov.enabled=1 vendor/bin/phpcov merge --html coverage/html coverage/
-# → ouvrir app/wp-content/plugins/cfdev-plugin/coverage/html/index.html
-
-# Rapport texte rapide (Unit seul)
-docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
-php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-text --no-progress
-```
-
-```bash
-# Claude Code
-claude -p "Analyse @src/utils/validation.js"
-cat src/auth.ts | claude -p "Explique cette fonction"
-```
-
----
-
-## Compatibilité
-
-| | Minimum | Recommandé |
-|---|---|---|
-| **PHP** | 8.2 | 8.3+ |
-| **WordPress** | 6.5 | 6.5+ |
-
-Plancher PHP 8.2 : `readonly class` utilisé dans `FileMime` (`readonly` properties seules = 8.1).
-Plancher WP technique : 5.3 (`wp_date()`). Minimum officiel fixé à 6.5 (avril 2024) pour cibler les installations actives.
-
----
-
-## Gestion des versions
-
-### Vérifier la compatibilité PHP
-
-```bash
-# Signale toute syntaxe absente avant la version cible (ex : 8.2-)
-vendor/bin/phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 8.2- src/
-
-# Ou via phpcs.xml (testVersion déjà configuré à 8.2-)
-vendor/bin/phpcs src/
-```
-
-Pour changer le plancher, modifier `testVersion` dans `phpcs.xml` :
-
-```xml
-<config name="testVersion" value="8.2-"/>
-```
-
-### Trouver le plancher WordPress
-
-Pas d'outil automatique équivalent pour WP. Méthode manuelle :
-
-```bash
-# Lister toutes les fonctions/classes WP utilisées dans src/
-grep -roh --include="*.php" -P '(?<!\w)(wp_\w+|WP_\w+|register_\w+|add_\w+|get_\w+|update_\w+|delete_\w+)\(' src/ \
-  | sort -u
-grep -roh --include="*.php" -P '\b(wp_\w+|WP_\w+|register_\w+|add_meta_box|get_term_meta|update_term_meta|delete_term_meta|get_user_meta|update_user_meta)\(' src/ | sort -u
-
-# Puis vérifier chaque fonction sur https://developer.wordpress.org/reference/
-# La plus récente détermine le plancher.
-```
-
-Fonctions déterminantes pour ce plugin :
-
-| Fonction | Introduite |
-|----------|-----------|
-| `get_term_meta` / `update_term_meta` | WP 4.4 |
-| `register_rest_route` / `WP_REST_*` | WP 4.4 |
-| `register_meta` avec `object_subtype` | WP 4.9.8 |
-| `wp_date()` | **WP 5.3** ← plancher actuel |
-
-### Mettre à jour les headers après un changement
-
-Dans `cfdev-plugin.php` :
+Create a file in your theme (e.g. `cfdev-fields.php`) and load it, or use `functions.php`:
 
 ```php
-/**
- * Requires PHP:      8.2
- * Requires at least: 6.5
- * Tested up to:      7.0
- */
+add_action('init', static function (): void {
+
+    register_cfdev_post_type('product', ['public' => true])
+        ->addMetaBox('product_info', 'Product Info', [
+            ['id' => 'price',    'type' => 'number', 'label' => 'Price',    'required' => true],
+            ['id' => 'photo',    'type' => 'image',  'label' => 'Photo'],
+            ['id' => 'brochure', 'type' => 'file',   'label' => 'Brochure PDF'],
+        ]);
+
+});
 ```
 
-Et vérifier que le runtime check est cohérent :
+Read data in your template:
 
 ```php
-if (version_compare(PHP_VERSION, '8.2', '<')) { ... }
-```
+$cache   = new \Weblitzer\CFDev\Cache\CacheManager();
+$data    = $cache->post(get_the_ID());
+$product = $data['groups']['product_info'] ?? [];
 
----
-
-## Recherche & remplacement (helpers)
-
-```bash
-# Rechercher
-grep -rn "render_post_filter" .
-grep -rn --exclude-dir=vendor "ancien_texte" .
-
-# Remplacer
-find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
-```
-
----
-
-## Annotations PHPDoc
-
-```php
-@package    // Namespace principal
-@subpackage // Sous-namespace
-@author     // Nom <email>
-@since      // Version d'introduction
-@version    // Version actuelle
-@param      // Paramètre de méthode
-@return     // Valeur de retour
-@throws     // Exception levée
-@deprecated // Méthode obsolète + alternative
-@see        // Référence vers une autre classe/méthode
-@link       // URL de documentation externe
-@todo       // Ce qui reste à faire
+echo esc_html($product['price'] ?? '');
+echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc_attr($product['photo']['alt'] ?? '') . '">';
 ```
 
 ---
 
 ## Documentation
 
-- Doc complète : *(lien à ajouter)*
-- Disponible en FR et EN
+### English
 
-###################################################################################
+| Guide | Description |
+|---|---|
+| [Installation](docs/en/installation.md) | Requirements, install, production build |
+| [Quick Start](docs/en/quick-start.md) | First post type, meta box and template |
+| [Field Types](docs/en/fields.md) | All 30+ field types with options |
+| [Layouts](docs/en/layouts.md) | Bundle, Tabs, Accordion |
+| [Validation](docs/en/validation.md) | 25+ built-in validation rules |
+| [Cache](docs/en/cache.md) | File cache — setup, invalidation, performance |
+| [Admin UI](docs/en/admin.md) | CFDev admin pages (Fields, Cache) |
+| [REST API](docs/en/rest-api.md) | Expose fields via WP REST API |
+| [Repeatable & AJAX](docs/en/repeatable.md) | Repeatable fields and AJAX loading |
+| [Admin Columns](docs/en/admin-columns.md) | Custom columns in post/term/user lists |
 
+### Français
 
-# Pour CFDev : "CFDev – Code-First Custom Meta Fields For Wordpress" Custom Meta For Dev
-amelioration du code ( interafce , duplication content), ok pour l'architecture du pluging ?
-# En cours
+| Guide | Description |
+|---|---|
+| [Installation](docs/fr/installation.md) | Prérequis, installation, build production |
+| [Démarrage rapide](docs/fr/demarrage-rapide.md) | Premier post type, meta box et template |
+| [Types de champs](docs/fr/champs.md) | Tous les types de champs avec options |
+| [Layouts](docs/fr/layouts.md) | Bundle, Tabs, Accordion |
+| [Validation](docs/fr/validation.md) | 25+ règles de validation intégrées |
+| [Cache](docs/fr/cache.md) | Cache fichier — activation, invalidation, perf |
+| [Interface admin](docs/fr/admin.md) | Pages admin CFDev (Champs, Cache) |
+| [REST API](docs/fr/rest-api.md) | Exposer les champs via WP REST API |
+| [Répétable & AJAX](docs/fr/repeatable.md) | Champs répétables et chargement AJAX |
+| [Colonnes admin](docs/fr/colonnes-admin.md) | Colonnes dans les listes post/terme/user |
 
-# installation 
+---
+
+## Development
 
 ```bash
-composer require quidelantoine/cfdev # c'est le projet
-```
-
-# test 
-```bash
-vendor/bin/phpcs -s
-vendor/bin/phpstan analyse
-vendor/bin/phpunit
-
-# ??? 
+# Tests
 ./vendor/bin/phpunit --testsuite Unit
 ./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
-```
 
-# A faire 
-
-
-
-
-=> Mettre CFDEV le menu admin plus bas dans la sélection ?? 
-
-=> qui voit l'admin cfdev => administeur uniquement ????
-
-
-=> j'ai fais les champs , et le reste (validation, sauvegarde) , repeatable , ajax, 
-    -> il faut faire une partie object , via des hooks ou non , pour init-cuztom
-        ->ajouter des groupes de champs, via des hooks , pourquoi pour pouvoir avoir acces a toutes les declaration, pour ensuite dans l'admin, donner accés à ces donéées, faire des stas et verifier que tous les champs n'ont pas le meme nomo (id) et pour le kiff d'avoir une vue d'ensemble ( un resume de tous les champs ajouter via le code afficher dans l'admin du plugins)
-=> peut etre faire l'admin avant pour une meilleur integration ensuite
-
-
-=> faire un test avec les champs de type repetable
-
-=> tous les champs n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
-
-=> Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
--> reste eslint ??? et ci 
-
-=> change color of metabox , custom design metaBox +++
-
-
-=> je garde le champ hidden , a quoi il peut servir (cas) , pour garder la données, pas vraiment car la donées est toujours 
-
-
-Gaps dans les tests unitaires existants :, refaire une demande pour completer ++
-
-=> Utiliser plugins traduction loco translate pour générer fichier .mo et .po
-    allemand, espagnol, chinois 
-
-Faire une page admin cfdev
-    Sous forme de tabs. qui ressemble à ACF ???? 
-- cache -> vider le cache 
-- liste des groupes de champs
-       lecture des hooks ???
-- réglages
-- -> truc pour verifier que tous les id sont unique , éviter les doublons ++
-- _text_'.$str.'_main_image'
-
-=> minifier le code ,
-    => Faire une version prod 
-        = Ajouter dans la config ??? 'mode'  dev/prod
-
-=> Select user => comment prendre que certain role ???, possible d'en prendre plusieurs roles  ??
-
-=> ecrire des tests pour la partie admin 
-=> ecrire aussi la docs 
-
-
-=> reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
-
-// lancer un truc security vulnerabilté via ia , faire la formation ia dyma
-
-=> revoir /home/quidel/Sites/2026/test5_frankenphp/app/wp-content/plugins/cfdev-plugin/src/demo/helpers.php 
-car dans la function qui se trouve dans le theme il y avais des trucs bien +++
-
-
-## Rediger la docs
-=> revoir la doc dans son ensemble, le readme de base devra etre le point d'entree de toutes la doc avec installation
-=> lui demander de faire un design avec logo pour mise en avant du plugin
-=> Voir la docs dans le back-office, grace au fichier md
-=> faire une doc en francais et une en anglais, comment bien gerer ceci
-=> comment gerer cela avec md dans depot et aussi avec le md sur l'admin du site faire une partie documentation
-## Test 
-=> Faire un test avec les champ repetable sur tous pour faire le tests
-=> test bundle dans term et user ????  et accordeon et tabs ???? et validation
-=> FAire tests de tous les champs dans un bundle , dans un accordeaon , dans tabs ??
-=> meme choses sur meta dans term et user ++++
-custom-meta.dev
-=> vérifier si il marche , tous , tester les fiedls pas dans la doc ??
-=> Voir si marche aussi dans bundle tabs , et accordeon
-=> dans term et dans user ++
-=> tester si cela marche si j'ajoute champ à woocommerce ??
-
-X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html sinon on va devoir changer souvent
-
-
-# A voir plus tard 
-
-- admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
-
-# autres plugins idee
-
-
-https://themepure.net/plugins/puremetafields/docs/switch/
-
-# hemper 
-
-### recherche
-grep -rn "render_post_filter" .
-render_post_filter
-
-# replace texte 
-# Prévisualiser sans modifier (dry run)
-grep -rn "ancien_texte" . --include="*.php"
-grep -rn "Gijs Jorissen" . --include="*.php"
-
-grep -rn --exclude-dir=vendor "ancien_texte" .
-
-
-# Tous types de fichiers
-find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
-find . -type f -exec sed -i 's/Gijs Jorissen/quidelantoine/g' {} +
-# Insensible à la casse
-sed -i 's/ancien_texte/nouveau_texte/gi'
-
-
-@package    // Namespace ou package principal
-@subpackage // Sous-namespace
-@author     // Nom <email>
-@since      // Version d'introduction
-@version    // Version actuelle (surtout pour les classes)
-@param      // Paramètre de méthode
-@return     // Valeur de retour
-@throws     // Exception levée
-@deprecated // Méthode obsolète, indiquer l'alternative
-@see        // Référence vers une autre classe/méthode
-@link       // URL de documentation externe
-@todo       // Ce qui reste à faire
-
-
-# Test unitaire
-
-./vendor/bin/phpunit
-./vendor/bin/phpunit --display-deprecations
-
-# PHPCS 
-vendor/bin/phpcs -i
+# Code quality
 vendor/bin/phpcs -s
-vendor/bin/phpcbf
-
-# PHPstan
 vendor/bin/phpstan analyse src tests
 
-=> treste test Bundle , accordeon, tab tabs
-
-## Gestion de composer pour la prod 
--> mettre le dossier vendor dans le pluging en prod 
-lancer ceci ```composer install --no-dev --optimize-autoloader --classmap-authoritative```
-
-ou 
-
-Mettre dans le fichier composer.json 
-
-```bash
-"config": {
-    "optimize-autoloader": true,
-    "classmap-authoritative": true
-}
-``
-# Claude code 
-
-```bash
-# Dans la session interactive
-> Analyse ce fichier @src/utils/validation.js
-
-# En mode non-interactif (-p)
-claude -p "Explique cette fonction @src/auth.ts"
-
-# Pipe direct — zéro exploration de repo
-cat fichier | claude -p "..."
-cat src/auth.ts | claude -p "Explique cette fonction"
-
-# Ou avec redirection
-claude -p "Trouve les bugs dans ce code" < src/auth.ts
+# E2E (requires docker compose up -d)
+npm run cy:run
+npm run cy:open
 ```
+
+---
+
+## License
+
+GPL-2.0-or-later

@@ -10,6 +10,7 @@ use Weblitzer\CFDev\Validation\ErrorBag;
 class Tab extends FieldContainer
 {
     use RendersFieldRow;
+
     public string $title = '';
     /** @var array<string, \Weblitzer\CFDev\Field>|\Weblitzer\CFDev\Fields\Bundle */
     public array|\Weblitzer\CFDev\Fields\Bundle $fields = [];

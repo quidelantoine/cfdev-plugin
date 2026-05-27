@@ -3,11 +3,11 @@
 namespace Weblitzer\CFDev\Tests\Unit\Admin;
 
 use ReflectionMethod;
-use Weblitzer\CFDev\Admin\FieldsPage;
+use Weblitzer\CFDev\Admin\DashboardPage;
 use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 
 /**
- * Tests for FieldsPage::codeSnippet(), ::fieldLines(), ::fieldLinesRaw().
+ * Tests for DashboardPage::codeSnippet(), ::fieldLines(), ::fieldLinesRaw().
  *
  * All three are pure string-generation functions — no DB, no WP environment needed
  * beyond what CFDevTestCase already stubs (i18n functions).
@@ -22,7 +22,7 @@ class CodeSnippetTest extends CFDevTestCase
      */
     private static function callFieldLines(string $fid, array $field, string $src = '$group'): array
     {
-        $m      = new ReflectionMethod(FieldsPage::class, 'fieldLines');
+        $m      = new ReflectionMethod(DashboardPage::class, 'fieldLines');
         $result = $m->invoke(null, $fid, $field, $src);
         return array_map('strval', is_array($result) ? array_values($result) : []);
     }
@@ -33,7 +33,7 @@ class CodeSnippetTest extends CFDevTestCase
      */
     private static function callFieldLinesRaw(string $fid, array $field, string $src = '$group'): array
     {
-        $m      = new ReflectionMethod(FieldsPage::class, 'fieldLinesRaw');
+        $m      = new ReflectionMethod(DashboardPage::class, 'fieldLinesRaw');
         $result = $m->invoke(null, $fid, $field, $src);
         return array_map('strval', is_array($result) ? array_values($result) : []);
     }
@@ -41,7 +41,7 @@ class CodeSnippetTest extends CFDevTestCase
     /** @param array<string,mixed> $entry */
     private static function callCodeSnippet(array $entry, bool $raw = false): string
     {
-        $m      = new ReflectionMethod(FieldsPage::class, 'codeSnippet');
+        $m      = new ReflectionMethod(DashboardPage::class, 'codeSnippet');
         $result = $m->invoke(null, $entry, $raw);
         return is_string($result) ? $result : '';
     }

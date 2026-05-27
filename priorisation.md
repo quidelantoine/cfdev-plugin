@@ -4,15 +4,13 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
-=> Revoir la doc dans son ensemble +++ 
 
-renommer le fichier readme.md actuelle afin de le conserver,
-en creer un nouveau readme.md comme point d'entree du plugings,
+Mettre le logo ampoule dashicons  dans le header des l'admin cfdev, avec le bouton CF au debut de chaque page de l'admin cfdev
+Cela serais bien de le voir un peu partout ?
 
-il faudrais des liens vers la documenation de CFDev,
-Pour le moment la docs et dans /docs posiible conserver ses fichiers aussi dans un autre nom de dossier ,
-Et refaire un dossier  docs toutes neuve a partir de la doc existante. qui suive les liens  de readme.md à la racine du plugin.
-Faire un doc en angalis et une en francais
+
+repeatable, ajax, test ok ? est ce que je garde ???
+Si on garde c'est quoi les limtes etest ce que cela vaut vraiment le coup ??? 
 
 ===========
 Mieux erire le js faire une passe dessus ? 
@@ -24,39 +22,11 @@ Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
 =================
 
 
-=====================
-
-
-refactor(arch): reduce duplication — SelectBase, CheckboxesBase, RendersFieldRow trait, Renderable/Saveable interfaces
-
-Step 1 — Relation field bases
-- Abstracts\CheckboxesBase: shared outputHtml(), resolveChecked(), saveValue(), initCheckboxes()
-  PostCheckboxes, TermCheckboxes, UserCheckboxes extend it (→ ~120 lines removed)
-- Abstracts\WpDropdownSelectBase: shared outputHtml(), renderDropdown() abstract
-  TermSelect, UserSelect extend it (→ ~30 lines removed)
-- PostSelect unchanged (manual <select> rendering, different pattern)
-
-Step 2 — Row rendering trait
-- Support\RendersFieldRow: renderThHtml() + renderFieldErrors()
-  Used in Meta, Bundle, Tab (→ duplicated <th> block removed 3×)
-- Fix: Meta label class cfdev_label → cfdev-label (was inconsistent)
-- Fix: Meta repeatable "Add" button: <a href="#"> → <button type="button">
-
-Step 3 — Contracts
-- Contracts\Renderable: declares outputHtml(string|array $value): string
-- Contracts\Saveable: declares save(int $objectId, string|array $value): int|bool|\WP_Error
-- Field implements Renderable, Saveable
-- FieldContainer: abstract output(object $post): void enforced on all layout containers
-- Tab::output() gains default $type = 'tabs' to satisfy FieldContainer contract
-- FieldContainerTest: anonymous class stub implements output()
-
+=========
 
 ========================
 trouver un logo ++ perso ????
 
-
-
-repeatable , ajax,, test ok ? est ce que je garde ??? 
 
 test cypress peut t'on aller encore plus loin ?
 est ce que tous les champs sont bien testé ??
@@ -170,3 +140,518 @@ Tous les champs sont tester , unitaire, integration et fonctionnel ???
 - Format de date par défaut (`m/d/Y` vs `d/m/Y`)
 - Export JSON/PHP des définitions de champs
 - Formulaires frontend
+
+
+# CFDev — Code-First Custom Meta Fields for WordPress
+
+Plugin WordPress pour déclarer des champs personnalisés (meta fields) entièrement par le code.
+
+---
+
+## CFDev vs ACF
+
+### Ce que CFDev fait mieux
+
+| Aspect | CFDev | ACF |
+|--------|-------|-----|
+| **API code-first** | PHP fluent, lisible, versionnable | `acf_add_local_field_group()` = tableau énorme et verbeux |
+| **Validation serveur** | Système de Rules complet (Required, MinLength, Regex, ImageMinDimensions…) | Quasi inexistant — valide seulement `required` |
+| **Cache intégré** | CacheManager/CacheStore avec invalidation automatique | Rien — `get_field()` tape la DB à chaque appel |
+| **Poids** | Léger, zéro bloat | ACF Free = 3 Mo+, Pro = encore plus |
+| **Déployable** | Code PHP = pas de migration de config en DB | Config stockée en DB → problème deploy dev→prod |
+
+### Ce qu'ACF a que CFDev n'a pas encore
+
+#### 🔴 Critique (manque vraiment)
+
+1. **Conditional logic** — afficher/masquer un champ selon la valeur d'un autre. Feature la plus demandée dans tous les plugins de champs. Sans ça, le UX admin est limité.
+
+2. **Options pages** — page de réglages globaux stockée dans `wp_options` (ex : infos du site, réseaux sociaux, header/footer global). Cas d'usage quotidien.
+
+3. **Flexible Content** — comme le `bundle` mais chaque ligne peut être d'un *type différent* (ex : ligne "hero", ligne "texte+image", ligne "galerie"). C'est le fondement du page builder sans page builder.
+
+4. **REST API** — exposer les champs résolus via `/wp-json`. Indispensable pour les headless / Next.js.
+
+#### 🟡 Important
+
+5. **Règles de localisation plus riches** — CFDev a `onlyForTemplate()` mais ACF permet : par rôle utilisateur, par auteur, par valeur de champ existant, par statut de post.
+
+6. **Champ Relationship** — relation bidirectionnelle entre posts. ACF maintient le lien dans les deux sens.
+
+7. **Champ Group** — conteneur nommé (comme une section accordion mais sans UI de collapse, juste pour grouper visuellement les champs).
+
+#### ⚪ Mineur
+
+8. Champs `password`, `oembed`, `button_group`, `page_link` — niche mais parfois nécessaires.
+9. Export JSON/PHP des définitions — snapshot portable.
+10. Formulaires frontend — rendre les champs hors admin.
+
+### Verdict
+
+CFDev est meilleur qu'ACF sur tout ce qu'il fait : validation, cache, lisibilité du code. Le problème c'est le périmètre fonctionnel — ACF couvre des cas d'usage que CFDev ignore encore.
+
+### Priorités d'amélioration
+
+1. **Conditional logic** (gros chantier JS + PHP)
+2. **Options page** (rapide à implémenter, fort ROI)
+3. **REST API endpoint** (le cache est déjà là — c'est 80% du travail fait)
+4. **Flexible Content** (variante du Bundle avec type de ligne variable)
+
+---
+
+## Installation
+
+```bash
+composer require quidelantoine/cfdev
+```
+
+### Build production
+
+```bash
+composer install --no-dev --optimize-autoloader --classmap-authoritative
+```
+
+Ou dans `composer.json` :
+
+```json
+"config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true
+}
+```
+
+---
+
+## Commandes de développement
+
+```bash
+# Qualité de code
+vendor/bin/phpcs -s # vendor/bin/phpcbf
+vendor/bin/phpstan analyse src tests
+./vendor/bin/phpunit --testsuite Unit
+./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
+
+npm run cy:run  
+npx cypress open --browser chrome
+
+# Tests fonctionnels E2E — Cypress (nécessite docker compose up -d)
+npm install                                              # première fois seulement
+npm run cy:open                                          # Test Runner interactif
+npm run cy:run                                           # headless CI (Chrome)
+npx cypress run --spec "cypress/e2e/02-flat-fields.cy.js" --browser chrome  # spec unique
+
+# Coverage — Unit (rapide, sans DB)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-php coverage/unit.cov --no-progress
+
+# Coverage — Integration (nécessite docker compose up -d db)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap-docker.php --coverage-php coverage/integration.cov --no-progress
+
+# Fusion + rapport HTML (nécessite d'avoir lancé les deux commandes ci-dessus)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+php -d pcov.enabled=1 vendor/bin/phpcov merge --html coverage/html coverage/
+# → ouvrir app/wp-content/plugins/cfdev-plugin/coverage/html/index.html
+
+# Rapport texte rapide (Unit seul)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-text --no-progress
+```
+
+```bash
+# Claude Code
+claude -p "Analyse @src/utils/validation.js"
+cat src/auth.ts | claude -p "Explique cette fonction"
+```
+
+---
+
+## Compatibilité
+
+| | Minimum | Recommandé |
+|---|---|---|
+| **PHP** | 8.2 | 8.3+ |
+| **WordPress** | 6.5 | 6.5+ |
+
+Plancher PHP 8.2 : `readonly class` utilisé dans `FileMime` (`readonly` properties seules = 8.1).
+Plancher WP technique : 5.3 (`wp_date()`). Minimum officiel fixé à 6.5 (avril 2024) pour cibler les installations actives.
+
+---
+
+## Gestion des versions
+
+### Vérifier la compatibilité PHP
+
+```bash
+# Signale toute syntaxe absente avant la version cible (ex : 8.2-)
+vendor/bin/phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 8.2- src/
+
+# Ou via phpcs.xml (testVersion déjà configuré à 8.2-)
+vendor/bin/phpcs src/
+```
+
+Pour changer le plancher, modifier `testVersion` dans `phpcs.xml` :
+
+```xml
+<config name="testVersion" value="8.2-"/>
+```
+
+### Trouver le plancher WordPress
+
+Pas d'outil automatique équivalent pour WP. Méthode manuelle :
+
+```bash
+# Lister toutes les fonctions/classes WP utilisées dans src/
+grep -roh --include="*.php" -P '(?<!\w)(wp_\w+|WP_\w+|register_\w+|add_\w+|get_\w+|update_\w+|delete_\w+)\(' src/ \
+  | sort -u
+grep -roh --include="*.php" -P '\b(wp_\w+|WP_\w+|register_\w+|add_meta_box|get_term_meta|update_term_meta|delete_term_meta|get_user_meta|update_user_meta)\(' src/ | sort -u
+
+# Puis vérifier chaque fonction sur https://developer.wordpress.org/reference/
+# La plus récente détermine le plancher.
+```
+
+Fonctions déterminantes pour ce plugin :
+
+| Fonction | Introduite |
+|----------|-----------|
+| `get_term_meta` / `update_term_meta` | WP 4.4 |
+| `register_rest_route` / `WP_REST_*` | WP 4.4 |
+| `register_meta` avec `object_subtype` | WP 4.9.8 |
+| `wp_date()` | **WP 5.3** ← plancher actuel |
+
+### Mettre à jour les headers après un changement
+
+Dans `cfdev-plugin.php` :
+
+```php
+/**
+ * Requires PHP:      8.2
+ * Requires at least: 6.5
+ * Tested up to:      7.0
+ */
+```
+
+Et vérifier que le runtime check est cohérent :
+
+```php
+if (version_compare(PHP_VERSION, '8.2', '<')) { ... }
+```
+
+---
+
+## Recherche & remplacement (helpers)
+
+```bash
+# Rechercher
+grep -rn "render_post_filter" .
+grep -rn --exclude-dir=vendor "ancien_texte" .
+
+# Remplacer
+find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
+```
+
+---
+
+## Annotations PHPDoc
+
+```php
+@package    // Namespace principal
+@subpackage // Sous-namespace
+@author     // Nom <email>
+@since      // Version d'introduction
+@version    // Version actuelle
+@param      // Paramètre de méthode
+@return     // Valeur de retour
+@throws     // Exception levée
+@deprecated // Méthode obsolète + alternative
+@see        // Référence vers une autre classe/méthode
+@link       // URL de documentation externe
+@todo       // Ce qui reste à faire
+```
+
+---
+
+## Documentation
+
+- Doc complète : *(lien à ajouter)*
+- Disponible en FR et EN
+
+###################################################################################
+
+
+# Pour CFDev : "CFDev – Code-First Custom Meta Fields For Wordpress" Custom Meta For Dev
+amelioration du code ( interafce , duplication content), ok pour l'architecture du pluging ?
+# En cours
+
+# installation
+
+```bash
+composer require quidelantoine/cfdev # c'est le projet
+```
+
+# test
+```bash
+vendor/bin/phpcs -s
+vendor/bin/phpstan analyse
+vendor/bin/phpunit
+
+# ??? 
+./vendor/bin/phpunit --testsuite Unit
+./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
+```
+
+# A faire
+
+
+
+
+=> Mettre CFDEV le menu admin plus bas dans la sélection ??
+
+=> qui voit l'admin cfdev => administeur uniquement ????
+
+
+=> j'ai fais les champs , et le reste (validation, sauvegarde) , repeatable , ajax,
+-> il faut faire une partie object , via des hooks ou non , pour init-cuztom
+->ajouter des groupes de champs, via des hooks , pourquoi pour pouvoir avoir acces a toutes les declaration, pour ensuite dans l'admin, donner accés à ces donéées, faire des stas et verifier que tous les champs n'ont pas le meme nomo (id) et pour le kiff d'avoir une vue d'ensemble ( un resume de tous les champs ajouter via le code afficher dans l'admin du plugins)
+=> peut etre faire l'admin avant pour une meilleur integration ensuite
+
+
+=> faire un test avec les champs de type repetable
+
+=> tous les champs n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
+
+=> Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
+-> reste eslint ??? et ci
+
+=> change color of metabox , custom design metaBox +++
+
+
+=> je garde le champ hidden , a quoi il peut servir (cas) , pour garder la données, pas vraiment car la donées est toujours
+
+
+Gaps dans les tests unitaires existants :, refaire une demande pour completer ++
+
+=> Utiliser plugins traduction loco translate pour générer fichier .mo et .po
+allemand, espagnol, chinois
+
+Faire une page admin cfdev
+Sous forme de tabs. qui ressemble à ACF ????
+- cache -> vider le cache
+- liste des groupes de champs
+  lecture des hooks ???
+- réglages
+- -> truc pour verifier que tous les id sont unique , éviter les doublons ++
+- _text_'.$str.'_main_image'
+
+=> minifier le code ,
+=> Faire une version prod
+= Ajouter dans la config ??? 'mode'  dev/prod
+
+=> Select user => comment prendre que certain role ???, possible d'en prendre plusieurs roles  ??
+
+=> ecrire des tests pour la partie admin
+=> ecrire aussi la docs
+
+
+=> reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
+
+// lancer un truc security vulnerabilté via ia , faire la formation ia dyma
+
+=> revoir /home/quidel/Sites/2026/test5_frankenphp/app/wp-content/plugins/cfdev-plugin/src/demo/helpers.php
+car dans la function qui se trouve dans le theme il y avais des trucs bien +++
+
+
+## Rediger la docs
+=> revoir la doc dans son ensemble, le readme de base devra etre le point d'entree de toutes la doc avec installation
+=> lui demander de faire un design avec logo pour mise en avant du plugin
+=> Voir la docs dans le back-office, grace au fichier md
+=> faire une doc en francais et une en anglais, comment bien gerer ceci
+=> comment gerer cela avec md dans depot et aussi avec le md sur l'admin du site faire une partie documentation
+## Test
+=> Faire un test avec les champ repetable sur tous pour faire le tests
+=> test bundle dans term et user ????  et accordeon et tabs ???? et validation
+=> FAire tests de tous les champs dans un bundle , dans un accordeaon , dans tabs ??
+=> meme choses sur meta dans term et user ++++
+custom-meta.dev
+=> vérifier si il marche , tous , tester les fiedls pas dans la doc ??
+=> Voir si marche aussi dans bundle tabs , et accordeon
+=> dans term et dans user ++
+=> tester si cela marche si j'ajoute champ à woocommerce ??
+
+X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html sinon on va devoir changer souvent
+
+
+# A voir plus tard
+
+- admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
+
+# autres plugins idee
+
+
+https://themepure.net/plugins/puremetafields/docs/switch/
+
+# hemper
+
+### recherche
+grep -rn "render_post_filter" .
+render_post_filter
+
+# replace texte
+# Prévisualiser sans modifier (dry run)
+grep -rn "ancien_texte" . --include="*.php"
+grep -rn "Gijs Jorissen" . --include="*.php"
+
+grep -rn --exclude-dir=vendor "ancien_texte" .
+
+
+# Tous types de fichiers
+find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
+find . -type f -exec sed -i 's/Gijs Jorissen/quidelantoine/g' {} +
+# Insensible à la casse
+sed -i 's/ancien_texte/nouveau_texte/gi'
+
+
+@package    // Namespace ou package principal
+@subpackage // Sous-namespace
+@author     // Nom <email>
+@since      // Version d'introduction
+@version    // Version actuelle (surtout pour les classes)
+@param      // Paramètre de méthode
+@return     // Valeur de retour
+@throws     // Exception levée
+@deprecated // Méthode obsolète, indiquer l'alternative
+@see        // Référence vers une autre classe/méthode
+@link       // URL de documentation externe
+@todo       // Ce qui reste à faire
+
+
+# Test unitaire
+
+./vendor/bin/phpunit
+./vendor/bin/phpunit --display-deprecations
+
+# PHPCS
+vendor/bin/phpcs -i
+vendor/bin/phpcs -s
+vendor/bin/phpcbf
+
+# PHPstan
+vendor/bin/phpstan analyse src tests
+
+=> treste test Bundle , accordeon, tab tabs
+
+## Gestion de composer pour la prod
+-> mettre le dossier vendor dans le pluging en prod
+lancer ceci ```composer install --no-dev --optimize-autoloader --classmap-authoritative```
+
+ou
+
+Mettre dans le fichier composer.json
+
+```bash
+"config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true
+}
+``
+# Claude code 
+
+```bash
+# Dans la session interactive
+> Analyse ce fichier @src/utils/validation.js
+
+# En mode non-interactif (-p)
+claude -p "Explique cette fonction @src/auth.ts"
+
+# Pipe direct — zéro exploration de repo
+cat fichier | claude -p "..."
+cat src/auth.ts | claude -p "Explique cette fonction"
+
+# Ou avec redirection
+claude -p "Trouve les bugs dans ce code" < src/auth.ts
+```
+
+# CFDev vs ACF — Comparaison
+
+## Ce que CFDev fait mieux qu'ACF
+
+| Aspect | CFDev | ACF |
+|--------|-------|-----|
+| **API code-first** | PHP fluent, lisible, versionnable | `acf_add_local_field_group()` = tableau énorme et verbeux |
+| **Validation serveur** | Système de Rules complet (Required, MinLength, Regex, ImageMinDimensions…) | Quasi inexistant — valide seulement `required` |
+| **Cache intégré** | CacheManager/CacheStore avec invalidation automatique | Rien — `get_field()` tape la DB à chaque appel |
+| **Poids** | Léger, zéro bloat | ACF Free = 3 Mo+, Pro = encore plus |
+| **Déployable** | Code PHP = pas de migration de config en DB | Config stockée en DB → problème deploy dev→prod |
+
+---
+
+## Ce qu'ACF a que CFDev n'a pas
+
+### Critique (manque vraiment)
+
+1. **Conditional logic** — afficher/masquer un champ selon la valeur d'un autre. C'est la feature la plus demandée dans tous les plugins de champs. Sans ça, le UX admin est limité.
+
+2. **Options pages** — une page de réglages globaux stockée dans `wp_options` (ex : infos du site, réseaux sociaux, header/footer global). Cas d'usage quotidien.
+
+3. **Flexible Content** — comme le `bundle` mais chaque ligne peut être d'un *type différent* (ex : ligne "hero", ligne "texte+image", ligne "galerie"). C'est le fondement du page builder sans page builder.
+
+4. **REST API** — exposer les champs résolus via `/wp-json`. Indispensable pour les headless / Next.js.
+
+### Important
+
+5. **Règles de localisation plus riches** — CFDev a `onlyForTemplate()` mais ACF permet : par rôle utilisateur, par auteur, par valeur de champ existant, par statut de post.
+
+6. **Champ Relationship** — relation bidirectionnelle entre posts. ACF maintient le lien dans les deux sens.
+
+7. **Champ Group** — conteneur nommé (comme une section accordion mais sans UI de collapse, juste pour grouper visuellement les champs).
+
+### Mineur
+
+8. Champs `password`, `oembed`, `button_group`, `page_link` — niche mais parfois nécessaires.
+9. Export JSON/PHP des définitions — snapshot portable.
+10. Formulaires frontend — rendre les champs hors admin.
+
+---
+
+## Verdict
+
+CFDev est meilleur qu'ACF sur tout ce qu'il fait : la validation, le cache, la lisibilité du code. Le problème c'est le périmètre fonctionnel — ACF couvre des cas d'usage que CFDev ignore encore.
+
+## Priorités d'amélioration
+
+1. **Conditional logic** (gros chantier JS + PHP)
+2. **Options page** (rapide à implémenter, fort ROI)
+3. **REST API endpoint** (le cache est déjà là — c'est 80% du travail fait)
+4. **Flexible Content** (variante du Bundle avec type de ligne variable)
+
+###################################
+
+
+est ce que mettre la doc dans l'admin du plugin est une bonne idées, possible que cela multilangue et basé sur les fichiers md du dossier docs ?
+
+● Bonne idée, oui — pour un plugin code-first destiné aux devs, avoir la doc accessible dans l'admin évite les allers-retours GitHub. Voici l'analyse honnête :
+                                                                                                                                                                                                         
+---
+Points forts
+
+- Contextuelle — le dev est déjà dans l'admin quand il a une question
+- Synchronisée avec le code — les .md sont dans le repo, la doc ne peut pas être en retard sur le code
+- Zéro infra — pas de site de doc externe à maintenir
+- GetDataPage existe déjà dans ton admin — tu as déjà l'ossature de pages d'admin
+
+Points faibles / risques
+
+- Multilangue sur des .md = complexité non négligeable — il faudrait soit des fichiers docs/fr/, docs/en/, soit un parser de frontmatter avec clé de langue. Pour l'instant tu n'as qu'une langue, c'est du sur-engineering
+  précoce.
+- Rendu Markdown — WordPress n'a pas de parser MD natif. Tu devrais embarquer une lib PHP (league/commonmark ou parsedown) ou parser côté JS. Ça ajoute une dépendance.
+- Indexation / recherche — les .md statiques ne sont pas cherchables facilement dans l'admin.
+
+  ---
+Ma recommandation
+
+Oui, mais simplement. Une page admin "Documentation" qui :
+1. Liste les fichiers .md du dossier docs/
+2. Les rend en HTML via league/commonmark (déjà dans beaucoup de projets PHP)
+3. Avec un menu de navigation latéral généré depuis les noms de fichiers
+
+Pas de multilangue pour l'instant — attends d'avoir un vrai besoin. Si tu veux l'ajouter plus tard, la structure docs/fr/*.md / docs/en/*.md avec détection de get_locale() s'ajoutera proprement.

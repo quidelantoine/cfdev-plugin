@@ -5,12 +5,9 @@ namespace Weblitzer\CFDev\Admin;
 use Weblitzer\CFDev\Registry;
 
 /**
- * CFDev — REST API documentation page.
+ * CFDev — REST API admin page.
  *
- * Sections:
- *   1. CFDev endpoint (/wp-json/cfdev/v1/) — resolved values
- *   2. Native WP REST (/wp-json/wp/v2/) — raw values, fields flagged with rest: true
- *   3. Tabbed table of all fields currently flagged with rest: true
+ * Toggles for REST and CFDev API, plus a tabbed table of all fields flagged with rest: true.
  *
  * @package CFDev
  * @author  quidelantoine
@@ -70,31 +67,6 @@ final class RestPage extends AdminPage
 
         $total_rest = count($entries);
 
-        // ── Code snippets ──────────────────────────────────────────────────────
-        $raw_php  = "->addMetaBox('details', 'Details', [\n"
-            . "    ['type' => 'text',  'id' => '_subtitle', 'label' => 'Subtitle',       'rest' => true],\n"
-            . "    ['type' => 'image', 'id' => '_cover',    'label' => 'Cover image',    'rest' => true],\n"
-            . "    ['type' => 'text',  'id' => '_note',     'label' => 'Internal note'], // not exposed\n"
-            . "    // bundle\n"
-            . "    ['bundle', 'chapters', [...fields...], ['rest' => true]],\n"
-            . "]);";
-        $snip_php = esc_html($raw_php);
-
-        $raw_cfdev  = "// resolved values — enriched images, decoded bundles\n"
-            . "const res  = await fetch('" . $home . "/wp-json/cfdev/v1/post/42');\n"
-            . "const data = await res.json();\n\n"
-            . "data.groups.details._subtitle   // \"Mon sous-titre\"\n"
-            . "data.groups.details._cover      // { id, alt, full, thumbnail }\n"
-            . "data.groups.details.chapters    // [{ _title: 'Ch. 1', ... }]";
-        $snip_cfdev = esc_html($raw_cfdev);
-
-        $raw_native  = "// valeurs brutes\n"
-            . "const res  = await fetch('" . $home . "/wp-json/wp/v2/books/42?_fields=id,title,meta');\n"
-            . "const post = await res.json();\n\n"
-            . "post.meta._subtitle              // \"Mon sous-titre\"\n"
-            . "post.meta._cover                 // \"61\"  (ID brut)\n"
-            . "JSON.parse(post.meta.chapters)   // [{...}, ...]";
-        $snip_native = esc_html($raw_native);
         ?>
         <div class="wrap cfdev-rest-page">
             <?php self::header(__('REST API', 'cfdev')); ?>
@@ -222,58 +194,6 @@ final class RestPage extends AdminPage
                 <?php endif; ?>
             </div>
 
-            <?php // ── Section 2 : API CFDev ─────────────────────────────────── ?>
-            <div class="cfdev-rest-section">
-                <h2><?php esc_html_e('1 — CFDev API /wp-json/cfdev/v1/ (resolved data)', 'cfdev'); ?></h2>
-                <p class="description">
-                    <?php esc_html_e('CFDev endpoint using CacheManager. Returns groups and fields marked', 'cfdev'); ?>
-                    <code>rest: true</code>
-                    <?php esc_html_e('with resolved values: enriched images, bundles decoded as arrays.', 'cfdev'); ?>
-                </p>
-                <pre class="cfdev-rest-snippet"><?php echo $snip_cfdev; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></pre>
-
-                <table class="widefat cfdev-rest-table">
-                    <thead>
-                    <tr>
-                        <th><?php esc_html_e('Object', 'cfdev'); ?></th>
-                        <th><?php esc_html_e('Endpoint', 'cfdev'); ?></th>
-                        <th><?php esc_html_e('Auth required', 'cfdev'); ?></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><?php esc_html_e('Post / Page / CPT', 'cfdev'); ?></td>
-                        <td><code><?php echo esc_html($home); ?>/wp-json/cfdev/v1/post/{id}</code></td>
-                        <td><?php esc_html_e('No (if public published post)', 'cfdev'); ?></td>
-                    </tr>
-                    <tr>
-                        <td><?php esc_html_e('Term', 'cfdev'); ?></td>
-                        <td><code><?php echo esc_html($home); ?>/wp-json/cfdev/v1/term/{taxonomy}/{id}</code></td>
-                        <td><?php esc_html_e('No (if public taxonomy)', 'cfdev'); ?></td>
-                    </tr>
-                    <tr>
-                        <td><?php esc_html_e('User', 'cfdev'); ?></td>
-                        <td><code><?php echo esc_html($home); ?>/wp-json/cfdev/v1/user/{id}</code></td>
-                        <td><?php esc_html_e('Yes (always)', 'cfdev'); ?></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <?php // ── Section 3 : REST WP natif ─────────────────────────────── ?>
-            <div class="cfdev-rest-section">
-                <h2><?php esc_html_e('2 — Native WP REST /wp-json/wp/v2/ (raw values)', 'cfdev'); ?></h2>
-                <p class="description">
-                    <?php esc_html_e('Standard WordPress endpoint. Returns raw values stored in the database. Each field must be marked', 'cfdev'); ?>
-                    <code>rest: true</code>.
-                    <?php esc_html_e('Bundles are returned as a JSON string to be parsed client-side.', 'cfdev'); ?>
-                    <?php esc_html_e('For a bundle, exposure is all-or-nothing: mark the bundle with', 'cfdev'); ?>
-                    <code>['rest' => true]</code> —
-                    <?php esc_html_e('individual fields inside cannot be selected separately.', 'cfdev'); ?>
-                </p>
-                <pre class="cfdev-rest-snippet"><?php echo $snip_php; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></pre>
-                <pre class="cfdev-rest-snippet"><?php echo $snip_native; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></pre>
-            </div>
         </div>
         <?php
         self::bundleModal();

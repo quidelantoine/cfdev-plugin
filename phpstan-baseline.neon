@@ -7,52 +7,10 @@ parameters:
 			path: src/Admin/CachePage.php
 
 		-
-			message: '#^Access to an undefined property WP_Term\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Admin/CachePage.php
-
-		-
-			message: '#^Access to an undefined property WP_User\:\:\$display_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Admin/CachePage.php
-
-		-
-			message: '#^Access to an undefined property WP_Post\:\:\$post_title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Admin/FieldsPage.php
-
-		-
 			message: '#^Access to an undefined property WP_Post_Type\:\:\$labels\.$#'
 			identifier: property.notFound
 			count: 2
-			path: src/Admin/FieldsPage.php
-
-		-
-			message: '#^Access to an undefined property WP_Term\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Admin/FieldsPage.php
-
-		-
-			message: '#^Access to an undefined property WP_Post\:\:\$post_title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Cache/CacheResolver.php
-
-		-
-			message: '#^Access to an undefined property WP_Post\:\:\$post_title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Config/Ajax/AjaxHandler.php
-
-		-
-			message: '#^Access to an undefined property WP_Term\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Config/Ajax/AjaxHandler.php
+			path: src/Admin/DashboardPage.php
 
 		-
 			message: '#^Access to an undefined property WP_Post\:\:\$post_mime_type\.$#'
@@ -61,55 +19,13 @@ parameters:
 			path: src/Fields/File.php
 
 		-
-			message: '#^Access to an undefined property WP_Post\:\:\$post_title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Fields/File.php
-
-		-
-			message: '#^Access to an undefined property WP_Post\:\:\$post_title\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Fields/PostCheckboxes.php
-
-		-
-			message: '#^Access to an undefined property WP_Post\:\:\$post_title\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Fields/PostSelect.php
-
-		-
-			message: '#^Access to an undefined property WP_Term\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Fields/TermCheckboxes.php
-
-		-
-			message: '#^Access to an undefined property WP_User\:\:\$display_name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: src/Fields/UserCheckboxes.php
-
-		-
 			message: '#^Access to an undefined property WP_Post_Type\:\:\$cap\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Meta/MetaBox.php
 
 		-
-			message: '#^Access to an undefined property WP_Term\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Taxonomy.php
-
-		-
 			message: '#^Access to an undefined property WP_Post_Type\:\:\$label\.$#'
 			identifier: property.notFound
 			count: 1
 			path: tests/Integration/PostType/PostTypeRegistrationTest.php
-
-		-
-			message: '#^Access to an undefined property WP_Term\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/Integration/Taxonomy/TaxonomyRegistrationTest.php

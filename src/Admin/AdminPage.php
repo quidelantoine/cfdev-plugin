@@ -36,7 +36,7 @@ abstract class AdminPage
 
     protected static function placeholder(string $label = ''): void
     {
-        $text = $label ?: __('Cette section est en cours de développement.', 'cfdev');
+        $text = $label ?: __('This section is under development.', 'cfdev');
         ?>
         <div class="cfdev-placeholder">
             <span class="cfdev-placeholder__icon" aria-hidden="true">⚙</span>

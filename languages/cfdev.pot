@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Custom Field For Dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-27 11:14+0000\n"
+"POT-Creation-Date: 2026-05-27 13:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Domain: cfdev"
 
 #. %d = number of fields
-#: src/Admin/RestPage.php:371 src/Admin/FieldsPage.php:232
+#: src/Admin/FieldsPage.php:232
 msgid "%d champ"
 msgid_plural "%d champs"
 msgstr[0] ""
@@ -41,6 +41,13 @@ msgstr[1] ""
 #: src/Admin/CachePage.php:71
 msgid "%d fichier supprimé."
 msgid_plural "%d fichiers supprimés."
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = number of fields
+#: src/Admin/RestPage.php:371
+msgid "%d field"
+msgid_plural "%d fields"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -108,15 +115,19 @@ msgid "%s Parent"
 msgstr ""
 
 #: src/Admin/RestPage.php:227
-msgid "1 — API CFDev /wp-json/cfdev/v1/ (données résolues)"
+msgid "1 — CFDev API /wp-json/cfdev/v1/ (resolved data)"
 msgstr ""
 
 #: src/Admin/RestPage.php:265
-msgid "2 — REST WP natif /wp-json/wp/v2/ (valeurs brutes)"
+msgid "2 — Native WP REST /wp-json/wp/v2/ (raw values)"
+msgstr ""
+
+#: src/templates/template-cfdev-test.php:23
+msgid "Access denied."
 msgstr ""
 
 #: src/Admin/RestPage.php:651 src/Admin/FieldsPage.php:362
-msgid "Accordéon"
+msgid "Accordion"
 msgstr ""
 
 #: src/Meta.php:165 src/Fields/Bundle.php:58 src/Fields/Bundle.php:206
@@ -133,6 +144,10 @@ msgstr ""
 msgid "Add New %s"
 msgstr ""
 
+#: src/Admin/CachePage.php:131
+msgid "Age"
+msgstr ""
+
 #: src/PostType.php:95 src/Taxonomy.php:143
 #, php-format
 msgid "All %s"
@@ -142,46 +157,17 @@ msgstr ""
 msgid "Alternative text for the image"
 msgstr ""
 
-#: src/Admin/RestPage.php:138
-msgid "API CFDev active"
-msgstr ""
-
-#: src/Admin/RestPage.php:140
-msgid "API CFDev inactive"
-msgstr ""
-
-#: src/Admin/RestPage.php:161
-msgid "Aucun champ marqué rest: true pour le moment."
-msgstr ""
-
-#: src/Admin/RestPage.php:413 src/Admin/RestPage.php:450
-#: src/Admin/FieldsPage.php:273 src/Admin/FieldsPage.php:295
-msgid "Aucun champ."
-msgstr ""
-
-#: src/Admin/CachePage.php:122
-msgid "Aucun fichier en cache."
-msgstr ""
-
-#: src/Admin/RestPage.php:318 src/Admin/FieldsPage.php:152
-msgid "Aucun groupe déclaré."
-msgstr ""
-
 #: src/Admin/FieldsPage.php:207
 msgid "Aussi dans :"
 msgstr ""
 
 #: src/Admin/RestPage.php:240
-msgid "Auth requise"
+msgid "Auth required"
 msgstr ""
 
 #: src/Rest/CfdevRestApi.php:176 src/Rest/CfdevRestApi.php:198
 #: src/Rest/CfdevRestApi.php:204
 msgid "Authentication required."
-msgstr ""
-
-#: src/Admin/RestPage.php:231
-msgid "avec valeurs résolues : images enrichies, bundles décodés en tableaux."
 msgstr ""
 
 #: src/Admin/RestPage.php:292 src/Admin/RestPage.php:388
@@ -195,45 +181,65 @@ msgstr ""
 msgid "bundle"
 msgstr ""
 
+#: src/Admin/RestPage.php:269
+msgid "Bundles are returned as a JSON string to be parsed client-side."
+msgstr ""
+
 #: src/Admin/CachePage.php:61 src/Admin/AdminMenu.php:35
 #: src/Admin/AdminMenu.php:35
 msgid "Cache"
 msgstr ""
 
 #: src/Admin/CachePage.php:92
-msgid "Cache actif"
+msgid "Cache active"
 msgstr ""
 
 #: src/Admin/CachePage.php:97
-msgid "Cache inactif"
-msgstr ""
-
-#: src/Admin/AdminPage.php:39
-msgid "Cette section est en cours de développement."
+msgid "Cache inactive"
 msgstr ""
 
 #: src/Admin/AdminMenu.php:23
 msgid "CFDev"
 msgstr ""
 
-#: src/Admin/AdminMenu.php:34
-msgid "Champs"
+#: src/Admin/RestPage.php:138
+msgid "CFDev API active"
 msgstr ""
 
-#: src/Admin/RestPage.php:154
-msgid "Champs actuellement exposés"
+#: src/Admin/RestPage.php:140
+msgid "CFDev API inactive"
+msgstr ""
+
+#: src/Admin/RestPage.php:479
+msgid "CFDev endpoint"
+msgstr ""
+
+#: src/Admin/RestPage.php:229
+msgid "CFDev endpoint using CacheManager. Returns groups and fields marked"
 msgstr ""
 
 #: src/Admin/FieldsPage.php:562
 msgid "Chargement…"
 msgstr ""
 
-#: src/Admin/RestPage.php:476
-msgid "Clé meta"
+#: src/Admin/CachePage.php:113
+msgid "Clear all cache"
+msgstr ""
+
+#: src/Admin/RestPage.php:296 src/Admin/FieldsPage.php:552
+msgid "Close"
+msgstr ""
+
+#: src/Admin/RestPage.php:154
+msgid "Currently exposed fields"
 msgstr ""
 
 #. Name of the plugin
 msgid "Custom Field For Dev"
+msgstr ""
+
+#: src/Admin/AdminMenu.php:33 src/Admin/DashboardPage.php:22
+msgid "Dashboard"
 msgstr ""
 
 #: src/Taxonomy.php:221 src/Meta/MetaBox.php:287
@@ -244,13 +250,25 @@ msgstr ""
 msgid "Debug"
 msgstr ""
 
+#: src/Admin/FieldsPage.php:78
+msgid "declared in"
+msgstr ""
+
+#: src/Admin/CachePage.php:172
+msgid "Delete"
+msgstr ""
+
 #: src/Field.php:189 src/Fields/Bundle.php:76 src/Fields/Bundle.php:109
 #: src/Fields/Bundle.php:136 src/Config/Assets/AssetLoader.php:159
 msgid "Drag to reorder"
 msgstr ""
 
-#: src/Admin/FieldsPage.php:78
-msgid "déclaré dans"
+#: src/Admin/FieldsPage.php:73
+msgid "Duplicate field IDs:"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:328
+msgid "Duplicate ID"
 msgstr ""
 
 #: src/PostType.php:98 src/Taxonomy.php:146
@@ -262,70 +280,48 @@ msgstr ""
 msgid "Endpoint"
 msgstr ""
 
-#: src/Admin/RestPage.php:479
-msgid "Endpoint CFDev"
-msgstr ""
-
-#: src/Admin/RestPage.php:229
-msgid ""
-"Endpoint CFDev utilisant le CacheManager. Retourne les groupes et champs "
-"marqués"
-msgstr ""
-
-#: src/Admin/RestPage.php:480
-msgid "Endpoint natif"
-msgstr ""
-
-#: src/Admin/RestPage.php:267
-msgid ""
-"Endpoint standard WordPress. Retourne les valeurs brutes stockées en base. "
-"Chaque champ doit être marqué"
-msgstr ""
-
 #: src/Admin/CachePage.php:146
-msgid "Expiré"
+msgid "Expired"
 msgstr ""
 
-#: src/Admin/RestPage.php:296 src/Admin/FieldsPage.php:552
-msgid "Fermer"
+#: src/Admin/RestPage.php:299
+msgid "Exposure is all-or-nothing: all fields in the bundle are included."
+msgstr ""
+
+#: src/Admin/AdminMenu.php:34
+msgid "Fields"
 msgstr ""
 
 #: src/Admin/RestPage.php:649 src/Admin/FieldsPage.php:360
 msgid "Flat"
 msgstr ""
 
-#: src/Admin/AdminMenu.php:37 src/Admin/GetDataPage.php:23
-msgid "Get Data"
+#: src/Admin/RestPage.php:270
+msgid "For a bundle, exposure is all-or-nothing: mark the bundle with"
 msgstr ""
 
-#: src/Admin/CachePage.php:129
-msgid "Groupes"
+#: src/Admin/AdminMenu.php:37 src/Admin/GetDataPage.php:23
+msgid "Get Data"
 msgstr ""
 
 #: src/Admin/FieldsPage.php:51
 msgid "Groupes de champs"
 msgstr ""
 
+#: src/Admin/CachePage.php:129
+msgid "Groups"
+msgstr ""
+
 #: src/Admin/FieldsPage.php:315
 msgid "ID"
 msgstr ""
 
-#: src/Admin/FieldsPage.php:328
-msgid "ID dupliqué"
-msgstr ""
-
-#: src/Admin/FieldsPage.php:73
-msgid "IDs de champs dupliqués :"
-msgstr ""
-
 #: src/Admin/RestPage.php:300
-msgid ""
-"Il n'est pas possible de sélectionner des champs individuels à l'intérieur."
+msgid "Individual fields inside cannot be selected separately."
 msgstr ""
 
 #: src/Admin/RestPage.php:272
-msgid ""
-"il n'est pas possible de sélectionner des champs individuels à l'intérieur."
+msgid "individual fields inside cannot be selected separately."
 msgstr ""
 
 #: src/Rest/CfdevRestApi.php:175 src/Rest/CfdevRestApi.php:197
@@ -337,24 +333,32 @@ msgstr ""
 msgid "Invalid taxonomy."
 msgstr ""
 
-#: src/Admin/RestPage.php:299
-msgid "L'exposition est tout-ou-rien : tous les champs du bundle sont inclus."
-msgstr ""
-
 #: src/Admin/RestPage.php:477 src/Admin/FieldsPage.php:317
 msgid "Label"
-msgstr ""
-
-#: src/Admin/RestPage.php:269
-msgid "Les bundles sont retournés comme chaîne JSON à parser côté client."
 msgstr ""
 
 #: src/Fields/Link.php:33
 msgid "Link text"
 msgstr ""
 
+#: src/Admin/RestPage.php:476
+msgid "Meta key"
+msgstr ""
+
 #: src/Admin/CachePage.php:132
-msgid "Modifié"
+msgid "Modified"
+msgstr ""
+
+#: src/Admin/RestPage.php:480
+msgid "Native endpoint"
+msgstr ""
+
+#: src/Admin/RestPage.php:115
+msgid "Native WP REST active"
+msgstr ""
+
+#: src/Admin/RestPage.php:117
+msgid "Native WP REST inactive"
 msgstr ""
 
 #: src/PostType.php:99
@@ -385,6 +389,18 @@ msgstr ""
 msgid "No %s found in trash"
 msgstr ""
 
+#: src/Admin/RestPage.php:247
+msgid "No (if public published post)"
+msgstr ""
+
+#: src/Admin/RestPage.php:252
+msgid "No (if public taxonomy)"
+msgstr ""
+
+#: src/Admin/CachePage.php:122
+msgid "No cached files."
+msgstr ""
+
 #: src/Rest/CfdevRestApi.php:92
 msgid "No CFDev fields exposed for this post type."
 msgstr ""
@@ -397,20 +413,21 @@ msgstr ""
 msgid "No CFDev fields exposed for users."
 msgstr ""
 
-#: src/Admin/RestPage.php:247
-msgid "Non (si post public publié)"
+#: src/Admin/RestPage.php:161
+msgid "No fields marked rest: true yet."
 msgstr ""
 
-#: src/Admin/RestPage.php:252
-msgid "Non (si taxonomie publique)"
+#: src/Admin/RestPage.php:413 src/Admin/RestPage.php:450
+#: src/Admin/FieldsPage.php:273 src/Admin/FieldsPage.php:295
+msgid "No fields."
+msgstr ""
+
+#: src/Admin/RestPage.php:318 src/Admin/FieldsPage.php:152
+msgid "No groups declared."
 msgstr ""
 
 #: src/Admin/CachePage.php:127 src/Admin/RestPage.php:238
-msgid "Objet"
-msgstr ""
-
-#: src/Admin/RestPage.php:257
-msgid "Oui (toujours)"
+msgid "Object"
 msgstr ""
 
 #: src/Taxonomy.php:144
@@ -443,8 +460,8 @@ msgctxt "post type singular name"
 msgid "%s"
 msgstr ""
 
-#: src/Admin/RestPage.php:270
-msgid "Pour un bundle, l'exposition est tout-ou-rien : marquez le bundle avec"
+#: src/Admin/FieldsPage.php:549
+msgid "Regenerate"
 msgstr ""
 
 #: src/Field.php:193 src/Fields/Bundle.php:77
@@ -470,20 +487,8 @@ msgstr ""
 msgid "REST API"
 msgstr ""
 
-#: src/Admin/RestPage.php:115
-msgid "REST WP natif actif"
-msgstr ""
-
-#: src/Admin/RestPage.php:117
-msgid "REST WP natif inactif"
-msgstr ""
-
-#: src/Admin/CachePage.php:32
-msgid "Réglage enregistré."
-msgstr ""
-
-#: src/Admin/FieldsPage.php:549
-msgid "Régénérer"
+#: src/Admin/RestPage.php:478
+msgid "REST type"
 msgstr ""
 
 #: src/Fields/Link.php:35
@@ -515,29 +520,31 @@ msgstr ""
 msgid "Select image"
 msgstr ""
 
+#: src/Admin/CachePage.php:32
+msgid "Setting saved."
+msgstr ""
+
 #: src/Taxonomy.php:277
 #, php-format
 msgid "Show all %s"
 msgstr ""
 
+#: src/Admin/CachePage.php:130
+msgid "Size"
+msgstr ""
+
+#: src/Admin/RestPage.php:267
+msgid ""
+"Standard WordPress endpoint. Returns raw values stored in the database. Each "
+"field must be marked"
+msgstr ""
+
 #: src/Admin/RestPage.php:514
-msgid "string (natif)"
-msgstr ""
-
-#: src/Admin/CachePage.php:172
-msgid "Supprimer"
-msgstr ""
-
-#: src/Admin/AdminMenu.php:33 src/Admin/DashboardPage.php:22
-msgid "Tableau de bord"
+msgid "string (native)"
 msgstr ""
 
 #: src/Admin/RestPage.php:650 src/Admin/FieldsPage.php:361
 msgid "Tabs"
-msgstr ""
-
-#: src/Admin/CachePage.php:130
-msgid "Taille"
 msgstr ""
 
 #: src/Taxonomy.php:140
@@ -552,16 +559,20 @@ msgctxt "taxonomy singular name"
 msgid "%s"
 msgstr ""
 
+#: src/Admin/RestPage.php:250
+msgid "Term"
+msgstr ""
+
 #: src/Rest/CfdevRestApi.php:111
 msgid "Term not found."
 msgstr ""
 
-#: src/Admin/RestPage.php:250
-msgid "Terme"
+#: src/Admin/FieldsPage.php:106
+msgid "Termes"
 msgstr ""
 
-#: src/Admin/RestPage.php:183 src/Admin/FieldsPage.php:106
-msgid "Termes"
+#: src/Admin/RestPage.php:183
+msgid "Terms"
 msgstr ""
 
 #: src/Validation/Rules/DateAfter.php:39
@@ -710,12 +721,12 @@ msgstr ""
 msgid "This input type doesn't support the bundle functionality (yet)."
 msgstr ""
 
-#: src/Admin/CachePage.php:128 src/Admin/FieldsPage.php:316
-msgid "Type"
+#: src/Admin/AdminPage.php:39
+msgid "This section is under development."
 msgstr ""
 
-#: src/Admin/RestPage.php:478
-msgid "Type REST"
+#: src/Admin/CachePage.php:128 src/Admin/FieldsPage.php:316
+msgid "Type"
 msgstr ""
 
 #: src/Taxonomy.php:147
@@ -727,24 +738,20 @@ msgstr ""
 msgid "Use of a reserved term."
 msgstr ""
 
+#: src/Admin/CachePage.php:227 src/Admin/RestPage.php:255
+msgid "User"
+msgstr ""
+
 #: src/Rest/CfdevRestApi.php:135
 msgid "User not found."
 msgstr ""
 
-#: src/Admin/CachePage.php:227 src/Admin/RestPage.php:255
-msgid "Utilisateur"
-msgstr ""
-
 #: src/Admin/RestPage.php:192 src/Admin/FieldsPage.php:112
-msgid "Utilisateurs"
+msgid "Users"
 msgstr ""
 
 #: src/Admin/FieldsPage.php:318
 msgid "Validation"
-msgstr ""
-
-#: src/Admin/CachePage.php:113
-msgid "Vider tout le cache"
 msgstr ""
 
 #: src/PostType.php:100
@@ -752,12 +759,16 @@ msgstr ""
 msgid "View %s"
 msgstr ""
 
+#: src/Admin/RestPage.php:231
+msgid "with resolved values: enriched images, bundles decoded as arrays."
+msgstr ""
+
 #: src/Fields/Yesno.php:18
 msgid "Yes"
 msgstr ""
 
-#: src/Admin/CachePage.php:131
-msgid "Âge"
+#: src/Admin/RestPage.php:257
+msgid "Yes (always)"
 msgstr ""
 
 #: src/Admin/FieldsPage.php:557
@@ -766,24 +777,23 @@ msgstr ""
 
 #: src/Admin/CachePage.php:99
 msgid ""
-"— données toujours lues en direct depuis la base (recommandé en "
-"développement)"
+"— data is always read directly from the database (recommended in development)"
 msgstr ""
 
 #: src/Admin/CachePage.php:94
-msgid "— les données sont lues et écrites depuis les fichiers .tmp"
+msgid "— data is read and written from .tmp files"
 msgstr ""
 
 #: src/Admin/RestPage.php:121
-msgid "— valeurs brutes (ID image, JSON string pour les bundles)"
+msgid "— raw values (image ID, JSON string for bundles)"
 msgstr ""
 
 #: src/Admin/RestPage.php:144
-msgid "— valeurs résolues (images enrichies, bundles décodés)"
+msgid "— resolved values (enriched images, decoded bundles)"
 msgstr ""
 
 #: src/Admin/RestPage.php:509
-msgid "⊞ Voir les champs"
+msgid "⊞ View fields"
 msgstr ""
 
 #: src/Admin/FieldsPage.php:245

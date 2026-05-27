@@ -70,12 +70,12 @@ final class FieldsPage
 
             <?php if (! empty($dups)) : ?>
             <div class="notice notice-warning cfdev-notice-dups">
-                <p><strong><?php esc_html_e('IDs de champs dupliqués :', 'cfdev'); ?></strong></p>
+                <p><strong><?php esc_html_e('Duplicate field IDs:', 'cfdev'); ?></strong></p>
                 <ul>
                     <?php foreach ($dups as $field_id => $boxes) : ?>
                     <li>
                         <code><?php echo esc_html($field_id); ?></code>
-                        <?php esc_html_e('déclaré dans', 'cfdev'); ?>
+                        <?php esc_html_e('declared in', 'cfdev'); ?>
                         <?php echo esc_html(implode(', ', $boxes)); ?>
                     </li>
                     <?php endforeach; ?>
@@ -109,7 +109,7 @@ final class FieldsPage
                 <a href="#cfdev-tab-users"
                    class="nav-tab<?php echo ($first_tab === 'cfdev-tab-users') ? ' nav-tab-active' : ''; ?>"
                    data-cfdev-tab>
-                    <?php esc_html_e('Utilisateurs', 'cfdev'); ?>
+                    <?php esc_html_e('Users', 'cfdev'); ?>
                     <span class="cfdev-tab-count"><?php echo count($users); ?></span>
                 </a>
 
@@ -149,7 +149,7 @@ final class FieldsPage
     private static function renderPanel(array $entries, array $dups, string $current_pt = ''): void
     {
         if (empty($entries)) {
-            echo '<p class="cfdev-empty">' . esc_html__('Aucun groupe déclaré.', 'cfdev') . '</p>';
+            echo '<p class="cfdev-empty">' . esc_html__('No groups declared.', 'cfdev') . '</p>';
             return;
         }
         foreach ($entries as $entry) {
@@ -270,7 +270,7 @@ final class FieldsPage
                         <?php elseif (! empty($section['fields'])) : ?>
                             <?php self::renderFieldsTable($section['fields'], $dup_ids); ?>
                         <?php else : ?>
-                            <p class="cfdev-empty cfdev-empty--body"><?php esc_html_e('Aucun champ.', 'cfdev'); ?></p>
+                            <p class="cfdev-empty cfdev-empty--body"><?php esc_html_e('No fields.', 'cfdev'); ?></p>
                         <?php endif; ?>
                     </div>
                     <?php endforeach; ?>
@@ -292,7 +292,7 @@ final class FieldsPage
                     <?php endforeach; ?>
 
                     <?php if (empty($entry['fields']) && empty($entry['bundles'])) : ?>
-                        <p class="cfdev-empty cfdev-empty--body"><?php esc_html_e('Aucun champ.', 'cfdev'); ?></p>
+                        <p class="cfdev-empty cfdev-empty--body"><?php esc_html_e('No fields.', 'cfdev'); ?></p>
                     <?php endif; ?>
 
                 <?php endif; ?>
@@ -325,7 +325,7 @@ final class FieldsPage
                     <td>
                         <code><?php echo esc_html($field_id); ?></code>
                         <?php if ($is_dup) : ?>
-                        <span class="cfdev-dup-badge" title="<?php esc_attr_e('ID dupliqué', 'cfdev'); ?>">⚠</span>
+                        <span class="cfdev-dup-badge" title="<?php esc_attr_e('Duplicate ID', 'cfdev'); ?>">⚠</span>
                         <?php endif; ?>
                     </td>
                     <td>
@@ -359,7 +359,7 @@ final class FieldsPage
         $labels = [
             'flat'      => __('Flat', 'cfdev'),
             'tabs'      => __('Tabs', 'cfdev'),
-            'accordion' => __('Accordéon', 'cfdev'),
+            'accordion' => __('Accordion', 'cfdev'),
             'bundle'    => __('Bundle', 'cfdev'),
         ];
         return sprintf(
@@ -546,10 +546,10 @@ final class FieldsPage
                     </h2>
                     <span id="cfdev-inspect-cache-badge" class="cfdev-cache-badge" hidden></span>
                     <button type="button" id="cfdev-inspect-force" class="button button-small cfdev-btn-regen">
-                        &#x21BA; <?php esc_html_e('Régénérer', 'cfdev'); ?>
+                        &#x21BA; <?php esc_html_e('Regenerate', 'cfdev'); ?>
                     </button>
                     <button type="button" class="cfdev-modal-close"
-                            aria-label="<?php esc_attr_e('Fermer', 'cfdev'); ?>">&#x2715;</button>
+                            aria-label="<?php esc_attr_e('Close', 'cfdev'); ?>">&#x2715;</button>
                 </div>
 
                 <div id="cfdev-inspect-toolbar" class="cfdev-inspect-toolbar" hidden>

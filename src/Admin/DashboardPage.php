@@ -19,7 +19,7 @@ final class DashboardPage extends AdminPage
 
         ?>
         <div class="wrap">
-            <?php self::header(__('Tableau de bord', 'cfdev')); ?>
+            <?php self::header(__('Dashboard', 'cfdev')); ?>
             <?php self::placeholder(); ?>
         </div>
         <?php

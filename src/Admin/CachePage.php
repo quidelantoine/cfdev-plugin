@@ -29,7 +29,7 @@ final class CachePage extends AdminPage
             && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['cfdev_cache_option_nonce'])), 'cfdev_cache_option')
         ) {
             update_option(self::OPTION_CACHE, isset($_POST['cfdev_cache_enabled']) ? '1' : '0');
-            add_settings_error('cfdev_cache', 'saved', __('Réglage enregistré.', 'cfdev'), 'success');
+            add_settings_error('cfdev_cache', 'saved', __('Setting saved.', 'cfdev'), 'success');
         }
 
         // Handle flush action
@@ -89,14 +89,14 @@ final class CachePage extends AdminPage
                     </label>
                     <span class="cfdev-cache-option__label">
                         <?php if ($cache_on) : ?>
-                            <strong><?php esc_html_e('Cache actif', 'cfdev'); ?></strong>
+                            <strong><?php esc_html_e('Cache active', 'cfdev'); ?></strong>
                             <span class="cfdev-cache-option__hint">
-                                <?php esc_html_e('— les données sont lues et écrites depuis les fichiers .tmp', 'cfdev'); ?>
+                                <?php esc_html_e('— data is read and written from .tmp files', 'cfdev'); ?>
                             </span>
                         <?php else : ?>
-                            <strong><?php esc_html_e('Cache inactif', 'cfdev'); ?></strong>
+                            <strong><?php esc_html_e('Cache inactive', 'cfdev'); ?></strong>
                             <span class="cfdev-cache-option__hint">
-                                <?php esc_html_e('— données toujours lues en direct depuis la base (recommandé en développement)', 'cfdev'); ?>
+                                <?php esc_html_e('— data is always read directly from the database (recommended in development)', 'cfdev'); ?>
                             </span>
                         <?php endif; ?>
                     </span>
@@ -110,7 +110,7 @@ final class CachePage extends AdminPage
                     <input type="hidden" name="cfdev_cache_action" value="flush_all">
                     <button type="submit" class="button button-secondary cfdev-btn-flush"
                             <?php echo empty($files) ? 'disabled' : ''; ?>>
-                        <?php esc_html_e('Vider tout le cache', 'cfdev'); ?>
+                        <?php esc_html_e('Clear all cache', 'cfdev'); ?>
                     </button>
                 </form>
                 <span class="cfdev-cache-dir">
@@ -119,17 +119,17 @@ final class CachePage extends AdminPage
             </div>
 
             <?php if (empty($files)) : ?>
-                <?php self::placeholder(__('Aucun fichier en cache.', 'cfdev')); ?>
+                <?php self::placeholder(__('No cached files.', 'cfdev')); ?>
             <?php else : ?>
             <table class="cfdev-cache-table widefat">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Objet', 'cfdev'); ?></th>
+                        <th><?php esc_html_e('Object', 'cfdev'); ?></th>
                         <th><?php esc_html_e('Type', 'cfdev'); ?></th>
-                        <th><?php esc_html_e('Groupes', 'cfdev'); ?></th>
-                        <th><?php esc_html_e('Taille', 'cfdev'); ?></th>
-                        <th><?php esc_html_e('Âge', 'cfdev'); ?></th>
-                        <th><?php esc_html_e('Modifié', 'cfdev'); ?></th>
+                        <th><?php esc_html_e('Groups', 'cfdev'); ?></th>
+                        <th><?php esc_html_e('Size', 'cfdev'); ?></th>
+                        <th><?php esc_html_e('Age', 'cfdev'); ?></th>
+                        <th><?php esc_html_e('Modified', 'cfdev'); ?></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -143,7 +143,7 @@ final class CachePage extends AdminPage
                             <span class="cfdev-object-label"><?php echo esc_html($info['label']); ?></span>
                             <span class="cfdev-object-key"><code><?php echo esc_html($file['key']); ?>.tmp</code></span>
                             <?php if ($stale) : ?>
-                            <span class="cfdev-badge-stale"><?php esc_html_e('Expiré', 'cfdev'); ?></span>
+                            <span class="cfdev-badge-stale"><?php esc_html_e('Expired', 'cfdev'); ?></span>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -169,7 +169,7 @@ final class CachePage extends AdminPage
                                 <input type="hidden" name="cfdev_cache_action" value="flush_one">
                                 <input type="hidden" name="cfdev_cache_key" value="<?php echo esc_attr($file['key']); ?>">
                                 <button type="submit" class="button button-link cfdev-btn-del">
-                                    <?php esc_html_e('Supprimer', 'cfdev'); ?>
+                                    <?php esc_html_e('Delete', 'cfdev'); ?>
                                 </button>
                             </form>
                         </td>
@@ -224,7 +224,7 @@ final class CachePage extends AdminPage
             $id   = (int) substr($key, 5);
             $user = get_userdata($id);
             $label = $user ? $user->display_name : '—';
-            return ['object_type' => 'user', 'subtype' => __('Utilisateur', 'cfdev'), 'id' => $id, 'label' => $label, 'groups' => $groups];
+            return ['object_type' => 'user', 'subtype' => __('User', 'cfdev'), 'id' => $id, 'label' => $label, 'groups' => $groups];
         }
 
         return ['object_type' => 'autre', 'subtype' => 'autre', 'id' => 0, 'label' => $key, 'groups' => $groups];

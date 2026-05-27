@@ -112,13 +112,13 @@ final class RestPage extends AdminPage
                         </label>
                         <span class="cfdev-cache-option__label">
                             <?php if ($rest_on) : ?>
-                                <strong><?php esc_html_e('REST WP natif actif', 'cfdev'); ?></strong>
+                                <strong><?php esc_html_e('Native WP REST active', 'cfdev'); ?></strong>
                             <?php else : ?>
-                                <strong><?php esc_html_e('REST WP natif inactif', 'cfdev'); ?></strong>
+                                <strong><?php esc_html_e('Native WP REST inactive', 'cfdev'); ?></strong>
                             <?php endif; ?>
                             <span class="cfdev-cache-option__hint">
                                 — <code>/wp-json/wp/v2/</code>
-                                <?php esc_html_e('— valeurs brutes (ID image, JSON string pour les bundles)', 'cfdev'); ?>
+                                <?php esc_html_e('— raw values (image ID, JSON string for bundles)', 'cfdev'); ?>
                             </span>
                         </span>
                     </form>
@@ -135,13 +135,13 @@ final class RestPage extends AdminPage
                         </label>
                         <span class="cfdev-cache-option__label">
                             <?php if ($api_on) : ?>
-                                <strong><?php esc_html_e('API CFDev active', 'cfdev'); ?></strong>
+                                <strong><?php esc_html_e('CFDev API active', 'cfdev'); ?></strong>
                             <?php else : ?>
-                                <strong><?php esc_html_e('API CFDev inactive', 'cfdev'); ?></strong>
+                                <strong><?php esc_html_e('CFDev API inactive', 'cfdev'); ?></strong>
                             <?php endif; ?>
                             <span class="cfdev-cache-option__hint">
                                 — <code>/wp-json/cfdev/v1/</code>
-                                <?php esc_html_e('— valeurs résolues (images enrichies, bundles décodés)', 'cfdev'); ?>
+                                <?php esc_html_e('— resolved values (enriched images, decoded bundles)', 'cfdev'); ?>
                             </span>
                         </span>
                     </form>
@@ -151,14 +151,14 @@ final class RestPage extends AdminPage
             <?php // ── Section 1 : Champs exposés (avec onglets) ─────────────── ?>
             <div class="cfdev-rest-section">
                 <h2>
-                    <?php esc_html_e('Champs actuellement exposés', 'cfdev'); ?>
+                    <?php esc_html_e('Currently exposed fields', 'cfdev'); ?>
                     <?php if ($total_rest > 0) : ?>
                         <span class="cfdev-tab-count cfdev-rest-total"><?php echo esc_html((string) $total_rest); ?></span>
                     <?php endif; ?>
                 </h2>
 
                 <?php if ($total_rest === 0) : ?>
-                    <?php self::placeholder(__('Aucun champ marqué rest: true pour le moment.', 'cfdev')); ?>
+                    <?php self::placeholder(__('No fields marked rest: true yet.', 'cfdev')); ?>
                 <?php else : ?>
                     <nav class="nav-tab-wrapper cfdev-tabs-nav">
                         <?php foreach ($by_type as $pt => $pt_entries) : ?>
@@ -180,7 +180,7 @@ final class RestPage extends AdminPage
                             <a href="#cfdev-rest-tab-terms"
                                class="nav-tab<?php echo ($first_tab === 'cfdev-rest-tab-terms') ? ' nav-tab-active' : ''; ?>"
                                data-cfdev-tab>
-                                <?php esc_html_e('Termes', 'cfdev'); ?>
+                                <?php esc_html_e('Terms', 'cfdev'); ?>
                                 <span class="cfdev-tab-count"><?php echo esc_html((string) self::countFields($terms)); ?></span>
                             </a>
                         <?php endif; ?>
@@ -189,7 +189,7 @@ final class RestPage extends AdminPage
                             <a href="#cfdev-rest-tab-users"
                                class="nav-tab<?php echo ($first_tab === 'cfdev-rest-tab-users') ? ' nav-tab-active' : ''; ?>"
                                data-cfdev-tab>
-                                <?php esc_html_e('Utilisateurs', 'cfdev'); ?>
+                                <?php esc_html_e('Users', 'cfdev'); ?>
                                 <span class="cfdev-tab-count"><?php echo esc_html((string) self::countFields($users)); ?></span>
                             </a>
                         <?php endif; ?>
@@ -224,37 +224,37 @@ final class RestPage extends AdminPage
 
             <?php // ── Section 2 : API CFDev ─────────────────────────────────── ?>
             <div class="cfdev-rest-section">
-                <h2><?php esc_html_e('1 — API CFDev /wp-json/cfdev/v1/ (données résolues)', 'cfdev'); ?></h2>
+                <h2><?php esc_html_e('1 — CFDev API /wp-json/cfdev/v1/ (resolved data)', 'cfdev'); ?></h2>
                 <p class="description">
-                    <?php esc_html_e('Endpoint CFDev utilisant le CacheManager. Retourne les groupes et champs marqués', 'cfdev'); ?>
+                    <?php esc_html_e('CFDev endpoint using CacheManager. Returns groups and fields marked', 'cfdev'); ?>
                     <code>rest: true</code>
-                    <?php esc_html_e('avec valeurs résolues : images enrichies, bundles décodés en tableaux.', 'cfdev'); ?>
+                    <?php esc_html_e('with resolved values: enriched images, bundles decoded as arrays.', 'cfdev'); ?>
                 </p>
                 <pre class="cfdev-rest-snippet"><?php echo $snip_cfdev; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></pre>
 
                 <table class="widefat cfdev-rest-table">
                     <thead>
                     <tr>
-                        <th><?php esc_html_e('Objet', 'cfdev'); ?></th>
+                        <th><?php esc_html_e('Object', 'cfdev'); ?></th>
                         <th><?php esc_html_e('Endpoint', 'cfdev'); ?></th>
-                        <th><?php esc_html_e('Auth requise', 'cfdev'); ?></th>
+                        <th><?php esc_html_e('Auth required', 'cfdev'); ?></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
                         <td><?php esc_html_e('Post / Page / CPT', 'cfdev'); ?></td>
                         <td><code><?php echo esc_html($home); ?>/wp-json/cfdev/v1/post/{id}</code></td>
-                        <td><?php esc_html_e('Non (si post public publié)', 'cfdev'); ?></td>
+                        <td><?php esc_html_e('No (if public published post)', 'cfdev'); ?></td>
                     </tr>
                     <tr>
-                        <td><?php esc_html_e('Terme', 'cfdev'); ?></td>
+                        <td><?php esc_html_e('Term', 'cfdev'); ?></td>
                         <td><code><?php echo esc_html($home); ?>/wp-json/cfdev/v1/term/{taxonomy}/{id}</code></td>
-                        <td><?php esc_html_e('Non (si taxonomie publique)', 'cfdev'); ?></td>
+                        <td><?php esc_html_e('No (if public taxonomy)', 'cfdev'); ?></td>
                     </tr>
                     <tr>
-                        <td><?php esc_html_e('Utilisateur', 'cfdev'); ?></td>
+                        <td><?php esc_html_e('User', 'cfdev'); ?></td>
                         <td><code><?php echo esc_html($home); ?>/wp-json/cfdev/v1/user/{id}</code></td>
-                        <td><?php esc_html_e('Oui (toujours)', 'cfdev'); ?></td>
+                        <td><?php esc_html_e('Yes (always)', 'cfdev'); ?></td>
                     </tr>
                     </tbody>
                 </table>
@@ -262,14 +262,14 @@ final class RestPage extends AdminPage
 
             <?php // ── Section 3 : REST WP natif ─────────────────────────────── ?>
             <div class="cfdev-rest-section">
-                <h2><?php esc_html_e('2 — REST WP natif /wp-json/wp/v2/ (valeurs brutes)', 'cfdev'); ?></h2>
+                <h2><?php esc_html_e('2 — Native WP REST /wp-json/wp/v2/ (raw values)', 'cfdev'); ?></h2>
                 <p class="description">
-                    <?php esc_html_e('Endpoint standard WordPress. Retourne les valeurs brutes stockées en base. Chaque champ doit être marqué', 'cfdev'); ?>
+                    <?php esc_html_e('Standard WordPress endpoint. Returns raw values stored in the database. Each field must be marked', 'cfdev'); ?>
                     <code>rest: true</code>.
-                    <?php esc_html_e('Les bundles sont retournés comme chaîne JSON à parser côté client.', 'cfdev'); ?>
-                    <?php esc_html_e('Pour un bundle, l\'exposition est tout-ou-rien : marquez le bundle avec', 'cfdev'); ?>
+                    <?php esc_html_e('Bundles are returned as a JSON string to be parsed client-side.', 'cfdev'); ?>
+                    <?php esc_html_e('For a bundle, exposure is all-or-nothing: mark the bundle with', 'cfdev'); ?>
                     <code>['rest' => true]</code> —
-                    <?php esc_html_e('il n\'est pas possible de sélectionner des champs individuels à l\'intérieur.', 'cfdev'); ?>
+                    <?php esc_html_e('individual fields inside cannot be selected separately.', 'cfdev'); ?>
                 </p>
                 <pre class="cfdev-rest-snippet"><?php echo $snip_php; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></pre>
                 <pre class="cfdev-rest-snippet"><?php echo $snip_native; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></pre>
@@ -293,11 +293,11 @@ final class RestPage extends AdminPage
                         <code id="cfdev-rest-bundle-key"></code>
                     </h2>
                     <button type="button" class="cfdev-modal-close"
-                            aria-label="<?php esc_attr_e('Fermer', 'cfdev'); ?>">&#x2715;</button>
+                            aria-label="<?php esc_attr_e('Close', 'cfdev'); ?>">&#x2715;</button>
                 </div>
                 <p class="description">
-                    <?php esc_html_e('L\'exposition est tout-ou-rien : tous les champs du bundle sont inclus.', 'cfdev'); ?>
-                    <?php esc_html_e('Il n\'est pas possible de sélectionner des champs individuels à l\'intérieur.', 'cfdev'); ?>
+                    <?php esc_html_e('Exposure is all-or-nothing: all fields in the bundle are included.', 'cfdev'); ?>
+                    <?php esc_html_e('Individual fields inside cannot be selected separately.', 'cfdev'); ?>
                 </p>
                 <div id="cfdev-rest-bundle-body"></div>
             </div>
@@ -315,7 +315,7 @@ final class RestPage extends AdminPage
     private static function renderFieldsTable(array $entries, string $meta_type, string $home): void
     {
         if (empty($entries)) {
-            echo '<p class="cfdev-empty">' . esc_html__('Aucun groupe déclaré.', 'cfdev') . '</p>';
+            echo '<p class="cfdev-empty">' . esc_html__('No groups declared.', 'cfdev') . '</p>';
             return;
         }
 
@@ -368,7 +368,7 @@ final class RestPage extends AdminPage
                     <span class="cfdev-field-count">
                         <?php
                         // translators: %d = number of fields
-                        echo esc_html(sprintf(_n('%d champ', '%d champs', $field_count, 'cfdev'), $field_count));
+                        echo esc_html(sprintf(_n('%d field', '%d fields', $field_count, 'cfdev'), $field_count));
                         ?>
                     </span>
                 </div>
@@ -410,7 +410,7 @@ final class RestPage extends AdminPage
                                     $meta_type
                                 ); ?>
                             <?php else : ?>
-                                <p class="cfdev-empty cfdev-empty--body"><?php esc_html_e('Aucun champ.', 'cfdev'); ?></p>
+                                <p class="cfdev-empty cfdev-empty--body"><?php esc_html_e('No fields.', 'cfdev'); ?></p>
                             <?php endif; ?>
                         </div>
                         <?php endforeach; ?>
@@ -447,7 +447,7 @@ final class RestPage extends AdminPage
                         <?php endforeach; ?>
 
                         <?php if (empty($flat_fields) && empty($entry['bundles'])) : ?>
-                            <p class="cfdev-empty cfdev-empty--body"><?php esc_html_e('Aucun champ.', 'cfdev'); ?></p>
+                            <p class="cfdev-empty cfdev-empty--body"><?php esc_html_e('No fields.', 'cfdev'); ?></p>
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
@@ -473,11 +473,11 @@ final class RestPage extends AdminPage
         <table class="widefat striped cfdev-rest-table">
             <thead>
             <tr>
-                <th><?php esc_html_e('Clé meta', 'cfdev'); ?></th>
+                <th><?php esc_html_e('Meta key', 'cfdev'); ?></th>
                 <th><?php esc_html_e('Label', 'cfdev'); ?></th>
-                <th><?php esc_html_e('Type REST', 'cfdev'); ?></th>
-                <th><?php esc_html_e('Endpoint CFDev', 'cfdev'); ?></th>
-                <th><?php esc_html_e('Endpoint natif', 'cfdev'); ?></th>
+                <th><?php esc_html_e('REST type', 'cfdev'); ?></th>
+                <th><?php esc_html_e('CFDev endpoint', 'cfdev'); ?></th>
+                <th><?php esc_html_e('Native endpoint', 'cfdev'); ?></th>
             </tr>
             </thead>
             <tbody>
@@ -506,12 +506,12 @@ final class RestPage extends AdminPage
                                 data-cfdev-ep-native-url="<?php echo esc_url($ep_native_url); ?>"
                                 data-cfdev-ep-native-txt="<?php echo esc_attr($ep_native_txt); ?>"
                                 data-cfdev-meta-type="<?php echo esc_attr($meta_type); ?>">
-                            <?php esc_html_e('⊞ Voir les champs', 'cfdev'); ?>
+                            <?php esc_html_e('⊞ View fields', 'cfdev'); ?>
                         </button>
                     </td>
                     <td>
                         <span class="cfdev-rule-badge">array</span>
-                        <span class="cfdev-rule-badge"><?php esc_html_e('string (natif)', 'cfdev'); ?></span>
+                        <span class="cfdev-rule-badge"><?php esc_html_e('string (native)', 'cfdev'); ?></span>
                     </td>
                     <td>
                         <?php if ($ep_cfdev_url !== '') : ?>
@@ -648,7 +648,7 @@ final class RestPage extends AdminPage
         $labels = [
             'flat'      => __('Flat', 'cfdev'),
             'tabs'      => __('Tabs', 'cfdev'),
-            'accordion' => __('Accordéon', 'cfdev'),
+            'accordion' => __('Accordion', 'cfdev'),
             'bundle'    => __('Bundle', 'cfdev'),
         ];
         return sprintf(
@@ -663,7 +663,7 @@ final class RestPage extends AdminPage
         $label = match ($key) {
             'post_id'   => 'ID : ' . $value,
             'template'  => 'Template : ' . basename((string) $value),
-            'roles'     => 'Rôle : ' . implode(', ', (array) $value),
+            'roles'     => 'Role: ' . implode(', ', (array) $value),
             'parent_id' => 'Parent : ' . $value,
             default     => $key . ' : ' . $value,
         };

@@ -4,16 +4,50 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
-test cypress peut t'on aller encore plus loin ?
 
-Mettre des icone au debut des champs pour aider à l'ui/ux
-=> Faire les champs de meme pleine largeur sur tous les supports , flat, bundle, accordeon, tabs pour post, term, user, homogeniser les largeur de champs.
+commit => css partime
+
+style(a11y+responsive): HTML accessibility pass, button resets, responsive <782px
+
+- Convert all interactive <div> and <a href="#"> to <button> with aria-labels
+  (handles, remove, ajax-save, add-sortable, remove-media, gallery-remove)
+- Add alt="" to decorative admin preview images (Image, ImageAlt, Gallery)
+- Reset native button appearance in .cfdev to match <a> visual behaviour;
+  re-apply padding only for .button-secondary with higher specificity
+- Fix scrollbar arrows on checkboxes-wrap (overflow: scroll → auto)
+- Restore WP admin desktop checkbox/radio size at <782px (1rem, ::before reset)
+- Reduce button min-height and padding in mobile media query
+- Fix focus ring on checkbox/radio (single 1px line vs double anneau WP)
+- Cypress: add cy.expandPostbox(), cy.loginToWP() in beforeEach, fix
+  template-cfdev-test security check (nonce → current_user_can)
+
+
+
+Mieux erire le js faire une passe dessus ? 
+
+=> Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien
+js full vanilla ??, utilisation de vite.js,  et js polyfills
+
+Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans 
+
+Mettre des icone au debut des champs pour aider à l'ui/ux, si possible utiliser les icone deja sur wordpress ou via le pluging, pas d'ajout si possiblr
 
 => duplicate code ????
 
-=> changer les dachicons dashicons-lightbulb , 
-
 trouver un logo ++ perso ????
+
+=> dna sgroupe de champ => inspecter , faire un truc code ,dans une autre modal,  avec le code tout pres pour afficher les donéées, foreach si besoin, esc_html et autres , un truc simple mais propre ++ , Faire un presentation standars par champ ++
+=> dans l'admin partie champ, il faudrais pouvoir afficher le resulats d'un print_r des données de ce metabox par exemple , ceci à la demande dans une modale, evite de le faire dans le front
+=> ok et les data du print r en mode profiler de symfony, avec onglet s'ouvre qui intelegement pour une lecture facilité. peux s'appuyer sur le cache aussi ++
+
+=> tous les texte dans des __(''); devrais etre en,, anglais dans le code , je ferais un mo po pour les frenchy ensuite
+
+repeatable , ajax,, test ok ? est ce que je garde ??? 
+
+test cypress peut t'on aller encore plus loin ?
+est ce que tous les champs sont bien testé ??
+
+Tous les champs sont tester , unitaire, integration et fonctionnel ??? 
 
 => Test woocommerce isOK ??
 ## 🧪 Règle d'or — Les tests sont une priorité permanente

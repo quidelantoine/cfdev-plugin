@@ -54,6 +54,7 @@ describe('CFDev — Front-end Rendering', () => {
   // The webvite theme raises "Transition was skipped" from its JS router during
   // navigation — this is unrelated to CFDev. Suppress it so the assertions run.
   beforeEach(() => {
+    cy.loginToWP()
     cy.on('uncaught:exception', err => {
       if (err.message && err.message.includes('Transition was skipped')) {
         return false
@@ -67,6 +68,7 @@ describe('CFDev — Front-end Rendering', () => {
     // Create a new post and seed known field values
     cy.visit('/wp-admin/post-new.php')
     cy.get('#title').clear().type('CFDev Front-end Test Post').blur()
+    cy.expandPostbox('cfdev_demo_flat')
 
     // Flat fields
     cy.get(`input[name="${F.text}"]`).clear().type(FLAT_TEXT)

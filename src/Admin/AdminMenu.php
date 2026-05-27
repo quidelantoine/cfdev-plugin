@@ -25,8 +25,8 @@ final class AdminMenu
             'manage_options',
             'cfdev',
             [DashboardPage::class, 'render'],
-            'dashicons-screenoptions',
-            30
+            'dashicons-lightbulb',
+            82
         );
 
         // Sub-pages (first one renames the parent item in the sidebar)

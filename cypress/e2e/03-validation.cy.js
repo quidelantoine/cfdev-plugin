@@ -20,6 +20,7 @@ describe('CFDev — Validation Errors', () => {
     cy.loginToWP()
     cy.visit('/wp-admin/post-new.php')
     cy.setPostTitle('Cypress — Validation')
+    cy.expandPostbox('cfdev_demo_flat')
     // Leave the required text field empty
     cy.get('input[name="cfdev[_text_demo_flat_text]"]').clear()
     cy.get('#publish').click()

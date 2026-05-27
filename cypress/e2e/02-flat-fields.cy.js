@@ -37,6 +37,7 @@ describe('CFDev — Flat Fields (Post)', () => {
   it('saves and restores all flat fields', () => {
     cy.visit('/wp-admin/post-new.php')
     cy.setPostTitle('Cypress — All Flat Fields')
+    cy.expandPostbox('cfdev_demo_flat')
 
     cy.get(`input[name="${F.text}"]`).clear().type('HelloCypress')
     cy.get(`textarea[name="${F.textarea}"]`).clear().type('Texte multi-ligne cypress')

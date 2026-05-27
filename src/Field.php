@@ -186,10 +186,11 @@ class Field
 
     private function buildSortableItem(string $item, bool $showRemoveButton): string
     {
-        $handle  = '<div class="cfdev-handle-sortable js-cfdev-handle-sortable"></div>';
+        $drag    = esc_attr(__('Drag to reorder', 'cfdev'));
+        $handle  = '<button type="button" class="cfdev-handle-sortable js-cfdev-handle-sortable" aria-label="' . $drag . '"></button>';
         $content = '<fieldset>' . $this->outputHtml($item) . '</fieldset>';
         $remove  = $showRemoveButton
-            ? '<div class="js-cfdev-remove-sortable cfdev-remove-sortable"></div>'
+            ? '<button type="button" class="js-cfdev-remove-sortable cfdev-remove-sortable" aria-label="' . esc_attr(__('Remove', 'cfdev')) . '"></button>'
             : '';
         $closing = '</li>';
 
@@ -215,7 +216,7 @@ class Field
     public function ajaxOutput(string|array $value): string
     {
         $output = $this->outputHtml($value);
-        $output .= '<a class="cfdev-ajax-save js-cfdev-ajax-save button-secondary" href="#">' . __('Save', 'cfdev') . '</a>';
+        $output .= '<button type="button" class="cfdev-ajax-save js-cfdev-ajax-save button-secondary">' . esc_html(__('Save', 'cfdev')) . '</button>';
 
         return $output;
     }

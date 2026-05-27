@@ -51,8 +51,8 @@ class File extends Field
         }
 
         return sprintf(
-            '<a href="#" class="js-cfdev-remove-media cfdev-remove-media">%s</a>',
-            __('Remove current file', 'cfdev')
+            '<button type="button" class="js-cfdev-remove-media cfdev-remove-media">%s</button>',
+            esc_html(__('Remove current file', 'cfdev'))
         );
     }
 

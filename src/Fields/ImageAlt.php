@@ -27,10 +27,10 @@ class ImageAlt extends Field
         $preview_size  = $this->args['preview_size'] ?? null;
         $fallback_size = $preview_size ?? apply_filters('cfdev_preview_size', 'medium');
         $src           = $id > 0 ? wp_get_attachment_image_src($id, $fallback_size) : null;
-        $img           = $src ? '<img src="' . esc_url($src[0]) . '" />' : '';
+        $img           = $src ? '<img src="' . esc_url($src[0]) . '" alt="" />' : '';
         $remove        = $id > 0
-            ? '<a href="#" class="js-cfdev-remove-media cfdev-remove-media">'
-                . esc_html(__('Remove current image', 'cfdev')) . '</a>'
+            ? '<button type="button" class="js-cfdev-remove-media cfdev-remove-media">'
+                . esc_html(__('Remove current image', 'cfdev')) . '</button>'
             : '';
 
         return sprintf(

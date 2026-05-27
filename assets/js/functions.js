@@ -101,7 +101,7 @@ jQuery( function( $ ) {
 						'<div class="cfdev-gallery-item js-cfdev-gallery-item">' +
 						'<input type="hidden" name="' + name + '" value="' + a.id + '" />' +
 						'<img src="' + url + '" />' +
-						'<a href="#" class="cfdev-gallery-remove js-cfdev-gallery-remove">&times;</a>' +
+						'<button type="button" class="cfdev-gallery-remove js-cfdev-gallery-remove" aria-label="' + Cfdev.remove_image + '">&times;</button>' +
 						'</div>'
 					);
 				});
@@ -166,7 +166,7 @@ jQuery( function( $ ) {
 
 	            	// (Re)set the remove button
 	            	$('.js-cfdev-remove-media', parent).remove();
-	            	that.after('<a href="#" class="js-cfdev-remove-media cfdev-remove-media">' + ( type == 'image' ? Cfdev.remove_image : Cfdev.remove_file ) + '</a> ');
+	            	that.after('<button type="button" class="js-cfdev-remove-media cfdev-remove-media">' + ( type == 'image' ? Cfdev.remove_image : Cfdev.remove_file ) + '</button> ');
 
 	            	// Send an id or url to the field and set the preview
 	            	if( type == 'image' )
@@ -179,7 +179,7 @@ jQuery( function( $ ) {
 								thumbnail.height = parseInt( preview_size[1] );
 						}
 
-						preview.html('<img src="' + thumbnail.url + '" height="' + thumbnail.height + '" width="' + thumbnail.width + '" />')
+						preview.html('<img src="' + thumbnail.url + '" height="' + thumbnail.height + '" width="' + thumbnail.width + '" alt="" />')
 						hidden.val( attachment.id );
 					}
 					else
@@ -312,8 +312,8 @@ jQuery( function( $ ) {
 								: $( '.js-cfdev-sortable', parent ),
 			is_bundle		= wrap.data( 'cfdev-sortable-type') == 'bundle' ? true : false;
 			last 			= $( '> .js-cfdev-sortable-item:last', wrap ),
-			handle 			= '<div class="cfdev-handle-sortable js-cfdev-handle-sortable"></div>',
-			remover 		= '<div class="cfdev-remove-sortable js-cfdev-remove-sortable"></div>',
+			handle 			= '<button type="button" class="cfdev-handle-sortable js-cfdev-handle-sortable" aria-label="' + Cfdev.drag_to_reorder + '"></button>',
+			remover 		= '<button type="button" class="cfdev-remove-sortable js-cfdev-remove-sortable" aria-label="' + Cfdev.remove + '"></button>',
 			new_item 		= last.clone( false, false ),
 			switch_editors 	= [];
 

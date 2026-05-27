@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Custom Field For Dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-17 20:00+0000\n"
+"POT-Creation-Date: 2026-05-27 11:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,156 +16,552 @@ msgstr ""
 "X-Loco-Version: 2.8.4; wp-6.9.4; php-8.5.5\n"
 "X-Domain: cfdev"
 
-#: src/PostType.php:93 src/PostType.php:117 src/Taxonomy.php:127
-#: src/Taxonomy.php:140
+#. %d = number of fields
+#: src/Admin/RestPage.php:371 src/Admin/FieldsPage.php:232
+msgid "%d champ"
+msgid_plural "%d champs"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = number of duplicate field IDs
+#: src/Admin/FieldsPage.php:64
+msgid "%d doublon"
+msgid_plural "%d doublons"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = number of cached files
+#: src/Admin/CachePage.php:63
+msgid "%d fichier"
+msgid_plural "%d fichiers"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = number of deleted files
+#: src/Admin/CachePage.php:71
+msgid "%d fichier supprimé."
+msgid_plural "%d fichiers supprimés."
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = number of groups
+#: src/Admin/FieldsPage.php:56
+msgid "%d groupe"
+msgid_plural "%d groupes"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = hours
+#: src/Admin/CachePage.php:269
+msgid "%d h"
+msgid_plural "%d h"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = days
+#: src/Admin/CachePage.php:276
+msgid "%d j"
+msgid_plural "%d j"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = minutes
+#: src/Admin/CachePage.php:261
+msgid "%d min"
+msgid_plural "%d min"
+msgstr[0] ""
+msgstr[1] ""
+
+#. %d = seconds
+#: src/Admin/CachePage.php:253
+msgid "%d s"
+msgid_plural "%d s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/PostType.php:94 src/PostType.php:118 src/Taxonomy.php:150
+#: src/Taxonomy.php:163
 #, php-format
 msgid "%s"
 msgstr ""
 
-#: src/PostType.php:95
+#: src/PostType.php:96
 msgctxt "%s"
 msgid "Add New"
 msgstr ""
 
-#: src/PostType.php:100
+#: src/PostType.php:101
 #, php-format
 msgid "%s Archive"
 msgstr ""
 
-#: src/Meta.php:294
+#: src/Meta.php:314
 #, php-format
 msgid "%s field needs attention"
 msgid_plural "%s fields need attention"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/PostType.php:104
+#: src/PostType.php:105
 #, php-format
 msgid "%s Parent"
 msgstr ""
 
-#: src/Meta.php:151 src/Fields/Bundle.php:57 src/Fields/Bundle.php:181
-#: src/Fields/Tab.php:159
+#: src/Admin/RestPage.php:227
+msgid "1 — API CFDev /wp-json/cfdev/v1/ (données résolues)"
+msgstr ""
+
+#: src/Admin/RestPage.php:265
+msgid "2 — REST WP natif /wp-json/wp/v2/ (valeurs brutes)"
+msgstr ""
+
+#: src/Admin/RestPage.php:651 src/Admin/FieldsPage.php:362
+msgid "Accordéon"
+msgstr ""
+
+#: src/Meta.php:165 src/Fields/Bundle.php:58 src/Fields/Bundle.php:206
+#: src/Fields/Tab.php:174
 msgid "Add"
 msgstr ""
 
-#: src/PostType.php:96 src/Taxonomy.php:125
+#: src/Fields/Gallery.php:33
+msgid "Add images"
+msgstr ""
+
+#: src/PostType.php:97 src/Taxonomy.php:148
 #, php-format
 msgid "Add New %s"
 msgstr ""
 
-#: src/PostType.php:94 src/Taxonomy.php:120
+#: src/PostType.php:95 src/Taxonomy.php:143
 #, php-format
 msgid "All %s"
+msgstr ""
+
+#: src/Fields/ImageAlt.php:54
+msgid "Alternative text for the image"
+msgstr ""
+
+#: src/Admin/RestPage.php:138
+msgid "API CFDev active"
+msgstr ""
+
+#: src/Admin/RestPage.php:140
+msgid "API CFDev inactive"
+msgstr ""
+
+#: src/Admin/RestPage.php:161
+msgid "Aucun champ marqué rest: true pour le moment."
+msgstr ""
+
+#: src/Admin/RestPage.php:413 src/Admin/RestPage.php:450
+#: src/Admin/FieldsPage.php:273 src/Admin/FieldsPage.php:295
+msgid "Aucun champ."
+msgstr ""
+
+#: src/Admin/CachePage.php:122
+msgid "Aucun fichier en cache."
+msgstr ""
+
+#: src/Admin/RestPage.php:318 src/Admin/FieldsPage.php:152
+msgid "Aucun groupe déclaré."
+msgstr ""
+
+#: src/Admin/FieldsPage.php:207
+msgid "Aussi dans :"
+msgstr ""
+
+#: src/Admin/RestPage.php:240
+msgid "Auth requise"
+msgstr ""
+
+#: src/Rest/CfdevRestApi.php:176 src/Rest/CfdevRestApi.php:198
+#: src/Rest/CfdevRestApi.php:204
+msgid "Authentication required."
+msgstr ""
+
+#: src/Admin/RestPage.php:231
+msgid "avec valeurs résolues : images enrichies, bundles décodés en tableaux."
+msgstr ""
+
+#: src/Admin/RestPage.php:292 src/Admin/RestPage.php:388
+#: src/Admin/RestPage.php:434 src/Admin/RestPage.php:652
+#: src/Admin/FieldsPage.php:263 src/Admin/FieldsPage.php:287
+#: src/Admin/FieldsPage.php:363
+msgid "Bundle"
+msgstr ""
+
+#: src/Admin/RestPage.php:498
+msgid "bundle"
+msgstr ""
+
+#: src/Admin/CachePage.php:61 src/Admin/AdminMenu.php:35
+#: src/Admin/AdminMenu.php:35
+msgid "Cache"
+msgstr ""
+
+#: src/Admin/CachePage.php:92
+msgid "Cache actif"
+msgstr ""
+
+#: src/Admin/CachePage.php:97
+msgid "Cache inactif"
+msgstr ""
+
+#: src/Admin/AdminPage.php:39
+msgid "Cette section est en cours de développement."
+msgstr ""
+
+#: src/Admin/AdminMenu.php:23
+msgid "CFDev"
+msgstr ""
+
+#: src/Admin/AdminMenu.php:34
+msgid "Champs"
+msgstr ""
+
+#: src/Admin/RestPage.php:154
+msgid "Champs actuellement exposés"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:562
+msgid "Chargement…"
+msgstr ""
+
+#: src/Admin/RestPage.php:476
+msgid "Clé meta"
 msgstr ""
 
 #. Name of the plugin
 msgid "Custom Field For Dev"
 msgstr ""
 
-#: src/Taxonomy.php:197 src/Meta/MetaBox.php:186
+#: src/Taxonomy.php:221 src/Meta/MetaBox.php:287
 msgid "Date"
 msgstr ""
 
-#: src/PostType.php:97 src/Taxonomy.php:123
+#: src/Admin/GetDataPage.php:23
+msgid "Debug"
+msgstr ""
+
+#: src/Field.php:189 src/Fields/Bundle.php:76 src/Fields/Bundle.php:109
+#: src/Fields/Bundle.php:136 src/Config/Assets/AssetLoader.php:159
+msgid "Drag to reorder"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:78
+msgid "déclaré dans"
+msgstr ""
+
+#: src/PostType.php:98 src/Taxonomy.php:146
 #, php-format
 msgid "Edit %s"
 msgstr ""
 
-#: src/PostType.php:98
+#: src/Admin/RestPage.php:239
+msgid "Endpoint"
+msgstr ""
+
+#: src/Admin/RestPage.php:479
+msgid "Endpoint CFDev"
+msgstr ""
+
+#: src/Admin/RestPage.php:229
+msgid ""
+"Endpoint CFDev utilisant le CacheManager. Retourne les groupes et champs "
+"marqués"
+msgstr ""
+
+#: src/Admin/RestPage.php:480
+msgid "Endpoint natif"
+msgstr ""
+
+#: src/Admin/RestPage.php:267
+msgid ""
+"Endpoint standard WordPress. Retourne les valeurs brutes stockées en base. "
+"Chaque champ doit être marqué"
+msgstr ""
+
+#: src/Admin/CachePage.php:146
+msgid "Expiré"
+msgstr ""
+
+#: src/Admin/RestPage.php:296 src/Admin/FieldsPage.php:552
+msgid "Fermer"
+msgstr ""
+
+#: src/Admin/RestPage.php:649 src/Admin/FieldsPage.php:360
+msgid "Flat"
+msgstr ""
+
+#: src/Admin/AdminMenu.php:37 src/Admin/GetDataPage.php:23
+msgid "Get Data"
+msgstr ""
+
+#: src/Admin/CachePage.php:129
+msgid "Groupes"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:51
+msgid "Groupes de champs"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:315
+msgid "ID"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:328
+msgid "ID dupliqué"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:73
+msgid "IDs de champs dupliqués :"
+msgstr ""
+
+#: src/Admin/RestPage.php:300
+msgid ""
+"Il n'est pas possible de sélectionner des champs individuels à l'intérieur."
+msgstr ""
+
+#: src/Admin/RestPage.php:272
+msgid ""
+"il n'est pas possible de sélectionner des champs individuels à l'intérieur."
+msgstr ""
+
+#: src/Rest/CfdevRestApi.php:175 src/Rest/CfdevRestApi.php:197
+#: src/Rest/CfdevRestApi.php:213
+msgid "Insufficient permissions."
+msgstr ""
+
+#: src/Rest/CfdevRestApi.php:185
+msgid "Invalid taxonomy."
+msgstr ""
+
+#: src/Admin/RestPage.php:299
+msgid "L'exposition est tout-ou-rien : tous les champs du bundle sont inclus."
+msgstr ""
+
+#: src/Admin/RestPage.php:477 src/Admin/FieldsPage.php:317
+msgid "Label"
+msgstr ""
+
+#: src/Admin/RestPage.php:269
+msgid "Les bundles sont retournés comme chaîne JSON à parser côté client."
+msgstr ""
+
+#: src/Fields/Link.php:33
+msgid "Link text"
+msgstr ""
+
+#: src/Admin/CachePage.php:132
+msgid "Modifié"
+msgstr ""
+
+#: src/PostType.php:99
 #, php-format
 msgid "New %s"
 msgstr ""
 
-#: src/Taxonomy.php:126
+#: src/Taxonomy.php:149
 #, php-format
 msgid "New %s Name"
 msgstr ""
 
-#: src/Fields/Yesno.php:17
-msgid "No"
+#: src/Fields/Link.php:37
+msgid "New tab"
 msgstr ""
 
-#: src/PostType.php:102
-#, php-format
-msgid "No %s found"
+#: src/Fields/Yesno.php:19
+msgid "No"
 msgstr ""
 
 #: src/PostType.php:103
 #, php-format
+msgid "No %s found"
+msgstr ""
+
+#: src/PostType.php:104
+#, php-format
 msgid "No %s found in trash"
 msgstr ""
 
-#: src/Taxonomy.php:121
+#: src/Rest/CfdevRestApi.php:92
+msgid "No CFDev fields exposed for this post type."
+msgstr ""
+
+#: src/Rest/CfdevRestApi.php:116
+msgid "No CFDev fields exposed for this taxonomy."
+msgstr ""
+
+#: src/Rest/CfdevRestApi.php:140
+msgid "No CFDev fields exposed for users."
+msgstr ""
+
+#: src/Admin/RestPage.php:247
+msgid "Non (si post public publié)"
+msgstr ""
+
+#: src/Admin/RestPage.php:252
+msgid "Non (si taxonomie publique)"
+msgstr ""
+
+#: src/Admin/CachePage.php:127 src/Admin/RestPage.php:238
+msgid "Objet"
+msgstr ""
+
+#: src/Admin/RestPage.php:257
+msgid "Oui (toujours)"
+msgstr ""
+
+#: src/Taxonomy.php:144
 #, php-format
 msgid "Parent %s"
 msgstr ""
 
-#: src/Taxonomy.php:122
+#: src/Taxonomy.php:145
 #, php-format
 msgid "Parent %s:"
 msgstr ""
 
-#: src/PostType.php:91
+#: src/Admin/RestPage.php:245
+msgid "Post / Page / CPT"
+msgstr ""
+
+#: src/Rest/CfdevRestApi.php:87 src/Rest/CfdevRestApi.php:162
+msgid "Post not found."
+msgstr ""
+
+#: src/PostType.php:92
 #, php-format
 msgctxt "post type general name"
 msgid "%s"
 msgstr ""
 
-#: src/PostType.php:92
+#: src/PostType.php:93
 #, php-format
 msgctxt "post type singular name"
 msgid "%s"
 msgstr ""
 
-#: src/Fields/File.php:50 src/Config/Assets/AssetLoader.php:141
+#: src/Admin/RestPage.php:270
+msgid "Pour un bundle, l'exposition est tout-ou-rien : marquez le bundle avec"
+msgstr ""
+
+#: src/Field.php:193 src/Fields/Bundle.php:77
+#: src/Config/Assets/AssetLoader.php:160
+msgid "Remove"
+msgstr ""
+
+#: src/Fields/File.php:55 src/Config/Assets/AssetLoader.php:158
 msgid "Remove current file"
 msgstr ""
 
-#: src/Fields/Image.php:27 src/Config/Assets/AssetLoader.php:140
+#: src/Fields/ImageAlt.php:33 src/Fields/Image.php:29
+#: src/Config/Assets/AssetLoader.php:157
 msgid "Remove current image"
 msgstr ""
 
-#: src/Field.php:208
+#: src/Fields/Gallery.php:49
+msgid "Remove image"
+msgstr ""
+
+#: src/Admin/RestPage.php:100 src/Admin/AdminMenu.php:36
+#: src/Admin/AdminMenu.php:36
+msgid "REST API"
+msgstr ""
+
+#: src/Admin/RestPage.php:115
+msgid "REST WP natif actif"
+msgstr ""
+
+#: src/Admin/RestPage.php:117
+msgid "REST WP natif inactif"
+msgstr ""
+
+#: src/Admin/CachePage.php:32
+msgid "Réglage enregistré."
+msgstr ""
+
+#: src/Admin/FieldsPage.php:549
+msgid "Régénérer"
+msgstr ""
+
+#: src/Fields/Link.php:35
+msgid "Same tab"
+msgstr ""
+
+#: src/Field.php:219
 msgid "Save"
 msgstr ""
 
-#: src/Config/Assets/AssetLoader.php:143
+#: src/Config/Assets/AssetLoader.php:162
 msgid "Saved!"
 msgstr ""
 
-#: src/Config/Assets/AssetLoader.php:142
+#: src/Config/Assets/AssetLoader.php:161
 msgid "Saving..."
 msgstr ""
 
-#: src/PostType.php:101 src/Taxonomy.php:119
+#: src/PostType.php:102 src/Taxonomy.php:142
 #, php-format
 msgid "Search %s"
 msgstr ""
 
-#: src/Fields/File.php:38
+#: src/Fields/File.php:42
 msgid "Select file"
 msgstr ""
 
-#: src/Fields/Image.php:51
+#: src/Fields/ImageAlt.php:49 src/Fields/Image.php:55
 msgid "Select image"
 msgstr ""
 
-#: src/Taxonomy.php:251
+#: src/Taxonomy.php:277
 #, php-format
 msgid "Show all %s"
 msgstr ""
 
-#: src/Taxonomy.php:117
+#: src/Admin/RestPage.php:514
+msgid "string (natif)"
+msgstr ""
+
+#: src/Admin/CachePage.php:172
+msgid "Supprimer"
+msgstr ""
+
+#: src/Admin/AdminMenu.php:33 src/Admin/DashboardPage.php:22
+msgid "Tableau de bord"
+msgstr ""
+
+#: src/Admin/RestPage.php:650 src/Admin/FieldsPage.php:361
+msgid "Tabs"
+msgstr ""
+
+#: src/Admin/CachePage.php:130
+msgid "Taille"
+msgstr ""
+
+#: src/Taxonomy.php:140
 #, php-format
 msgctxt "taxonomy general name"
 msgid "%s"
 msgstr ""
 
-#: src/Taxonomy.php:118
+#: src/Taxonomy.php:141
 #, php-format
 msgctxt "taxonomy singular name"
 msgid "%s"
+msgstr ""
+
+#: src/Rest/CfdevRestApi.php:111
+msgid "Term not found."
+msgstr ""
+
+#: src/Admin/RestPage.php:250
+msgid "Terme"
+msgstr ""
+
+#: src/Admin/RestPage.php:183 src/Admin/FieldsPage.php:106
+msgid "Termes"
 msgstr ""
 
 #: src/Validation/Rules/DateAfter.php:39
@@ -182,7 +578,7 @@ msgstr ""
 msgid "This date must be in the future."
 msgstr ""
 
-#: src/Validation/Rules/Regex.php:21
+#: src/Validation/Rules/Regex.php:25
 msgid "This field has an invalid format."
 msgstr ""
 
@@ -190,7 +586,7 @@ msgstr ""
 msgid "This field is required."
 msgstr ""
 
-#: src/Validation/Rules/Numeric.php:17
+#: src/Validation/Rules/IsNumeric.php:16
 msgid "This field must be a number."
 msgstr ""
 
@@ -202,7 +598,7 @@ msgstr ""
 msgid "This field must be a valid email address."
 msgstr ""
 
-#: src/Validation/Rules/Slug.php:16
+#: src/Validation/Rules/Slug.php:20
 msgid "This field must be a valid slug (e.g. my-slug-123)."
 msgstr ""
 
@@ -210,11 +606,11 @@ msgstr ""
 msgid "This field must be a valid URL."
 msgstr ""
 
-#: src/Validation/Rules/Uuid.php:19
+#: src/Validation/Rules/Uuid.php:23
 msgid "This field must be a valid UUID."
 msgstr ""
 
-#: src/Validation/Rules/MinLength.php:21
+#: src/Validation/Rules/MinLength.php:25
 msgid "This field must be at least %d characters."
 msgstr ""
 
@@ -255,54 +651,74 @@ msgstr ""
 msgid "This field must end with \"%s\"."
 msgstr ""
 
-#: src/Validation/Rules/MaxLength.php:21
+#: src/Validation/Rules/MaxLength.php:25
 msgid "This field must not exceed %d characters."
 msgstr ""
 
-#: src/Validation/Rules/StartsWith.php:21
+#: src/Validation/Rules/MaxItems.php:28
+msgid "This field must not exceed %d item."
+msgid_plural "This field must not exceed %d items."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Validation/Rules/StartsWith.php:25
 #, php-format
 msgid "This field must start with \"%s\"."
 msgstr ""
 
-#: src/Validation/Rules/FileExtension.php:67
+#: src/Validation/Rules/MinItems.php:28
+msgid "This field requires at least %d item."
+msgid_plural "This field requires at least %d items."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Validation/Rules/FileExtension.php:69
 #, php-format
 msgid "This file must be one of the following types: %s."
 msgstr ""
 
-#: src/Validation/Rules/FileMime.php:59
+#: src/Validation/Rules/FileMime.php:60
 #, php-format
 msgid "This file type is not allowed. Accepted types: %s."
 msgstr ""
 
-#: src/Validation/Rules/ImageMinDimensions.php:70
+#: src/Validation/Rules/ImageMinDimensions.php:74
 msgid "This image must be at least %dpx tall."
 msgstr ""
 
-#: src/Validation/Rules/ImageMinDimensions.php:56
+#: src/Validation/Rules/ImageMinDimensions.php:60
 msgid "This image must be at least %dpx wide and %dpx tall."
 msgstr ""
 
-#: src/Validation/Rules/ImageMinDimensions.php:64
+#: src/Validation/Rules/ImageMinDimensions.php:68
 msgid "This image must be at least %dpx wide."
 msgstr ""
 
-#: src/Validation/Rules/ImageExactDimensions.php:70
+#: src/Validation/Rules/ImageExactDimensions.php:74
 msgid "This image must be exactly %dpx tall."
 msgstr ""
 
-#: src/Validation/Rules/ImageExactDimensions.php:64
+#: src/Validation/Rules/ImageExactDimensions.php:68
 msgid "This image must be exactly %dpx wide."
 msgstr ""
 
-#: src/Validation/Rules/ImageExactDimensions.php:56
+#: src/Validation/Rules/ImageExactDimensions.php:60
 msgid "This image must be exactly %dpx × %dpx."
 msgstr ""
 
-#: src/Fields/Bundle.php:176
+#: src/Fields/Bundle.php:200
 msgid "This input type doesn't support the bundle functionality (yet)."
 msgstr ""
 
-#: src/Taxonomy.php:124
+#: src/Admin/CachePage.php:128 src/Admin/FieldsPage.php:316
+msgid "Type"
+msgstr ""
+
+#: src/Admin/RestPage.php:478
+msgid "Type REST"
+msgstr ""
+
+#: src/Taxonomy.php:147
 #, php-format
 msgid "Update %s"
 msgstr ""
@@ -311,11 +727,65 @@ msgstr ""
 msgid "Use of a reserved term."
 msgstr ""
 
-#: src/PostType.php:99
+#: src/Rest/CfdevRestApi.php:135
+msgid "User not found."
+msgstr ""
+
+#: src/Admin/CachePage.php:227 src/Admin/RestPage.php:255
+msgid "Utilisateur"
+msgstr ""
+
+#: src/Admin/RestPage.php:192 src/Admin/FieldsPage.php:112
+msgid "Utilisateurs"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:318
+msgid "Validation"
+msgstr ""
+
+#: src/Admin/CachePage.php:113
+msgid "Vider tout le cache"
+msgstr ""
+
+#: src/PostType.php:100
 #, php-format
 msgid "View %s"
 msgstr ""
 
-#: src/Fields/Yesno.php:16
+#: src/Fields/Yesno.php:18
 msgid "Yes"
+msgstr ""
+
+#: src/Admin/CachePage.php:131
+msgid "Âge"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:557
+msgid "— choisir —"
+msgstr ""
+
+#: src/Admin/CachePage.php:99
+msgid ""
+"— données toujours lues en direct depuis la base (recommandé en "
+"développement)"
+msgstr ""
+
+#: src/Admin/CachePage.php:94
+msgid "— les données sont lues et écrites depuis les fichiers .tmp"
+msgstr ""
+
+#: src/Admin/RestPage.php:121
+msgid "— valeurs brutes (ID image, JSON string pour les bundles)"
+msgstr ""
+
+#: src/Admin/RestPage.php:144
+msgid "— valeurs résolues (images enrichies, bundles décodés)"
+msgstr ""
+
+#: src/Admin/RestPage.php:509
+msgid "⊞ Voir les champs"
+msgstr ""
+
+#: src/Admin/FieldsPage.php:245
+msgid "⚙ Inspecter"
 msgstr ""

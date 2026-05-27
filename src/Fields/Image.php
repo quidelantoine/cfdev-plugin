@@ -19,13 +19,13 @@ class Image extends Field
         $preview_size   = $this->args['preview_size'] ?? null;
         $fallback_size  = $preview_size ?? apply_filters('cfdev_preview_size', 'medium');
         $attachment_url = ! empty($value) ? wp_get_attachment_image_src((int) $value, $fallback_size) : null;
-        $image          = $attachment_url ? '<img src="' . esc_url($attachment_url[0]) . '" />' : '';
+        $image          = $attachment_url ? '<img src="' . esc_url($attachment_url[0]) . '" alt="" />' : '';
 
         return implode('', [
             $this->outputHiddenInput($value),
             $this->outputUploadButton($preview_size), // null si non défini
             ! empty($value) ? sprintf(
-                '<a href="#" class="js-cfdev-remove-media cfdev-remove-media">%s</a>',
+                '<button type="button" class="js-cfdev-remove-media cfdev-remove-media">%s</button>',
                 esc_html(__('Remove current image', 'cfdev'))
             ) : '',
             '<span class="cfdev-preview">' . $image . '</span>',

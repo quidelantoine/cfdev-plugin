@@ -54,9 +54,8 @@ class Bundle extends FieldContainer
         $meta = \Weblitzer\CFDev\Field::decodeMetaValue($meta);
 
         echo '<div id="' . esc_attr($this->id) . '" class="padding-wrap">';
-        echo '<a class="button-secondary cfdev-button js-cfdev-add-sortable'
-            . ' js-cfdev-add-bundle cfdev-add-sortable" href="#">'
-            . '+ ' . esc_html(__('Add', 'cfdev')) . '</a>';
+        echo '<button type="button" class="button-secondary cfdev-button js-cfdev-add-sortable js-cfdev-add-bundle cfdev-add-sortable">'
+            . '+ ' . esc_html(__('Add', 'cfdev')) . '</button>';
         echo '<ul class="js-cfdev-sortable cfdev-sortable js-cfdev-bundle" data-cfdev-sortable-type="bundle">';
 
         if (!empty($meta) && is_array($meta) && isset($meta[0])) {
@@ -74,9 +73,13 @@ class Bundle extends FieldContainer
     /** @param array<mixed> $meta */
     private function renderMetaItems(array $meta, object $post, bool $showRemove): void
     {
+        $drag_label   = esc_attr(__('Drag to reorder', 'cfdev'));
+        $remove_label = esc_attr(__('Remove', 'cfdev'));
+
         foreach ($meta as $i => $bundle) {
             echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
-            echo '<div class="cfdev-handle-sortable js-cfdev-handle-sortable"></div>';
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo '<button type="button" class="cfdev-handle-sortable js-cfdev-handle-sortable" aria-label="' . $drag_label . '"></button>';
             echo '<fieldset>';
             echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
 
@@ -91,7 +94,8 @@ class Bundle extends FieldContainer
 
             echo '</table>';
             echo '</fieldset>';
-            echo $showRemove ? '<div class="cfdev-remove-sortable js-cfdev-remove-sortable"></div>' : '';
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo $showRemove ? '<button type="button" class="cfdev-remove-sortable js-cfdev-remove-sortable" aria-label="' . $remove_label . '"></button>' : '';
             echo '</li>';
         }
     }
@@ -102,9 +106,12 @@ class Bundle extends FieldContainer
             return;
         }
 
+        $drag_label = esc_attr(__('Drag to reorder', 'cfdev'));
+
         foreach ($this->default_value as $i => $default) {
             echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
-            echo '<div class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable"></div>';
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo '<button type="button" class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable" aria-label="' . $drag_label . '"></button>';
             echo '<fieldset>';
             echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
 
@@ -126,8 +133,10 @@ class Bundle extends FieldContainer
 
     private function renderEmptyItem(object $post): void
     {
+        $drag_label = esc_attr(__('Drag to reorder', 'cfdev'));
         echo '<li class="cfdev-sortable-item js-cfdev-sortable-item">';
-        echo '<div class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable"></div>';
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo '<button type="button" class="cfdev-handle-sortable cfdev-handle-bundle js-cfdev-handle-sortable" aria-label="' . $drag_label . '"></button>';
         echo '<fieldset>';
         echo '<table border="0" cellpadding="0" cellspacing="0" class="form-table cfdev-table">';
 
@@ -193,7 +202,8 @@ class Bundle extends FieldContainer
         }
 
         if ($field->repeatable && $field->supports_repeatable) {
-            echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">+ ' . esc_html(__('Add', 'cfdev')) . '</a>';
+            echo '<button type="button" class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable">'
+                . '+ ' . esc_html(__('Add', 'cfdev')) . '</button>';
             echo '<ul class="js-cfdev-sortable cfdev-sortable cfdev_repeatable_wrap">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo $field->output($value);

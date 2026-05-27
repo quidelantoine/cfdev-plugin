@@ -219,12 +219,6 @@ find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
 amelioration du code ( interafce , duplication content), ok pour l'architecture du pluging ?
 # En cours
 
-=> refaire une verif api, demande ecrire des tests unitaires pour la partie api
-
-=> dna sgroupe de champ => inspecter , faire un truc code ,dans une autre modal,  avec le code tout pres pour afficher les donéées, foreach si besoin, esc_html et autres , un truc simple mais propre ++ , Faire un presentation standars par champ ++
-
-
-demander a ia si pluging marche sur version php et version wordpress. lequel ? je met quoi comme limite à partir de vous pouvez utliser le plugings ? pour les deux version php et wp
 # installation 
 
 ```bash
@@ -243,23 +237,14 @@ vendor/bin/phpunit
 ```
 
 # A faire 
-tou sle stexte dans des __(''); devrais etre en anglais dans le code , je ferais un mo po pour les frenchy ensuite
 
-=> Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien
-js full vanilla ??, utilisation de vite.js , pour prefixage css et js polyfills
+
+
 
 => Mettre CFDEV le menu admin plus bas dans la sélection ?? 
 
 => qui voit l'admin cfdev => administeur uniquement ????
 
-=> FAire une API aussi pour recuperer les donées , l'activer ou non dans l'administration
-=> Pour les headless+++ a ajouter a la doc et à l'overview 
-
-=> dans l'admin partie champ, il faudrais pouvoir afficher le resulats d'un print_r des données de ce metabox par exemple , ceci à la demande dans une modale, evite de le faire dans le front 
-=> ok et les data du print r en mode profiler de symfony, avec onglet s'ouvre qui intelegement pour une lecture facilité. peux s'appuyer sur le cache aussi ++
-
-=> revoir les champs DEMO , pour etre sur que je teste tous dans tous les sens +++
--> A terminer +++ 
 
 => j'ai fais les champs , et le reste (validation, sauvegarde) , repeatable , ajax, 
     -> il faut faire une partie object , via des hooks ou non , pour init-cuztom
@@ -303,8 +288,6 @@ Faire une page admin cfdev
 => ecrire des tests pour la partie admin 
 => ecrire aussi la docs 
 
-=> variable css sur style.css => comment améliiorer le css, est ok pour le responsive ?? 
-est utile d'utiliser vite.js pour gerer le css et js le prefixe css , le js valide partout , , on garde jquery ? 
 
 => reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
 

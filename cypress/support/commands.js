@@ -35,3 +35,16 @@ Cypress.Commands.add('setPostTitle', (title) => {
   // Dismiss autosave / click away so the slug is generated
   cy.get('#title').blur()
 })
+
+/**
+ * cy.expandPostbox(id) — ensure a WP metabox is expanded.
+ * WP saves collapsed state in user meta; this clicks the toggle if needed.
+ */
+Cypress.Commands.add('expandPostbox', (id) => {
+  cy.get(`#${id}`).then(($box) => {
+    if ($box.hasClass('closed')) {
+      cy.wrap($box).find('.handlediv').click()
+    }
+  })
+  cy.get(`#${id} .inside`).should('be.visible')
+})

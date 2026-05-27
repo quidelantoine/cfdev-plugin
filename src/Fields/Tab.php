@@ -170,7 +170,8 @@ class Tab extends FieldContainer
     {
         if ($field->repeatable && $field->supports_repeatable) {
             echo '<div class="cfdev-padding-wrap">';
-            echo '<a class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable" href="#">+ ' . esc_html(__('Add', 'cfdev')) . '</a>';
+            echo '<button type="button" class="button-secondary cfdev-button js-cfdev-add-field js-cfdev-add-sortable">'
+                . '+ ' . esc_html(__('Add', 'cfdev')) . '</button>';
             echo '<ul class="js-cfdev-sortable cfdev-sortable">';
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo $field->output($value);

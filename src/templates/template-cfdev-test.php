@@ -16,9 +16,17 @@ $cache = new \Weblitzer\CFDev\Cache\CacheManager();
 
 // ?post_id=X lets Cypress (or any caller) request data for a specific post.
 // Falls back to the current page ID so the template also works as a real page.
-// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $page_id   = get_the_ID();
-$target_id = isset($_GET['post_id']) ? (int) $_GET['post_id'] : ($page_id !== false ? $page_id : 0);
+
+if (isset($_GET['post_id'])) {
+    if (! current_user_can('edit_posts')) {
+        wp_die(esc_html__('Access denied.', 'cfdev'));
+    }
+
+    $target_id = (int) $_GET['post_id'];
+} else {
+    $target_id = $page_id !== false ? $page_id : 0;
+}
 
 $post_data = $cache->post($target_id);
 $flat      = $post_data['groups']['cfdev_demo_flat'] ?? [];

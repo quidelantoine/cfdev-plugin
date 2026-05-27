@@ -40,12 +40,13 @@ class Gallery extends Field
         return sprintf(
             '<div class="cfdev-gallery-item js-cfdev-gallery-item">'
                 . '<input type="hidden" name="cfdev[%s][]" value="%d" />'
-                . '<img src="%s" />'
-                . '<a href="#" class="cfdev-gallery-remove js-cfdev-gallery-remove">&times;</a>'
+                . '<img src="%s" alt="" />'
+                . '<button type="button" class="cfdev-gallery-remove js-cfdev-gallery-remove" aria-label="%s">&times;</button>'
             . '</div>',
             esc_attr($this->id),
             $id,
-            esc_url($url)
+            esc_url($url),
+            esc_attr(__('Remove image', 'cfdev'))
         );
     }
 

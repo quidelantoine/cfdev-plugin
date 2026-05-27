@@ -45,18 +45,19 @@ describe('CFDev — Tabs Fields (Page + template-home.php)', () => {
 
   it('shows tabs meta box and navigates between tabs', () => {
     createPageWithTemplate('Cypress — Page Tabs Structure')
+    cy.expandPostbox('cfdev_demo_tabs')
     cy.get('#cfdev_demo_tabs').should('exist')
     cy.get('#cfdev_demo_tabs h2').should('contain', 'Tabs')
     cy.get('#cfdev_demo_tabs').within(() => {
-      cy.get('.cfdev-tab-nav').should('contain', 'Onglet A')
-      cy.get('.cfdev-tab-nav').should('contain', 'Onglet B')
-      cy.contains('.cfdev-tab-label, a', 'Onglet B').click()
-      cy.get('#cfdev_demo_tabs').should('be.visible')
+      cy.get('.cfdev-tabs ul').should('contain', 'Onglet A')
+      cy.get('.cfdev-tabs ul').should('contain', 'Onglet B')
+      cy.contains('a', 'Onglet B').click()
     })
   })
 
   it('saves and restores all Tab A fields', () => {
     createPageWithTemplate('Cypress — Page Tabs All Fields')
+    cy.expandPostbox('cfdev_demo_tabs')
 
     cy.get(`input[name="${TF.text}"]`).clear().type('TabAText')
     cy.get(`textarea[name="${TF.textarea}"]`).clear().type('Tab A textarea')

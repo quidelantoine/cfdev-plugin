@@ -46,7 +46,9 @@ final class DashboardPage extends AdminPage
 
             <div class="cfdev-header">
                 <h1 class="cfdev-header__title">
-                    <span class="cfdev-logo">CF</span>
+                    <span class="cfdev-logo">
+                        <span class="dashicons dashicons-lightbulb" aria-hidden="true"></span>CF
+                    </span>
                     <?php esc_html_e('Field groups', 'cfdev'); ?>
                 </h1>
                 <span class="cfdev-header__count">

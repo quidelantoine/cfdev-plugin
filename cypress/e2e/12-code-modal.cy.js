@@ -17,7 +17,7 @@
 describe('CFDev — Code modal', () => {
   beforeEach(() => {
     cy.loginToWP()
-    cy.visit('/wp-admin/admin.php?page=cfdev-fields')
+    cy.visit('/wp-admin/admin.php?page=cfdev')
     // Activate the post tab (page < post alphabetically so post may not be default)
     cy.get('a[href="#cfdev-tab-pt-post"]').click()
     cy.get('#cfdev-tab-pt-post').should('be.visible')

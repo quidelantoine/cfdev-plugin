@@ -46,7 +46,7 @@ class TermMeta extends Meta
      * @param array<mixed>         $data
      * @param array<string>        $locations
      */
-    public function __construct($taxonomy, string $title = '', $data = array(), $locations = array( 'add_form', 'edit_form' ))
+    public function __construct($taxonomy, string $title = '', $data = array(), $locations = array( 'edit_form' ))
     {
         parent::__construct($title);
 
@@ -156,6 +156,7 @@ class TermMeta extends Meta
 
         echo '<div class="cfdev-postbox">';
         echo '<div class="cfdev-postbox-header"><h2 class="cfdev-postbox-title">'
+            . '<span class="dashicons dashicons-lightbulb cfdev-mb-icon" aria-hidden="true"></span>'
             . esc_html($this->resolveTitle($taxonomy)) . '</h2></div>';
         echo '<div class="cfdev-postbox-inside">';
         echo '<div class="cfdev" data-object-id="0" data-meta-type="term">';
@@ -194,6 +195,7 @@ class TermMeta extends Meta
         echo '<tr class="cfdev form-field"><td colspan="2">';
         echo '<div class="cfdev-postbox">';
         echo '<div class="cfdev-postbox-header"><h2 class="cfdev-postbox-title">'
+            . '<span class="dashicons dashicons-lightbulb cfdev-mb-icon" aria-hidden="true"></span>'
             . esc_html($this->resolveTitle($term->taxonomy)) . '</h2></div>';
         echo '<div class="cfdev-postbox-inside">';
         echo '<div class="cfdev" data-object-id="' . esc_attr((string) $term->term_id)

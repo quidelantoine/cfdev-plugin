@@ -4,10 +4,7 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
-
-Mettre le logo ampoule dashicons  dans le header des l'admin cfdev, avec le bouton CF au debut de chaque page de l'admin cfdev
-Cela serais bien de le voir un peu partout ?
-
+FAire un depot gitlab +++ 
 
 repeatable, ajax, test ok ? est ce que je garde ???
 Si on garde c'est quoi les limtes etest ce que cela vaut vraiment le coup ??? 
@@ -37,6 +34,31 @@ Tous les champs sont tester , unitaire, integration et fonctionnel ???
 
 => Ok en terme de test ??
 => duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
+
+
+=> faire un test avec les champs de type repetable
+
+=> Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
+-> reste eslint ??? et ci
+
+
+Gaps dans les tests unitaires existants :, refaire une demande pour completer ++
+
+=> Utiliser plugins traduction loco translate pour générer fichier .mo et .po
+allemand, espagnol, chinois
+
+
+=> reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
+
+// lancer un truc security vulnerabilté via ia , faire la formation ia dyma
+
+
+## Test
+=> Faire un test avec les champ repetable sur tous pour faire le tests
+=> tester si cela marche si j'ajoute champ à woocommerce ??
+
+X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html sinon on va devoir changer souvent
+
 ## 🧪 Règle d'or — Les tests sont une priorité permanente
 
 > La base de tests est déjà solide : +1200 assertions existantes.
@@ -405,80 +427,6 @@ vendor/bin/phpunit
 
 
 
-=> Mettre CFDEV le menu admin plus bas dans la sélection ??
-
-=> qui voit l'admin cfdev => administeur uniquement ????
-
-
-=> j'ai fais les champs , et le reste (validation, sauvegarde) , repeatable , ajax,
--> il faut faire une partie object , via des hooks ou non , pour init-cuztom
-->ajouter des groupes de champs, via des hooks , pourquoi pour pouvoir avoir acces a toutes les declaration, pour ensuite dans l'admin, donner accés à ces donéées, faire des stas et verifier que tous les champs n'ont pas le meme nomo (id) et pour le kiff d'avoir une vue d'ensemble ( un resume de tous les champs ajouter via le code afficher dans l'admin du plugins)
-=> peut etre faire l'admin avant pour une meilleur integration ensuite
-
-
-=> faire un test avec les champs de type repetable
-
-=> tous les champs n'ont pas la meme largeur (depends de post, term ou user , accordeon, tabs ??? , faire un retour pour qu'il corrrige)
-
-=> Mettre en place ci , phpcs , linter etc , phpstan , eslint ,
--> reste eslint ??? et ci
-
-=> change color of metabox , custom design metaBox +++
-
-
-=> je garde le champ hidden , a quoi il peut servir (cas) , pour garder la données, pas vraiment car la donées est toujours
-
-
-Gaps dans les tests unitaires existants :, refaire une demande pour completer ++
-
-=> Utiliser plugins traduction loco translate pour générer fichier .mo et .po
-allemand, espagnol, chinois
-
-Faire une page admin cfdev
-Sous forme de tabs. qui ressemble à ACF ????
-- cache -> vider le cache
-- liste des groupes de champs
-  lecture des hooks ???
-- réglages
-- -> truc pour verifier que tous les id sont unique , éviter les doublons ++
-- _text_'.$str.'_main_image'
-
-=> minifier le code ,
-=> Faire une version prod
-= Ajouter dans la config ??? 'mode'  dev/prod
-
-=> Select user => comment prendre que certain role ???, possible d'en prendre plusieurs roles  ??
-
-=> ecrire des tests pour la partie admin
-=> ecrire aussi la docs
-
-
-=> reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
-
-// lancer un truc security vulnerabilté via ia , faire la formation ia dyma
-
-=> revoir /home/quidel/Sites/2026/test5_frankenphp/app/wp-content/plugins/cfdev-plugin/src/demo/helpers.php
-car dans la function qui se trouve dans le theme il y avais des trucs bien +++
-
-
-## Rediger la docs
-=> revoir la doc dans son ensemble, le readme de base devra etre le point d'entree de toutes la doc avec installation
-=> lui demander de faire un design avec logo pour mise en avant du plugin
-=> Voir la docs dans le back-office, grace au fichier md
-=> faire une doc en francais et une en anglais, comment bien gerer ceci
-=> comment gerer cela avec md dans depot et aussi avec le md sur l'admin du site faire une partie documentation
-## Test
-=> Faire un test avec les champ repetable sur tous pour faire le tests
-=> test bundle dans term et user ????  et accordeon et tabs ???? et validation
-=> FAire tests de tous les champs dans un bundle , dans un accordeaon , dans tabs ??
-=> meme choses sur meta dans term et user ++++
-custom-meta.dev
-=> vérifier si il marche , tous , tester les fiedls pas dans la doc ??
-=> Voir si marche aussi dans bundle tabs , et accordeon
-=> dans term et dans user ++
-=> tester si cela marche si j'ajoute champ à woocommerce ??
-
-X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html sinon on va devoir changer souvent
 
 
 # A voir plus tard

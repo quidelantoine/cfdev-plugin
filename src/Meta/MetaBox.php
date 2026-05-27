@@ -157,9 +157,11 @@ class MetaBox extends Meta
             $cb = $this->callback;
             /** @var 'core'|'default'|'high'|'low' $prio */
             $prio = $this->priority;
+            $mb_title = '<span class="cfdev-mb-title"><span class="dashicons dashicons-lightbulb cfdev-mb-icon" aria-hidden="true"></span>'
+                . esc_html($this->title) . '</span>';
             add_meta_box(
                 $this->id,
-                $this->title,
+                $mb_title,
                 $cb,
                 $post_type,
                 $this->context,

@@ -2,7 +2,7 @@
 
 [← README](../../readme.md) · [Français](../fr/admin.md)
 
-CFDev adds a **CFDev** menu to the WordPress admin sidebar. All pages require the `manage_options` capability.
+CFDev adds a **CFDev** menu to the WordPress admin sidebar. All pages require the `manage_options` capability (administrators only).
 
 ---
 
@@ -10,14 +10,13 @@ CFDev adds a **CFDev** menu to the WordPress admin sidebar. All pages require th
 
 | URL | Role |
 |---|---|
-| `?page=cfdev` | Dashboard (overview) |
-| `?page=cfdev-fields` | Field groups — full registry + inspector |
+| `?page=cfdev` | Dashboard — field groups registry + inspector |
 | `?page=cfdev-cache` | Cache — toggle, file list, flush |
-| `?page=cfdev-settings` | Global settings |
+| `?page=cfdev-rest` | REST API — toggles + exposed fields |
 
 ---
 
-## Fields page
+## Dashboard
 
 ### Organization
 
@@ -37,6 +36,7 @@ Each group is a collapsible block showing:
 | Conditions | `ID: 1`, `Template: …`, `Role: editor`… badges |
 | Field count | Total flat + bundle fields |
 | ⚙ Inspect | Opens the data inspector for this group |
+| </> Code | Opens the PHP code snippet for this group |
 
 ### Field table
 
@@ -48,6 +48,21 @@ Expanding a group shows a table per section / bundle:
 | `hero_image` | `image` | Image | `required` |
 
 The **Validation** column shows one badge per active rule.
+
+### Duplicate field ID detection
+
+CFDev automatically detects field IDs that appear in more than one group targeting the same post type, taxonomy, or user context.
+
+When duplicates are found:
+- A **warning notice** appears at the top of the Dashboard listing all conflicting IDs and the groups they belong to
+- Each duplicate field is highlighted with a **⚠** badge in its row
+
+```
+⚠ Duplicate field IDs:
+  `price`  declared in  product_info, product_pricing
+```
+
+> **Note:** Duplicate detection applies to flat fields only. Fields inside bundles are scoped to their bundle ID, so two bundles sharing a field name (`title`, `image`…) on the same post type is safe — they never collide in the database or the cache.
 
 ---
 

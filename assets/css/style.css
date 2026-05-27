@@ -238,6 +238,16 @@
 .cfdev-postbox-title {
     margin: 0; font-size: 14px; font-weight: 600;
     color: var(--cfdev-wp-text); line-height: 1.4;
+    display: flex; align-items: center; gap: 6px;
+}
+.cfdev-mb-icon {
+    color: var(--cfdev-brand);
+    font-size: 16px; width: 16px; height: 16px;
+    flex-shrink: 0; opacity: .8;
+}
+/* WP native metabox — single span keeps icon + text as one flex item */
+.cfdev-mb-title {
+    display: inline-flex; align-items: center; gap: 6px;
 }
 .cfdev-postbox-inside { padding: 0 12px 12px; }
 .cfdev-postbox-inside .cfdev-table th { padding-top: 12px; }
@@ -275,7 +285,16 @@
     background: var(--cfdev-brand); color: #fff;
     font-size: 12px; font-weight: 800;
     padding: 4px 8px; border-radius: var(--cfdev-radius-md); letter-spacing: -.5px;
+    display: inline-flex; align-items: center; gap: 4px;
 }
+.cfdev-logo .dashicons {
+    font-size: 14px; width: 14px; height: 14px; line-height: 1;
+}
+a.cfdev-logo {
+    text-decoration: none; color: #fff; transition: opacity .15s;
+}
+a.cfdev-logo:hover,
+a.cfdev-logo:focus { opacity: .8; color: #fff; }
 .cfdev-header__sub,
 .cfdev-header__count {
     font-size: 13px; color: #5a4e3a;
@@ -538,9 +557,19 @@
 }
 .cfdev-no-groups { color: var(--cfdev-wp-border); }
 
-.cfdev-cache-table .cfdev-btn-del { color: var(--cfdev-error); padding: 0; }
-.cfdev-cache-table .cfdev-btn-del:hover { color: #8a2424; }
-.cfdev-cache-table .cfdev-btn-del:focus-visible { outline: 2px solid var(--cfdev-error); outline-offset: 2px; }
+.cfdev-cache-table .button.cfdev-btn-del {
+    font-size: 11px;
+    padding: 2px 8px;
+    height: auto;
+    line-height: 1.6;
+    color: var(--cfdev-error);
+    border-color: var(--cfdev-error);
+    opacity: .7;
+    transition: opacity .15s;
+}
+.cfdev-cache-table .button.cfdev-btn-del:hover,
+.cfdev-cache-table .button.cfdev-btn-del:focus { opacity: 1; color: var(--cfdev-error); }
+.cfdev-cache-table .button.cfdev-btn-del:focus-visible { outline: 2px solid var(--cfdev-error); outline-offset: 2px; }
 .cfdev-btn-flush:disabled { opacity: .5; cursor: default; }
 
 /* Cache page toggle switch */

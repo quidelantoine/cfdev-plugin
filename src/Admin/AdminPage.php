@@ -17,10 +17,13 @@ abstract class AdminPage
 
     protected static function header(string $title, string $subtitle = ''): void
     {
+        $dashboard_url = admin_url('admin.php?page=cfdev');
         ?>
         <div class="cfdev-header">
             <h1 class="cfdev-header__title">
-                <span class="cfdev-logo">CF</span>
+                <a href="<?php echo esc_url($dashboard_url); ?>" class="cfdev-logo" aria-label="<?php esc_attr_e('CFDev Dashboard', 'cfdev'); ?>">
+                    <span class="dashicons dashicons-lightbulb" aria-hidden="true"></span>CF
+                </a>
                 <?php echo esc_html($title); ?>
             </h1>
             <?php if ($subtitle !== '') : ?>

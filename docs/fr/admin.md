@@ -2,7 +2,7 @@
 
 [← README](../../readme.md) · [English](../en/admin.md)
 
-CFDev ajoute un menu **CFDev** dans la barre latérale WordPress. Toutes les pages nécessitent la capacité `manage_options`.
+CFDev ajoute un menu **CFDev** dans la barre latérale WordPress. Toutes les pages nécessitent la capacité `manage_options` (administrateurs uniquement).
 
 ---
 
@@ -10,14 +10,13 @@ CFDev ajoute un menu **CFDev** dans la barre latérale WordPress. Toutes les pag
 
 | URL | Rôle |
 |---|---|
-| `?page=cfdev` | Tableau de bord (vue d'ensemble) |
-| `?page=cfdev-fields` | Groupes de champs — registre complet + inspecteur |
+| `?page=cfdev` | Tableau de bord — registre des groupes + inspecteur |
 | `?page=cfdev-cache` | Cache — activation, liste des fichiers, vidage |
-| `?page=cfdev-settings` | Réglages globaux |
+| `?page=cfdev-rest` | REST API — toggles + champs exposés |
 
 ---
 
-## Page "Champs"
+## Tableau de bord
 
 ### Organisation
 
@@ -37,6 +36,7 @@ Chaque groupe est un bloc rétractable affichant :
 | Conditions | Badges `ID : 1`, `Template : …`, `Rôle : editor`… |
 | Nb de champs | Total flat + champs de bundles |
 | ⚙ Inspecter | Lance l'inspecteur de données pour ce groupe |
+| </> Code | Ouvre le snippet PHP pour ce groupe |
 
 ### Tableau des champs
 
@@ -48,6 +48,21 @@ En dépliant un groupe, on voit un tableau par section / bundle :
 | `hero_image` | `image` | Image | `requis` |
 
 La colonne **Validation** affiche un badge par règle active.
+
+### Détection des ID de champs en double
+
+CFDev détecte automatiquement les ID de champs qui apparaissent dans plus d'un groupe ciblant le même post type, la même taxonomie ou le même contexte utilisateur.
+
+Lorsque des doublons sont détectés :
+- Une **notice d'avertissement** apparaît en haut du tableau de bord, listant tous les ID en conflit et les groupes concernés
+- Chaque champ en double est marqué d'un badge **⚠** dans sa ligne
+
+```
+⚠ ID de champs en double :
+  `price`  déclaré dans  product_info, product_pricing
+```
+
+> **Note :** La détection ne s'applique qu'aux champs plats. Les champs dans un bundle sont isolés par l'ID du bundle — deux bundles partageant un nom de champ (`title`, `image`…) sur le même post type ne créent aucun conflit en base de données ni en cache.
 
 ---
 
@@ -127,7 +142,7 @@ Force la régénération des données (équivalent à `force: true` dans `CacheM
 
 ---
 
-## Page "Cache"
+## Page Cache
 
 ### Toggle activer/désactiver
 

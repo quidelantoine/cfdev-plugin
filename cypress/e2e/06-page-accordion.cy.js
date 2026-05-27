@@ -51,6 +51,7 @@ describe('CFDev — Accordion Fields (Page + template-home.php)', () => {
 
   it('shows accordion meta box with sections and can expand/collapse', () => {
     createPageWithTemplate('Cypress — Page Accordion Structure')
+    cy.expandPostbox('cfdev_demo_accordion')
     cy.get('#cfdev_demo_accordion').should('exist')
     cy.get('#cfdev_demo_accordion h2').should('contain', 'Accordéon')
     cy.get('#cfdev_demo_accordion').within(() => {
@@ -65,6 +66,7 @@ describe('CFDev — Accordion Fields (Page + template-home.php)', () => {
 
   it('saves and restores all Section A and Section B fields', () => {
     createPageWithTemplate('Cypress — Page Accordion All Fields')
+    cy.expandPostbox('cfdev_demo_accordion')
 
     // Section A (expanded by default)
     cy.get(`input[name="${AF.text}"]`).clear().type('AccordionText')
@@ -84,7 +86,8 @@ describe('CFDev — Accordion Fields (Page + template-home.php)', () => {
     cy.get(`input[name="${AF.checkboxes}"][value="v1"]`).check()
     cy.get(`input[name="${AF.checkboxes}"][value="v3"]`).check()
 
-    // Section B fixed fields
+    // Section B — expand then fill
+    cy.get('#cfdev_demo_accordion').within(() => cy.contains('Section B').click())
     cy.get(`input[name="${AF.titleB}"]`).clear().type('Titre Section B')
     cy.get(`input[name="${AF.textB}"]`).clear().type('Texte Section B')
 

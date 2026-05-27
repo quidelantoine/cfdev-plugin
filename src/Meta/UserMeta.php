@@ -107,6 +107,7 @@ class UserMeta extends Meta
 
         echo '<div class="cfdev-postbox">';
         echo '<div class="cfdev-postbox-header"><h2 class="cfdev-postbox-title">'
+            . '<span class="dashicons dashicons-lightbulb cfdev-mb-icon" aria-hidden="true"></span>'
             . esc_html($this->title) . '</h2></div>';
         echo '<div class="cfdev-postbox-inside">';
         parent::callback($user, $data);

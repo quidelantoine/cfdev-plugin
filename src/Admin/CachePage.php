@@ -168,7 +168,7 @@ final class CachePage extends AdminPage
                                 <?php wp_nonce_field('cfdev_cache_flush', 'cfdev_cache_nonce'); ?>
                                 <input type="hidden" name="cfdev_cache_action" value="flush_one">
                                 <input type="hidden" name="cfdev_cache_key" value="<?php echo esc_attr($file['key']); ?>">
-                                <button type="submit" class="button button-link cfdev-btn-del">
+                                <button type="submit" class="button button-small cfdev-btn-del">
                                     <?php esc_html_e('Delete', 'cfdev'); ?>
                                 </button>
                             </form>

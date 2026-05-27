@@ -5,9 +5,6 @@
 
 ---
 
-commit => css partime
-
-
 
 ===========
 Mieux erire le js faire une passe dessus ? 
@@ -17,14 +14,16 @@ js full vanilla ??, utilisation de vite.js,  et js polyfills
 ==============
 Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans 
 =================
-Mettre des icone au debut des champs pour aider à l'ui/ux, si possible utiliser les icone deja sur wordpress ou via le pluging, pas d'ajout si possiblr
+**** Mettre des icone au debut des champs pour aider à l'ui/ux, si possible utiliser les icone deja sur wordpress ou via le pluging,
+commit message ???
+
+
+
 =====================
 => duplicate code ????, interface utile ? architecture is ok ???
 ========================
 trouver un logo ++ perso ????
 
-**** => dans groupe de champ de l'admin => inspecter qui donne la structure des tableau, j'aimerais ajouter une modale faire un truc code ,dans une autre modal,  avec le code tout pres pour afficher les donéées, foreach si besoin, esc_html et autres , un truc simple mais propre ++ , Faire un presentation standars par champ ++
-ask commit message ??
 
 
 repeatable , ajax,, test ok ? est ce que je garde ??? 

@@ -75,7 +75,18 @@
 .cfdev .cfdev-table th{ font-weight: normal; text-align: left; vertical-align: top; width: var(--cfdev-label-width); }
 
 .cfdev .cfdev-table th label,
-.cfdev .cfdev-th label { font-size: 12px; font-weight: bold; }
+.cfdev .cfdev-th label { font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+
+.cfdev-field-icon { font-size: 14px; width: 14px; height: 14px; flex-shrink: 0; }
+
+.cfdev-icon--text     { color: #6b7280; }
+.cfdev-icon--date     { color: #3b82f6; }
+.cfdev-icon--media    { color: #10b981; }
+.cfdev-icon--contact  { color: #f59e0b; }
+.cfdev-icon--bool     { color: #06b6d4; }
+.cfdev-icon--choice   { color: #8b5cf6; }
+.cfdev-icon--number   { color: #ec4899; }
+.cfdev-icon--relation { color: #0073aa; }
 
 .cfdev .cfdev-table th .cfdev-required,
 .cfdev .cfdev-th .cfdev-required { color: red; }

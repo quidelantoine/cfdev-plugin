@@ -173,16 +173,11 @@ class Bundle extends FieldContainer
 
         echo sprintf('<tr%s>', $hasError ? ' class="cfdev-has-error"' : '');
 
-        echo sprintf(
-            '<th class="cfdev-th">
-            <label for="%s" class="cfdev-label">%s</label>%s
-            <div class="cfdev-description">%s</div>
-        </th>',
-            esc_attr($id . $field->after_id),
-            esc_html($field->label),
-            $field->required ? ' <span class="cfdev-required">*</span>' : '',
-            wp_kses_post($field->description)
-        );
+        echo '<th class="cfdev-th"><label for="' . esc_attr($id . $field->after_id) . '" class="cfdev-label">';
+        echo $field->fieldIconHtml(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fieldIconHtml() uses esc_attr() internally
+        echo esc_html($field->label) . '</label>';
+        echo $field->required ? ' <span class="cfdev-required">*</span>' : '';
+        echo '<div class="cfdev-description">' . wp_kses_post($field->description) . '</div></th>';
 
         echo '<td class="cfdev-td">';
         $this->renderFieldOutput($field, $value, $post);

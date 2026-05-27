@@ -133,9 +133,9 @@ abstract class Meta
 
             echo '<tr' . ($has_error ? ' class="cfdev-has-error"' : '') . '>';
             echo '<th class="cfdev-th">';
-            echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">'
-                . esc_html($field->label)
-                . '</label>';
+            echo '<label for="' . esc_attr($id_name) . '" class="cfdev_label">';
+            echo $field->fieldIconHtml(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fieldIconHtml() uses esc_attr() internally
+            echo esc_html($field->label) . '</label>';
             echo $field->required ? ' <span class="cfdev-required">*</span>' : '';
             echo '<div class="cfdev-description description">'
                 . wp_kses_post($field->description)
@@ -607,6 +607,7 @@ abstract class Meta
     {
         return 'Weblitzer\\CFDev\\Fields\\' . str_replace(' ', '', ucwords(str_replace('_', ' ', $type)));
     }
+
 
     /**
      * Adds multipart support to form

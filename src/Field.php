@@ -512,4 +512,52 @@ class Field
             default  => 'string',
         };
     }
+
+    public function fieldIconHtml(): string
+    {
+        // [dashicon-class, color-category-class]
+        static $icons = [
+            'Text'           => ['dashicons-text',             'cfdev-icon--text'],
+            'Textarea'       => ['dashicons-editor-paragraph', 'cfdev-icon--text'],
+            'Wysiwyg'        => ['dashicons-editor-code',      'cfdev-icon--text'],
+            'Heading'        => ['dashicons-editor-textcolor', 'cfdev-icon--text'],
+            'Number'         => ['dashicons-chart-bar',        'cfdev-icon--number'],
+            'Range'          => ['dashicons-sort',             'cfdev-icon--number'],
+            'Email'          => ['dashicons-email-alt',        'cfdev-icon--contact'],
+            'Tel'            => ['dashicons-phone',            'cfdev-icon--contact'],
+            'Url'            => ['dashicons-admin-links',      'cfdev-icon--contact'],
+            'Link'           => ['dashicons-admin-links',      'cfdev-icon--contact'],
+            'Color'          => ['dashicons-art',              'cfdev-icon--choice'],
+            'Date'           => ['dashicons-calendar-alt',    'cfdev-icon--date'],
+            'Datetime'       => ['dashicons-calendar',        'cfdev-icon--date'],
+            'Time'           => ['dashicons-clock',           'cfdev-icon--date'],
+            'Image'          => ['dashicons-format-image',    'cfdev-icon--media'],
+            'ImageAlt'       => ['dashicons-format-image',    'cfdev-icon--media'],
+            'Gallery'        => ['dashicons-images-alt2',     'cfdev-icon--media'],
+            'File'           => ['dashicons-media-document',  'cfdev-icon--media'],
+            'Toggle'         => ['dashicons-yes-alt',         'cfdev-icon--bool'],
+            'Yesno'          => ['dashicons-yes-alt',         'cfdev-icon--bool'],
+            'Checkbox'       => ['dashicons-yes',             'cfdev-icon--bool'],
+            'Checkboxes'     => ['dashicons-list-view',       'cfdev-icon--choice'],
+            'MultiSelect'    => ['dashicons-list-view',       'cfdev-icon--choice'],
+            'Select'         => ['dashicons-arrow-down-alt2', 'cfdev-icon--choice'],
+            'Radios'         => ['dashicons-marker',          'cfdev-icon--choice'],
+            'PostSelect'     => ['dashicons-admin-post',      'cfdev-icon--relation'],
+            'PostCheckboxes' => ['dashicons-admin-post',      'cfdev-icon--relation'],
+            'TermSelect'     => ['dashicons-tag',             'cfdev-icon--relation'],
+            'TermCheckboxes' => ['dashicons-tag',             'cfdev-icon--relation'],
+            'UserSelect'     => ['dashicons-admin-users',     'cfdev-icon--relation'],
+            'UserCheckboxes' => ['dashicons-admin-users',     'cfdev-icon--relation'],
+        ];
+
+        $parts = explode('\\', get_class($this));
+        $short = (string) end($parts);
+
+        if (! isset($icons[$short])) {
+            return '';
+        }
+
+        [$dashicon, $color] = $icons[$short];
+        return '<span class="dashicons ' . esc_attr($dashicon) . ' cfdev-field-icon ' . esc_attr($color) . '" aria-hidden="true"></span>';
+    }
 }

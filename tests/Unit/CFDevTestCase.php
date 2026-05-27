@@ -22,6 +22,10 @@ abstract class CFDevTestCase extends TestCase
         Functions\when('esc_attr')->returnArg();
         Functions\when('esc_url')->returnArg();
         Functions\when('wp_kses_post')->returnArg();
+        Functions\when('sanitize_title')->returnArg(1);
+        Functions\when('get_posts')->justReturn([]);
+        Functions\when('get_terms')->justReturn([]);
+        Functions\when('get_users')->justReturn([]);
     }
 
     protected function tearDown(): void

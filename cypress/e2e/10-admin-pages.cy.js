@@ -2,7 +2,7 @@
  * Tests CFDev Admin Pages: Registry, Inspector, Cache flush.
  *
  * Registry (/wp-admin/admin.php?page=cfdev-fields):
- *   - Tab nav: post types (page/post), Termes, Utilisateurs
+ *   - Tab nav: post types (page/post), Terms, Users
  *   - Group cards: expand → fields table
  *   - Inspector modal: AJAX data load, cache badge, close
  *
@@ -25,10 +25,10 @@ describe('CFDev — Admin Pages', () => {
     cy.visit('/wp-admin/admin.php?page=cfdev-fields')
 
     // Header: title + group count badge
-    cy.get('.cfdev-header__title').should('contain', 'Groupes de champs')
+    cy.get('.cfdev-header__title').should('contain', 'Field groups')
     cy.get('.cfdev-header__count').invoke('text').should('match', /\d+/)
 
-    // Tab navigation has entries for post types + Termes + Utilisateurs
+    // Tab navigation has entries for post types + Terms + Users
     cy.get('.cfdev-tabs-nav a[href="#cfdev-tab-pt-post"]').should('exist')
     cy.get('.cfdev-tabs-nav a[href="#cfdev-tab-terms"]').should('exist')
     cy.get('.cfdev-tabs-nav a[href="#cfdev-tab-users"]').should('exist')
@@ -54,12 +54,12 @@ describe('CFDev — Admin Pages', () => {
         cy.get('.cfdev-btn-inspect').should('exist')
       })
 
-    // Termes tab: switch and verify term groups
+    // Terms tab: switch and verify term groups
     cy.get('a[href="#cfdev-tab-terms"]').click()
     cy.get('#cfdev-tab-terms').should('be.visible')
     cy.get('#cfdev-tab-terms .cfdev-group').should('have.length.gte', 1)
 
-    // Utilisateurs tab: switch and verify user groups
+    // Users tab: switch and verify user groups
     cy.get('a[href="#cfdev-tab-users"]').click()
     cy.get('#cfdev-tab-users').should('be.visible')
     cy.get('#cfdev-tab-users .cfdev-group').should('have.length.gte', 1)

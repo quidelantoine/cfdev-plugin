@@ -68,7 +68,7 @@ final class CachePage extends AdminPage
             <div class="notice notice-success is-dismissible">
                 <p><?php echo esc_html(sprintf(
                     // translators: %d = number of deleted files
-                    _n('%d fichier supprimé.', '%d fichiers supprimés.', $flushed, 'cfdev'),
+                    _n('%d file deleted.', '%d files deleted.', $flushed, 'cfdev'),
                     $flushed
                 )); ?></p>
             </div>

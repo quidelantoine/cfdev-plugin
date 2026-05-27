@@ -745,6 +745,51 @@
 .cfdev-tv-meta  { color: var(--cfdev-dark-overlay2); font-size: 11px; }
 
 
+/* ── Code button ────────────────────────────────────────────────────────── */
+.cfdev-btn-code {
+    flex-shrink: 0;
+    font-size: 11px !important;
+    padding: 2px 8px !important;
+    height: auto !important;
+    line-height: 1.6 !important;
+    opacity: .7;
+    transition: opacity .15s;
+}
+.cfdev-btn-code:hover         { opacity: 1; }
+.cfdev-btn-code:focus-visible { outline: 2px solid var(--cfdev-wp-blue); outline-offset: 2px; opacity: 1; }
+
+/* ── Code modal ─────────────────────────────────────────────────────────── */
+.cfdev-modal-box--code { width: min(92vw, 720px); }
+
+.cfdev-code-tabs {
+    display: flex; gap: 2px;
+    background: var(--cfdev-dark-surface);
+    border-radius: var(--cfdev-radius-md); padding: 3px;
+}
+.cfdev-code-tab {
+    padding: 3px 14px; border-radius: var(--cfdev-radius);
+    font-size: 11px; font-weight: 600; cursor: pointer; border: none;
+    color: var(--cfdev-dark-muted); background: none; line-height: 1.7;
+    transition: color .15s;
+}
+.cfdev-code-tab.is-active      { background: var(--cfdev-dark-overlay); color: var(--cfdev-dark-text); }
+.cfdev-code-tab:hover:not(.is-active) { color: var(--cfdev-dark-text); }
+.cfdev-code-tab:focus-visible  { outline: 2px solid var(--cfdev-dark-mauve); outline-offset: -2px; }
+
+.cfdev-code-body {
+    flex: 1; overflow: auto; padding: 0;
+}
+.cfdev-code-pre {
+    margin: 0; padding: 20px 24px;
+    background: var(--cfdev-dark-crust);
+    color: var(--cfdev-dark-text);
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px; line-height: 1.75;
+    overflow-x: auto; white-space: pre;
+    min-height: 200px; box-sizing: border-box;
+}
+.cfdev-code-pre code { font-family: inherit; }
+
 /* ── Responsive < 782px (WP admin mobile breakpoint) ───────────────────── */
 @media screen and (max-width: 782px) {
 

@@ -71,16 +71,16 @@ final class RestPage extends AdminPage
         $total_rest = count($entries);
 
         // ── Code snippets ──────────────────────────────────────────────────────
-        $raw_php  = "->addMetaBox('details', 'Détails', [\n"
-            . "    ['type' => 'text',  'id' => '_subtitle', 'label' => 'Sous-titre', 'rest' => true],\n"
-            . "    ['type' => 'image', 'id' => '_cover',    'label' => 'Couverture', 'rest' => true],\n"
-            . "    ['type' => 'text',  'id' => '_note',     'label' => 'Note interne'], // non exposé\n"
+        $raw_php  = "->addMetaBox('details', 'Details', [\n"
+            . "    ['type' => 'text',  'id' => '_subtitle', 'label' => 'Subtitle',       'rest' => true],\n"
+            . "    ['type' => 'image', 'id' => '_cover',    'label' => 'Cover image',    'rest' => true],\n"
+            . "    ['type' => 'text',  'id' => '_note',     'label' => 'Internal note'], // not exposed\n"
             . "    // bundle\n"
             . "    ['bundle', 'chapters', [...fields...], ['rest' => true]],\n"
             . "]);";
         $snip_php = esc_html($raw_php);
 
-        $raw_cfdev  = "// valeurs résolues — images enrichies, bundles décodés\n"
+        $raw_cfdev  = "// resolved values — enriched images, decoded bundles\n"
             . "const res  = await fetch('" . $home . "/wp-json/cfdev/v1/post/42');\n"
             . "const data = await res.json();\n\n"
             . "data.groups.details._subtitle   // \"Mon sous-titre\"\n"
@@ -148,7 +148,7 @@ final class RestPage extends AdminPage
                 </div>
             </div>
 
-            <?php // ── Section 1 : Champs exposés (avec onglets) ─────────────── ?>
+            <?php // ── Section 1: Exposed fields (with tabs) ──────────────────── ?>
             <div class="cfdev-rest-section">
                 <h2>
                     <?php esc_html_e('Currently exposed fields', 'cfdev'); ?>

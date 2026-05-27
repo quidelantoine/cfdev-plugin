@@ -9,24 +9,6 @@ commit => css partime
 
 
 
-=> tous les texte dans des __(''); devrais etre en,, anglais dans le code , je ferais un mo po pour les frenchy ensuite
-commit message => 
-
-i18n: replace all French source strings with English in __() calls
-
-All translatable strings in src/Admin/ were in French, which breaks
-the standard gettext workflow (source language must be English so
-.po/.mo files can translate from it).
-
-Files updated: AdminMenu, AdminPage, CachePage, DashboardPage,
-FieldsPage, RestPage — covering esc_html_e(), esc_attr_e(), __()
-and _n() calls.
-
-Examples: 'Tableau de bord' → 'Dashboard', 'Réglage enregistré.' →
-'Setting saved.', 'Accordéon' → 'Accordion', 'Fermer' → 'Close',
-'Champs actuellement exposés' → 'Currently exposed fields', etc.
-
-
 ===========
 Mieux erire le js faire une passe dessus ? 
 
@@ -37,14 +19,12 @@ Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
 =================
 Mettre des icone au debut des champs pour aider à l'ui/ux, si possible utiliser les icone deja sur wordpress ou via le pluging, pas d'ajout si possiblr
 =====================
-=> duplicate code ????
+=> duplicate code ????, interface utile ? architecture is ok ???
 ========================
 trouver un logo ++ perso ????
 
-=> dna sgroupe de champ => inspecter , faire un truc code ,dans une autre modal,  avec le code tout pres pour afficher les donéées, foreach si besoin, esc_html et autres , un truc simple mais propre ++ , Faire un presentation standars par champ ++
-=> dans l'admin partie champ, il faudrais pouvoir afficher le resulats d'un print_r des données de ce metabox par exemple , ceci à la demande dans une modale, evite de le faire dans le front
-=> ok et les data du print r en mode profiler de symfony, avec onglet s'ouvre qui intelegement pour une lecture facilité. peux s'appuyer sur le cache aussi ++
-
+**** => dans groupe de champ de l'admin => inspecter qui donne la structure des tableau, j'aimerais ajouter une modale faire un truc code ,dans une autre modal,  avec le code tout pres pour afficher les donéées, foreach si besoin, esc_html et autres , un truc simple mais propre ++ , Faire un presentation standars par champ ++
+ask commit message ??
 
 
 repeatable , ajax,, test ok ? est ce que je garde ??? 
@@ -55,6 +35,8 @@ est ce que tous les champs sont bien testé ??
 Tous les champs sont tester , unitaire, integration et fonctionnel ??? 
 
 => Test woocommerce isOK ?? compatible woocommerce ???
+
+=> Ok en terme de test ?? 
 ## 🧪 Règle d'or — Les tests sont une priorité permanente
 
 > La base de tests est déjà solide : +1200 assertions existantes.

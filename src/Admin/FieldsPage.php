@@ -48,12 +48,12 @@ final class FieldsPage
             <div class="cfdev-header">
                 <h1 class="cfdev-header__title">
                     <span class="cfdev-logo">CF</span>
-                    <?php esc_html_e('Groupes de champs', 'cfdev'); ?>
+                    <?php esc_html_e('Field groups', 'cfdev'); ?>
                 </h1>
                 <span class="cfdev-header__count">
                     <?php echo esc_html(sprintf(
                         // translators: %d = number of groups
-                        _n('%d groupe', '%d groupes', count($all), 'cfdev'),
+                        _n('%d group', '%d groups', count($all), 'cfdev'),
                         count($all)
                     )); ?>
                 </span>
@@ -61,7 +61,7 @@ final class FieldsPage
                 <span class="cfdev-header__dups">
                     ⚠ <?php echo esc_html(sprintf(
                         // translators: %d = number of duplicate field IDs
-                        _n('%d doublon', '%d doublons', count($dups), 'cfdev'),
+                        _n('%d duplicate', '%d duplicates', count($dups), 'cfdev'),
                         count($dups)
                     )); ?>
                 </span>
@@ -103,7 +103,7 @@ final class FieldsPage
                 <a href="#cfdev-tab-terms"
                    class="nav-tab<?php echo ($first_tab === 'cfdev-tab-terms') ? ' nav-tab-active' : ''; ?>"
                    data-cfdev-tab>
-                    <?php esc_html_e('Termes', 'cfdev'); ?>
+                    <?php esc_html_e('Terms', 'cfdev'); ?>
                     <span class="cfdev-tab-count"><?php echo count($terms); ?></span>
                 </a>
                 <a href="#cfdev-tab-users"
@@ -136,6 +136,7 @@ final class FieldsPage
         </div>
         <?php
         self::inspectModal();
+        self::codeModal();
     }
 
     // -------------------------------------------------------------------------
@@ -204,7 +205,7 @@ final class FieldsPage
 
                 <?php if (! empty($other_pts)) : ?>
                 <span class="cfdev-also-in">
-                    <?php esc_html_e('Aussi dans :', 'cfdev'); ?>
+                    <?php esc_html_e('Also in:', 'cfdev'); ?>
                     <?php foreach ($other_pts as $pt) : ?>
                         <?php
                         $pt_obj   = get_post_type_object($pt);
@@ -229,7 +230,7 @@ final class FieldsPage
                 <span class="cfdev-field-count">
                     <?php echo esc_html(sprintf(
                         // translators: %d = number of fields
-                        _n('%d champ', '%d champs', $total, 'cfdev'),
+                        _n('%d field', '%d fields', $total, 'cfdev'),
                         $total
                     )); ?>
                 </span>
@@ -242,7 +243,14 @@ final class FieldsPage
                         data-default-tax="<?php echo esc_attr($default_tax); ?>"
                         data-options="<?php echo esc_attr((string) wp_json_encode($object_options)); ?>"
                         data-fixed="<?php echo $is_fixed ? '1' : '0'; ?>">
-                    <?php esc_html_e('⚙ Inspecter', 'cfdev'); ?>
+                    <?php esc_html_e('⚙ Inspect', 'cfdev'); ?>
+                </button>
+
+                <button type="button" class="cfdev-btn-code button button-small"
+                        data-group-id="<?php echo esc_attr($entry['id']); ?>"
+                        data-code="<?php echo esc_attr(self::codeSnippet($entry)); ?>"
+                        data-code-raw="<?php echo esc_attr(self::codeSnippet($entry, true)); ?>">
+                    &lt;/&gt; <?php esc_html_e('Code', 'cfdev'); ?>
                 </button>
 
             </div>
@@ -337,7 +345,7 @@ final class FieldsPage
                     <td><?php echo esc_html($field['label']); ?></td>
                     <td class="cfdev-rules-cell">
                         <?php if ($field['required']) : ?>
-                        <span class="cfdev-rule-badge cfdev-rule-badge--required">requis</span>
+                        <span class="cfdev-rule-badge cfdev-rule-badge--required"><?php esc_html_e('required', 'cfdev'); ?></span>
                         <?php endif; ?>
                         <?php foreach ($field['rules'] ?? [] as $rule) : ?>
                         <span class="cfdev-rule-badge"><?php echo esc_html($rule); ?></span>
@@ -374,7 +382,7 @@ final class FieldsPage
         $label = match ($key) {
             'post_id'   => 'ID : ' . $value,
             'template'  => 'Template : ' . basename((string) $value),
-            'roles'     => 'Rôle : ' . implode(', ', (array) $value),
+            'roles'     => 'Role: ' . implode(', ', (array) $value),
             'parent_id' => 'Parent : ' . $value,
             default     => $key . ' : ' . $value,
         };
@@ -477,7 +485,7 @@ final class FieldsPage
                 if ($post instanceof \WP_Post) {
                     $opts[] = [
                         'id'    => $post->ID,
-                        'label' => $post->post_title !== '' ? $post->post_title : '(sans titre)',
+                        'label' => $post->post_title !== '' ? $post->post_title : __('(no title)', 'cfdev'),
                         'meta'  => $post->post_type,
                     ];
                 }
@@ -531,6 +539,486 @@ final class FieldsPage
         return [];
     }
 
+    // -------------------------------------------------------------------------
+    // Code snippet
+    // -------------------------------------------------------------------------
+
+    /**
+     * Generates a PHP code snippet for reading the group's field values.
+     *
+     * @param array<string, mixed> $entry Registry entry.
+     * @param bool                 $raw   True = raw value extraction only (no HTML output).
+     */
+    private static function codeSnippet(array $entry, bool $raw = false): string
+    {
+        $id   = (string) $entry['id'];
+        $type = (string) ($entry['meta_type'] ?? 'post');
+
+        if ($type === 'post') {
+            $call = 'post($post->ID)';
+        } elseif ($type === 'term') {
+            $tax  = str_replace("'", "\\'", (string) ($entry['targets'][0] ?? 'taxonomy'));
+            $call = "term(\$term->term_id, '{$tax}')";
+        } else {
+            $call = 'user($user->ID)';
+        }
+
+        $gid   = str_replace("'", "\\'", $id);
+        $lines = [
+            '<?php',
+            '$data  = (new \Weblitzer\CFDev\Cache\CacheManager())->' . $call . ';',
+            "\$group = \$data['groups']['{$gid}'] ?? [];",
+        ];
+
+        $fl = $raw
+            ? static fn(string $f, array $d, string $s): array => self::fieldLinesRaw($f, $d, $s)
+            : static fn(string $f, array $d, string $s): array => self::fieldLines($f, $d, $s);
+
+        if (! empty($entry['sections'])) {
+            foreach ($entry['sections'] as $section) {
+                $lines[] = '';
+                $lines[] = '// ' . ($section['title'] ?? '');
+                $bid     = $section['bundle_id'] ?? null;
+                if ($bid !== null && isset($entry['bundles'][$bid])) {
+                    $sbid    = str_replace("'", "\\'", (string) $bid);
+                    $lines[] = "\$rows = \$group['{$sbid}'] ?? [];";
+                    $lines[] = 'foreach ($rows as $row) {';
+                    foreach ($entry['bundles'][$bid]['fields'] as $fid => $field) {
+                        foreach ($fl((string) $fid, $field, '$row') as $l) {
+                            $lines[] = '    ' . $l;
+                        }
+                    }
+                    $lines[] = '}';
+                } elseif (! empty($section['fields'])) {
+                    foreach ($section['fields'] as $fid => $field) {
+                        array_push($lines, ...$fl((string) $fid, $field, '$group'));
+                    }
+                }
+            }
+        } else {
+            foreach ($entry['fields'] as $fid => $field) {
+                $lines[] = '';
+                array_push($lines, ...$fl((string) $fid, $field, '$group'));
+            }
+            foreach ($entry['bundles'] as $bundle_id => $bundle) {
+                $sbid    = str_replace("'", "\\'", (string) $bundle_id);
+                $lines[] = '';
+                $lines[] = '// Bundle: ' . $bundle_id;
+                $lines[] = "\$rows = \$group['{$sbid}'] ?? [];";
+                $lines[] = 'foreach ($rows as $row) {';
+                foreach ($bundle['fields'] as $fid => $field) {
+                    foreach ($fl((string) $fid, $field, '$row') as $l) {
+                        $lines[] = '    ' . $l;
+                    }
+                }
+                $lines[] = '}';
+            }
+        }
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Returns PHP code lines for reading a single field value.
+     *
+     * @param  array<string, mixed> $field Field data from the Registry.
+     * @return list<string>
+     */
+    private static function fieldLines(string $fid, array $field, string $src = '$group'): array
+    {
+        $type  = (string) ($field['type'] ?? 'text');
+        $label = (string) ($field['label'] ?? $fid);
+        $var   = '$' . $fid;
+        $sfid  = str_replace("'", "\\'", $fid);
+
+        switch ($type) {
+            case 'image':
+                return [
+                    '// ' . $label,
+                    "{$var} = {$src}['{$sfid}'] ?? [];",
+                    "if (! empty({$var}['url'])) {",
+                    "    echo '<img'",
+                    "        . ' src=\"'    . esc_url({$var}['url'])         . '\"'",
+                    "        . ' alt=\"'    . esc_attr({$var}['alt'] ?? '')  . '\"'",
+                    "        . ' width=\"'  . (int) ({$var}['width']  ?? 0) . '\"'",
+                    "        . ' height=\"' . (int) ({$var}['height'] ?? 0) . '\"'",
+                    "        . '>';",
+                    "    // All registered sizes: thumbnail, medium, large, full",
+                    "    \$sizes  = {$var}['sizes'] ?? [];",
+                    "    \$thumb  = \$sizes['thumbnail']['url'] ?? {$var}['url'];",
+                    "    \$medium = \$sizes['medium']['url']    ?? {$var}['url'];",
+                    "    \$large  = \$sizes['large']['url']     ?? {$var}['url'];",
+                    "    // WP responsive markup (recommended)",
+                    "    echo wp_get_attachment_image({$var}['id'], 'medium');",
+                    '}',
+                ];
+            case 'gallery':
+                return [
+                    '// ' . $label . ' (array of images)',
+                    "{$var} = {$src}['{$sfid}'] ?? [];",
+                    'foreach (' . $var . ' as $img) {',
+                    "    \$sizes  = \$img['sizes'] ?? [];",
+                    "    \$thumb  = \$sizes['thumbnail']['url'] ?? \$img['url'];",
+                    "    \$medium = \$sizes['medium']['url']    ?? \$img['url'];",
+                    "    \$large  = \$sizes['large']['url']     ?? \$img['url'];",
+                    "    // WP responsive markup",
+                    "    echo wp_get_attachment_image(\$img['id'], 'medium');",
+                    '}',
+                ];
+            case 'file':
+                return [
+                    '// ' . $label,
+                    "{$var} = {$src}['{$sfid}'] ?? [];",
+                    "if (! empty({$var}['url'])) {",
+                    "    // {$var}['id'], {$var}['title'], {$var}['mime_type']",
+                    "    echo '<a href=\"' . esc_url({$var}['url']) . '\">'",
+                    "        . esc_html({$var}['title'] ?? '') . '</a>';",
+                    '}',
+                ];
+            case 'checkboxes':
+            case 'multi_select':
+                return [
+                    '// ' . $label . ' (array of values)',
+                    "{$var} = {$src}['{$sfid}'] ?? [];",
+                    'foreach (' . $var . ' as $item) {',
+                    '    echo esc_html($item);',
+                    '}',
+                ];
+            case 'post_checkboxes':
+                return [
+                    '// ' . $label . ' (array of post IDs — one query)',
+                    "{$var} = {$src}['{$sfid}'] ?? [];",
+                    "if (! empty({$var})) {",
+                    "    \$posts = get_posts([",
+                    "        'post__in'       => array_map('absint', {$var}),",
+                    "        'posts_per_page' => -1,",
+                    "        'orderby'        => 'post__in',",
+                    "        'no_found_rows'  => true,",
+                    "    ]);",
+                    '    foreach ($posts as $p) {',
+                    "        echo '<a href=\"' . esc_url(get_permalink(\$p->ID)) . '\">'",
+                    "            . esc_html(\$p->post_title) . '</a>';",
+                    '    }',
+                    '}',
+                ];
+            case 'term_checkboxes':
+                return [
+                    '// ' . $label . ' (array of term IDs — one query)',
+                    "{$var} = {$src}['{$sfid}'] ?? [];",
+                    "if (! empty({$var})) {",
+                    "    \$terms = get_terms([",
+                    "        'include'    => array_map('absint', {$var}),",
+                    "        'hide_empty' => false,",
+                    "        'orderby'    => 'include',",
+                    "    ]);",
+                    '    foreach ($terms as $t) {',
+                    "        \$link = get_term_link(\$t);",
+                    "        if (is_wp_error(\$link)) continue;",
+                    "        echo '<a href=\"' . esc_url(\$link) . '\">' . esc_html(\$t->name) . '</a>';",
+                    '    }',
+                    '}',
+                ];
+            case 'user_checkboxes':
+                return [
+                    '// ' . $label . ' (array of user IDs — one query)',
+                    "{$var} = {$src}['{$sfid}'] ?? [];",
+                    "if (! empty({$var})) {",
+                    "    \$users = get_users([",
+                    "        'include' => array_map('absint', {$var}),",
+                    "        'orderby' => 'include',",
+                    "    ]);",
+                    '    foreach ($users as $u) {',
+                    "        echo esc_html(\$u->display_name);",
+                    "        // \$u->user_email, \$u->user_login, \$u->roles",
+                    '    }',
+                    '}',
+                ];
+            case 'wysiwyg':
+                return [
+                    '// ' . $label,
+                    "echo wp_kses_post({$src}['{$sfid}'] ?? '');",
+                ];
+            case 'textarea':
+                return [
+                    '// ' . $label,
+                    "echo nl2br(esc_html({$src}['{$sfid}'] ?? ''));",
+                ];
+            case 'link':
+                return [
+                    '// ' . $label,
+                    "{$var} = {$src}['{$sfid}'] ?? [];",
+                    "if (! empty({$var}['url'])) {",
+                    "    \$url    = esc_url({$var}['url']);",
+                    "    \$text   = esc_html({$var}['text'] ?? {$var}['url']);",
+                    "    \$extern = ! empty({$var}['target']);",
+                    "    \$rel    = \$extern ? ' rel=\"noopener noreferrer\"' : '';",
+                    "    \$tgt    = \$extern ? ' target=\"_blank\"' : '';",
+                    "    // Standard link",
+                    "    echo '<a href=\"' . \$url . '\"' . \$tgt . \$rel . '>' . \$text . '</a>';",
+                    "    // As a CTA button",
+                    "    echo '<a href=\"' . \$url . '\"' . \$tgt . \$rel . ' class=\"button\">' . \$text . '</a>';",
+                    "    // URL and text separately",
+                    "    // \$url  → {$var}['url']   (raw URL string)",
+                    "    // \$text → {$var}['text']  (display label)",
+                    '}',
+                ];
+            case 'color':
+                return [
+                    '// ' . $label . ' (hex color)',
+                    "{$var} = esc_attr({$src}['{$sfid}'] ?? '');",
+                    "if ({$var}) {",
+                    "    echo '<span style=\"color:' . {$var} . '\">' . {$var} . '</span>';",
+                    '}',
+                ];
+            case 'number':
+            case 'range':
+                return [
+                    '// ' . $label,
+                    "echo intval({$src}['{$sfid}'] ?? 0);",
+                ];
+            case 'yesno':
+            case 'toggle':
+            case 'checkbox':
+                return [
+                    '// ' . $label,
+                    "if (! empty({$src}['{$sfid}'])) {",
+                    '    // checked / enabled',
+                    '} else {',
+                    '    // unchecked / disabled',
+                    '}',
+                ];
+            case 'post_select':
+                return [
+                    '// ' . $label . ' (post ID)',
+                    "{$var} = absint({$src}['{$sfid}'] ?? 0);",
+                    "if ({$var}) {",
+                    "    echo esc_html(get_the_title({$var}));",
+                    "    echo esc_url(get_permalink({$var}));",
+                    '}',
+                ];
+            case 'term_select':
+                return [
+                    '// ' . $label . ' (term ID)',
+                    "{$var} = absint({$src}['{$sfid}'] ?? 0);",
+                    "if ({$var}) {",
+                    "    \$term = get_term({$var});",
+                    "    if (\$term && ! is_wp_error(\$term)) {",
+                    "        echo esc_html(\$term->name);",
+                    "        \$link = get_term_link(\$term);",
+                    "        if (! is_wp_error(\$link)) {",
+                    "            echo esc_url(\$link);",
+                    "        }",
+                    '    }',
+                    '}',
+                ];
+            case 'user_select':
+                return [
+                    '// ' . $label . ' (user ID)',
+                    "{$var} = absint({$src}['{$sfid}'] ?? 0);",
+                    "if ({$var}) {",
+                    "    \$user = get_userdata({$var});",
+                    "    if (\$user) {",
+                    "        echo esc_html(\$user->display_name);",
+                    "        echo esc_html(\$user->user_email);",
+                    '    }',
+                    '}',
+                ];
+            case 'url':
+                return [
+                    '// ' . $label,
+                    "{$var} = esc_url({$src}['{$sfid}'] ?? '');",
+                    "if ({$var}) {",
+                    "    echo '<a href=\"' . {$var} . '\">' . {$var} . '</a>';",
+                    '}',
+                ];
+            case 'email':
+                return [
+                    '// ' . $label,
+                    "{$var} = sanitize_email({$src}['{$sfid}'] ?? '');",
+                    "if (is_email({$var})) {",
+                    "    echo '<a href=\"mailto:' . esc_attr({$var}) . '\">' . esc_html({$var}) . '</a>';",
+                    '}',
+                ];
+            case 'tel':
+                return [
+                    '// ' . $label,
+                    "{$var} = esc_html({$src}['{$sfid}'] ?? '');",
+                    "if ({$var}) {",
+                    "    \$tel = preg_replace('/[^0-9+]/', '', {$var});",
+                    "    echo '<a href=\"tel:' . esc_attr(\$tel) . '\">' . {$var} . '</a>';",
+                    '}',
+                ];
+            case 'date':
+                return [
+                    '// ' . $label . ' (stored as Y-m-d)',
+                    "{$var} = {$src}['{$sfid}'] ?? '';",
+                    "if ({$var}) {",
+                    "    echo esc_html(wp_date(get_option('date_format'), strtotime({$var})));",
+                    '}',
+                ];
+            case 'datetime':
+                return [
+                    '// ' . $label . ' (stored as Y-m-d H:i)',
+                    "{$var} = {$src}['{$sfid}'] ?? '';",
+                    "if ({$var}) {",
+                    "    \$fmt = get_option('date_format') . ' ' . get_option('time_format');",
+                    "    echo esc_html(wp_date(\$fmt, strtotime({$var})));",
+                    '}',
+                ];
+            case 'time':
+                return [
+                    '// ' . $label . ' (stored as H:i)',
+                    "{$var} = {$src}['{$sfid}'] ?? '';",
+                    "if ({$var}) {",
+                    "    echo esc_html(wp_date(get_option('time_format'), strtotime('today ' . {$var})));",
+                    '}',
+                ];
+            default:
+                // text, select, radio, hidden, etc.
+                return [
+                    '// ' . $label,
+                    "echo esc_html({$src}['{$sfid}'] ?? '');",
+                ];
+        }
+    }
+
+    /**
+     * Raw version: direct access path only, no variable declaration or HTML output.
+     *
+     * @param  array<string, mixed> $field Field data from the Registry.
+     * @return list<string>
+     */
+    private static function fieldLinesRaw(string $fid, array $field, string $src = '$group'): array
+    {
+        $type  = (string) ($field['type'] ?? 'text');
+        $label = (string) ($field['label'] ?? $fid);
+        $sfid  = str_replace("'", "\\'", $fid);
+
+        switch ($type) {
+            case 'image':
+                return [
+                    '// ' . $label,
+                    "{$src}['{$sfid}'] ?? [];",
+                    "// ['url'], ['alt'], ['id'], ['width'], ['height']",
+                    "// ['sizes']['thumbnail']['url'], ['medium']['url'], ['large']['url']",
+                ];
+            case 'gallery':
+                return [
+                    '// ' . $label . ' (array of images)',
+                    "{$src}['{$sfid}'] ?? [];",
+                    "// each: ['url'], ['alt'], ['id'], ['sizes']['thumbnail|medium|large']['url']",
+                ];
+            case 'file':
+                return [
+                    '// ' . $label,
+                    "{$src}['{$sfid}'] ?? [];",
+                    "// ['url'], ['title'], ['id'], ['mime_type']",
+                ];
+            case 'link':
+                return [
+                    '// ' . $label,
+                    "{$src}['{$sfid}'] ?? [];",
+                    "// ['url'], ['text'], ['target'] (bool — true = _blank)",
+                ];
+            case 'checkboxes':
+            case 'multi_select':
+                return [
+                    '// ' . $label . ' (array of values)',
+                    "{$src}['{$sfid}'] ?? [];",
+                ];
+            case 'post_checkboxes':
+                return [
+                    '// ' . $label . ' (array of post IDs)',
+                    "{$src}['{$sfid}'] ?? [];",
+                ];
+            case 'term_checkboxes':
+                return [
+                    '// ' . $label . ' (array of term IDs)',
+                    "{$src}['{$sfid}'] ?? [];",
+                ];
+            case 'user_checkboxes':
+                return [
+                    '// ' . $label . ' (array of user IDs)',
+                    "{$src}['{$sfid}'] ?? [];",
+                ];
+            case 'yesno':
+            case 'toggle':
+            case 'checkbox':
+                return [
+                    '// ' . $label . ' (bool)',
+                    "! empty({$src}['{$sfid}']);",
+                ];
+            case 'post_select':
+                return [
+                    '// ' . $label . ' (post ID)',
+                    "absint({$src}['{$sfid}'] ?? 0);",
+                ];
+            case 'term_select':
+                return [
+                    '// ' . $label . ' (term ID)',
+                    "absint({$src}['{$sfid}'] ?? 0);",
+                ];
+            case 'user_select':
+                return [
+                    '// ' . $label . ' (user ID)',
+                    "absint({$src}['{$sfid}'] ?? 0);",
+                ];
+            case 'number':
+            case 'range':
+                return [
+                    '// ' . $label . ' (int)',
+                    "intval({$src}['{$sfid}'] ?? 0);",
+                ];
+            default:
+                // text, textarea, wysiwyg, color, url, email, tel, date, datetime, time, select, radio, hidden
+                return [
+                    '// ' . $label,
+                    "{$src}['{$sfid}'] ?? '';",
+                ];
+        }
+    }
+
+    private static function codeModal(): void
+    {
+        ?>
+        <div id="cfdev-code-modal" class="cfdev-modal" hidden aria-modal="true" role="dialog"
+             aria-labelledby="cfdev-code-modal-title">
+            <div class="cfdev-modal-overlay"></div>
+            <div class="cfdev-modal-box cfdev-modal-box--code">
+
+                <div class="cfdev-modal-header">
+                    <h2 class="cfdev-modal-title" id="cfdev-code-modal-title">
+                        &lt;/&gt; <?php esc_html_e('Code', 'cfdev'); ?>
+                        <code id="cfdev-code-group-id" class="cfdev-modal-group-id"></code>
+                    </h2>
+                    <div class="cfdev-code-tabs" role="tablist">
+                        <button type="button" id="cfdev-code-tab-display"
+                                class="cfdev-code-tab is-active" role="tab">
+                            <?php esc_html_e('Display', 'cfdev'); ?>
+                        </button>
+                        <button type="button" id="cfdev-code-tab-raw"
+                                class="cfdev-code-tab" role="tab">
+                            <?php esc_html_e('Raw', 'cfdev'); ?>
+                        </button>
+                    </div>
+                    <button type="button" id="cfdev-code-copy" class="button button-small cfdev-btn-regen">
+                        &#x2398; <?php esc_html_e('Copy', 'cfdev'); ?>
+                    </button>
+                    <button type="button" class="cfdev-modal-close"
+                            aria-label="<?php esc_attr_e('Close', 'cfdev'); ?>">&#x2715;</button>
+                </div>
+
+                <div class="cfdev-code-body">
+                    <pre id="cfdev-code-pre" class="cfdev-code-pre"><code id="cfdev-code-output"></code></pre>
+                </div>
+
+            </div>
+        </div>
+        <?php
+    }
+
+    // -------------------------------------------------------------------------
+
     private static function inspectModal(): void
     {
         ?>
@@ -554,12 +1042,12 @@ final class FieldsPage
 
                 <div id="cfdev-inspect-toolbar" class="cfdev-inspect-toolbar" hidden>
                     <select id="cfdev-object-select" class="cfdev-object-select">
-                        <option value="0"><?php esc_html_e('— choisir —', 'cfdev'); ?></option>
+                        <option value="0"><?php esc_html_e('— select —', 'cfdev'); ?></option>
                     </select>
                 </div>
 
                 <div id="cfdev-inspect-output" class="cfdev-inspect-output">
-                    <p class="cfdev-inspect-hint"><?php esc_html_e('Chargement…', 'cfdev'); ?></p>
+                    <p class="cfdev-inspect-hint"><?php esc_html_e('Loading…', 'cfdev'); ?></p>
                 </div>
 
             </div>

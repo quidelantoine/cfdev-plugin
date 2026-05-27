@@ -18,12 +18,12 @@ $cache = new \Weblitzer\CFDev\Cache\CacheManager();
 // Falls back to the current page ID so the template also works as a real page.
 $page_id   = get_the_ID();
 
-if (isset($_GET['post_id'])) {
+if (isset($_GET['post_id'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     if (! current_user_can('edit_posts')) {
         wp_die(esc_html__('Access denied.', 'cfdev'));
     }
 
-    $target_id = (int) $_GET['post_id'];
+    $target_id = (int) $_GET['post_id']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 } else {
     $target_id = $page_id !== false ? $page_id : 0;
 }

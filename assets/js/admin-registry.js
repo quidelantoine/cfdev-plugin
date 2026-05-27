@@ -57,7 +57,7 @@
                 bKeyEl.textContent = key;
 
                 var html = "<table class=\"widefat striped cfdev-rest-table\"><thead><tr>"
-                         + "<th>Clé meta</th><th>Label</th><th>Type REST</th>"
+                         + "<th>Meta key</th><th>Label</th><th>REST type</th>"
                          + "</tr></thead><tbody>";
 
                 fields.forEach(function (f) {
@@ -82,6 +82,55 @@
         document.addEventListener("keydown", function (e) {
             if (e.key === "Escape" && !bModal.hidden) { bModal.hidden = true; }
         });
+    }
+
+    /* ── Code modal ────────────────────────────────────────── */
+    var codeModal      = document.getElementById("cfdev-code-modal");
+    if (codeModal) {
+        var codeGroupId    = document.getElementById("cfdev-code-group-id");
+        var codeOutput     = document.getElementById("cfdev-code-output");
+        var codeCopyBtn    = document.getElementById("cfdev-code-copy");
+        var codeTabDisplay = document.getElementById("cfdev-code-tab-display");
+        var codeTabRaw     = document.getElementById("cfdev-code-tab-raw");
+        var curCodeBtn     = null;
+
+        function setCodeTab(raw) {
+            if (!curCodeBtn) return;
+            codeOutput.textContent = raw
+                ? (curCodeBtn.dataset.codeRaw || "")
+                : (curCodeBtn.dataset.code    || "");
+            codeTabDisplay.classList.toggle("is-active", !raw);
+            codeTabRaw.classList.toggle("is-active",  raw);
+        }
+
+        document.querySelectorAll(".cfdev-btn-code").forEach(function (btn) {
+            btn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                curCodeBtn = this;
+                codeGroupId.textContent = this.dataset.groupId || "";
+                setCodeTab(false);
+                codeModal.hidden = false;
+            });
+        });
+
+        codeTabDisplay.addEventListener("click", function () { setCodeTab(false); });
+        codeTabRaw.addEventListener("click",     function () { setCodeTab(true); });
+
+        codeCopyBtn.addEventListener("click", function () {
+            navigator.clipboard.writeText(codeOutput.textContent || "").then(function () {
+                codeCopyBtn.textContent = "✓ Copied!";
+                setTimeout(function () { codeCopyBtn.textContent = "⎘ Copy"; }, 1500);
+            });
+        });
+
+        (function () {
+            function closeCodeModal() { codeModal.hidden = true; }
+            codeModal.querySelector(".cfdev-modal-close").addEventListener("click", closeCodeModal);
+            codeModal.querySelector(".cfdev-modal-overlay").addEventListener("click", closeCodeModal);
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape" && !codeModal.hidden) { closeCodeModal(); }
+            });
+        }());
     }
 
     /* ── Inspector modal ───────────────────────────────────── */
@@ -121,7 +170,7 @@
                 selectEl.innerHTML = "";
                 if (curOpts.length === 0) {
                     var ph = document.createElement("option");
-                    ph.value = "0"; ph.textContent = "Aucun objet disponible";
+                    ph.value = "0"; ph.textContent = "No objects available";
                     selectEl.appendChild(ph);
                 } else {
                     curOpts.forEach(function (item) {
@@ -141,10 +190,10 @@
             modal.hidden            = false;
 
             if (curObjectId > 0) {
-                output.innerHTML = "<p class=\"cfdev-inspect-hint\">Chargement…</p>";
+                output.innerHTML = "<p class=\"cfdev-inspect-hint\">Loading…</p>";
                 loadData(false);
             } else {
-                output.innerHTML = "<p class=\"cfdev-inspect-hint\">Aucun objet disponible pour ce type.</p>";
+                output.innerHTML = "<p class=\"cfdev-inspect-hint\">No objects available for this type.</p>";
             }
         });
     });
@@ -175,7 +224,7 @@
     /* Load data */
     function loadData(force) {
         if (curObjectId < 1) return;
-        output.innerHTML  = "<p class=\"cfdev-inspect-hint\">Chargement…</p>";
+        output.innerHTML  = "<p class=\"cfdev-inspect-hint\">Loading…</p>";
         cacheBadge.hidden = true;
         forceBtn.disabled = true;
 
@@ -193,7 +242,7 @@
             .then(function (res) {
                 forceBtn.disabled = false;
                 if (!res.success) {
-                    output.innerHTML = "<p class=\"cfdev-inspect-error\">" + esc(res.data && res.data.message ? res.data.message : "Erreur") + "</p>";
+                    output.innerHTML = "<p class=\"cfdev-inspect-error\">" + esc(res.data && res.data.message ? res.data.message : "Error") + "</p>";
                     return;
                 }
                 renderBadge(res.data.cache);
@@ -201,7 +250,7 @@
             })
             .catch(function (err) {
                 forceBtn.disabled = false;
-                output.innerHTML = "<p class=\"cfdev-inspect-error\">Erreur réseau : " + esc(err.message) + "</p>";
+                output.innerHTML = "<p class=\"cfdev-inspect-error\">Network error: " + esc(err.message) + "</p>";
             });
     }
 
@@ -212,7 +261,7 @@
             label = "CACHE OFF"; cls = "cfdev-cache-badge--off";
         } else if (cache.hit) {
             var a = cache.age, h = a < 60 ? a + "s" : Math.round(a / 60) + "min";
-            label = "CACHE HIT — il y a " + h; cls = "cfdev-cache-badge--hit";
+            label = "CACHE HIT — " + h + " ago"; cls = "cfdev-cache-badge--hit";
         } else {
             label = "GENERATED"; cls = "cfdev-cache-badge--miss";
         }
@@ -259,7 +308,7 @@
         wrap.className = "cfdev-snippet";
         wrap.innerHTML = "<pre class=\"cfdev-snippet-code\">" + esc(snip) + "</pre>"
                        + "<button class=\"cfdev-copy-btn cfdev-copy-global\" data-copy=\"" + esc(snip) + "\""
-                       + " title=\"Copier le snippet\">⎘</button>";
+                       + " title=\"Copy snippet\">⎘</button>";
         output.appendChild(wrap);
 
         var ul = document.createElement("ul");

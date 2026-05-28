@@ -55,6 +55,19 @@ Pour déclencher la première release :
 git tag v1.0.0
 git push origin v1.0.0
 
+###
+
+# 1. Committer tout ton travail
+git add .
+git commit -m "..."
+
+# 2. Pusher les commits
+git push origin main
+
+# 3. Créer le tag et le pusher → déclenche le workflow
+git tag v1.0.0
+git push origin v1.0.0
+
 ## JS & npm ?
 Mieux erire le js faire une passe dessus ?
 => Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien

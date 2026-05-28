@@ -66,7 +66,15 @@ register_cfdev_post_type(['book', 'books'], ['public' => true])
 
 ## Installation
 
-Téléchargez le dernier `cfdev-plugin.zip` depuis [GitHub Releases](https://github.com/weblitzer/cfdev-plugin/releases) et uploadez-le via **WordPress Admin → Extensions → Ajouter → Envoyer une extension**.
+**Option 1 — Upload via WordPress Admin (recommandé)**
+
+Téléchargez le dernier `cfdev-plugin-x.x.x.zip` depuis [GitHub Releases](https://github.com/weblitzer/cfdev-plugin/releases), puis uploadez-le via **WordPress Admin → Extensions → Ajouter → Envoyer une extension**.
+
+**Option 2 — Copie manuelle**
+
+Extrayez le zip, renommez le dossier en `cfdev-plugin` si nécessaire, puis copiez-le dans `wp-content/plugins/`.
+
+> ⚠️ Certains extracteurs renomment le dossier d'après le zip (ex. `cfdev-plugin-1.0.4`). Renommez-le en `cfdev-plugin` avant de copier.
 
 > Aucun Composer requis. Le plugin embarque un autoloader PSR-4 natif — pas de dossier `vendor/`, pas d'étape de build.
 

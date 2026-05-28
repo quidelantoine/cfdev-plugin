@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   release:
     name: Build ZIP · GitHub Release
@@ -19,12 +22,13 @@ jobs:
 
       - name: Build distribution ZIP
         run: |
+          mkdir -p /tmp/dist/cfdev-plugin
           rsync -r \
             --exclude-from=.distignore \
             --exclude='.distignore' \
-            . ./dist/cfdev-plugin/
-          cd dist
-          zip -r cfdev-plugin-${{ steps.version.outputs.VERSION }}.zip cfdev-plugin/
+            . /tmp/dist/cfdev-plugin/
+          cd /tmp/dist
+          zip -r $GITHUB_WORKSPACE/cfdev-plugin-${{ steps.version.outputs.VERSION }}.zip cfdev-plugin/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -36,5 +40,5 @@ jobs:
             **Install:** download `cfdev-plugin-${{ steps.version.outputs.VERSION }}.zip` and upload via WordPress Admin → Plugins → Add New → Upload Plugin.
 
             **Requirements:** PHP 8.2+ · WordPress 6.5+
-          files: dist/cfdev-plugin-${{ steps.version.outputs.VERSION }}.zip
+          files: cfdev-plugin-${{ steps.version.outputs.VERSION }}.zip
           fail_on_unmatched_files: true

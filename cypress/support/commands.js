@@ -24,8 +24,8 @@ Cypress.Commands.add('loginToWP', () => {
  */
 Cypress.Commands.add('publishPost', () => {
   cy.get('#publish').click()
-  // 20 s : publish + redirect + page render can be slow on CI under load
-  cy.get('#message.notice-success, .notice-success', { timeout: 20000 }).should('exist')
+  // 25 s : publish + redirect + page render can be slow on CI under load
+  cy.get('#message.notice-success, .notice-success', { timeout: 25000 }).should('exist')
 })
 
 /**

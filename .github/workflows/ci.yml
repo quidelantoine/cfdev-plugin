@@ -210,6 +210,10 @@ jobs:
             --dbpass=wppassword \
             --dbhost=127.0.0.1
           wp config set CFDEV_DEMO true --raw --type=constant --path=$WP_DIR
+          # Désactive wp-cron HTTP : chaque page load WordPress envoie une requête
+          # async à wp-cron.php qui peut occuper un worker FPM 30+ s et rendre le
+          # serveur momentanément inaccessible pendant les tests Cypress.
+          wp config set DISABLE_WP_CRON true --raw --type=constant --path=$WP_DIR
           wp core install --path=$WP_DIR \
             --url=http://localhost \
             --title="CFDev CI" \
@@ -291,6 +295,7 @@ jobs:
           sudo sed -i \
             -e 's/^user = www-data/user = runner/' \
             -e 's/^group = www-data/group = runner/' \
+            -e 's/^pm\.max_children = .*/pm.max_children = 10/' \
             /etc/php/8.4/fpm/pool.d/www.conf
 
           sudo service php8.4-fpm restart

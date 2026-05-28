@@ -140,6 +140,12 @@ final class CfdevRestApi
             return new \WP_Error('cfdev_not_found', __('No CFDev fields exposed for users.', 'cfdev'), ['status' => 404]);
         }
 
+        $current_user_roles = (array) wp_get_current_user()->roles;
+        $entries = array_values(array_filter($entries, function (array $entry) use ($current_user_roles): bool {
+            $roles = $entry['conditions']['roles'] ?? [];
+            return empty($roles) || ! empty(array_intersect($roles, $current_user_roles));
+        }));
+
         $all    = (new CacheManager())->user($id);
         $groups = self::filterGroups($all['groups'] ?? [], $entries);
 

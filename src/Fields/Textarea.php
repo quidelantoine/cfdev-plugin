@@ -13,6 +13,21 @@ class Textarea extends Field
     /** @var array<string> */
     public array $css_classes            = array( 'cfdev-input' );
 
+    /**
+     * @param  string|array<mixed>  $value
+     * @return string|array<mixed>
+     */
+    public function saveValue(string|array $value): string|array
+    {
+        if (is_array($value)) {
+            array_walk_recursive($value, function (string &$v): void {
+                $v = sanitize_textarea_field($v);
+            });
+            return $value;
+        }
+        return sanitize_textarea_field($value);
+    }
+
     /** @param string|array<mixed> $value */
     public function outputHtml(array|string $value): string
     {
@@ -24,7 +39,7 @@ class Textarea extends Field
             $this->outputName(),
             $this->outputId(),
             $this->outputCssClass(),
-            is_string($content) ? $content : '',
+            is_string($content) ? esc_textarea($content) : '',
             $this->outputExplanation()
         );
     }

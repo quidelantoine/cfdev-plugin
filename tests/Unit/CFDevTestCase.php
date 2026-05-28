@@ -21,6 +21,7 @@ abstract class CFDevTestCase extends TestCase
         Functions\when('esc_html_e')->returnArg(1);
         Functions\when('esc_attr')->returnArg();
         Functions\when('esc_url')->returnArg();
+        Functions\when('esc_textarea')->returnArg();
         Functions\when('wp_kses_post')->returnArg();
         Functions\when('sanitize_title')->returnArg(1);
         Functions\when('get_posts')->justReturn([]);

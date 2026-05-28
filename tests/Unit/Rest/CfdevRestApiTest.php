@@ -29,6 +29,11 @@ class CfdevRestApiTest extends CFDevTestCase
             fn(string $s) => strtolower((string) preg_replace('/[^a-z0-9]+/i', '-', $s))
         );
         Functions\when('sanitize_key')->returnArg();
+        Functions\when('wp_get_current_user')->alias(function (): \WP_User {
+            $u        = new \WP_User();
+            $u->roles = ['administrator'];
+            return $u;
+        });
         Functions\when('get_option')->justReturn(true);
         Functions\when('register_meta')->justReturn(true);
         Functions\when('add_action')->justReturn(true);

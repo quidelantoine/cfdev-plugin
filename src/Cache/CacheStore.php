@@ -26,6 +26,11 @@ final class CacheStore
         if (! file_exists($this->dir . '.htaccess')) {
             $this->writeHtaccess();
         }
+
+        if (! file_exists($this->dir . 'index.php')) {
+            // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents
+            file_put_contents($this->dir . 'index.php', '<?php // Silence is golden.');
+        }
     }
 
     private function writeHtaccess(): void

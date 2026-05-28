@@ -19,6 +19,8 @@ class TermMetaConditionsTest extends IntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $admin_id = static::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($admin_id);
 
         register_cfdev_taxonomy(['region', 'regions'], 'post', ['public' => true]);
         do_action('init');

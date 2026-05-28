@@ -328,6 +328,10 @@ class Field implements Renderable, Saveable
             wp_send_json_error(['message' => 'Insufficient permissions.'], 403);
         }
 
+        if (! \Weblitzer\CFDev\Registry::isAjaxField($field_id, $meta_type)) {
+            wp_send_json_error(['message' => 'Unknown field.'], 400);
+        }
+
         match ($meta_type) {
             'post' => update_post_meta($object_id, $field_id, $value),
             'user' => update_user_meta($object_id, $field_id, $value),
@@ -355,7 +359,7 @@ class Field implements Renderable, Saveable
     public function outputName(?string $overwrite = null): string
     {
         $name = $overwrite ?: "cfdev$this->pre[$this->id]$this->after";
-        return "name=\"$name\"";
+        return 'name="' . esc_attr($name) . '"';
     }
 
     /**
@@ -371,7 +375,7 @@ class Field implements Renderable, Saveable
     public function outputId(?string $overwrite = null): string
     {
         $id = $overwrite ?? "$this->pre_id$this->id$this->after_id";
-        return "id=\"$id\"";
+        return 'id="' . esc_attr($id) . '"';
     }
 
     /**
@@ -406,9 +410,9 @@ class Field implements Renderable, Saveable
 
         foreach (array_merge($this->data_attributes, $extra) as $attribute => $value) {
             if (! is_null($value)) {
-                $output .= 'data-' . $attribute . '="' . $value . '"';
+                $output .= 'data-' . esc_attr($attribute) . '="' . esc_attr((string) $value) . '"';
             } elseif (isset($this->args[Str::uglify($attribute)])) {
-                $output .= 'data-' . $attribute . '="' . $this->args[Str::uglify($attribute)] . '"';
+                $output .= 'data-' . esc_attr($attribute) . '="' . esc_attr((string) $this->args[Str::uglify($attribute)]) . '"';
             }
         }
 

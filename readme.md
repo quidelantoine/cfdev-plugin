@@ -12,13 +12,24 @@
 
 ## What is CFDev?
 
-CFDev is a WordPress plugin that lets you register custom post types, taxonomies, and meta fields entirely through PHP code — no admin UI, no database config, no deployment headaches.
+CFDev is a WordPress plugin for developers who want to declare custom fields in PHP and never touch the database config again. Post meta, term meta, user meta — everything is registered in code, versioned with your project, and deployed without migration scripts.
+
+**What you get out of the box:**
+
+- **30+ field types** — text, image, file, select, checkboxes, date, wysiwyg, color, gallery, link, and more
+- **Post, term and user meta** — attach meta boxes to any CPT or taxonomy, and field groups to user profiles
+- **Layout containers** — group fields into **Bundles** (repeatable row groups), **Tabs**, or **Accordions** for clean, structured edit screens
+- **Repeatable fields** — any field can be made repeatable with AJAX-powered add/remove
+- **25+ validation rules** — required, min/max, regex, email, URL… enforced server-side, errors survive the redirect
+- **File cache** — resolved field data cached to disk, invalidated on save, ready for high-traffic reads
+- **Admin helper** — a built-in back-office panel to inspect all registered fields, browse cached data, and flush the cache in one click
+- **REST API** — expose any field via WP REST with a single `'rest' => true` flag
 
 ```php
 register_cfdev_post_type(['book', 'books'], ['public' => true])
     ->addTaxonomy('genre')
     ->addMetaBox('book_details', 'Book Details', [
-        ['id' => 'subtitle',  'type' => 'text',    'label' => 'Subtitle',       'required' => true],
+        ['id' => 'subtitle',  'type' => 'text',    'label' => 'Subtitle',  'required' => true],
         ['id' => 'cover',     'type' => 'image',   'label' => 'Cover Image'],
         ['id' => 'pages',     'type' => 'number',  'label' => 'Page Count'],
         ['id' => 'published', 'type' => 'date',    'label' => 'Published Date'],

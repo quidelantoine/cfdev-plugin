@@ -4,125 +4,68 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
-FAire un depot gitlab +++ 
 
-repeatable, ajax, test ok ? est ce que je garde ???
-Si on garde c'est quoi les limtes etest ce que cela vaut vraiment le coup ??? 
-
+# A FAIRE 
 ===========
-Mieux erire le js faire une passe dessus ? 
+// lancer un truc security vulnerabilté via ia , faire la formation ia dyma
+// phpcs , phpstan
+// Mettre demo dans Initilizer à false ++, ou gestion de Demo, via define('')
+// commit push
 
-=> Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien
-js full vanilla ??, utilisation de vite.js,  et js polyfills
+reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
+
 ==============
-Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans 
+Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
 =================
 
+=> revoir admin api, des trucs etrange sur les liens proposer ++
 
-=========
+## JS & npm ?
+Mieux erire le js faire une passe dessus ?
+=> Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien
+js full vanilla ??, utilisation de vite.js,  et js polyfills
 
-========================
+
+
+# design de la page admin
 trouver un logo ++ perso ????
-
-
-test cypress peut t'on aller encore plus loin ?
-est ce que tous les champs sont bien testé ??
-
-Tous les champs sont tester , unitaire, integration et fonctionnel ??? 
-
-
-=> Ok en terme de test ??
-=> duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
-
-
-=> faire un test avec les champs de type repetable
-
+# CI 1 ESlINT
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint , SOnarQUbe ++ 
 -> reste eslint ??? et ci
 
-
-Gaps dans les tests unitaires existants :, refaire une demande pour completer ++
-
+# A refaire 
+=> duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
+=> Tous les champs sont tester , unitaire, integration et fonctionnel ???
+# Traduction
 => Utiliser plugins traduction loco translate pour générer fichier .mo et .po
 allemand, espagnol, chinois
-
-
-=> reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
-
-// lancer un truc security vulnerabilté via ia , faire la formation ia dyma
-
-
 ## Test
 => Faire un test avec les champ repetable sur tous pour faire le tests
 X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html sinon on va devoir changer souvent
+=> faire un test avec les champs de type repetable
+Tests Admin HTML ← en dernier uniquement
+## Voir apres les tester ??
 
-## 🧪 Règle d'or — Les tests sont une priorité permanente
+les propriete de field repeatable et ajax, test ok ? est ce que je garde ???
+Si on garde c'est quoi les limtes etest ce que cela vaut vraiment le coup ???
 
-> La base de tests est déjà solide : +1200 assertions existantes.
-> **Chaque nouvelle fonctionnalité = tests écrits en même temps**, pas après.
-> Exception : tests Admin HTML — à faire en dernier car liés au HTML qui change souvent.
+- admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
 
-**Gaps à combler en continu :**
-- [ ] Tests repeatable sur tous les
-- [ ] Tests validation dans tous les contextes
-- [ ] Test WooCommerce
-- [ ] Tests Admin HTML ← en dernier uniquement
-
----
-
-## 🏁 Sprint 1 — Finir ce qui est commencé
-
-> Rien de nouveau tant que l'existant n'est pas solide.
-
+## 🏁 Finir ce qui est commencé
 | # | Tâche | Tests associés |
-|---|-------|----------------|
-| 1 | **Tests unitaires API** — refaire la vérif + compléter | ← c'est le test lui-même |
-| 2 | **Champs DEMO** — tester dans tous les sens | Valider chaque champ existant |
 | 3 | **Repeatable** — test complet fonctionnel | Tests repeatable tous types |
 | 4 | **Inspecter groupes de champs** — modale code + données | — |
 
----
-
-## 🚀 Sprint 2 — ROI rapide, valeur immédiate
-
-> Fonctionnalités courtes, fort impact, tests inclus.
-
-| # | Tâche | Tests associés |
-|---|-------|----------------|
 | 5 | **Options page** | Tests lecture/écriture `wp_options` |
 | 6 | **REST API endpoint** — cache déjà là = 80% fait | Tests endpoints, auth, format JSON |
-| 7 | **Admin : IDs uniques** — détection doublons | Tests détection collision |
 | 8 | **Admin CFDev visible admins uniquement** | Tests de capacité/rôle |
 
-
----
-
-## 🏗️ Sprint 3 — Page admin & DX
-
-> Construire l'interface admin avant d'y ajouter des fonctionnalités.
-> Tests Admin HTML reportés à la fin de ce sprint, une fois l'UI stable.
-
-| # | Tâche | Tests associés |
-|---|-------|----------------|
-| 10 | **Page admin CFDev** — tabs (Cache, Groupes, Réglages) | Tests unitaires logique métier (pas HTML) |
-| 11 | **Profiler Symfony-style** — modale + cache | Tests cache invalidation |
-| 12 | **Hooks init-custom** — vue d'ensemble groupes | Tests hooks + registre des groupes |
-| 13 | **Harmoniser la largeur des champs** | — |
-| 14 | **Design metaboxes** — couleur, style custom | — |
 | ↳ | **Tests Admin HTML** — une fois l'UI figée | Tests rendu, structure HTML |
 
----
-
-## 🔧 Sprint 4 — Qualité & outillage
-
-| # | Tâche | Tests associés |
-|---|-------|----------------|
 | 15 | **i18n** — `__('')` en anglais + `.mo`/`.po` (FR, DE, ES, ZH) | — |
 | 16 | **CI complet** — ESLint + pipeline | Les tests existants tournent en CI |
-| 17 | **JS vanilla** — supprimer jQuery, évaluer Vite.js | Tests JS (ESLint + comportement) |
+| 17 | **JS vanilla** — supprimer jQuery, évaluer Vite.js | Tests JS (ESLint + comportement) | ??
 | 18 | **Audit sécurité** | — |
-| 19 | **Mode dev/prod** + minification | — |
-| 20 | **Variables CSS / responsive** | — |
 
 ---
 
@@ -138,14 +81,6 @@ X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html 
 | 24 | **Champ Relationship** | 🟠 Moyenne | 🟡 Important |
 | 25 | **Champ Group** | 🟢 Faible | 🟡 Important |
 
----
-
-## 📚 Documentation — en continu
-
-- [ ] README = point d'entrée unique
-- [ ] Version FR + EN
-- [ ] Doc visible en back-office (lecture `.md`)
-- [ ] Design + logo pour la mise en avant
 
 ---
 
@@ -156,7 +91,6 @@ X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html 
 - Champ `hidden` — documenter les cas d'usage
 - Format de date par défaut (`m/d/Y` vs `d/m/Y`)
 - Export JSON/PHP des définitions de champs
-- Formulaires frontend
 
 
 # CFDev — Code-First Custom Meta Fields for WordPress
@@ -388,18 +322,6 @@ find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
 
 ---
 
-## Documentation
-
-- Doc complète : *(lien à ajouter)*
-- Disponible en FR et EN
-
-###################################################################################
-
-
-# Pour CFDev : "CFDev – Code-First Custom Meta Fields For Wordpress" Custom Meta For Dev
-amelioration du code ( interafce , duplication content), ok pour l'architecture du pluging ?
-# En cours
-
 # installation
 
 ```bash
@@ -424,48 +346,6 @@ vendor/bin/phpunit
 
 
 
-# A voir plus tard
-
-- admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
-
-# autres plugins idee
-
-
-https://themepure.net/plugins/puremetafields/docs/switch/
-
-# hemper
-
-### recherche
-grep -rn "render_post_filter" .
-render_post_filter
-
-# replace texte
-# Prévisualiser sans modifier (dry run)
-grep -rn "ancien_texte" . --include="*.php"
-grep -rn "Gijs Jorissen" . --include="*.php"
-
-grep -rn --exclude-dir=vendor "ancien_texte" .
-
-
-# Tous types de fichiers
-find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
-find . -type f -exec sed -i 's/Gijs Jorissen/quidelantoine/g' {} +
-# Insensible à la casse
-sed -i 's/ancien_texte/nouveau_texte/gi'
-
-
-@package    // Namespace ou package principal
-@subpackage // Sous-namespace
-@author     // Nom <email>
-@since      // Version d'introduction
-@version    // Version actuelle (surtout pour les classes)
-@param      // Paramètre de méthode
-@return     // Valeur de retour
-@throws     // Exception levée
-@deprecated // Méthode obsolète, indiquer l'alternative
-@see        // Référence vers une autre classe/méthode
-@link       // URL de documentation externe
-@todo       // Ce qui reste à faire
 
 
 # Test unitaire
@@ -570,35 +450,38 @@ CFDev est meilleur qu'ACF sur tout ce qu'il fait : la validation, le cache, la l
 ###################################
 
 
-est ce que mettre la doc dans l'admin du plugin est une bonne idées, possible que cela multilangue et basé sur les fichiers md du dossier docs ?
-
-● Bonne idée, oui — pour un plugin code-first destiné aux devs, avoir la doc accessible dans l'admin évite les allers-retours GitHub. Voici l'analyse honnête :
-                                                                                                                                                                                                         
----
-Points forts
-
-- Contextuelle — le dev est déjà dans l'admin quand il a une question
-- Synchronisée avec le code — les .md sont dans le repo, la doc ne peut pas être en retard sur le code
-- Zéro infra — pas de site de doc externe à maintenir
-- GetDataPage existe déjà dans ton admin — tu as déjà l'ossature de pages d'admin
-
-Points faibles / risques
-
-- Multilangue sur des .md = complexité non négligeable — il faudrait soit des fichiers docs/fr/, docs/en/, soit un parser de frontmatter avec clé de langue. Pour l'instant tu n'as qu'une langue, c'est du sur-engineering
-  précoce.
-- Rendu Markdown — WordPress n'a pas de parser MD natif. Tu devrais embarquer une lib PHP (league/commonmark ou parsedown) ou parser côté JS. Ça ajoute une dépendance.
-- Indexation / recherche — les .md statiques ne sont pas cherchables facilement dans l'admin.
-
-  ---
-Ma recommandation
-
-Oui, mais simplement. Une page admin "Documentation" qui :
-1. Liste les fichiers .md du dossier docs/
-2. Les rend en HTML via league/commonmark (déjà dans beaucoup de projets PHP)
-3. Avec un menu de navigation latéral généré depuis les noms de fichiers
-
-Pas de multilangue pour l'instant — attends d'avoir un vrai besoin. Si tu veux l'ajouter plus tard, la structure docs/fr/*.md / docs/en/*.md avec détection de get_locale() s'ajoutera proprement.
-
 # prompt 
 #### 
 Rewrite CLAUDE.md based on everything we've done so far — architecture, conventions, gotchas discovered. keep it under 500 words.
+
+### recherche
+grep -rn "render_post_filter" .
+render_post_filter
+
+# replace texte
+# Prévisualiser sans modifier (dry run)
+grep -rn "ancien_texte" . --include="*.php"
+grep -rn "Gijs Jorissen" . --include="*.php"
+
+grep -rn --exclude-dir=vendor "ancien_texte" .
+
+
+# Tous types de fichiers
+find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
+find . -type f -exec sed -i 's/Gijs Jorissen/quidelantoine/g' {} +
+# Insensible à la casse
+sed -i 's/ancien_texte/nouveau_texte/gi'
+
+
+@package    // Namespace ou package principal
+@subpackage // Sous-namespace
+@author     // Nom <email>
+@since      // Version d'introduction
+@version    // Version actuelle (surtout pour les classes)
+@param      // Paramètre de méthode
+@return     // Valeur de retour
+@throws     // Exception levée
+@deprecated // Méthode obsolète, indiquer l'alternative
+@see        // Référence vers une autre classe/méthode
+@link       // URL de documentation externe
+@todo       // Ce qui reste à faire

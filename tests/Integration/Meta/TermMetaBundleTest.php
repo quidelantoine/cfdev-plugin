@@ -13,10 +13,13 @@ use Weblitzer\CFDev\Tests\Integration\IntegrationTestCase;
 class TermMetaBundleTest extends IntegrationTestCase
 {
     private int $term_id;
+    private int $admin_id;
 
     public function setUp(): void
     {
         parent::setUp();
+        $this->admin_id = static::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($this->admin_id);
 
         register_cfdev_taxonomy(['style', 'styles'], 'post', ['public' => true]);
         do_action('init');

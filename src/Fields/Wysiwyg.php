@@ -25,6 +25,15 @@ class Wysiwyg extends Field
         $this->args['editor_class'] .= ' cfdev-input';
     }
 
+    /**
+     * @param  string|array<mixed>  $value
+     * @return string|array<mixed>
+     */
+    public function saveValue(string|array $value): string|array
+    {
+        return is_array($value) ? array_map('wp_kses_post', $value) : wp_kses_post((string) $value);
+    }
+
     /** @param string|array<mixed> $value */
     public function outputHtml(string|array $value): string
     {

@@ -230,6 +230,10 @@ class TermMeta extends Meta
             return;
         }
 
+        if (! current_user_can('edit_term', $term_id)) {
+            return;
+        }
+
         // Respect parent condition
         if ($this->only_if_parent !== null) {
             $term = get_term($term_id);

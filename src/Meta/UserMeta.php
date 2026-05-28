@@ -128,6 +128,10 @@ class UserMeta extends Meta
             return;
         }
 
+        if ($user_id !== get_current_user_id() && ! current_user_can('edit_user', $user_id)) {
+            return;
+        }
+
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         $values = isset($_POST['cfdev']) ? wp_unslash($_POST['cfdev']) : array();
 

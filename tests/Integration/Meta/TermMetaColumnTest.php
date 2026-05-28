@@ -32,6 +32,8 @@ class TermMetaColumnTest extends IntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $admin_id = static::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($admin_id);
         Registry::reset();
 
         register_cfdev_taxonomy(['genre', 'genres'], 'post', ['public' => true]);

@@ -1,5 +1,9 @@
 jQuery.noConflict();
 
+function cfdevEscHtml(str) {
+	return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function cfdevFileSvg(mime) {
 	var map = [
 		[/^application\/pdf$/,                             'PDF', '#e74c3c'],
@@ -184,7 +188,7 @@ jQuery( function( $ ) {
 					}
 					else
 					{
-						preview.html('<span class="cfdev-mime"><a href="' + attachment.url + '" target="_blank">' + cfdevFileSvg(attachment.mime) + '<span class="cfdev-file-name">' + attachment.title + '</span></a></span>' );
+						preview.html('<span class="cfdev-mime"><a href="' + encodeURI(attachment.url) + '" target="_blank">' + cfdevFileSvg(attachment.mime) + '<span class="cfdev-file-name">' + cfdevEscHtml(attachment.title) + '</span></a></span>' );
 						hidden.val( attachment.id );
 					}
 	        	});

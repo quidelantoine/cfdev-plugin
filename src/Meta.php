@@ -181,12 +181,7 @@ abstract class Meta
             return;
         }
 
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-        $cfdev_data = wp_kses_post_deep(wp_unslash($_POST['cfdev']));
-
-        // Loop through each meta box
-        //if (! empty($this->data) && isset($_POST['cfdev'])) { // je le garde pour le moment
-        if (!empty($this->data) && !empty($cfdev_data)) {
+        if (!empty($this->data) && !empty($values)) {
             if ($this->data instanceof \Weblitzer\CFDev\Fields\Bundle) {
                 $bundle = $this->data;
                 if (isset($values[$bundle->id])) {

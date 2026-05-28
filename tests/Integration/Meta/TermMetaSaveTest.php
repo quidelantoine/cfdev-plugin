@@ -12,10 +12,13 @@ use Weblitzer\CFDev\Tests\Integration\IntegrationTestCase;
 class TermMetaSaveTest extends IntegrationTestCase
 {
     private int $term_id;
+    private int $admin_id;
 
     public function setUp(): void
     {
         parent::setUp();
+        $this->admin_id = static::factory()->user->create(['role' => 'administrator']);
+        wp_set_current_user($this->admin_id);
         Registry::reset();
 
         // Enregistre la taxonomie et crée un terme de test

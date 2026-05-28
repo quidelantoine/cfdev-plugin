@@ -15,6 +15,7 @@ class TermMetaSaveTest extends CFDevTestCase
         parent::setUp();
         Functions\when('wp_unslash')->returnArg();
         Functions\when('sanitize_text_field')->returnArg();
+        Functions\when('current_user_can')->justReturn(true);
         Functions\when('sanitize_title')->alias(function (string $s): string {
             return strtolower(trim((string) preg_replace('/[^a-z0-9]+/i', '-', $s), '-'));
         });

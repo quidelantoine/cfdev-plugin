@@ -153,6 +153,23 @@ class Registry
     }
 
     /**
+     * Returns true if a field with the given ID is registered as an ajax field for the given meta_type.
+     */
+    public static function isAjaxField(string $field_id, string $meta_type): bool
+    {
+        foreach (self::$metas as $meta) {
+            [$type] = self::resolveTypeAndTargets($meta);
+            if ($type !== $meta_type) {
+                continue;
+            }
+            if (isset($meta->fields[$field_id]) && $meta->fields[$field_id]->supports_ajax) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Clears all registered entries. Use in tests to prevent state bleed.
      */
     public static function reset(): void

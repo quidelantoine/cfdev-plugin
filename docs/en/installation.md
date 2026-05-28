@@ -20,7 +20,7 @@ WordPress 6.5 minimum: targets actively maintained installs.
 
 **Option 1 — Upload via WordPress Admin (recommended)**
 
-Download the latest `cfdev-plugin-x.x.x.zip` from the [GitHub Releases](https://github.com/weblitzer/cfdev-plugin/releases) page, then upload it via **WordPress Admin → Plugins → Add New → Upload Plugin**.
+Download the latest `cfdev-plugin-x.x.x.zip` from the [GitHub Releases](https://github.com/quidelantoine/cfdev-plugin/releases) page, then upload it via **WordPress Admin → Plugins → Add New → Upload Plugin**.
 
 WordPress handles extraction automatically — no renaming needed.
 

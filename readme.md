@@ -69,7 +69,7 @@ register_cfdev_post_type(['book', 'books'], ['public' => true])
 
 **Option 1 — Upload via WordPress Admin (recommended)**
 
-Download the latest `cfdev-plugin-x.x.x.zip` from [GitHub Releases](https://github.com/weblitzer/cfdev-plugin/releases), then upload it via **WordPress Admin → Plugins → Add New → Upload Plugin**.
+Download the latest `cfdev-plugin-x.x.x.zip` from [GitHub Releases](https://github.com/quidelantoine/cfdev-plugin/releases), then upload it via **WordPress Admin → Plugins → Add New → Upload Plugin**.
 
 **Option 2 — Manual copy**
 

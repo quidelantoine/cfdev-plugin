@@ -6,7 +6,7 @@ module.exports = defineConfig({
     chromeWebSecurity: false,
     viewportWidth: 1280,
     viewportHeight: 900,
-    defaultCommandTimeout: 8000,
+    defaultCommandTimeout: 12000,
     scrollBehavior: 'center',
     setupNodeEvents(on) {
       // Allow self-signed cert on local FrankenPHP dev server

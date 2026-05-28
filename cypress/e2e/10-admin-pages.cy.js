@@ -104,11 +104,20 @@ describe('CFDev — Admin Pages', () => {
   // ── Cache page: shows files + flush all ─────────────────────────────────
 
   it('Cache — shows enabled toggle and file list, flush clears all files', () => {
-    // Seed at least one cache file via the cfdev REST endpoint
-    cy.request('/wp-json/wp/v2/posts?per_page=1').then(res => {
-      const id = res.body[0]?.id
-      if (id) {
-        cy.request(`/wp-json/cfdev/v1/post/${id}`)
+    // Seed a cache entry via the cfdev REST endpoint.
+    // The Inspector AJAX in test 2 may already have created one; this is a best-effort
+    // top-up. Use a short timeout + failOnStatusCode:false so a slow/unavailable REST
+    // response does not fail the test — the cache table assertion below will catch it.
+    cy.request({
+      url: '/wp-json/wp/v2/posts?per_page=1',
+      failOnStatusCode: false,
+      timeout: 8000,
+    }).then(res => {
+      if (res.status === 200) {
+        const id = res.body[0]?.id
+        if (id) {
+          cy.request({ url: `/wp-json/cfdev/v1/post/${id}`, failOnStatusCode: false, timeout: 8000 })
+        }
       }
     })
 

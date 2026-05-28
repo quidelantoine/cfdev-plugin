@@ -1,0 +1,36 @@
+# Files excluded from git archive (distribution ZIP)
+# These are dev-only files that must not ship with the plugin.
+
+tests/                          export-ignore
+cypress/                        export-ignore
+cypress.config.js               export-ignore
+cypress.env.json                export-ignore
+.github/                        export-ignore
+vendor/                         export-ignore
+node_modules/                   export-ignore
+coverage/                       export-ignore
+src/demo/                       export-ignore
+src/templates/                  export-ignore
+
+phpunit.xml                     export-ignore
+phpcs.xml                       export-ignore
+phpstan.neon                    export-ignore
+phpstan-baseline.neon           export-ignore
+composer.json                   export-ignore
+composer.lock                   export-ignore
+package.json                    export-ignore
+package-lock.json               export-ignore
+wp-tests-config.php             export-ignore
+wp-tests-config-docker.php      export-ignore
+
+CLAUDE.md                       export-ignore
+.claudeignore                   export-ignore
+.distignore                     export-ignore
+.gitattributes                  export-ignore
+.gitignore                      export-ignore
+devops.md                       export-ignore
+priorisation.md                 export-ignore
+afaire.md                       export-ignore
+
+languages/*.po~                 export-ignore
+languages/*.pot~                export-ignore

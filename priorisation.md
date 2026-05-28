@@ -68,6 +68,12 @@ git push origin main
 git tag v1.0.0
 git push origin v1.0.0
 
+#####
+git add .github/workflows/release.yml
+git commit -m "fix(ci): build dans /tmp pour éviter conflit rsync source/dest + Node 24"
+git tag v1.0.1
+git push origin main v1.0.1
+
 ## JS & npm ?
 Mieux erire le js faire une passe dessus ?
 => Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien

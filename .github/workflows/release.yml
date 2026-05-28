@@ -24,13 +24,10 @@ jobs:
 
       - name: Build distribution ZIP
         run: |
-          mkdir -p /tmp/dist/cfdev-plugin
-          rsync -r \
-            --exclude-from=.distignore \
-            --exclude='.distignore' \
-            . /tmp/dist/cfdev-plugin/
-          cd /tmp/dist
-          zip -r $GITHUB_WORKSPACE/cfdev-plugin-${{ steps.version.outputs.VERSION }}.zip cfdev-plugin/
+          git archive HEAD \
+            --prefix=cfdev-plugin/ \
+            --format=zip \
+            -o cfdev-plugin-${{ steps.version.outputs.VERSION }}.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

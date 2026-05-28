@@ -278,9 +278,19 @@ jobs:
           timeout 30 bash -c \
             'until curl -sf http://localhost/wp-login.php > /dev/null; do sleep 1; done'
 
-          # Préchauffer php-fpm (évite un cold-start > 8 s lors du premier cy.session())
-          curl -s http://localhost/wp-login.php > /dev/null
-          curl -s http://localhost/wp-admin/post-new.php > /dev/null || true
+          # Préchauffage authentifié : login via curl puis chargement de l'admin.
+          # Sans ça le premier cy.session() dépasse defaultCommandTimeout=8000ms
+          # car le code path PHP de l'admin est froid (redirect non-authentifié
+          # vers wp-login n'exécute jamais le code admin).
+          curl -s -c /tmp/wpcookies.txt http://localhost/wp-login.php > /dev/null
+          curl -s -b /tmp/wpcookies.txt -c /tmp/wpcookies.txt \
+            --data-urlencode "log=$WP_USER" \
+            --data-urlencode "pwd=$WP_PASS" \
+            -d "wp-submit=Log+In&redirect_to=%2Fwp-admin%2F&testcookie=1" \
+            http://localhost/wp-login.php > /dev/null
+          curl -s -b /tmp/wpcookies.txt http://localhost/wp-admin/ > /dev/null || true
+          curl -s -b /tmp/wpcookies.txt \
+            "http://localhost/wp-admin/post-new.php?post_type=post" > /dev/null || true
           echo "WordPress ready at http://localhost"
 
       - uses: actions/setup-node@v4

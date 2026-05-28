@@ -18,15 +18,21 @@ WordPress 6.5 minimum : cible les installations activement maintenues.
 
 ## Installation
 
-**Option 1 — Télécharger le zip de la release**
+**Option 1 — Upload via WordPress Admin (recommandé)**
 
-Téléchargez le dernier `cfdev-plugin.zip` depuis la page [GitHub Releases](https://github.com/weblitzer/cfdev-plugin/releases), puis uploadez-le via **WordPress Admin → Extensions → Ajouter → Envoyer une extension**.
+Téléchargez le dernier `cfdev-plugin-x.x.x.zip` depuis la page [GitHub Releases](https://github.com/weblitzer/cfdev-plugin/releases), puis uploadez-le via **WordPress Admin → Extensions → Ajouter → Envoyer une extension**.
 
-**Option 2 — Copier le dossier**
+WordPress gère l'extraction automatiquement — aucun renommage nécessaire.
+
+**Option 2 — Copie manuelle**
+
+Extrayez le zip, renommez le dossier en `cfdev-plugin` si nécessaire, puis copiez-le :
 
 ```bash
 cp -r cfdev-plugin /chemin/vers/wp-content/plugins/
 ```
+
+> ⚠️ Certains extracteurs de zip renomment le dossier d'après le nom du fichier zip (ex. `cfdev-plugin-1.0.4`). Renommez-le en `cfdev-plugin` avant de le copier dans `wp-content/plugins/`.
 
 Puis activez le plugin dans **WordPress Admin → Extensions**.
 

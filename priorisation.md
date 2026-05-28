@@ -8,7 +8,7 @@ define('CFDEV_DEMO', true);
 # A FAIRE 
 ===========
 
-=> comment on fais distribution du plugin sur github et chez wordpress ?? comment distribuer des fichiers et pas d'autres  ??
+=> faire test de relase 1.0.4 sur un autre ordi pou test si ok +++
 
 Objectif : GitHub (pas GitLab)
 

@@ -43,18 +43,6 @@ register_cfdev_post_type(['book', 'books'], ['public' => true])
 
 ---
 
-## Pourquoi CFDev ?
-
-| | CFDev | ACF |
-|---|---|---|
-| Configuration dans le code (versionnable) | ✅ | ❌ |
-| Validation serveur (25+ règles) | ✅ | ❌ |
-| Cache fichier intégré (données résolues) | ✅ | ❌ |
-| Zéro dérive de config (dev→prod) | ✅ | ❌ |
-| Sans bloat (~60 Ko) | ✅ | ❌ |
-
----
-
 ## Prérequis
 
 | | Minimum | Recommandé |

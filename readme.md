@@ -44,18 +44,6 @@ register_cfdev_post_type(['book', 'books'], ['public' => true])
 
 ---
 
-## Why CFDev?
-
-| | CFDev | ACF |
-|---|---|---|
-| Configuration in code (versionable) | ✅ | ❌ |
-| Server-side validation (25+ rules) | ✅ | ❌ |
-| Built-in file cache (resolved data) | ✅ | ❌ |
-| Zero DB config drift (dev→prod) | ✅ | ❌ |
-| No-bloat (~60 KB) | ✅ | ❌ |
-
----
-
 ## Requirements
 
 | | Minimum | Recommended |

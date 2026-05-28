@@ -16,32 +16,21 @@ WordPress 6.5 minimum : cible les installations activement maintenues.
 
 ---
 
-## Installation via Composer
+## Installation
+
+**Option 1 — Télécharger le zip de la release**
+
+Téléchargez le dernier `cfdev-plugin.zip` depuis la page [GitHub Releases](https://github.com/weblitzer/cfdev-plugin/releases), puis uploadez-le via **WordPress Admin → Extensions → Ajouter → Envoyer une extension**.
+
+**Option 2 — Copier le dossier**
 
 ```bash
-composer require weblitzer/cfdev-plugin
+cp -r cfdev-plugin /chemin/vers/wp-content/plugins/
 ```
 
-Le plugin s'enregistre automatiquement une fois activé dans WordPress.
+Puis activez le plugin dans **WordPress Admin → Extensions**.
 
----
-
-## Build de production
-
-Supprimer les dépendances dev et optimiser l'autoloader :
-
-```bash
-composer install --no-dev --optimize-autoloader --classmap-authoritative
-```
-
-Ou ajouter à `composer.json` de façon permanente :
-
-```json
-"config": {
-    "optimize-autoloader": true,
-    "classmap-authoritative": true
-}
-```
+> Aucun Composer requis. Le plugin embarque un autoloader PSR-4 natif — pas de dossier `vendor/`, pas d'étape de build.
 
 ---
 

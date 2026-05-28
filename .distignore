@@ -1,0 +1,51 @@
+# Dependencies (dev only — no runtime deps)
+vendor/
+node_modules/
+
+# Dev tooling
+tests/
+cypress/
+cypress.config.js
+cypress.env.json
+phpunit.xml
+phpcs.xml
+phpstan.neon
+phpstan-baseline.neon
+package.json
+package-lock.json
+composer.json
+composer.lock
+
+# WP test config
+wp-tests-config.php
+wp-tests-config-docker.php
+
+# Build / coverage
+.phpunit.cache/
+dist/
+coverage/
+
+# Demo fields (dev only)
+src/demo/
+
+# Test template
+src/templates/
+
+# Language backup files
+languages/*.po~
+languages/*.pot~
+
+# CI / Git
+.git
+.gitignore
+.github/
+
+# Claude / IDE
+.claude/
+.claudeignore
+
+# Internal docs
+CLAUDE.md
+devops.md
+priorisation.md
+afaire.md

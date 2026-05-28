@@ -66,15 +66,11 @@ register_cfdev_post_type(['book', 'books'], ['public' => true])
 
 ## Installation
 
-```bash
-composer require quidelantoine/cfdev
-```
+Téléchargez le dernier `cfdev-plugin.zip` depuis [GitHub Releases](https://github.com/weblitzer/cfdev-plugin/releases) et uploadez-le via **WordPress Admin → Extensions → Ajouter → Envoyer une extension**.
 
-**Build production :**
+> Aucun Composer requis. Le plugin embarque un autoloader PSR-4 natif — pas de dossier `vendor/`, pas d'étape de build.
 
-```bash
-composer install --no-dev --optimize-autoloader --classmap-authoritative
-```
+→ [Guide d'installation complet](installation.md)
 
 ---
 

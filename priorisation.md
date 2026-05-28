@@ -10,6 +10,48 @@ define('CFDEV_DEMO', true);
 
 => comment on fais distribution du plugin sur github et chez wordpress ?? comment distribuer des fichiers et pas d'autres  ??
 
+Objectif : GitHub (pas GitLab)
+
+Pourquoi GitHub plutôt que GitLab pour se mettre en avant :
+- WordPress.org utilise GitHub pour ses outils officiels (10up/action-wordpress-plugin-deploy)
+- Les recruteurs et la communauté WP regardent GitHub
+- Les badges README pointent vers GitHub
+- GitLab = excellent pour CI perso/pro, pas pour visibilité open source WP
+
+  ---
+Parcours complet
+
+dev  →  git tag v1.0.0  →  GitHub Actions  →  Release ZIP
+→  WordPress.org SVN (quand prêt)
+
+Étape 1 — GitHub Actions (maintenant)
+
+Un tag v1.0.0 déclenche :
+1. Tests PHPUnit Unit (rapide, sans Docker)
+2. PHPCS
+3. PHPStan niveau 8
+4. Build du zip (via .distignore)
+5. Création de la GitHub Release avec le zip en pièce jointe
+
+Étape 2 — WordPress.org (plus tard)
+
+Même workflow, une job supplémentaire qui push le zip vers SVN via 10up/action-wordpress-plugin-deploy.
+
+Prérequis WP.org :
+- readme.txt au format WP.org (différent du readme.md)
+- Screenshots dans assets/ du SVN
+- Review manuelle ~2 semaines
+
+  ---
+Ce que je te propose de créer maintenant
+
+.github/
+└── workflows/
+└── release.yml   ← tests + build zip + GitHub Release
+
+Le workflow WP.org peut être ajouté plus tard quand tu es prêt à soumettre.
+
+
 ## JS & npm ?
 Mieux erire le js faire une passe dessus ?
 => Js ne pas utiliser jquery est ce une bonn eidée , sachant que cela marche bien

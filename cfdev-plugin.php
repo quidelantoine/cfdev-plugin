@@ -17,9 +17,19 @@ if (version_compare(PHP_VERSION, '8.2', '<')) {
     return;
 }
 
-if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
-    return;
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+} else {
+    spl_autoload_register(function (string $class): void {
+        $prefix = 'Weblitzer\\CFDev\\';
+        if (! str_starts_with($class, $prefix)) {
+            return;
+        }
+        $file = __DIR__ . '/src/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+        if (file_exists($file)) {
+            require $file;
+        }
+    });
 }
-require __DIR__ . '/vendor/autoload.php';
 
 Weblitzer\CFDev\Initializer::instance(__FILE__);

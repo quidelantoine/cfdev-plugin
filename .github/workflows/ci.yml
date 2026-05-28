@@ -227,6 +227,11 @@ jobs:
           # Permaliens (flush DB seulement, pas de .htaccess — nginx gère le routing)
           wp rewrite structure '/%postname%/' --path=$WP_DIR
           wp rewrite flush --path=$WP_DIR
+          # template-home.php pour spec 05/06 (page-tabs / page-accordion)
+          ACTIVE_THEME=$(wp option get template --path=$WP_DIR)
+          echo '<?php /* Template Name: Home */?>' \
+            > "$WP_DIR/wp-content/themes/$ACTIVE_THEME/template-home.php"
+
           # Page template pour spec 11-front-end
           PAGE_ID=$(wp post create \
             --post_type=page \
@@ -257,11 +262,25 @@ jobs:
           NGINXEOF
           sudo ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
           sudo rm -f /etc/nginx/sites-enabled/default
+
+          # Workers FPM en tant que "runner" pour accéder au symlink → GITHUB_WORKSPACE
+          # (www-data ne peut pas traverser /home/runner/ qui est en 750 par défaut)
+          sudo sed -i \
+            -e 's/^user = www-data/user = runner/' \
+            -e 's/^group = www-data/group = runner/' \
+            /etc/php/8.4/fpm/pool.d/www.conf
+
           sudo service php8.4-fpm start
           sudo nginx -t
           sudo service nginx start
+
+          # Attendre que WordPress réponde
           timeout 30 bash -c \
             'until curl -sf http://localhost/wp-login.php > /dev/null; do sleep 1; done'
+
+          # Préchauffer php-fpm (évite un cold-start > 8 s lors du premier cy.session())
+          curl -s http://localhost/wp-login.php > /dev/null
+          curl -s http://localhost/wp-admin/post-new.php > /dev/null || true
           echo "WordPress ready at http://localhost"
 
       - uses: actions/setup-node@v4

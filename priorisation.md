@@ -51,6 +51,9 @@ Ce que je te propose de créer maintenant
 
 Le workflow WP.org peut être ajouté plus tard quand tu es prêt à soumettre.
 
+Pour déclencher la première release :
+git tag v1.0.0
+git push origin v1.0.0
 
 ## JS & npm ?
 Mieux erire le js faire une passe dessus ?

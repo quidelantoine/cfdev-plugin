@@ -217,7 +217,13 @@ jobs:
             --admin_password="$WP_PASS" \
             --admin_email=ci@example.com \
             --skip-email
-          # Classic Editor — force mode classique pour tous, Gutenberg désactivé
+          # Mu-plugin : désactive le block editor (Gutenberg place les meta boxes dans
+          # une iframe inaccessible à cy.get() — le mu-plugin est plus fiable que
+          # le plugin Classic Editor qui peut échouer à s'installer en CI)
+          mkdir -p "$WP_DIR/wp-content/mu-plugins"
+          printf '<?php\nadd_filter("use_block_editor_for_post",__return_false,100);\nadd_filter("use_block_editor_for_post_type",__return_false,100);\n' \
+            > "$WP_DIR/wp-content/mu-plugins/ci-disable-block-editor.php"
+          # Classic Editor (conservé pour #publish et les sélecteurs de l'interface)
           wp plugin install classic-editor --activate --path=$WP_DIR
           wp option update classic-editor-replace classic --path=$WP_DIR
           wp option update classic-editor-allow-users disallow --path=$WP_DIR
@@ -241,6 +247,15 @@ jobs:
             --porcelain \
             --path=$WP_DIR)
           wp post meta update "$PAGE_ID" _wp_page_template template-cfdev-test.php --path=$WP_DIR
+
+      - name: Diagnostic WordPress setup
+        run: |
+          echo "=== Plugins actifs ==="
+          wp plugin list --status=active --path=$WP_DIR
+          echo "=== CFDEV_DEMO ==="
+          wp eval 'echo "CFDEV_DEMO: " . var_export(defined("CFDEV_DEMO") ? CFDEV_DEMO : "NOT_DEFINED", true) . "\n";' --path=$WP_DIR
+          echo "=== Block editor filter (mu-plugin) ==="
+          wp eval 'echo "block_editor_for_post: " . var_export(apply_filters("use_block_editor_for_post", true, new WP_Post((object)["ID"=>0,"post_type"=>"post","filter"=>"raw"])), true) . "\n";' --path=$WP_DIR || true
 
       - name: Configure nginx + start services
         run: |

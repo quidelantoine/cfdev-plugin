@@ -7,6 +7,7 @@ module.exports = defineConfig({
     viewportWidth: 1280,
     viewportHeight: 900,
     defaultCommandTimeout: 8000,
+    scrollBehavior: 'center',
     setupNodeEvents(on) {
       // Allow self-signed cert on local FrankenPHP dev server
       on('before:browser:launch', (browser, launchOptions) => {

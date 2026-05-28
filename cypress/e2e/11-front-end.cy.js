@@ -83,6 +83,7 @@ describe('CFDev — Front-end Rendering', () => {
     cy.get(`input[name="${F.date}"]`).invoke('val', FLAT_DATE).trigger('change', { force: true })
 
     // Bundle: ensure exactly 1 row, fill it, then add row 1
+    cy.expandPostbox('cfdev_demo_bundle')
     cy.get(`#${BUNDLE_ID} .js-cfdev-sortable-item`).then($rows => {
       const extra = $rows.length - 1
       for (let i = 0; i < extra; i++) {

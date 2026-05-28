@@ -60,6 +60,7 @@ describe('CFDev — Tabs Fields (Post)', () => {
   beforeEach(() => {
     cy.loginToWP()
     cy.visit('/wp-admin/post-new.php')
+    cy.expandPostbox('cfdev_cypress_tabs')
   })
 
   it('shows tabs meta box with correct tab navigation', () => {

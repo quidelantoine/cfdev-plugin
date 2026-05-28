@@ -175,7 +175,10 @@ final class CacheManager
                 continue;
             }
 
-            $groups[$entry['id']] = $this->resolveEntry($entry, $post_id, 'post');
+            $resolved             = $this->resolveEntry($entry, $post_id, 'post');
+            $groups[$entry['id']] = isset($groups[$entry['id']])
+                ? array_merge($groups[$entry['id']], $resolved)
+                : $resolved;
         }
 
         return ['post_id' => $post_id, 'generated_at' => time(), 'groups' => $groups];
@@ -202,7 +205,10 @@ final class CacheManager
                 }
             }
 
-            $groups[$entry['id']] = $this->resolveEntry($entry, $term_id, 'term');
+            $resolved             = $this->resolveEntry($entry, $term_id, 'term');
+            $groups[$entry['id']] = isset($groups[$entry['id']])
+                ? array_merge($groups[$entry['id']], $resolved)
+                : $resolved;
         }
 
         return ['term_id' => $term_id, 'taxonomy' => $taxonomy, 'generated_at' => time(), 'groups' => $groups];
@@ -227,7 +233,10 @@ final class CacheManager
                 }
             }
 
-            $groups[$entry['id']] = $this->resolveEntry($entry, $user_id, 'user');
+            $resolved             = $this->resolveEntry($entry, $user_id, 'user');
+            $groups[$entry['id']] = isset($groups[$entry['id']])
+                ? array_merge($groups[$entry['id']], $resolved)
+                : $resolved;
         }
 
         return ['user_id' => $user_id, 'generated_at' => time(), 'groups' => $groups];

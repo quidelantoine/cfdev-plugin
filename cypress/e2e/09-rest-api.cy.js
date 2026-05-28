@@ -47,6 +47,7 @@ describe('CFDev — REST API', () => {
 
     // ── Create post with bundle row 0 ────────────────────────────────────
     cy.visit('/wp-admin/post-new.php')
+    cy.expandPostbox('cfdev_demo_bundle')
     cy.setPostTitle('Cypress REST Post')
     cy.get(`input[name="${nb(0, BF.text)}"]`).invoke('val', POST_TEXT).trigger('input')
     cy.get(`select[name="${nb(0, BF.select)}"]`).select(POST_SELECT)

@@ -324,6 +324,12 @@ a.cfdev-logo:focus { opacity: .8; color: #fff; }
 /* ── Registry page ───────────────────────────────────────────────── */
 .cfdev-registry { max-width: 1200px; }
 
+.cfdev-notice-empty {
+    background: #f0f6fc; border-left: 4px solid #72aee6;
+    padding: 10px 14px; margin-bottom: 20px;
+}
+.cfdev-notice-empty p { margin: 0; font-size: 13px; }
+
 .cfdev-tabs-nav { margin-bottom: 0; border-bottom: 1px solid var(--cfdev-wp-border); }
 .cfdev-tab-count {
     display: inline-block; background: var(--cfdev-wp-border-light);

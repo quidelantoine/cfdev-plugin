@@ -36,7 +36,7 @@ new TermMeta('genre', '', [
 ]);
 
 // User
-new UserMeta('profile', 'Profile', [
+register_cfdev_user_meta('profile', 'Profile', [
     ['type' => 'text', 'id' => 'bio', 'label' => 'Bio', 'rest' => true],
 ]);
 ```

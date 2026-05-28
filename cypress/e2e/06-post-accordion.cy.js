@@ -60,6 +60,7 @@ describe('CFDev — Accordion Fields (Post)', () => {
   beforeEach(() => {
     cy.loginToWP()
     cy.visit('/wp-admin/post-new.php')
+    cy.expandPostbox('cfdev_cypress_accordion')
   })
 
   it('shows accordion meta box with section headers', () => {

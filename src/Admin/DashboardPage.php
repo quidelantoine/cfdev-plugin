@@ -84,6 +84,18 @@ final class DashboardPage extends AdminPage
             </div>
             <?php endif; ?>
 
+            <?php if (empty($all)) : ?>
+            <div class="cfdev-notice-empty">
+                <p>
+                    <?php esc_html_e('No field groups declared yet. Register your first group using', 'cfdev'); ?>
+                    <code>register_cfdev_post_type()</code>,
+                    <code>register_cfdev_taxonomy()</code>
+                    <?php esc_html_e('or', 'cfdev'); ?>
+                    <code>register_cfdev_user_meta()</code>.
+                </p>
+            </div>
+            <?php endif; ?>
+
             <nav class="nav-tab-wrapper cfdev-tabs-nav">
 
                 <?php foreach ($by_type as $pt => $entries) : ?>

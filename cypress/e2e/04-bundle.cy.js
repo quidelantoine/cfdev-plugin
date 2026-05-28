@@ -38,10 +38,11 @@ const n = (row, fieldId) => `cfdev[${BUNDLE}][${row}][${fieldId}]`
 describe('CFDev — Bundle Fields (Post)', () => {
   beforeEach(() => {
     cy.loginToWP()
+    cy.visit('/wp-admin/post-new.php')
+    cy.expandPostbox('cfdev_demo_bundle')
   })
 
   it('shows bundle structure: add row, verify count, remove row', () => {
-    cy.visit('/wp-admin/post-new.php')
     cy.get(BOX).should('exist')
     cy.get(ADD).should('be.visible')
     cy.get(ITEMS).should('have.length', 1)
@@ -55,7 +56,6 @@ describe('CFDev — Bundle Fields (Post)', () => {
   })
 
   it('saves and restores all fields in bundle row 0', () => {
-    cy.visit('/wp-admin/post-new.php')
     cy.setPostTitle('Cypress — Bundle All Fields')
 
     cy.get(`input[name="${n(0, BF.text)}"]`).clear().type('BundleText')
@@ -98,7 +98,6 @@ describe('CFDev — Bundle Fields (Post)', () => {
   })
 
   it('saves and restores two bundle rows', () => {
-    cy.visit('/wp-admin/post-new.php')
     cy.setPostTitle('Cypress — Bundle Two Rows')
 
     cy.get(`input[name="${n(0, BF.text)}"]`).clear().type('Première ligne')
@@ -116,7 +115,6 @@ describe('CFDev — Bundle Fields (Post)', () => {
   })
 
   it('shows a notice-error banner when bundle required fields are empty', () => {
-    cy.visit('/wp-admin/post-new.php')
     cy.setPostTitle('Cypress — Bundle Validation')
     cy.get(`input[name="${n(0, BF.text)}"]`).clear()
     cy.get('#publish').click()

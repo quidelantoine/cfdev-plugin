@@ -85,7 +85,7 @@ Organise les champs en onglets cliquables. Chaque onglet peut contenir des champ
             ['id' => 'gallery', 'type' => 'gallery', 'label' => 'Galerie'],
         ],
         'Livraison' => [
-            ['bundle', [
+            ['bundle', '_delivery', [
                 ['id' => 'country', 'type' => 'text',   'label' => 'Pays'],
                 ['id' => 'delay',   'type' => 'number', 'label' => 'Délai (jours)'],
             ]],
@@ -111,7 +111,7 @@ Même structure que les Tabs, affiché en accordéon.
             ['id' => 'dimensions', 'type' => 'text',   'label' => 'Dimensions'],
         ],
         'Galerie' => [
-            ['bundle', [
+            ['bundle', '_slides', [
                 ['id' => 'slide_title', 'type' => 'text',  'label' => 'Titre'],
                 ['id' => 'slide_image', 'type' => 'image', 'label' => 'Image'],
             ]],
@@ -139,5 +139,5 @@ Les données du bundle sont accessibles de la même façon quelle que soit l'imb
 
 ```php
 $data    = $cache->post(get_the_ID());
-$slides  = $data['groups']['product_tabs']['_delivery'] ?? [];
+$slides  = $data['groups']['product_info']['_slides'] ?? [];
 ```

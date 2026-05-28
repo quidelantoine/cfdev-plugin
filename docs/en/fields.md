@@ -8,7 +8,36 @@ Every field requires at minimum `id`, `type` and `label`.
 ['id' => 'my_field', 'type' => 'text', 'label' => 'My Field']
 ```
 
-**Common keys** available on all types: `description`, `explanation`, `default_value`, `required`, `repeatable`, `ajax`, `show_admin_column`, `admin_column_sortable`, `css_classes`, `rules`.
+**Common keys** available on all types:
+
+| Key | Description |
+|---|---|
+| `label` | Field label displayed in the admin |
+| `description` | Short help text displayed **below the label** (above the input) |
+| `explanation` | Longer hint displayed **below the input** (not shown on repeatable fields) |
+| `default_value` | Pre-filled value on empty forms |
+| `required` | Visual asterisk + server-side `Required` rule |
+| `repeatable` | Dynamic multi-value list (add / remove / reorder) |
+| `ajax` | Loads editor assets on demand (reduces initial page weight) |
+| `show_admin_column` | Adds a column in the admin list view |
+| `admin_column_sortable` | Makes that column sortable |
+| `css_classes` | Array of CSS classes added to the field wrapper |
+| `rules` | Array of validation rule objects |
+| `rest` | `true` to expose in the WP REST API and the CFDev API |
+
+---
+
+## MetaBox position
+
+`addMetaBox()` accepts two extra parameters to control where the box appears:
+
+```php
+->addMetaBox('id', 'Title', $fields, 'side', 'high')
+// context:  'normal' (default) | 'side' | 'advanced'
+// priority: 'default'          | 'high' | 'low'
+```
+
+`'side'` places the box in the right sidebar. `'high'` makes it appear first in its column.
 
 ---
 

@@ -21,7 +21,7 @@ Add `show_admin_column` and optionally `admin_column_sortable` to the field defi
 ### MetaBox — post list (`/wp-admin/edit.php?post_type=…`)
 
 ```php
-register_cfdev_post_type('product', 'products')
+register_cfdev_post_type(['product', 'products'])
     ->addMetaBox('details', 'Details', [
         [
             'id'                    => 'price',
@@ -56,7 +56,7 @@ register_cfdev_taxonomy('genre', 'book')
 ### UserMeta — user list (`/wp-admin/users.php`)
 
 ```php
-new \Weblitzer\CFDev\Meta\UserMeta('profile', 'Profile', [
+register_cfdev_user_meta('profile', 'Profile', [
     [
         'id'                    => 'job_title',
         'type'                  => 'text',
@@ -74,7 +74,7 @@ new \Weblitzer\CFDev\Meta\UserMeta('profile', 'Profile', [
 Displays the **assigned terms** for each post in the post type list.
 
 ```php
-register_cfdev_post_type('book', 'books')
+register_cfdev_post_type(['book', 'books'])
     ->addTaxonomy('genre', [
         'show_admin_column'     => true,
         'admin_column_sortable' => true,

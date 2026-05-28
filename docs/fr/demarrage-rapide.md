@@ -34,7 +34,7 @@ add_action('init', static function (): void {
 
 add_action('init', static function (): void {
 
-    register_cfdev_post_type(['product', 'products'], ['public' => true])
+    $product = register_cfdev_post_type(['product', 'products'], ['public' => true])
         ->addMetaBox('product_info', 'Infos produit', [
             ['id' => 'price',    'type' => 'number', 'label' => 'Prix',          'required' => true],
             ['id' => 'photo',    'type' => 'image',  'label' => 'Photo'],
@@ -97,41 +97,315 @@ if (!empty($cta['url'])) {
 }
 ```
 
-## 4. Ajouter de la validation
+## 4. Champs avec options et validation
+
+Toutes les clés en action — `description`, `explanation`, `default_value`, `required`, `show_admin_column`, `rules`, et bien d'autres :
 
 ```php
 use Weblitzer\CFDev\Validation\Rules\Required;
 use Weblitzer\CFDev\Validation\Rules\Min;
+use Weblitzer\CFDev\Validation\Rules\Max;
+use Weblitzer\CFDev\Validation\Rules\MinLength;
+use Weblitzer\CFDev\Validation\Rules\MaxLength;
 use Weblitzer\CFDev\Validation\Rules\ImageMinDimensions;
+use Weblitzer\CFDev\Validation\Rules\FileExtension;
+use Weblitzer\CFDev\Validation\Rules\Email;
+use Weblitzer\CFDev\Validation\Rules\Url;
+use Weblitzer\CFDev\Validation\Rules\Regex;
+use Weblitzer\CFDev\Validation\Rules\DateAfterToday;
 
-->addMetaBox('product_info', 'Infos produit', [
-    ['id' => 'price', 'type' => 'number', 'label' => 'Prix', 'rules' => [
-        new Required(),
-        new Min(0),
-    ]],
-    ['id' => 'photo', 'type' => 'image', 'label' => 'Photo', 'rules' => [
-        new ImageMinDimensions(800, 600),
-    ]],
-]);
+add_action('init', static function (): void {
+
+    $product = register_cfdev_post_type(['product', 'products'], ['public' => true]);
+
+    $product->addMetaBox('product_info', 'Infos produit', [
+
+        ['id' => 'title',
+            'type'              => 'text',
+            'label'             => 'Titre',
+            'description'       => 'Affiché en en-tête de la fiche produit',
+            'explanation'       => 'Moins de 60 caractères pour le SEO',
+            'required'          => true,
+            'show_admin_column' => true,
+            'admin_column_sortable' => true,
+            'rules'             => [new MinLength(3), new MaxLength(60)]],
+
+        ['id' => 'price',
+            'type'          => 'number',
+            'label'         => 'Prix (€)',
+            'description'   => 'Prix TTC',
+            'default_value' => '0',
+            'required'      => true,
+            'show_admin_column' => true,
+            'admin_column_sortable' => true,
+            'args'          => ['min' => 0, 'step' => 0.01],
+            'rules'         => [new Min(0), new Max(99999)]],
+
+        ['id' => 'contact_email',
+            'type'        => 'email',
+            'label'       => 'E-mail de contact',
+            'description' => 'Affiché dans le formulaire de demande',
+            'required'    => true,
+            'rules'       => [new Email()]],
+
+        ['id' => 'website',
+            'type'        => 'url',
+            'label'       => 'Site web',
+            'explanation' => 'Doit commencer par https://',
+            'rules'       => [new Url()]],
+
+        ['id' => 'phone',
+            'type'  => 'tel',
+            'label' => 'Téléphone',
+            'rules' => [new Regex('/^\+?[\d\s\-\.]{7,15}$/')]],
+
+        ['id' => 'launch_date',
+            'type'        => 'date',
+            'label'       => 'Date de lancement',
+            'description' => 'Doit être dans le futur',
+            'required'    => true,
+            'args'        => ['date_format' => 'd/m/Y'],
+            'rules'       => [new DateAfterToday()]],
+
+        ['id' => 'cover',
+            'type'          => 'image',
+            'label'         => 'Image de couverture',
+            'description'   => 'Minimum 1200 × 630 px pour le partage sur les réseaux sociaux',
+            'show_admin_column' => true,
+            'rules'         => [new Required(), new ImageMinDimensions(1200, 630)]],
+
+        ['id' => 'brochure',
+            'type'        => 'file',
+            'label'       => 'Brochure PDF',
+            'explanation' => 'PDF uniquement, 10 Mo max',
+            'rules'       => [new FileExtension(['pdf'])]],
+
+        ['id' => 'status',
+            'type'          => 'select',
+            'label'         => 'Statut',
+            'description'   => 'Contrôle la visibilité en front-end',
+            'default_value' => 'draft',
+            'show_admin_column' => true,
+            'options'       => ['draft' => 'Brouillon', 'published' => 'Publié', 'archived' => 'Archivé'],
+            'args'          => ['show_option_none' => '— Choisir —'],
+            'required'      => true],
+
+    ]);
+
+});
 ```
 
-Les erreurs de validation survivent au cycle POST → redirection et s'affichent inline dans le formulaire d'édition.
+Les erreurs de validation survivent au cycle POST → redirection et s'affichent **inline dans le formulaire** — aucune donnée n'est perdue.
 
 ## 5. Ajouter des méta de terme et d'utilisateur
 
 ```php
-// Méta de terme
+// Méta de terme — apparaît sur les formulaires Ajouter et Modifier (défaut)
 register_cfdev_taxonomy('genre', 'product')
     ->addTermMeta([
         ['id' => 'color', 'type' => 'color', 'label' => 'Couleur'],
         ['id' => 'image', 'type' => 'image', 'label' => 'Image'],
     ]);
 
-// Méta d'utilisateur
-(new \Weblitzer\CFDev\Meta\UserMeta('profile', 'Profil', [
+// Méta de terme — formulaire spécifique (TermMeta direct, défaut : ['edit_form'])
+// Formulaire ajout uniquement :  ['add_form']
+// Les deux formulaires :         ['add_form', 'edit_form']
+new \Weblitzer\CFDev\Meta\TermMeta('genre', 'Infos genre', $fields, ['add_form', 'edit_form']);
+
+// Méta de terme — restreint aux termes enfants d'un parent donné
+register_cfdev_taxonomy('genre', 'product')
+    ->addTermMeta([/* champs */])
+    ->onlyIfParent(12);
+
+// Méta d'utilisateur — visible par tous (défaut : show_user_profile + edit_user_profile)
+register_cfdev_user_meta('profile', 'Profil', [
     ['id' => 'avatar',    'type' => 'image', 'label' => 'Avatar'],
     ['id' => 'job_title', 'type' => 'text',  'label' => 'Poste'],
-]))->onlyForRole('administrator');
+])->onlyForRole('administrator');
+
+// Méta d'utilisateur — emplacements et ordre d'affichage personnalisés
+register_cfdev_user_meta(
+    'social',
+    'Réseaux sociaux',
+    $fields,
+    ['show_user_profile'],   // uniquement sur la page de son propre profil
+    20                       // priority — contrôle l'ordre si plusieurs sections
+);
+```
+
+---
+
+## 6. Exemple concret — CPT avec taxonomie et meta box
+
+Enregistrement complet sans chaînage de méthodes, utile quand on a besoin de garder une référence à chaque objet :
+
+```php
+add_action('init', static function (): void {
+
+    $lessons = register_cfdev_post_type('lessons', [
+        'public'       => true,
+        'menu_icon'    => 'dashicons-welcome-learn-more',
+        'has_archive'  => true,
+        'supports'     => ['title', 'thumbnail', 'excerpt'],
+        'show_in_rest' => true,
+    ], [
+        'name'          => 'Leçons',
+        'singular_name' => 'Leçon',
+    ]);
+
+    $lessons->addMetaBox('lesson_details', 'Détails de la leçon', [
+        ['id' => 'duration',   'type' => 'number', 'label' => 'Durée (min)', 'required' => true],
+        ['id' => 'level',      'type' => 'select', 'label' => 'Niveau',
+            'options' => ['beginner' => 'Débutant', 'intermediate' => 'Intermédiaire', 'advanced' => 'Avancé'],
+            'args'    => ['show_option_none' => '— Choisir —']],
+        ['id' => 'video',      'type' => 'url',    'label' => 'URL vidéo'],
+        ['id' => 'attachment', 'type' => 'file',   'label' => 'Ressource PDF'],
+    ]);
+
+    // Taxonomie enregistrée indépendamment — permet la réutilisation sur plusieurs post types
+    register_cfdev_taxonomy('courses', 'lessons', [
+        'show_admin_column'   => true,
+        'admin_column_filter' => true,
+    ])
+    ->addTermMeta([
+        ['id' => 'color',       'type' => 'color',    'label' => 'Couleur'],
+        ['id' => 'description', 'type' => 'textarea', 'label' => 'Description'],
+    ]);
+
+});
+```
+
+---
+
+## 7. Layouts
+
+### Bundle — lignes répétables de champs
+
+Un Bundle regroupe plusieurs champs en lignes répétables. Idéal pour des membres d'équipe, des sessions, des tarifs, etc.
+
+```php
+$lessons->addMetaBox('team', 'Membres de l\'équipe', [
+    'bundle',
+    '_members',
+    [
+        ['id' => 'name',  'type' => 'text',     'label' => 'Nom',    'required' => true],
+        ['id' => 'role',  'type' => 'text',     'label' => 'Poste'],
+        ['id' => 'photo', 'type' => 'image',    'label' => 'Photo'],
+        ['id' => 'bio',   'type' => 'textarea', 'label' => 'Bio'],
+    ],
+]);
+```
+
+Lire les données d'un bundle :
+```php
+$data    = (new \Weblitzer\CFDev\Cache\CacheManager())->post(get_the_ID());
+$members = $data['groups']['team']['_members'] ?? [];
+
+foreach ($members as $member) {
+    echo '<h3>' . esc_html($member['name']) . '</h3>';
+    echo '<p>'  . esc_html($member['role']) . '</p>';
+    echo wp_get_attachment_image($member['photo'], 'thumbnail');
+}
+```
+
+---
+
+### Tabs — champs organisés en onglets
+
+Les labels des onglets sont les clés du tableau. Chaque onglet contient une liste de champs.
+
+```php
+$product->addMetaBox('product_info', 'Produit', [
+    'tabs',
+    [
+        'Général' => [
+            ['id' => 'price',       'type' => 'number',  'label' => 'Prix'],
+            ['id' => 'stock',       'type' => 'number',  'label' => 'Stock'],
+            ['id' => 'description', 'type' => 'wysiwyg', 'label' => 'Description'],
+        ],
+        'Médias' => [
+            ['id' => 'photo',   'type' => 'image',   'label' => 'Photo principale'],
+            ['id' => 'gallery', 'type' => 'gallery', 'label' => 'Galerie'],
+        ],
+        'SEO' => [
+            ['id' => 'seo_title', 'type' => 'text',     'label' => 'Titre SEO'],
+            ['id' => 'seo_desc',  'type' => 'textarea', 'label' => 'Meta description'],
+        ],
+    ],
+]);
+```
+
+---
+
+### Accordion — champs organisés en sections dépliables
+
+Même structure que les Tabs, affiché en accordéon.
+
+```php
+$page->addMetaBox('faq', 'FAQ', [
+    'accordion',
+    [
+        'Livraison' => [
+            ['id' => 'shipping_delay', 'type' => 'text', 'label' => 'Délai de livraison'],
+            ['id' => 'shipping_price', 'type' => 'text', 'label' => 'Frais de port'],
+        ],
+        'Retours' => [
+            ['id' => 'return_policy', 'type' => 'wysiwyg', 'label' => 'Politique de retour'],
+        ],
+    ],
+]);
+```
+
+---
+
+### Bundle dans un Tab
+
+Un onglet contient des champs plats, un autre contient un bundle répétable.
+
+```php
+$formation->addMetaBox('formation', 'Formation', [
+    'tabs',
+    [
+        'Infos' => [
+            ['id' => 'intro',    'type' => 'wysiwyg', 'label' => 'Introduction'],
+            ['id' => 'duration', 'type' => 'number',  'label' => 'Durée totale (h)'],
+        ],
+        'Sessions' => [
+            ['bundle', '_sessions', [
+                ['id' => 'title',    'type' => 'text',   'label' => 'Titre de la session', 'required' => true],
+                ['id' => 'date',     'type' => 'date',   'label' => 'Date'],
+                ['id' => 'seats',    'type' => 'number', 'label' => 'Places disponibles'],
+                ['id' => 'location', 'type' => 'text',   'label' => 'Lieu'],
+            ]],
+        ],
+    ],
+]);
+```
+
+---
+
+### Bundle dans une section d'Accordion
+
+Une section contient des champs plats, une autre contient un bundle répétable.
+
+```php
+$product->addMetaBox('specs', 'Fiche technique', [
+    'accordion',
+    [
+        'Dimensions' => [
+            ['id' => 'weight', 'type' => 'number', 'label' => 'Poids (kg)'],
+            ['id' => 'width',  'type' => 'number', 'label' => 'Largeur (cm)'],
+            ['id' => 'height', 'type' => 'number', 'label' => 'Hauteur (cm)'],
+        ],
+        'Composants' => [
+            ['bundle', '_components', [
+                ['id' => 'name',     'type' => 'text',   'label' => 'Composant'],
+                ['id' => 'ref',      'type' => 'text',   'label' => 'Référence'],
+                ['id' => 'quantity', 'type' => 'number', 'label' => 'Qté'],
+            ]],
+        ],
+    ],
+]);
 ```
 
 ---

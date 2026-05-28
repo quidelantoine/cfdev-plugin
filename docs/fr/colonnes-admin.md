@@ -21,7 +21,7 @@ Ajoutez `show_admin_column` et optionnellement `admin_column_sortable` dans la d
 ### MetaBox — liste des posts (`/wp-admin/edit.php?post_type=…`)
 
 ```php
-register_cfdev_post_type('product', 'products')
+register_cfdev_post_type(['product', 'products'])
     ->addMetaBox('details', 'Détails', [
         [
             'id'                    => 'price',
@@ -56,7 +56,7 @@ register_cfdev_taxonomy('genre', 'book')
 ### UserMeta — liste des utilisateurs (`/wp-admin/users.php`)
 
 ```php
-new \Weblitzer\CFDev\Meta\UserMeta('profile', 'Profil', [
+register_cfdev_user_meta('profile', 'Profil', [
     [
         'id'                    => 'job_title',
         'type'                  => 'text',
@@ -74,7 +74,7 @@ new \Weblitzer\CFDev\Meta\UserMeta('profile', 'Profil', [
 Affiche les **termes assignés** à chaque post dans la liste des posts du type de contenu lié.
 
 ```php
-register_cfdev_post_type('book', 'books')
+register_cfdev_post_type(['book', 'books'])
     ->addTaxonomy('genre', [
         'show_admin_column'     => true,
         'admin_column_sortable' => true,

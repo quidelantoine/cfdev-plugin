@@ -7,7 +7,7 @@
 use Weblitzer\CFDev\Meta\TermMeta;
 
 // ── 8. Term meta flat — taxonomy 'category' ───────────────────────────
-new TermMeta('category', 'Catégorie — Tous les champs', generateArrayAllField('demo', 'term'));
+new TermMeta('category', 'Catégorie — Tous les champs', generateArrayAllField('demo', 'term', [], true, false));
 
 // ── 8b. Term meta Bundle — taxonomy 'category' ───────────────────────
 new TermMeta('category', 'Catégorie — Bundle', [

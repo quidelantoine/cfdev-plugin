@@ -8,7 +8,36 @@ Chaque champ nécessite au minimum `id`, `type` et `label`.
 ['id' => 'mon_champ', 'type' => 'text', 'label' => 'Mon champ']
 ```
 
-**Clés communes** disponibles sur tous les types : `description`, `explanation`, `default_value`, `required`, `repeatable`, `ajax`, `show_admin_column`, `admin_column_sortable`, `css_classes`, `rules`.
+**Clés communes** disponibles sur tous les types :
+
+| Clé | Description |
+|---|---|
+| `label` | Libellé affiché dans l'administration |
+| `description` | Texte d'aide court affiché **sous le label** (au-dessus du champ) |
+| `explanation` | Aide plus longue affichée **sous le champ** (non affichée sur les champs répétables) |
+| `default_value` | Valeur pré-remplie sur les formulaires vides |
+| `required` | Astérisque visuel + règle `Required` côté serveur |
+| `repeatable` | Liste dynamique multi-valeur (ajout / suppression / réordonnancement) |
+| `ajax` | Charge les assets d'édition à la demande (réduit le poids initial de la page) |
+| `show_admin_column` | Ajoute une colonne dans la liste admin |
+| `admin_column_sortable` | Rend cette colonne triable |
+| `css_classes` | Tableau de classes CSS ajoutées au wrapper du champ |
+| `rules` | Tableau d'objets règles de validation |
+| `rest` | `true` pour exposer dans le REST API WP et l'API CFDev |
+
+---
+
+## Position de la MetaBox
+
+`addMetaBox()` accepte deux paramètres supplémentaires pour contrôler l'emplacement de la boîte :
+
+```php
+->addMetaBox('id', 'Titre', $fields, 'side', 'high')
+// context:  'normal' (défaut) | 'side' | 'advanced'
+// priority: 'default'         | 'high' | 'low'
+```
+
+`'side'` place la boîte dans la barre latérale droite. `'high'` la fait apparaître en premier dans sa colonne.
 
 ---
 

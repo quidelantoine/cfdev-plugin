@@ -252,8 +252,11 @@ final class CfdevRestApi
             if (! isset($all_groups[$group_id]) || ! is_array($all_groups[$group_id])) {
                 continue;
             }
-            $rest_keys         = array_keys($entry['fields']);
-            $groups[$group_id] = array_intersect_key($all_groups[$group_id], array_flip($rest_keys));
+            $rest_keys = array_keys($entry['fields']);
+            $filtered  = array_intersect_key($all_groups[$group_id], array_flip($rest_keys));
+            $groups[$group_id] = isset($groups[$group_id])
+                ? array_merge($groups[$group_id], $filtered)
+                : $filtered;
         }
         return $groups;
     }

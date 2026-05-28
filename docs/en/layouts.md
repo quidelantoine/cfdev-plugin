@@ -85,7 +85,7 @@ Organizes fields into clickable tabs. Each tab can contain flat fields or a bund
             ['id' => 'gallery', 'type' => 'gallery', 'label' => 'Gallery'],
         ],
         'Delivery' => [
-            ['bundle', [
+d            ['bundle', '_delivery', [
                 ['id' => 'country', 'type' => 'text',   'label' => 'Country'],
                 ['id' => 'delay',   'type' => 'number', 'label' => 'Days'],
             ]],
@@ -111,7 +111,7 @@ Same structure as Tabs, displayed as collapsible sections instead.
             ['id' => 'dimensions', 'type' => 'text',   'label' => 'Dimensions'],
         ],
         'Gallery' => [
-            ['bundle', [
+            ['bundle', '_slides', [
                 ['id' => 'slide_title', 'type' => 'text',  'label' => 'Title'],
                 ['id' => 'slide_image', 'type' => 'image', 'label' => 'Image'],
             ]],
@@ -139,5 +139,5 @@ Bundle data is accessed the same way regardless of nesting:
 
 ```php
 $data   = $cache->post(get_the_ID());
-$slides = $data['groups']['product_tabs']['_delivery'] ?? [];
+$slides = $data['groups']['product_info']['_slides'] ?? [];
 ```

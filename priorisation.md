@@ -4,21 +4,11 @@
 > Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
 
 ---
-
+define('CFDEV_DEMO', true);
 # A FAIRE 
 ===========
-// lancer un truc security vulnerabilté via ia , faire la formation ia dyma
-// phpcs , phpstan
-// Mettre demo dans Initilizer à false ++, ou gestion de Demo, via define('')
-// commit push
 
-reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
-
-==============
-Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
-=================
-
-=> revoir admin api, des trucs etrange sur les liens proposer ++
+=> comment on fais distribution du plugin sur github et chez wordpress ?? comment distribuer des fichiers et pas d'autres  ??
 
 ## JS & npm ?
 Mieux erire le js faire une passe dessus ?
@@ -32,10 +22,16 @@ trouver un logo ++ perso ????
 # CI 1 ESlINT
 => Mettre en place ci , phpcs , linter etc , phpstan , eslint , SOnarQUbe ++ 
 -> reste eslint ??? et ci
-
+=> ajouter bage  au readme quand c'est fait
 # A refaire 
 => duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
 => Tous les champs sont tester , unitaire, integration et fonctionnel ???
+# Plus tard mais imporant
+Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
+=> relire la docs , tranquillou
+=> revoir admin api, des trucs etrange sur les liens proposer ++
+reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
+
 # Traduction
 => Utiliser plugins traduction loco translate pour générer fichier .mo et .po
 allemand, espagnol, chinois

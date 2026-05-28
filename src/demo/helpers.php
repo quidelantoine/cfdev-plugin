@@ -14,14 +14,14 @@ if (! function_exists('generateArrayAllField')) {
      * @param bool                       $ajax   Active le mode ajax sur les champs
      * @return array<int, array<string, mixed>>
      */
-    function generateArrayAllField(string $name, string $block, array $rules = [], bool $ajax = true): array
+    function generateArrayAllField(string $name, string $block, array $rules = [], bool $ajax = true, bool $rest = true): array
     {
         $str = $name . '_' . $block;
 
-        $field = function (array $config) use ($rules, $ajax): array {
+        $field = function (array $config) use ($rules, $ajax, $rest): array {
             $type                  = $config['type'];
             $config['ajax']        = $config['ajax'] ?? $ajax;
-            $config['rest']        = true;
+            $config['rest']        = $rest;
             $config['description'] = $config['description'] ?? 'Description test';
             $config['explanation'] = $config['explanation'] ?? 'Explanation test';
             return isset($rules[$type])

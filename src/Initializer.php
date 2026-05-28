@@ -52,7 +52,7 @@ class Initializer
             dir:          untrailingslashit(plugin_dir_path($this->plugin_file)),
             url:          untrailingslashit(self::resolveUrl($this->plugin_file)),
             src_dir:      untrailingslashit(plugin_dir_path($this->plugin_file)) . '/src',
-            demo:         true,
+            demo:         defined('CFDEV_DEMO') && CFDEV_DEMO === true,
         ));
         $this->container->bind(AssetLoader::class, new AssetLoader(
             $this->container->get(Config::class)
@@ -77,6 +77,7 @@ class Initializer
 
         require_once path_join($src, 'functions/post_type_function.php');
         require_once path_join($src, 'functions/taxonomy_function.php');
+        require_once path_join($src, 'functions/user_meta_function.php');
 
         if ($this->container->get(Config::class)->demo) {
             require_once path_join($src, 'demo/demo-fields.php');

@@ -5,6 +5,12 @@
 [![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
 [![WordPress 6.5+](https://img.shields.io/badge/WordPress-6.5%2B-blue)](https://wordpress.org/)
 
+[![PHPStan](https://img.shields.io/badge/PHPStan-niveau%208-brightgreen)](../../phpstan.neon)
+[![PHPCS](https://img.shields.io/badge/PHPCS-WordPress--VIP--Go-blue)](../../phpcs.xml)
+[![Tests unitaires](https://img.shields.io/badge/tests%20unitaires-1360%20ok-brightgreen)](../../tests/Unit)
+[![Tests intégration](https://img.shields.io/badge/tests%20intégration-228%20ok-brightgreen)](../../tests/Integration)
+[![Cypress](https://img.shields.io/badge/Cypress-65%20specs%20%7C%2016%20fichiers-brightgreen)](../../cypress/e2e)
+
 **[English](../../readme.md)** · **[Documentation française](installation.md)**
 
 ---

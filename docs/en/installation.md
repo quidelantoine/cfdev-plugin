@@ -19,7 +19,7 @@ WordPress 6.5 minimum: targets actively maintained installs.
 ## Install via Composer
 
 ```bash
-composer require quidelantoine/cfdev # Not available yet
+composer require weblitzer/cfdev-plugin
 ```
 
 The plugin registers itself automatically once activated in WordPress.
@@ -126,10 +126,10 @@ add_action('init', static function (): void {
 // your-theme/cfdev/users.php
 
 add_action('init', static function (): void {
-    (new \Weblitzer\CFDev\Meta\UserMeta('profile', 'Profile', [
+    register_cfdev_user_meta('profile', 'Profile', [
         ['id' => 'avatar',    'type' => 'image', 'label' => 'Avatar'],
         ['id' => 'job_title', 'type' => 'text',  'label' => 'Job Title'],
-    ]))->onlyForRole('administrator');
+    ])->onlyForRole('administrator');
 });
 ```
 

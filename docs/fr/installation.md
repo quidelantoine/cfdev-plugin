@@ -19,7 +19,7 @@ WordPress 6.5 minimum : cible les installations activement maintenues.
 ## Installation via Composer
 
 ```bash
-composer require quidelantoine/cfdev
+composer require weblitzer/cfdev-plugin
 ```
 
 Le plugin s'enregistre automatiquement une fois activé dans WordPress.
@@ -96,7 +96,6 @@ require_once __DIR__ . '/cfdev/users.php';
 
 add_action('init', static function (): void {
     register_cfdev_post_type(['product', 'products'], ['public' => true])
-        ->addTaxonomy('category')
         ->addMetaBox('product_info', 'Infos produit', [
             ['id' => 'price',   'type' => 'number', 'label' => 'Prix'],
             ['id' => 'photo',   'type' => 'image',  'label' => 'Photo'],
@@ -126,10 +125,10 @@ add_action('init', static function (): void {
 // your-theme/cfdev/users.php
 
 add_action('init', static function (): void {
-    (new \Weblitzer\CFDev\Meta\UserMeta('profile', 'Profil', [
+    register_cfdev_user_meta('profile', 'Profil', [
         ['id' => 'avatar',    'type' => 'image', 'label' => 'Avatar'],
         ['id' => 'job_title', 'type' => 'text',  'label' => 'Poste'],
-    ]))->onlyForRole('administrator');
+    ])->onlyForRole('administrator');
 });
 ```
 

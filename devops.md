@@ -17,6 +17,9 @@ composer install --no-dev --optimize-autoloader --classmap-authoritative
 npm install
 ```
 
+```php
+define('CFDEV_DEMO', true);
+```
 ---
 
 ## Tests unitaires (PHPUnit)
@@ -24,6 +27,7 @@ npm install
 Pas besoin de WordPress — Brain/Monkey mocke les fonctions WP.
 
 ```bash
+
 # Tous les tests
 ./vendor/bin/phpunit
 
@@ -95,7 +99,10 @@ npm run cy:run
 npm run cy:run:headed
 
 # Un spec précis
-npx cypress run --spec "cypress/e2e/02-flat-fields.cy.js" --browser chrome
+npx cypress run --spec "cypress/e2e/06-page-accordion.cy.js" --browser chrome
+npx cypress run --spec "cypress/e2e/04-bundle.cy.js" --browser chrome
+npx cypress run --spec "cypress/e2e/09-rest-api.cy.js" --browser chrome
+
 ```
 
 ### Specs disponibles

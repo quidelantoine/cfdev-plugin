@@ -230,7 +230,10 @@ jobs:
           wp plugin install classic-editor --activate --path=$WP_DIR
           wp option update classic-editor-replace classic --path=$WP_DIR
           wp option update classic-editor-allow-users disallow --path=$WP_DIR
-          # Plugin
+          # Plugin — symlink pointe vers $GITHUB_WORKSPACE (/home/runner/work/…).
+          # nginx (www-data) doit pouvoir traverser /home/runner pour servir les
+          # assets statiques (JS/CSS). PHP-FPM (runner) n'a pas ce problème.
+          sudo chmod o+x /home/runner
           ln -s $GITHUB_WORKSPACE $WP_DIR/wp-content/plugins/cfdev-plugin
           wp plugin activate cfdev-plugin --path=$WP_DIR
           # Permaliens (flush DB seulement, pas de .htaccess — nginx gère le routing)

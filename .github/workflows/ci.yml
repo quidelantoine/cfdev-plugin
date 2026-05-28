@@ -257,6 +257,8 @@ jobs:
           wp plugin list --status=active --path=$WP_DIR
           echo "=== CFDEV_DEMO ==="
           wp eval 'echo "CFDEV_DEMO: " . var_export(defined("CFDEV_DEMO") ? CFDEV_DEMO : "NOT_DEFINED", true) . "\n";' --path=$WP_DIR
+          echo "=== Mu-plugin content ==="
+          cat "$WP_DIR/wp-content/mu-plugins/ci-disable-block-editor.php" || echo "FILE NOT FOUND"
           echo "=== Block editor filter (mu-plugin) ==="
           wp eval 'echo "block_editor_for_post: " . var_export(apply_filters("use_block_editor_for_post", true, new WP_Post((object)["ID"=>0,"post_type"=>"post","filter"=>"raw"])), true) . "\n";' --path=$WP_DIR || true
 
@@ -288,9 +290,9 @@ jobs:
             -e 's/^group = www-data/group = runner/' \
             /etc/php/8.4/fpm/pool.d/www.conf
 
-          sudo service php8.4-fpm start
+          sudo service php8.4-fpm restart
           sudo nginx -t
-          sudo service nginx start
+          sudo service nginx restart
 
           # Attendre que WordPress réponde
           timeout 30 bash -c \

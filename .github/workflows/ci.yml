@@ -1,0 +1,240 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+
+  # ── 1. PHPUnit — Unit (rapide, sans Docker) ──────────────────────────────
+  phpunit-unit:
+    name: PHPUnit — Unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+
+      - run: ./vendor/bin/phpunit --testsuite Unit
+
+  # ── 2. PHPCS ─────────────────────────────────────────────────────────────
+  phpcs:
+    name: PHPCS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+
+      - run: vendor/bin/phpcs
+
+  # ── 3. PHPStan niveau 8 ──────────────────────────────────────────────────
+  phpstan:
+    name: PHPStan — niveau 8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+
+      - run: vendor/bin/phpstan analyse --no-progress
+
+  # ── 4. PHPUnit — Integration ─────────────────────────────────────────────
+  phpunit-integration:
+    name: PHPUnit — Integration
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: wordpress_test
+          MYSQL_USER: wpuser
+          MYSQL_PASSWORD: wppassword
+          MYSQL_ROOT_PASSWORD: rootpassword
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      WP_PHPUNIT__DIR: ${{ github.workspace }}/vendor/wp-phpunit/wp-phpunit
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, pdo_mysql
+          coverage: none
+
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Install WP-CLI
+        run: |
+          curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
+
+      - name: Download WordPress core (ABSPATH)
+        run: wp core download --path=/tmp/wordpress --version=latest
+
+      - name: Write wp-tests-config.php
+        run: |
+          cat > wp-tests-config.php << 'WPTESTSCFG'
+          <?php
+          define('DB_NAME', 'wordpress_test');
+          define('DB_USER', 'wpuser');
+          define('DB_PASSWORD', 'wppassword');
+          define('DB_HOST', '127.0.0.1');
+          define('DB_CHARSET', 'utf8mb4');
+          define('DB_COLLATE', '');
+          define('ABSPATH', '/tmp/wordpress/');
+          define('WP_TESTS_DOMAIN', 'localhost');
+          define('WP_TESTS_EMAIL', 'admin@example.com');
+          define('WP_TESTS_TITLE', 'CFDev Integration Tests');
+          define('WP_PHP_BINARY', 'php');
+          $table_prefix = 'wptests_';
+          WPTESTSCFG
+
+      - run: ./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
+
+  # ── 5. Cypress — E2E ─────────────────────────────────────────────────────
+  cypress:
+    name: Cypress — E2E
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: wordpress
+          MYSQL_USER: wpuser
+          MYSQL_PASSWORD: wppassword
+          MYSQL_ROOT_PASSWORD: rootpassword
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      WP_DIR: /var/www/wordpress
+      WP_USER: admin
+      WP_PASS: AdminPass123!
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, pdo_mysql, gd, zip, mbstring, xml, curl, intl, exif
+          coverage: none
+
+      - name: Install WP-CLI
+        run: |
+          curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
+
+      - name: Download and install WordPress
+        run: |
+          sudo mkdir -p $WP_DIR
+          sudo chown $USER:$USER $WP_DIR
+          wp core download --path=$WP_DIR
+          wp config create --path=$WP_DIR \
+            --dbname=wordpress \
+            --dbuser=wpuser \
+            --dbpass=wppassword \
+            --dbhost=127.0.0.1
+          wp config set CFDEV_DEMO true --raw --type=constant --path=$WP_DIR
+          wp core install --path=$WP_DIR \
+            --url=http://127.0.0.1:8080 \
+            --title="CFDev CI" \
+            --admin_user="$WP_USER" \
+            --admin_password="$WP_PASS" \
+            --admin_email=ci@example.com \
+            --skip-email
+          wp plugin install classic-editor --activate --path=$WP_DIR
+          ln -s $GITHUB_WORKSPACE $WP_DIR/wp-content/plugins/cfdev-plugin
+          wp plugin activate cfdev-plugin --path=$WP_DIR
+          wp rewrite structure '/%postname%/' --path=$WP_DIR --hard
+
+      - name: Start PHP built-in server
+        run: |
+          php -S 127.0.0.1:8080 -t $WP_DIR $GITHUB_WORKSPACE/.github/wp-router.php &
+          timeout 30 bash -c 'until curl -sf http://127.0.0.1:8080/wp-login.php > /dev/null; do sleep 1; done'
+          echo "WordPress ready at http://127.0.0.1:8080"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Run Cypress E2E
+        run: npm run cy:run
+        env:
+          CYPRESS_BASE_URL: http://127.0.0.1:8080
+          CYPRESS_WP_USER: ${{ env.WP_USER }}
+          CYPRESS_WP_PASS: ${{ env.WP_PASS }}
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots/
+          if-no-files-found: ignore

@@ -1,114 +1,73 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## What this plugin is
-
-CFDev ("Custom Field For Dev") is a WordPress plugin that provides a code-first API for registering custom post types, taxonomies, and meta fields. Developers declare fields and meta boxes in PHP rather than through an admin UI.
+CFDev ("Custom Field For Dev") is a WordPress plugin providing a code-first API for registering custom post types, taxonomies, and meta fields.
 
 ## Commands
 
 ```bash
-# Run all tests
-./vendor/bin/phpunit
+# Unit tests (Brain/Monkey, no real WP)
+./vendor/bin/phpunit --testsuite Unit
 
-# Run a single test file
-./vendor/bin/phpunit tests/Unit/Fields/TextTest.php
+# Integration tests (real WP + Docker DB — run `docker compose up -d db` first)
+./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
 
-# Run tests with deprecation warnings
-./vendor/bin/phpunit --display-deprecations
-
-# Lint (check only)
+# Lint check / auto-fix
 vendor/bin/phpcs
-
-# Lint (auto-fix)
 vendor/bin/phpcbf
 
-# Install dependencies (development)
-composer install
-
-# Install dependencies (production — no dev packages, optimized autoloader)
-composer install --no-dev --optimize-autoloader --classmap-authoritative
-
-# Install Cypress (first time)
-npm install
-
-# Open Cypress Test Runner (interactive)
+# Cypress — interactive / headless / single spec
 npm run cy:open
-
-# Run all E2E tests headlessly
 npm run cy:run
-
-# Run a single spec
 npx cypress run --spec "cypress/e2e/02-flat-fields.cy.js" --browser chrome
 ```
 
 ## Architecture
 
-### Boot sequence
+**Boot:** `cfdev-plugin.php` → `CFDev\Initializer::instance()` → `Container` → registers `Config`, `AssetLoader`, loads `src/functions/`.
 
-`cfdev-plugin.php` → `CFDev\Initializer::instance()` → creates a `Container`, registers `Config` and `AssetLoader`, then requires the two public function files from `src/functions/`.
-
-### Public API (entry points for plugin users)
-
-`src/functions/post_type_function.php` and `src/functions/taxonomy_function.php` expose the two global functions users call:
-
+**Public API:**
 ```php
 register_cfdev_post_type(['book', 'books'], $args)
     ->addTaxonomy('genre')
-    ->addSupport('thumbnail')
     ->addMetaBox('details', 'Book Details', $fields);
 ```
 
-Both functions return instances of `PostType` / `Taxonomy` which support method chaining. The chain calls `addMetaBox()` (defined on the `ContentType` abstract), which instantiates `CFDev\Meta\MetaBox`.
-
-### Class hierarchy
-
+**Class hierarchy:**
 ```
-Abstracts\ContentType (implements Registerable, Supportable, HasMetaBox)
-├── PostType      — registers CPTs, delegates taxonomy via new Taxonomy()
-└── Taxonomy      — registers taxonomies, handles admin column filters
+Abstracts\ContentType
+├── PostType
+└── Taxonomy
 
-Meta              — base: renders/saves/validates all field layouts
-├── Meta\MetaBox  — hooks into save_post, add_meta_boxes
-├── Meta\UserMeta — hooks into user profile pages
-└── Meta\TermMeta — hooks into term add/edit forms
+Meta (renders/saves/validates)
+├── Meta\MetaBox   — hooks: save_post, add_meta_boxes
+├── Meta\UserMeta  — hooks: user profile pages
+└── Meta\TermMeta  — hooks: term add/edit forms
 
-Field             — base field: HTML attribute helpers, repeatable/ajax output, validation
-└── Fields\*      — one class per field type (Text, Select, Image, Bundle, Tabs, etc.)
+Abstracts\CheckboxesBase  ← Checkboxes, PostCheckboxes, TermCheckboxes, UserCheckboxes
+Abstracts\WpDropdownSelectBase ← PostSelect, TermSelect, UserSelect
+
+Field (base: attrs, repeatable, validation)
+└── Fields\*  — one class per type (Text, Select, Image, Bundle, Tabs, Wysiwyg, …)
 ```
 
-### Field type → class mapping
+**Field type → class:** `Meta::build()` maps `type` string to `CFDev\Fields\{TypeInCamelCase}`. Unknown types are silently skipped.
 
-`Meta::build()` converts a `type` string to a class name via:
-```
-CFDev\Fields\{TypeInCamelCase}
-```
-e.g. `post_select` → `CFDev\Fields\PostSelect`. If the class doesn't exist, the field is silently skipped.
+**Layout containers:** `Tabs`, `Accordion`, `Bundle` are detected by `$data[0]` being `'tabs'`/`'accordion'`/`'bundle'` — not by type. Fields inside Bundle have `$field->in_bundle = true` and are skipped in flat-field iteration.
 
-### Form data shape
+**Form data:** `cfdev[field_id]`. Bundles: `cfdev[bundle_id][row_index][field_id]`. Nonce: `cfdev_nonce` / action `cfdev_meta`. Bundle IDs are prefixed with `_` by `Bundle::buildId()` — POST keys and meta keys must use `'_slug'`.
 
-All field values are posted under `cfdev[field_id]`. Bundle fields use `cfdev[bundle_id][row_index][field_id]`. The nonce key is `cfdev_nonce` with action `cfdev_meta`.
+**Validation / ErrorBag:** Errors survive POST→redirect→GET via transients (60 s). `push()` on save → `load()` in render callback → `forField()` per field → `peek()` for admin notice banner. Bundle error keys use dot notation: `bundle.rowIndex.fieldId`.
 
-### Validation / ErrorBag
+## Coding standards
 
-Validation errors survive the POST → redirect → GET cycle through WordPress transients (60 s TTL). The flow:
+PHPCS: `WordPress-VIP-Go` + `PSR12`, 160-char line max. `vendor/`, `node_modules/`, `tests/`, CSS, JS excluded. JS sniffs excluded explicitly in `phpcs.xml` (`WordPressVIPMinimum.JS.*`) — `<arg name="extensions" value="php"/>` alone is insufficient.
 
-1. `MetaBox::savePost()` → `validateFields()` → `ErrorBag::push(meta_type, object_id, errors)`
-2. On the next page load, `Meta::callback()` → `ErrorBag::load()` (reads transient into static `$runtime`, then deletes it)
-3. During render, `ErrorBag::forField(field_id)` returns errors for individual fields
-4. `admin_notices` hook calls `ErrorBag::peek()` (non-destructive) to show a summary banner
+## Tests
 
-Bundle field error keys use dot notation: `bundle_id.row_index.field_id`.
+**Unit:** PHPUnit 13 + Brain/Monkey. Base class: `CFDev\Tests\Unit\CFDev_Test_Case`. Use `#[DataProvider]` attribute (not `@dataProvider`). `Functions\expect()` doesn't count as a PHPUnit assertion — add `$this->addToAssertionCount(1)`. `WP_Error` and `HOUR_IN_SECONDS` stubbed in `tests/bootstrap.php`.
 
-### Layout containers (Tabs, Accordion, Bundle)
+**Integration:** `wp-phpunit/wp-phpunit ^7.0`. `IntegrationTestCase` extends `WP_UnitTestCase` and overrides `expectDeprecated()` for PHPUnit 13 compat. Stubs for `Yoast\PHPUnitPolyfills` live in `tests/Integration/stubs/`. Reset `$wp_rest_server = null` in `set_up()` when testing REST. Call `Registry::reset()` after `do_action('init')`. CPTs must support `'custom-fields'` for meta to appear in REST responses.
 
-`Fields\Tabs`, `Fields\Accordion`, and `Fields\Bundle` are not field types — they are layout wrappers. `Meta::build()` detects them by checking `$data[0]` for the string `'tabs'`, `'accordion'`, or `'bundle'`. Fields inside a Bundle set `$field->in_bundle = true` and are skipped during flat-field iteration.
+## Known gotcha — Bundle + Wysiwyg
 
-### Coding standards
-
-PHPCS uses `WordPress-VIP-Go` + `PSR12` (see `phpcs.xml`). Maximum line length is 160 characters. `vendor/`, `node_modules/`, `tests/`, CSS, and JS are excluded from linting. The only active exclusion is `Squiz.PHP.CommentedOutCode.Found`.
-
-### Tests
-
-PHPUnit 13 + Brain/Monkey for WordPress function mocking. All tests extend `CFDev\Tests\Unit\CFDev_Test_Case`, which calls `Monkey\setUp()` / `Monkey\tearDown()` and stubs common WP i18n functions. Tests live under `tests/Unit/` and are organized by `Fields/`.
+In `assets/js/functions.js`, `init_editors`: `var` hoisting inside `.each()` callbacks can shadow outer parameters. The internal settings variable must be named differently from any outer `settings` parameter, and `tinyMCEPreInit.mceInit[last_id]` must be deep-cloned (`$.extend(true, {}, …)`) to avoid mutating the original editor settings.

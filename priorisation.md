@@ -30,7 +30,6 @@ est ce que tous les champs sont bien testé ??
 
 Tous les champs sont tester , unitaire, integration et fonctionnel ??? 
 
-=> Test woocommerce isOK ?? compatible woocommerce ???
 
 => Ok en terme de test ??
 => duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
@@ -55,8 +54,6 @@ allemand, espagnol, chinois
 
 ## Test
 => Faire un test avec les champ repetable sur tous pour faire le tests
-=> tester si cela marche si j'ajoute champ à woocommerce ??
-
 X=> Faire tests unitaire pour Admin à la fin quand terminé, car test sur html sinon on va devoir changer souvent
 
 ## 🧪 Règle d'or — Les tests sont une priorité permanente
@@ -601,3 +598,7 @@ Oui, mais simplement. Une page admin "Documentation" qui :
 3. Avec un menu de navigation latéral généré depuis les noms de fichiers
 
 Pas de multilangue pour l'instant — attends d'avoir un vrai besoin. Si tu veux l'ajouter plus tard, la structure docs/fr/*.md / docs/en/*.md avec détection de get_locale() s'ajoutera proprement.
+
+# prompt 
+#### 
+Rewrite CLAUDE.md based on everything we've done so far — architecture, conventions, gotchas discovered. keep it under 500 words.

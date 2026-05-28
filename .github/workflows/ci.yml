@@ -183,6 +183,15 @@ jobs:
           chmod +x wp-cli.phar
           sudo mv wp-cli.phar /usr/local/bin/wp
 
+      - name: Install Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+
       - name: Download and install WordPress
         run: |
           sudo mkdir -p $WP_DIR
@@ -201,15 +210,36 @@ jobs:
             --admin_password="$WP_PASS" \
             --admin_email=ci@example.com \
             --skip-email
+          # Classic Editor — force mode classique pour tous, Gutenberg désactivé
           wp plugin install classic-editor --activate --path=$WP_DIR
+          wp option update classic-editor-replace classic --path=$WP_DIR
+          wp option update classic-editor-allow-users disallow --path=$WP_DIR
+          # Plugin
           ln -s $GITHUB_WORKSPACE $WP_DIR/wp-content/plugins/cfdev-plugin
           wp plugin activate cfdev-plugin --path=$WP_DIR
+          # Permaliens
           wp rewrite structure '/%postname%/' --path=$WP_DIR --hard
+          # Page template pour spec 11-front-end
+          PAGE_ID=$(wp post create \
+            --post_type=page \
+            --post_title="CFDev Test" \
+            --post_name=cfdev-test \
+            --post_status=publish \
+            --porcelain \
+            --path=$WP_DIR)
+          wp post meta update "$PAGE_ID" _wp_page_template template-cfdev-test.php --path=$WP_DIR
 
-      - name: Start PHP built-in server
+      - name: Start PHP built-in server (auto-restart)
         run: |
-          php -S 127.0.0.1:8080 -t $WP_DIR $GITHUB_WORKSPACE/.github/wp-router.php &
-          timeout 30 bash -c 'until curl -sf http://127.0.0.1:8080/wp-login.php > /dev/null; do sleep 1; done'
+          (while true; do
+            php -d memory_limit=512M \
+              -S 127.0.0.1:8080 \
+              -t "$WP_DIR" \
+              "$GITHUB_WORKSPACE/.github/wp-router.php" 2>&1 || true
+            sleep 1
+          done) &
+          timeout 30 bash -c \
+            'until curl -sf http://127.0.0.1:8080/wp-login.php > /dev/null; do sleep 1; done'
           echo "WordPress ready at http://127.0.0.1:8080"
 
       - uses: actions/setup-node@v4
@@ -226,7 +256,11 @@ jobs:
           key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
       - name: Run Cypress E2E
-        run: npm run cy:run
+        # Exclude spec 14 (WooCommerce not installed in CI)
+        run: |
+          npx cypress run \
+            --browser chrome \
+            --spec 'cypress/e2e/0[1-9]*.cy.js,cypress/e2e/1[0-3]*.cy.js'
         env:
           CYPRESS_BASE_URL: http://127.0.0.1:8080
           CYPRESS_WP_USER: ${{ env.WP_USER }}

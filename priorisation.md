@@ -26,6 +26,10 @@ dev  →  git tag v1.0.0  →  GitHub Actions  →  Release ZIP
 
 Étape 1 — GitHub Actions (maintenant)
 
+FAire le realease que si les tests passe +++
+
+=> mettre dnas la doc , le fais d'installer le plugin clasic editor 
+
 Un tag v1.0.0 déclenche :
 1. Tests PHPUnit Unit (rapide, sans Docker)
 2. PHPCS

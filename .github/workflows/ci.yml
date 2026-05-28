@@ -177,6 +177,13 @@ jobs:
           extensions: mysqli, pdo_mysql, gd, zip, mbstring, xml, curl, intl, exif
           coverage: none
 
+      # nginx + php-fpm : shivammathur utilise le PPA ondrej/php, donc les
+      # paquets apt php8.4-* sont compatibles avec le PHP déjà installé.
+      - name: Install nginx + php8.4-fpm
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y nginx php8.4-fpm
+
       - name: Install WP-CLI
         run: |
           curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -204,7 +211,7 @@ jobs:
             --dbhost=127.0.0.1
           wp config set CFDEV_DEMO true --raw --type=constant --path=$WP_DIR
           wp core install --path=$WP_DIR \
-            --url=http://127.0.0.1:8080 \
+            --url=http://localhost \
             --title="CFDev CI" \
             --admin_user="$WP_USER" \
             --admin_password="$WP_PASS" \
@@ -217,8 +224,9 @@ jobs:
           # Plugin
           ln -s $GITHUB_WORKSPACE $WP_DIR/wp-content/plugins/cfdev-plugin
           wp plugin activate cfdev-plugin --path=$WP_DIR
-          # Permaliens
-          wp rewrite structure '/%postname%/' --path=$WP_DIR --hard
+          # Permaliens (flush DB seulement, pas de .htaccess — nginx gère le routing)
+          wp rewrite structure '/%postname%/' --path=$WP_DIR
+          wp rewrite flush --path=$WP_DIR
           # Page template pour spec 11-front-end
           PAGE_ID=$(wp post create \
             --post_type=page \
@@ -229,18 +237,32 @@ jobs:
             --path=$WP_DIR)
           wp post meta update "$PAGE_ID" _wp_page_template template-cfdev-test.php --path=$WP_DIR
 
-      - name: Start PHP built-in server (auto-restart)
+      - name: Configure nginx + start services
         run: |
-          (while true; do
-            php -d memory_limit=512M \
-              -S 127.0.0.1:8080 \
-              -t "$WP_DIR" \
-              "$GITHUB_WORKSPACE/.github/wp-router.php" 2>&1 || true
-            sleep 1
-          done) &
+          sudo tee /etc/nginx/sites-available/wordpress > /dev/null << 'NGINXEOF'
+          server {
+              listen 80;
+              server_name localhost;
+              root /var/www/wordpress;
+              index index.php;
+              location / {
+                  try_files $uri $uri/ /index.php?$args;
+              }
+              location ~ \.php$ {
+                  fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+                  include fastcgi_params;
+                  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+              }
+          }
+          NGINXEOF
+          sudo ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+          sudo rm -f /etc/nginx/sites-enabled/default
+          sudo service php8.4-fpm start
+          sudo nginx -t
+          sudo service nginx start
           timeout 30 bash -c \
-            'until curl -sf http://127.0.0.1:8080/wp-login.php > /dev/null; do sleep 1; done'
-          echo "WordPress ready at http://127.0.0.1:8080"
+            'until curl -sf http://localhost/wp-login.php > /dev/null; do sleep 1; done'
+          echo "WordPress ready at http://localhost"
 
       - uses: actions/setup-node@v4
         with:
@@ -262,7 +284,7 @@ jobs:
             --browser chrome \
             --spec 'cypress/e2e/0[1-9]*.cy.js,cypress/e2e/1[0-3]*.cy.js'
         env:
-          CYPRESS_BASE_URL: http://127.0.0.1:8080
+          CYPRESS_BASE_URL: http://localhost
           CYPRESS_WP_USER: ${{ env.WP_USER }}
           CYPRESS_WP_PASS: ${{ env.WP_PASS }}
 

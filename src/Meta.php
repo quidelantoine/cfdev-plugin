@@ -33,6 +33,14 @@ abstract class Meta
     public array $fields = [];
     public string $description = '';
 
+    /**
+     * Warnings collected during build() — duplicate field IDs within this meta object.
+     * Each entry: ['field' => string, 'context' => string, 'message' => string]
+     *
+     * @var array<int, array{field: string, context: string, message: string}>
+     */
+    public array $buildWarnings = [];
+
     protected static bool $noticeShown = false;
 
     /**
@@ -503,6 +511,27 @@ abstract class Meta
      * @since   1.0.0
      *
      */
+    /**
+     * Records a duplicate-field-ID warning when the same ID is registered twice in this meta object.
+     * Called before each $this->fields[$id] assignment inside build().
+     */
+    private function trackFieldWarning(string $field_id, string $context): void
+    {
+        if (! isset($this->fields[$field_id])) {
+            return;
+        }
+        $this->buildWarnings[] = [
+            'field'   => $field_id,
+            'context' => $context,
+            'message' => sprintf(
+                'Field ID "%s" is declared more than once in meta box "%s" (context: %s). Only the last declaration is active — the earlier field definition is silently lost.',
+                $field_id,
+                $this->id,
+                $context
+            ),
+        ];
+    }
+
     public function build(mixed $data, mixed $parent = null): mixed
     {
         $return = array();
@@ -517,7 +546,6 @@ abstract class Meta
                     $tab->meta_type = $this->metaType();
 
                     if (self::isBundle($fields[0])) {
-                        /** @phpstan-ignore assign.propertyType */
                         $tab->fields = $this->build($fields[0]);
                     } else {
                         $tabFields = [];
@@ -526,8 +554,9 @@ abstract class Meta
                             if (class_exists($class)) {
                                 $field = new $class($field, $this->id);
                                 /** @var \Weblitzer\CFDev\Field $field */
-                                $field->meta_type           = $this->metaType();
+                                        $field->meta_type           = $this->metaType();
 
+                                $this->trackFieldWarning($field->id, $title);
                                 $this->fields[$field->id]   = $field;
                                 $tabFields[$field->id]      = $field;
                             }
@@ -559,6 +588,7 @@ abstract class Meta
                         $field->meta_type       = $this->metaType();
                         $field->in_bundle       = true;
 
+                        $this->trackFieldWarning($field->id, 'bundle:' . $bundle_id);
                         $this->fields[$field->id]   = $field;
                         $bundle->fields[$field->id] = $field;
                         $bundle->meta_type          = $this->metaType();
@@ -574,6 +604,7 @@ abstract class Meta
                         /** @var \Weblitzer\CFDev\Field $field */
                         $field->meta_type           = $this->metaType();
 
+                        $this->trackFieldWarning($field->id, 'flat');
                         $this->fields[$field->id]   = $field;
                         $return[$field->id]         = $field;
                     }

@@ -48,6 +48,204 @@ class Registry
     }
 
     /**
+     * Returns MetaBox IDs registered more than once for the same post type.
+     *
+     * Example: addMetaBox('product_info', ...) called twice for post type 'product'
+     * → ['product_info' => ['product']]
+     *
+     * WordPress silently keeps only the last registration, making the earlier one invisible.
+     *
+     * @return array<string, array<string>>  meta_box_id => post types where it is duplicated
+     */
+    public static function duplicateMetaBoxIds(): array
+    {
+        $map = [];
+
+        foreach (self::$metas as $meta) {
+            if (! ($meta instanceof MetaBox)) {
+                continue;
+            }
+            foreach ($meta->post_types as $pt) {
+                $key         = $meta->id . ':' . $pt;
+                $map[$key]   = ($map[$key] ?? 0) + 1;
+            }
+        }
+
+        $dups = [];
+        foreach ($map as $key => $count) {
+            if ($count > 1) {
+                [$box_id, $pt] = explode(':', $key, 2);
+                $dups[$box_id][] = $pt;
+            }
+        }
+
+        return $dups;
+    }
+
+    /**
+     * WordPress meta keys that CFDev should never use as field IDs because WordPress
+     * writes to them internally.  Naming a custom field with one of these keys would
+     * silently corrupt core features (featured image, page templates, trashed posts…).
+     *
+     * @var array<string>
+     */
+    private const WP_RESERVED_META_KEYS = [
+        // Attachments / media
+        '_thumbnail_id',
+        '_wp_attached_file',
+        '_wp_attachment_metadata',
+        '_wp_attachment_image_alt',
+        // Concurrent editing
+        '_edit_lock',
+        '_edit_last',
+        // Page templates
+        '_wp_page_template',
+        // URL / slug management
+        '_wp_old_slug',
+        '_wp_old_date',
+        '_wp_desired_post_slug',
+        // Trash
+        '_wp_trash_meta_status',
+        '_wp_trash_meta_time',
+        // Cron / pings
+        '_pingme',
+        '_encloseme',
+        // Nav menus
+        '_menu_item_type',
+        '_menu_item_menu_item_parent',
+        '_menu_item_object_id',
+        '_menu_item_object',
+        '_menu_item_target',
+        '_menu_item_classes',
+        '_menu_item_xfn',
+        '_menu_item_url',
+        // User meta — sessions & capabilities
+        'session_tokens',
+        'wp_capabilities',
+        'wp_user_level',
+        'dismissed_wp_pointers',
+        'show_welcome_panel',
+        'rich_editing',
+        'syntax_highlighting',
+        'comment_shortcuts',
+        'admin_color',
+        'show_admin_bar_front',
+    ];
+
+    /**
+     * Returns field IDs that collide with WordPress reserved meta keys.
+     *
+     * Using a reserved key as a CFDev field ID would silently overwrite a WordPress
+     * core value (featured image, page template, user sessions, etc.).
+     *
+     * Each entry: field_id => ['meta_box_id', …]
+     *
+     * @return array<string, array<string>>  field_id => meta box IDs where it appears
+     */
+    public static function reservedFieldIds(): array
+    {
+        $found = [];
+
+        foreach (self::$metas as $meta) {
+            foreach (array_keys($meta->fields) as $field_id) {
+                if (in_array($field_id, self::WP_RESERVED_META_KEYS, true)) {
+                    $found[$field_id][] = $meta->id;
+                }
+            }
+        }
+
+        return $found;
+    }
+
+    /**
+     * Returns duplicate field IDs declared more than once inside the same meta object.
+     *
+     * A field declared twice in the same meta box (same ID in two tabs, or copy-paste error)
+     * causes the first definition to be silently overwritten by the second during build().
+     *
+     * Each entry: ['meta_box' => string, 'field' => string, 'context' => string, 'message' => string]
+     *
+     * @return array<int, array{meta_box: string, field: string, context: string, message: string}>
+     */
+    public static function intraBoxDuplicates(): array
+    {
+        $all = [];
+        foreach (self::$metas as $meta) {
+            foreach ($meta->buildWarnings as $w) {
+                $all[] = [
+                    'meta_box' => $meta->id,
+                    'field'    => $w['field'],
+                    'context'  => $w['context'],
+                    'message'  => $w['message'],
+                ];
+            }
+        }
+        return $all;
+    }
+
+    /**
+     * Returns bundle IDs registered more than once for the same post type.
+     *
+     * Two meta boxes sharing the same bundle ID write to the same meta key in the database,
+     * causing each save to overwrite the other's data.
+     *
+     * Each entry: bundle_id => post types where the collision occurs
+     *
+     * @return array<string, array<string>>
+     */
+    public static function duplicateBundleIds(): array
+    {
+        $map = [];
+
+        foreach (self::$metas as $meta) {
+            if (! ($meta instanceof MetaBox)) {
+                continue;
+            }
+            foreach (array_keys($meta->data instanceof \Weblitzer\CFDev\Fields\Bundle
+                ? [$meta->data->id => true]
+                : self::resolveBundleIds($meta)
+            ) as $bundle_id) {
+                foreach ($meta->post_types as $pt) {
+                    $key       = $bundle_id . ':' . $pt;
+                    $map[$key] = ($map[$key] ?? 0) + 1;
+                }
+            }
+        }
+
+        $dups = [];
+        foreach ($map as $key => $count) {
+            if ($count > 1) {
+                [$bundle_id, $pt] = explode(':', $key, 2);
+                $dups[$bundle_id][] = $pt;
+            }
+        }
+
+        return $dups;
+    }
+
+    /**
+     * Returns all bundle IDs declared in a meta object (flat bundle, tabs, accordion).
+     *
+     * @return array<string, true>
+     */
+    private static function resolveBundleIds(Meta $meta): array
+    {
+        $ids = [];
+
+        if ($meta->data instanceof \Weblitzer\CFDev\Fields\Bundle) {
+            $ids[$meta->data->id] = true;
+        } elseif ($meta->data instanceof Tabs || $meta->data instanceof Accordion) {
+            foreach ($meta->data->tabs as $tab) {
+                if ($tab->fields instanceof \Weblitzer\CFDev\Fields\Bundle) {
+                    $ids[$tab->fields->id] = true;
+                }
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
      * Returns field IDs that appear more than once on the same meta_type + target.
      *
      * Example: two meta boxes both declare `hero_image` on post type `page`

@@ -246,6 +246,280 @@ class RegistryTest extends CFDevTestCase
     }
 
     // -------------------------------------------------------------------------
+    // intraBoxDuplicates()
+    // -------------------------------------------------------------------------
+
+    public function testIntraBoxDuplicatesDetectsFieldDeclaredTwiceInSameBox(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            $this->fieldDef('price'),
+            $this->fieldDef('price'), // duplicate
+        ]);
+
+        $warns = Registry::intraBoxDuplicates();
+        $this->assertNotEmpty($warns);
+        $this->assertSame('price', $warns[0]['field']);
+        $this->assertSame('box',   $warns[0]['meta_box']);
+    }
+
+    public function testIntraBoxDuplicatesReturnsEmptyWhenAllFieldIdsUnique(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            $this->fieldDef('price'),
+            $this->fieldDef('stock'),
+        ]);
+
+        $this->assertSame([], Registry::intraBoxDuplicates());
+    }
+
+    public function testIntraBoxDuplicatesDoesNotFlagSameIdInDifferentBoxes(): void
+    {
+        $this->makeMetaBox('box_a', 'post', [$this->fieldDef('price')]);
+        $this->makeMetaBox('box_b', 'post', [$this->fieldDef('price')]);
+
+        // That's a cross-box duplicate (handled by duplicates()), not an intra-box one
+        $this->assertSame([], Registry::intraBoxDuplicates());
+    }
+
+    public function testIntraBoxDuplicatesDetectsFieldDeclaredInTwoTabs(): void
+    {
+        // Same ID in two different tabs of the same meta box
+        new MetaBox('box', 'Tabs Box', 'post', [
+            'tabs',
+            [
+                'Tab A' => [$this->fieldDef('weight')],
+                'Tab B' => [$this->fieldDef('weight')], // duplicate across tabs
+            ],
+        ]);
+
+        $warns = Registry::intraBoxDuplicates();
+        $this->assertNotEmpty($warns);
+        $fields = array_column($warns, 'field');
+        $this->assertContains('weight', $fields);
+        $this->assertSame('box', $warns[0]['meta_box']);
+    }
+
+    public function testIntraBoxDuplicatesContextIsTabTitle(): void
+    {
+        new MetaBox('box', 'Tabs Box', 'post', [
+            'tabs',
+            [
+                'Pricing' => [$this->fieldDef('price')],
+                'Details' => [$this->fieldDef('price')], // duplicate
+            ],
+        ]);
+
+        $warns = Registry::intraBoxDuplicates();
+        // The context should name the tab where the second (duplicate) occurrence was found
+        $this->assertSame('Details', $warns[0]['context']);
+    }
+
+    public function testIntraBoxDuplicatesDetectsDuplicateInBundleFields(): void
+    {
+        new MetaBox('box', 'Box', 'post', [
+            'bundle',
+            '_rows',
+            [
+                $this->fieldDef('title'),
+                $this->fieldDef('title'), // duplicate inside bundle
+            ],
+        ]);
+
+        $warns = Registry::intraBoxDuplicates();
+        $this->assertNotEmpty($warns);
+        $this->assertSame('title', $warns[0]['field']);
+        $this->assertStringContainsString('_rows', $warns[0]['context']);
+    }
+
+    public function testIntraBoxDuplicatesContextIsFlatForTopLevelFields(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            $this->fieldDef('price'),
+            $this->fieldDef('price'),
+        ]);
+
+        $this->assertSame('flat', Registry::intraBoxDuplicates()[0]['context']);
+    }
+
+    // -------------------------------------------------------------------------
+    // duplicateBundleIds()
+    // -------------------------------------------------------------------------
+
+    public function testDuplicateBundleIdsDetectsClashOnSamePostType(): void
+    {
+        new MetaBox('box_a', 'Box A', 'post', ['bundle', '_slides', [$this->fieldDef('title')]]);
+        new MetaBox('box_b', 'Box B', 'post', ['bundle', '_slides', [$this->fieldDef('caption')]]);
+
+        $dups = Registry::duplicateBundleIds();
+        $this->assertArrayHasKey('_slides', $dups);
+        $this->assertContains('post', $dups['_slides']);
+    }
+
+    public function testDuplicateBundleIdsIgnoresDifferentPostTypes(): void
+    {
+        new MetaBox('box_a', 'Box A', 'post', ['bundle', '_slides', [$this->fieldDef('title')]]);
+        new MetaBox('box_b', 'Box B', 'page', ['bundle', '_slides', [$this->fieldDef('title')]]);
+
+        $this->assertArrayNotHasKey('_slides', Registry::duplicateBundleIds());
+    }
+
+    public function testDuplicateBundleIdsReturnsEmptyWhenNoDuplicates(): void
+    {
+        new MetaBox('box_a', 'Box A', 'post', ['bundle', '_slides',  [$this->fieldDef('title')]]);
+        new MetaBox('box_b', 'Box B', 'post', ['bundle', '_members', [$this->fieldDef('name')]]);
+
+        $this->assertSame([], Registry::duplicateBundleIds());
+    }
+
+    public function testDuplicateBundleIdsDetectsClashInsideTabs(): void
+    {
+        // Bundle inside a tab of box_a
+        new MetaBox('box_a', 'Box A', 'post', [
+            'tabs',
+            [
+                'Sessions' => [['bundle', '_sessions', [$this->fieldDef('date')]]],
+            ],
+        ]);
+        // Same bundle ID in a flat bundle on box_b
+        new MetaBox('box_b', 'Box B', 'post', ['bundle', '_sessions', [$this->fieldDef('date')]]);
+
+        $dups = Registry::duplicateBundleIds();
+        $this->assertArrayHasKey('_sessions', $dups);
+        $this->assertContains('post', $dups['_sessions']);
+    }
+
+    public function testDuplicateBundleIdsDetectsClashInsideAccordion(): void
+    {
+        new MetaBox('box_a', 'Box A', 'post', [
+            'accordion',
+            [
+                'Galerie' => [['bundle', '_gallery', [$this->fieldDef('image')]]],
+            ],
+        ]);
+        new MetaBox('box_b', 'Box B', 'post', [
+            'accordion',
+            [
+                'Photos' => [['bundle', '_gallery', [$this->fieldDef('image')]]],
+            ],
+        ]);
+
+        $dups = Registry::duplicateBundleIds();
+        $this->assertArrayHasKey('_gallery', $dups);
+        $this->assertContains('post', $dups['_gallery']);
+    }
+
+    // -------------------------------------------------------------------------
+    // reservedFieldIds()
+    // -------------------------------------------------------------------------
+
+    public function testReservedFieldIdsDetectsWpThumbnailId(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            ['type' => 'image', 'id' => '_thumbnail_id', 'label' => 'Featured'],
+        ]);
+
+        $reserved = Registry::reservedFieldIds();
+        $this->assertArrayHasKey('_thumbnail_id', $reserved);
+        $this->assertContains('box', $reserved['_thumbnail_id']);
+    }
+
+    public function testReservedFieldIdsReturnsEmptyForSafeIds(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            $this->fieldDef('cover_image'),
+            $this->fieldDef('price'),
+        ]);
+
+        $this->assertSame([], Registry::reservedFieldIds());
+    }
+
+    public function testReservedFieldIdsDetectsMultipleReservedKeysAcrossBoxes(): void
+    {
+        $this->makeMetaBox('box_a', 'post', [
+            ['type' => 'image', 'id' => '_thumbnail_id',    'label' => 'Thumb'],
+        ]);
+        $this->makeMetaBox('box_b', 'post', [
+            ['type' => 'text',  'id' => '_wp_page_template', 'label' => 'Tpl'],
+        ]);
+
+        $reserved = Registry::reservedFieldIds();
+        $this->assertArrayHasKey('_thumbnail_id',     $reserved);
+        $this->assertArrayHasKey('_wp_page_template', $reserved);
+    }
+
+    public function testReservedFieldIdsDetectsUserReservedKey(): void
+    {
+        new UserMeta('profile', 'Profile', [
+            ['type' => 'text', 'id' => 'session_tokens', 'label' => 'Sessions'],
+        ]);
+
+        $reserved = Registry::reservedFieldIds();
+        $this->assertArrayHasKey('session_tokens', $reserved);
+        $this->assertContains('profile', $reserved['session_tokens']);
+    }
+
+    public function testReservedFieldIdsDetectsEditLockKey(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            ['type' => 'text', 'id' => '_edit_lock', 'label' => 'Lock'],
+        ]);
+
+        $this->assertArrayHasKey('_edit_lock', Registry::reservedFieldIds());
+    }
+
+    public function testReservedFieldIdsReportsAllBoxesUsingTheSameReservedKey(): void
+    {
+        $this->makeMetaBox('box_a', 'post', [
+            ['type' => 'image', 'id' => '_thumbnail_id', 'label' => 'A'],
+        ]);
+        $this->makeMetaBox('box_b', 'page', [
+            ['type' => 'image', 'id' => '_thumbnail_id', 'label' => 'B'],
+        ]);
+
+        $reserved = Registry::reservedFieldIds();
+        $this->assertContains('box_a', $reserved['_thumbnail_id']);
+        $this->assertContains('box_b', $reserved['_thumbnail_id']);
+    }
+
+    // -------------------------------------------------------------------------
+    // duplicateMetaBoxIds()
+    // -------------------------------------------------------------------------
+
+    public function testDuplicateMetaBoxIdsDetectsClashOnSamePostType(): void
+    {
+        $this->makeMetaBox('product_info', 'post');
+        $this->makeMetaBox('product_info', 'post');
+
+        $dups = Registry::duplicateMetaBoxIds();
+        $this->assertArrayHasKey('product_info', $dups);
+        $this->assertContains('post', $dups['product_info']);
+    }
+
+    public function testDuplicateMetaBoxIdsIgnoresDifferentPostTypes(): void
+    {
+        $this->makeMetaBox('shared_box', 'post');
+        $this->makeMetaBox('shared_box', 'page');
+
+        $this->assertArrayNotHasKey('shared_box', Registry::duplicateMetaBoxIds());
+    }
+
+    public function testDuplicateMetaBoxIdsReturnsEmptyWhenNoDuplicates(): void
+    {
+        $this->makeMetaBox('box_a', 'post');
+        $this->makeMetaBox('box_b', 'post');
+
+        $this->assertSame([], Registry::duplicateMetaBoxIds());
+    }
+
+    public function testDuplicateMetaBoxIdsIgnoresNonMetaBoxTypes(): void
+    {
+        $this->makeMetaBox('box_a', 'post');
+        $this->makeUserMeta('box_a');
+
+        $this->assertArrayNotHasKey('box_a', Registry::duplicateMetaBoxIds());
+    }
+
+    // -------------------------------------------------------------------------
     // duplicates()
     // -------------------------------------------------------------------------
 

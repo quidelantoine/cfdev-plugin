@@ -104,16 +104,17 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 
 | Guide | Description |
 |---|---|
-| [Installation](docs/fr/installation.md) | Prérequis, installation, build production |
-| [Démarrage rapide](docs/fr/demarrage-rapide.md) | Premier post type, meta box et template |
-| [Types de champs](docs/fr/champs.md) | Tous les types de champs avec options |
-| [Layouts](docs/fr/layouts.md) | Bundle, Tabs, Accordion |
-| [Validation](docs/fr/validation.md) | 25+ règles de validation intégrées |
-| [Cache](docs/fr/cache.md) | Cache fichier — activation, invalidation, perf |
-| [Interface admin](docs/fr/admin.md) | Pages admin CFDev (Champs, Cache) |
-| [REST API](docs/fr/rest-api.md) | Exposer les champs via WP REST API |
-| [Répétable & AJAX](docs/fr/repeatable.md) | Champs répétables et chargement AJAX |
-| [Colonnes admin](docs/fr/colonnes-admin.md) | Colonnes dans les listes post/terme/user |
+| [Installation](installation.md) | Prérequis, installation, build production |
+| [Démarrage rapide](demarrage-rapide.md) | Premier post type, meta box et template |
+| [Types de champs](champs.md) | Tous les types de champs avec options |
+| [Layouts](layouts.md) | Bundle, Tabs, Accordion |
+| [Validation](validation.md) | 25+ règles de validation intégrées |
+| [Cache](cache.md) | Cache fichier — activation, invalidation, perf |
+| [Interface admin](admin.md) | Pages admin CFDev (Champs, Cache) |
+| [REST API](rest-api.md) | Exposer les champs via WP REST API |
+| [Répétable & AJAX](repeatable.md) | Champs répétables et chargement AJAX |
+| [Colonnes admin](colonnes-admin.md) | Colonnes dans les listes post/terme/user |
+| [WooCommerce](woocommerce.md) | Champs personnalisés sur les produits et catégories |
 
 ---
 

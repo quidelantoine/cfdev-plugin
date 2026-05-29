@@ -19,8 +19,12 @@ final class DashboardPage extends AdminPage
             return;
         }
 
-        $all  = Registry::all();
-        $dups = Registry::duplicates();
+        $all           = Registry::all();
+        $dups          = Registry::duplicates();
+        $dupBoxIds     = Registry::duplicateMetaBoxIds();
+        $dupBundleIds  = Registry::duplicateBundleIds();
+        $intraBoxDups  = Registry::intraBoxDuplicates();
+        $reservedKeys  = Registry::reservedFieldIds();
 
         // One bucket per post type, sorted alphabetically
         $by_type = [];
@@ -68,6 +72,71 @@ final class DashboardPage extends AdminPage
                 </span>
                 <?php endif; ?>
             </div>
+
+            <?php if (! empty($intraBoxDups)) : ?>
+            <div class="notice notice-error cfdev-notice-dups">
+                <p><strong><?php esc_html_e('Duplicate field IDs within the same meta box:', 'cfdev'); ?></strong></p>
+                <ul>
+                    <?php foreach ($intraBoxDups as $w) : ?>
+                    <li>
+                        <code><?php echo esc_html($w['field']); ?></code>
+                        <?php esc_html_e('declared more than once in', 'cfdev'); ?>
+                        <strong><?php echo esc_html($w['meta_box']); ?></strong>
+                        (<?php echo esc_html($w['context']); ?>)
+                        — <?php esc_html_e('only the last declaration is active; the earlier field definition and its saved data are silently lost.', 'cfdev'); ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
+
+            <?php if (! empty($dupBundleIds)) : ?>
+            <div class="notice notice-error cfdev-notice-dups">
+                <p><strong><?php esc_html_e('Duplicate bundle IDs across meta boxes:', 'cfdev'); ?></strong></p>
+                <ul>
+                    <?php foreach ($dupBundleIds as $bundle_id => $post_types) : ?>
+                    <li>
+                        <code><?php echo esc_html($bundle_id); ?></code>
+                        <?php esc_html_e('is used as a bundle ID in multiple meta boxes for post type', 'cfdev'); ?>
+                        <strong><?php echo esc_html(implode(', ', $post_types)); ?></strong>
+                        — <?php esc_html_e('every save overwrites the other meta box\'s bundle data. Use a unique bundle ID for each meta box.', 'cfdev'); ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
+
+            <?php if (! empty($reservedKeys)) : ?>
+            <div class="notice notice-error cfdev-notice-dups">
+                <p><strong><?php esc_html_e('Reserved WordPress meta keys used as field IDs:', 'cfdev'); ?></strong></p>
+                <ul>
+                    <?php foreach ($reservedKeys as $field_id => $boxes) : ?>
+                    <li>
+                        <code><?php echo esc_html($field_id); ?></code>
+                        <?php esc_html_e('in', 'cfdev'); ?>
+                        <strong><?php echo esc_html(implode(', ', $boxes)); ?></strong>
+                        — <?php esc_html_e('this key is used by WordPress core. Saving to it will corrupt native WordPress data (featured image, page template, user sessions, etc.). Rename this field immediately.', 'cfdev'); ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
+
+            <?php if (! empty($dupBoxIds)) : ?>
+            <div class="notice notice-error cfdev-notice-dups">
+                <p><strong><?php esc_html_e('Duplicate meta box IDs:', 'cfdev'); ?></strong></p>
+                <ul>
+                    <?php foreach ($dupBoxIds as $box_id => $post_types) : ?>
+                    <li>
+                        <code><?php echo esc_html($box_id); ?></code>
+                        <?php esc_html_e('is registered multiple times for post type', 'cfdev'); ?>
+                        <strong><?php echo esc_html(implode(', ', $post_types)); ?></strong>
+                        — <?php esc_html_e('WordPress only shows the last registration. Use a unique ID for each addMetaBox() call.', 'cfdev'); ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
 
             <?php if (! empty($dups)) : ?>
             <div class="notice notice-warning cfdev-notice-dups">
@@ -133,17 +202,17 @@ final class DashboardPage extends AdminPage
             <div id="<?php echo esc_attr($tab_id); ?>"
                  class="cfdev-tab-panel"
                  <?php echo ($tab_id !== $first_tab) ? 'hidden' : ''; ?>>
-                <?php self::renderPanel($entries, $dups, $pt); ?>
+                <?php self::renderPanel($entries, $dups, $dupBoxIds, $pt); ?>
             </div>
             <?php endforeach; ?>
 
             <div id="cfdev-tab-terms" class="cfdev-tab-panel"
                  <?php echo ($first_tab !== 'cfdev-tab-terms') ? 'hidden' : ''; ?>>
-                <?php self::renderPanel($terms, $dups); ?>
+                <?php self::renderPanel($terms, $dups, $dupBoxIds); ?>
             </div>
             <div id="cfdev-tab-users" class="cfdev-tab-panel"
                  <?php echo ($first_tab !== 'cfdev-tab-users') ? 'hidden' : ''; ?>>
-                <?php self::renderPanel($users, $dups); ?>
+                <?php self::renderPanel($users, $dups, $dupBoxIds); ?>
             </div>
 
         </div>
@@ -159,23 +228,25 @@ final class DashboardPage extends AdminPage
     /**
      * @param array<int, array<string, mixed>> $entries
      * @param array<string, array<string>>     $dups
+     * @param array<string, array<string>>     $dupBoxIds
      */
-    private static function renderPanel(array $entries, array $dups, string $current_pt = ''): void
+    private static function renderPanel(array $entries, array $dups, array $dupBoxIds = [], string $current_pt = ''): void
     {
         if (empty($entries)) {
             echo '<p class="cfdev-empty">' . esc_html__('No groups declared.', 'cfdev') . '</p>';
             return;
         }
         foreach ($entries as $entry) {
-            self::renderGroup($entry, $dups, $current_pt);
+            self::renderGroup($entry, $dups, $dupBoxIds, $current_pt);
         }
     }
 
     /**
      * @param array<string, mixed>         $entry
      * @param array<string, array<string>> $dups
+     * @param array<string, array<string>> $dupBoxIds
      */
-    private static function renderGroup(array $entry, array $dups, string $current_pt = ''): void
+    private static function renderGroup(array $entry, array $dups, array $dupBoxIds = [], string $current_pt = ''): void
     {
         $bundle_count = array_sum(array_map(fn($b) => count($b['fields']), $entry['bundles']));
         $total        = count($entry['fields']) + $bundle_count;
@@ -203,6 +274,10 @@ final class DashboardPage extends AdminPage
 
                 <span class="cfdev-group-title"><?php echo esc_html($entry['title']); ?></span>
                 <code class="cfdev-group-id"><?php echo esc_html($entry['id']); ?></code>
+                <?php if (isset($dupBoxIds[$entry['id']])) : ?>
+                <span class="cfdev-dup-badge cfdev-dup-badge--box"
+                      title="<?php esc_attr_e('Duplicate meta box ID — WordPress only shows the last registration', 'cfdev'); ?>">⚠</span>
+                <?php endif; ?>
 
                 <?php
                 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

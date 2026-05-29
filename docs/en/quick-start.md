@@ -279,6 +279,8 @@ add_action('init', static function (): void {
 
 ## 7. Layouts
 
+> **Important — unique IDs per post type:** every `addMetaBox()` call on the same post type must use a **different ID**. Two calls with the same ID cause the second to silently overwrite the first (native WordPress behaviour). All examples below use distinct IDs.
+
 ### Bundle — repeatable rows of fields
 
 A Bundle groups multiple fields into repeatable rows. Perfect for team members, sessions, pricing tiers, etc.
@@ -315,7 +317,7 @@ foreach ($members as $member) {
 Tab labels are the array keys. Each tab contains a flat list of fields.
 
 ```php
-$product->addMetaBox('product_info', 'Product', [
+$product->addMetaBox('product_tabs', 'Product', [
     'tabs',
     [
         'General' => [

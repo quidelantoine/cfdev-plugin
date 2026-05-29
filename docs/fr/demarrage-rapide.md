@@ -279,6 +279,8 @@ add_action('init', static function (): void {
 
 ## 7. Layouts
 
+> **Important — IDs uniques par post type :** chaque `addMetaBox()` sur un même post type doit avoir un **ID différent**. Deux appels avec le même ID entraîne l'écrasement du premier par le second (comportement natif WordPress). Tous les exemples ci-dessous utilisent des IDs distincts.
+
 ### Bundle — lignes répétables de champs
 
 Un Bundle regroupe plusieurs champs en lignes répétables. Idéal pour des membres d'équipe, des sessions, des tarifs, etc.
@@ -315,7 +317,7 @@ foreach ($members as $member) {
 Les labels des onglets sont les clés du tableau. Chaque onglet contient une liste de champs.
 
 ```php
-$product->addMetaBox('product_info', 'Produit', [
+$product->addMetaBox('product_tabs', 'Produit', [
     'tabs',
     [
         'Général' => [

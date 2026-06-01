@@ -1,0 +1,16 @@
+{
+  "core": null,
+  "phpVersion": "8.3",
+  "plugins": [
+    ".",
+    "https://downloads.wordpress.org/plugin/classic-editor.latest-stable.zip"
+  ],
+  "mappings": {
+    "wp-content/mu-plugins/ci-disable-block-editor.php": "./tests/mu-plugins/ci-disable-block-editor.php"
+  },
+  "config": {
+    "CFDEV_DEMO": true,
+    "DISABLE_WP_CRON": true
+  },
+  "afterSetup": "bash bin/wp-env-seed.sh"
+}

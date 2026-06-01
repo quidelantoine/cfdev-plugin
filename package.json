@@ -5,9 +5,14 @@
   "scripts": {
     "cy:open": "cypress open",
     "cy:run": "cypress run --browser chrome --spec 'cypress/e2e/*.cy.js'",
-    "cy:run:headed": "cypress run --browser chrome --headed"
+    "cy:run:headed": "cypress run --browser chrome --headed",
+    "wp-env:start": "wp-env start",
+    "wp-env:stop": "wp-env stop",
+    "wp-env:clean": "wp-env clean all",
+    "wp-env:seed": "bash bin/wp-env-seed.sh"
   },
   "devDependencies": {
+    "@wordpress/env": "^9.0.0",
     "cypress": "^13.14.2"
   }
 }

@@ -606,3 +606,6 @@ FICHIERS CLÉS à modifier :
 
 Commence par lire .github/workflows/ci.yml et cypress.config.js pour
 comprendre le setup actuel, puis propose le plan de migration.
+
+
+Verifer la relase => distignore ??

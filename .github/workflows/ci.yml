@@ -144,185 +144,25 @@ jobs:
 
       - run: ./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
 
-  # ── 5. Cypress — E2E ─────────────────────────────────────────────────────
+  # ── 5. Cypress — E2E (wp-env + matrix parallèle) ─────────────────────────
   cypress:
-    name: Cypress — E2E
+    name: Cypress — E2E (${{ matrix.group }})
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_DATABASE: wordpress
-          MYSQL_USER: wpuser
-          MYSQL_PASSWORD: wppassword
-          MYSQL_ROOT_PASSWORD: rootpassword
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-    env:
-      WP_DIR: /var/www/wordpress
-      WP_USER: admin
-      WP_PASS: AdminPass123!
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Groupe A — login, flat-fields, validation, bundle
+          - { group: "01-04", spec: "cypress/e2e/0[1-4]*.cy.js" }
+          # Groupe B — tabs (page+post), accordion (page+post), term-meta
+          - { group: "05-07", spec: "cypress/e2e/0[5-7]*.cy.js" }
+          # Groupe C — user-meta, REST, admin-pages, front-end, code-modal, field-icons
+          - { group: "08-13", spec: "cypress/e2e/0[89]*.cy.js,cypress/e2e/1[0-3]*.cy.js" }
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: mysqli, pdo_mysql, gd, zip, mbstring, xml, curl, intl, exif
-          coverage: none
-
-      # nginx + php-fpm : shivammathur utilise le PPA ondrej/php, donc les
-      # paquets apt php8.4-* sont compatibles avec le PHP déjà installé.
-      - name: Install nginx + php8.4-fpm
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y nginx php8.4-fpm
-
-      - name: Install WP-CLI
-        run: |
-          curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-          chmod +x wp-cli.phar
-          sudo mv wp-cli.phar /usr/local/bin/wp
-
-      - name: Install Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - run: composer install --no-interaction --prefer-dist --no-progress
-
-      - name: Download and install WordPress
-        run: |
-          sudo mkdir -p $WP_DIR
-          sudo chown $USER:$USER $WP_DIR
-          wp core download --path=$WP_DIR
-          wp config create --path=$WP_DIR \
-            --dbname=wordpress \
-            --dbuser=wpuser \
-            --dbpass=wppassword \
-            --dbhost=127.0.0.1
-          wp config set CFDEV_DEMO true --raw --type=constant --path=$WP_DIR
-          # Désactive wp-cron HTTP : chaque page load WordPress envoie une requête
-          # async à wp-cron.php qui peut occuper un worker FPM 30+ s et rendre le
-          # serveur momentanément inaccessible pendant les tests Cypress.
-          wp config set DISABLE_WP_CRON true --raw --type=constant --path=$WP_DIR
-          wp core install --path=$WP_DIR \
-            --url=http://localhost \
-            --title="CFDev CI" \
-            --admin_user="$WP_USER" \
-            --admin_password="$WP_PASS" \
-            --admin_email=ci@example.com \
-            --skip-email
-          # Mu-plugin : désactive le block editor (Gutenberg place les meta boxes dans
-          # une iframe inaccessible à cy.get() — le mu-plugin est plus fiable que
-          # le plugin Classic Editor qui peut échouer à s'installer en CI)
-          mkdir -p "$WP_DIR/wp-content/mu-plugins"
-          cat > "$WP_DIR/wp-content/mu-plugins/ci-disable-block-editor.php" << 'MUPLUGIN'
-          <?php
-          add_filter('use_block_editor_for_post', '__return_false', 100);
-          add_filter('use_block_editor_for_post_type', '__return_false', 100);
-          MUPLUGIN
-          # Classic Editor (conservé pour #publish et les sélecteurs de l'interface)
-          wp plugin install classic-editor --activate --path=$WP_DIR
-          wp option update classic-editor-replace classic --path=$WP_DIR
-          wp option update classic-editor-allow-users disallow --path=$WP_DIR
-          # Plugin — symlink pointe vers $GITHUB_WORKSPACE (/home/runner/work/…).
-          # nginx (www-data) doit pouvoir traverser /home/runner pour servir les
-          # assets statiques (JS/CSS). PHP-FPM (runner) n'a pas ce problème.
-          sudo chmod o+x /home/runner
-          ln -s $GITHUB_WORKSPACE $WP_DIR/wp-content/plugins/cfdev-plugin
-          wp plugin activate cfdev-plugin --path=$WP_DIR
-          # Cache activé pour spec 10 (cache admin page tests)
-          wp option update cfdev_cache_enabled 1 --path=$WP_DIR
-          # Permaliens (flush DB seulement, pas de .htaccess — nginx gère le routing)
-          wp rewrite structure '/%postname%/' --path=$WP_DIR
-          wp rewrite flush --path=$WP_DIR
-          # template-home.php pour spec 05/06 (page-tabs / page-accordion)
-          ACTIVE_THEME=$(wp option get template --path=$WP_DIR)
-          echo '<?php /* Template Name: Home */?>' \
-            > "$WP_DIR/wp-content/themes/$ACTIVE_THEME/template-home.php"
-
-          # Page template pour spec 11-front-end
-          PAGE_ID=$(wp post create \
-            --post_type=page \
-            --post_title="CFDev Test" \
-            --post_name=cfdev-test \
-            --post_status=publish \
-            --porcelain \
-            --path=$WP_DIR)
-          wp post meta update "$PAGE_ID" _wp_page_template template-cfdev-test.php --path=$WP_DIR
-
-      - name: Diagnostic WordPress setup
-        run: |
-          echo "=== Plugins actifs ==="
-          wp plugin list --status=active --path=$WP_DIR
-          echo "=== CFDEV_DEMO ==="
-          wp eval 'echo "CFDEV_DEMO: " . var_export(defined("CFDEV_DEMO") ? CFDEV_DEMO : "NOT_DEFINED", true) . "\n";' --path=$WP_DIR
-          echo "=== Mu-plugin content ==="
-          cat "$WP_DIR/wp-content/mu-plugins/ci-disable-block-editor.php" || echo "FILE NOT FOUND"
-          echo "=== Block editor filter (mu-plugin) ==="
-          wp eval 'echo "block_editor_for_post: " . var_export(apply_filters("use_block_editor_for_post", true, new WP_Post((object)["ID"=>0,"post_type"=>"post","filter"=>"raw"])), true) . "\n";' --path=$WP_DIR || true
-
-      - name: Configure nginx + start services
-        run: |
-          sudo tee /etc/nginx/sites-available/wordpress > /dev/null << 'NGINXEOF'
-          server {
-              listen 80;
-              server_name localhost;
-              root /var/www/wordpress;
-              index index.php;
-              location / {
-                  try_files $uri $uri/ /index.php?$args;
-              }
-              location ~ \.php$ {
-                  fastcgi_pass unix:/run/php/php8.4-fpm.sock;
-                  include fastcgi_params;
-                  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-              }
-          }
-          NGINXEOF
-          sudo ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
-          sudo rm -f /etc/nginx/sites-enabled/default
-
-          # Workers FPM en tant que "runner" pour accéder au symlink → GITHUB_WORKSPACE
-          # (www-data ne peut pas traverser /home/runner/ qui est en 750 par défaut)
-          sudo sed -i \
-            -e 's/^user = www-data/user = runner/' \
-            -e 's/^group = www-data/group = runner/' \
-            -e 's/^pm\.max_children = .*/pm.max_children = 10/' \
-            /etc/php/8.4/fpm/pool.d/www.conf
-
-          sudo service php8.4-fpm restart
-          sudo nginx -t
-          sudo service nginx restart
-
-          # Attendre que WordPress réponde
-          timeout 30 bash -c \
-            'until curl -sf http://localhost/wp-login.php > /dev/null; do sleep 1; done'
-
-          # Préchauffage authentifié : login via curl puis chargement de l'admin.
-          # Sans ça le premier cy.session() dépasse defaultCommandTimeout=8000ms
-          # car le code path PHP de l'admin est froid (redirect non-authentifié
-          # vers wp-login n'exécute jamais le code admin).
-          curl -s -c /tmp/wpcookies.txt http://localhost/wp-login.php > /dev/null
-          curl -s -b /tmp/wpcookies.txt -c /tmp/wpcookies.txt \
-            --data-urlencode "log=$WP_USER" \
-            --data-urlencode "pwd=$WP_PASS" \
-            -d "wp-submit=Log+In&redirect_to=%2Fwp-admin%2F&testcookie=1" \
-            http://localhost/wp-login.php > /dev/null
-          curl -s -b /tmp/wpcookies.txt http://localhost/wp-admin/ > /dev/null || true
-          curl -s -b /tmp/wpcookies.txt \
-            "http://localhost/wp-admin/post-new.php?post_type=post" > /dev/null || true
-          echo "WordPress ready at http://localhost"
-
+      # ── Node / npm ──────────────────────────────────────────────────────────
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -330,26 +170,71 @@ jobs:
 
       - run: npm ci
 
+      # ── Cypress binary ──────────────────────────────────────────────────────
       - name: Cache Cypress binary
         uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
-      - name: Run Cypress E2E
-        # Exclude spec 14 (WooCommerce not installed in CI)
+      # ── Docker images (wordpress + mariadb) — clé mensuelle ─────────────────
+      # Sur cache hit  : docker load ~25 s  → wp-env start ~30 s
+      # Sur cache miss : docker pull ~90 s  → wp-env start ~60 s, images sauvées en post-step
+      - name: Docker cache key
+        id: docker-month
+        run: echo "value=$(date +%Y%m)" >> $GITHUB_OUTPUT
+
+      - name: Cache Docker images
+        id: docker-cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/docker-wp-images.tar
+          key: docker-wp-env-php8.3-${{ steps.docker-month.outputs.value }}
+          restore-keys: docker-wp-env-php8.3-
+
+      - name: Load Docker images from cache
+        if: steps.docker-cache.outputs.cache-hit == 'true'
+        run: docker load -i /tmp/docker-wp-images.tar
+
+      # ── wp-env ──────────────────────────────────────────────────────────────
+      # Lance Docker (wordpress:php8.3-fpm + mariadb:lts), installe WordPress,
+      # active cfdev-plugin + classic-editor, mappe le mu-plugin via mappings,
+      # injecte les constantes (CFDEV_DEMO, DISABLE_WP_CRON) via config,
+      # puis afterSetup exécute bin/wp-env-seed.sh (options WP + page spec-11).
+      - name: Start wp-env
+        run: npx wp-env start
+
+      # Persiste les images wordpress/mariadb pour les runs suivants.
+      # actions/cache@v4 auto-save en post-step si le fichier existe.
+      - name: Save Docker images for next run
+        if: steps.docker-cache.outputs.cache-hit != 'true'
+        run: |
+          IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}}' \
+            | grep -E '^(wordpress|mariadb)' | grep -v '<none>' | tr '\n' ' ')
+          [ -n "${IMAGES// }" ] && docker save $IMAGES -o /tmp/docker-wp-images.tar || true
+
+      # ── Préchauffage opcache ─────────────────────────────────────────────────
+      # Évite les timeouts sur le premier cy.session() (cold PHP path).
+      - name: Warm up WordPress
+        run: |
+          curl -sf http://localhost:8888/wp-login.php > /dev/null || true
+          curl -sf http://localhost:8888/wp-admin/    > /dev/null || true
+
+      # ── Cypress ─────────────────────────────────────────────────────────────
+      # Credentials wp-env par défaut : admin / password
+      - name: Run Cypress E2E — ${{ matrix.group }}
         run: |
           npx cypress run \
             --browser chrome \
-            --spec 'cypress/e2e/0[1-9]*.cy.js,cypress/e2e/1[0-3]*.cy.js'
+            --spec '${{ matrix.spec }}'
         env:
-          CYPRESS_BASE_URL: http://localhost
-          CYPRESS_WP_USER: ${{ env.WP_USER }}
-          CYPRESS_WP_PASS: ${{ env.WP_PASS }}
+          CYPRESS_BASE_URL: http://localhost:8888
+          CYPRESS_WP_USER: admin
+          CYPRESS_WP_PASS: password
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-screenshots
+          name: cypress-screenshots-${{ matrix.group }}
           path: cypress/screenshots/
           if-no-files-found: ignore

@@ -161,3 +161,240 @@ npm run cy:open
 ```
 
 ---
+
+## Réinstallation sur un nouveau poste
+
+Tout ce qu'il faut pour que les tests Cypress passent sur une installation fraîche du projet FrankenPHP.
+
+---
+
+### 1. Prérequis
+
+- Docker + Docker Compose
+- Node.js ≥ 20 (pour Cypress)
+- PHP 8.2+ + Composer (pour les tests unitaires / PHPCS)
+
+---
+
+### 2. Structure du projet hôte
+
+```
+test5_frankenphp/
+├── app/                  ← bind-monté sur /app/public dans le conteneur
+│   ├── wp-config.php
+│   ├── wp-content/
+│   │   ├── mu-plugins/   ← à créer manuellement (voir § 6)
+│   │   ├── plugins/cfdev-plugin/
+│   │   └── themes/webvite/
+│   └── ...
+├── docker-compose.yml
+└── Dockerfile
+```
+
+---
+
+### 3. Lancer les conteneurs
+
+```bash
+cd test5_frankenphp
+docker compose up -d
+```
+
+Services démarrés : `php` (FrankenPHP, port 443), `db` (MySQL 8.4, port 3306), `phpmyadmin` (port 8080).
+
+---
+
+### 4. `wp-config.php` — constantes requises
+
+Ajouter dans la section "custom values" (avant le `/* That's all */`) :
+
+```php
+// Mémoire PHP — obligatoire pour les tests avec beaucoup de champs (bundle/tabs/accordion).
+// Sans ça : Fatal error "Allowed memory size of 134217728 bytes exhausted" sur les saves.
+define('WP_MEMORY_LIMIT',     '256M');
+define('WP_MAX_MEMORY_LIMIT', '256M');
+
+// Écriture directe sans FTP (obligatoire dans Docker)
+define('FS_METHOD', 'direct');
+
+// Mode démo CFDev — charge tous les champs de démonstration (demo-*.php)
+// et les notices de debug dans l'admin. Requis pour tous les specs Cypress.
+define('CFDEV_DEMO',         true);
+define('CFDEV_DEMO_NOTICES', true);
+
+// Debug WP (facultatif mais pratique en dev local)
+define('WP_DEBUG',     true);
+define('WP_DEBUG_LOG', true);
+```
+
+---
+
+### 5. Plugins à activer
+
+Via WP Admin → Extensions, ou WP-CLI :
+
+| Plugin | Rôle |
+|---|---|
+| `cfdev-plugin` | Le plugin à tester — **obligatoire** |
+| `classic-editor` | Désactive Gutenberg — **obligatoire** pour les specs qui interagissent avec les meta boxes |
+
+Après activation de Classic Editor, forcer le mode classic pour tous les utilisateurs :
+
+```sql
+-- Via phpMyAdmin (http://localhost:8080) ou directement en DB
+INSERT INTO wp_options (option_name, option_value) VALUES
+  ('classic-editor-replace',     'classic'),
+  ('classic-editor-allow-users', 'disallow')
+ON DUPLICATE KEY UPDATE option_value = VALUES(option_value);
+```
+
+---
+
+### 6. Créer le dossier `mu-plugins` et le symlink
+
+Le mu-plugin `ci-disable-block-editor.php` :
+- désactive Gutenberg indépendamment du Classic Editor
+- enregistre les templates de test dans le sélecteur de page
+- expose le endpoint `/?cfdev_render=ID` pour le spec 11
+
+```bash
+# Depuis la racine du projet (test5_frankenphp/)
+mkdir -p app/wp-content/mu-plugins
+ln -s ../plugins/cfdev-plugin/tests/mu-plugins/ci-disable-block-editor.php \
+      app/wp-content/mu-plugins/ci-disable-block-editor.php
+```
+
+> **Symlink relatif obligatoire.** Le chemin absolu hôte (`/home/…`) n'est pas valide
+> à l'intérieur du conteneur Docker où le volume est monté sous `/app/public`.
+
+---
+
+### 7. Options WordPress à configurer
+
+#### Via phpMyAdmin (http://localhost:8080) ou SQL direct
+
+```sql
+INSERT INTO wp_options (option_name, option_value) VALUES
+  ('permalink_structure',        '/%postname%/'),
+  ('cfdev_cache_enabled',        '1'),
+  ('cfdev_rest_enabled',         '1'),
+  ('cfdev_api_enabled',          '1')
+ON DUPLICATE KEY UPDATE option_value = VALUES(option_value);
+```
+
+Puis **vider les règles de réécriture** (nécessaire après changement de permalink) :
+
+```bash
+# WP-CLI depuis le conteneur si disponible
+docker compose exec php wp rewrite flush --path=/app/public
+
+# Sinon : aller dans WP Admin → Réglages → Permaliens et cliquer "Enregistrer"
+```
+
+#### Thème actif
+
+Le thème `webvite` doit être actif (il fournit `header.php` / `footer.php` appelés par les templates de test). Le mu-plugin injecte `template-home.php` et `template-cfdev-test.php` dans le sélecteur sans qu'il soit nécessaire de les placer dans le thème.
+
+---
+
+### 8. Page pour le spec 11 (front-end)
+
+Créer une page WordPress avec :
+
+| Champ | Valeur |
+|---|---|
+| Titre | `CFDev Test` |
+| Slug | `cfdev-test` |
+| Statut | Publié |
+| Template | `CFDev Test` (exposé par le mu-plugin) |
+
+Via WP Admin → Pages → Ajouter, ou SQL :
+
+```sql
+-- 1. Créer la page
+INSERT INTO wp_posts (post_title, post_name, post_status, post_type, post_date, post_date_gmt, post_modified, post_modified_gmt)
+VALUES ('CFDev Test', 'cfdev-test', 'publish', 'page', NOW(), UTC_TIMESTAMP(), NOW(), UTC_TIMESTAMP());
+
+-- 2. Récupérer son ID (notez-le : X)
+SELECT ID FROM wp_posts WHERE post_name = 'cfdev-test' AND post_type = 'page';
+
+-- 3. Assigner le template
+INSERT INTO wp_postmeta (post_id, meta_key, meta_value)
+VALUES (X, '_wp_page_template', 'template-cfdev-test.php')
+ON DUPLICATE KEY UPDATE meta_value = 'template-cfdev-test.php';
+```
+
+> Le spec 11 n'utilise pas l'URL de la page — il passe par `/?cfdev_render=POST_ID`
+> (géré par le mu-plugin). La page n'a donc pas besoin d'être accessible via son slug.
+
+---
+
+### 9. Compte admin WordPress
+
+Le compte utilisé par Cypress est défini dans `cypress.env.json` (à la racine du plugin) :
+
+```json
+{
+  "WP_USER": "quidelantoine",
+  "WP_PASS": "weblitzer"
+}
+```
+
+Ce compte doit exister dans WordPress avec le rôle **Administrateur**.
+
+Pour changer les identifiants : modifier `cypress.env.json` (non commité si sensible — vérifier `.gitignore`).
+
+---
+
+### 10. Installer les dépendances du plugin
+
+```bash
+cd app/wp-content/plugins/cfdev-plugin
+
+# PHP
+composer install
+
+# JavaScript / Cypress
+npm install
+```
+
+---
+
+### 11. Lancer les tests Cypress
+
+```bash
+cd app/wp-content/plugins/cfdev-plugin
+
+# Tous les specs headless
+npm run cy:run
+
+# Un spec précis
+npx cypress run --spec "cypress/e2e/11-front-end.cy.js" --browser chrome
+
+# Mode interactif
+npm run cy:open
+```
+
+Par défaut, Cypress pointe sur `https://localhost` (FrankenPHP avec certificat auto-signé —
+ignoré automatiquement par le flag `--ignore-certificate-errors`).
+Pour pointer ailleurs : `CYPRESS_BASE_URL=https://monsite.local npm run cy:run`.
+
+---
+
+### Récapitulatif checklist
+
+```
+[ ] docker compose up -d
+[ ] wp-config.php : WP_MEMORY_LIMIT 256M, WP_MAX_MEMORY_LIMIT 256M, FS_METHOD direct, CFDEV_DEMO true
+[ ] Plugins actifs : cfdev-plugin + classic-editor
+[ ] Options DB : permalink /%postname%/, cfdev_cache/rest/api_enabled = 1
+[ ] Options DB : classic-editor-replace = classic, classic-editor-allow-users = disallow
+[ ] mu-plugins/ créé + symlink relatif vers tests/mu-plugins/ci-disable-block-editor.php
+[ ] Page "CFDev Test" publiée avec template-cfdev-test.php
+[ ] Permaliens flushés (Admin → Réglages → Permaliens)
+[ ] Thème webvite actif
+[ ] cypress.env.json avec les bons identifiants admin
+[ ] composer install + npm install dans le plugin
+```
+
+---

@@ -37,6 +37,13 @@ Cypress.Commands.add('loginToWP', () => {
  * Works with the Classic Editor plugin.
  */
 Cypress.Commands.add('publishPost', () => {
+  // WordPress redirects to post-new.php?wp-post-new-reload=true when auto_draft=1
+  // is still set at publish time (no autosave has fired yet to reset it).
+  // Force it to 0 so WordPress takes the normal save+redirect path.
+  cy.window().then(win => {
+    const input = win.document.getElementById('auto_draft')
+    if (input) input.value = '0'
+  })
   cy.get('#publish').click()
   // Wait for WP to save + redirect: URL changes from post-new.php → post.php?post=ID
   // URL-based check is more reliable than DOM notice (WP version-independent)

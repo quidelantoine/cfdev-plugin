@@ -175,7 +175,8 @@ jobs:
           # Groupe C — user-meta, REST, admin-pages, front-end, code-modal, field-icons
           - { group: "08-13", spec: "cypress/e2e/0[89]*.cy.js,cypress/e2e/1[0-3]*.cy.js" }
           # Groupe D — media fields, datetime/multiselect/relations
-          - { group: "14-15", spec: "cypress/e2e/1[4-5]*.cy.js" }
+          # 14-woocommerce.cy.js intentionnellement exclu (requiert WooCommerce installé)
+          - { group: "14-15", spec: "cypress/e2e/14-media-fields.cy.js,cypress/e2e/15-skipped-fields.cy.js" }
 
     steps:
       - uses: actions/checkout@v4

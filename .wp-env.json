@@ -9,7 +9,7 @@
     "wp-content/mu-plugins/ci-disable-block-editor.php": "./tests/mu-plugins/ci-disable-block-editor.php"
   },
   "config": {
-    "CFDEV_DEMO": true,
+    "CFDEV_DEMO": 1,
     "DISABLE_WP_CRON": true,
     "AUTOSAVE_INTERVAL": 3600
   },

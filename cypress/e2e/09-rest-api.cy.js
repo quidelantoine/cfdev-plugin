@@ -9,7 +9,8 @@
  * REST-exposed fields:
  *   Post:  cfdev_demo_bundle / _cfdev_demo_bundle (bundle)
  *   Term:  category / _category (Galerie bundle in accordion)
- *   User:  none declared → 404 after auth (but 401 reached first without nonce)
+ *   User:  fields declared (rest:true via generateArrayAllField) but cy.request() sends cookie
+ *          without X-WP-Nonce → WordPress rest_cookie_check_errors returns 403 before handler runs
  *
  * A before() hook creates one post and one category with known data;
  * all tests then use cy.request() without any browser navigation.
@@ -132,7 +133,7 @@ describe('CFDev — REST API', () => {
 
   // ── User endpoint ──────────────────────────────────────────────────────
 
-  it('GET /user/1 returns 401 or 403 (auth required — no rest fields declared)', () => {
+  it('GET /user/1 returns 401 or 403 (auth required — cookie without nonce → 403)', () => {
     // With session cookie but no X-WP-Nonce header, WP REST returns 403.
     // Without any cookie it returns 401. Either way the endpoint is protected.
     cy.request({ url: '/wp-json/cfdev/v1/user/1', failOnStatusCode: false }).then(res => {

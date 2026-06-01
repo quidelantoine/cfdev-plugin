@@ -52,7 +52,7 @@ class Initializer
             dir:          untrailingslashit(plugin_dir_path($this->plugin_file)),
             url:          untrailingslashit(self::resolveUrl($this->plugin_file)),
             src_dir:      untrailingslashit(plugin_dir_path($this->plugin_file)) . '/src',
-            demo:         defined('CFDEV_DEMO') && CFDEV_DEMO === true,
+            demo:         defined('CFDEV_DEMO') && (bool) CFDEV_DEMO,
         ));
         $this->container->bind(AssetLoader::class, new AssetLoader(
             $this->container->get(Config::class)

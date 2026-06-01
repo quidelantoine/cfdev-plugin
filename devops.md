@@ -110,8 +110,8 @@ npm run cy:run:headed
 # Un spec précis
 npx cypress run --spec "cypress/e2e/06-page-accordion.cy.js" --browser chrome
 npx cypress run --spec "cypress/e2e/04-bundle.cy.js" --browser chrome
-npx cypress run --spec "cypress/e2e/10-admin-pages.cy.js" --browser chrome
-
+npx cypress run --spec "cypress/e2e/11-front-end.cy" --browser chrome
+npx cypress run --spec "cypress/e2e/09-rest-api.cy.js" --browser chrome
 ```
 
 ### Specs disponibles

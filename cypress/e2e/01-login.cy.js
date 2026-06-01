@@ -5,7 +5,7 @@ describe('WordPress Admin — Login', () => {
     cy.get('#user_pass').type(Cypress.env('WP_PASS'), { log: false })
     cy.get('#wp-submit').click()
 
-    cy.url().should('include', '/wp-admin')
+    cy.url({ timeout: 20000 }).should('include', '/wp-admin')
     cy.get('#wpadminbar').should('exist')
     cy.get('#wpbody').should('exist')
     cy.get('#adminmenu').should('exist')

@@ -35,8 +35,10 @@ Cypress.Commands.add('publishPost', () => {
  */
 Cypress.Commands.add('setPostTitle', (title) => {
   cy.get('#title').clear().type(title)
-  // Dismiss autosave / click away so the slug is generated
-  cy.get('#title').blur()
+  // No blur: blur triggers an immediate autosave AJAX which can still be
+  // in-flight when #publish is clicked, causing WP to submit auto_draft=1
+  // and redirect to post-new.php?wp-post-new-reload=true instead of publishing.
+  // The slug is generated server-side on save — no blur needed for correctness.
 })
 
 /**

@@ -2,7 +2,8 @@
  * Tests CFDev front-end rendering via the "CFDev Test" page template.
  *
  * Template: themes/webvite/template-cfdev-test.php
- * URL:      /?pagename=cfdev-test&post_id={id}  (plain query var — bypasse la résolution de slug prettifié)
+ * URL:      /?cfdev_render={post_id}  — endpoint direct dans ci-disable-block-editor.php
+ *           (bypasse le routing de page WordPress, fragile après réinstall wp-env en CI)
  *
  * The template accepts ?post_id= to load data for any post. The before() hook
  * creates a published post with known values via the WP admin, then each it()
@@ -109,7 +110,7 @@ describe('CFDev — Front-end Rendering', () => {
   // ── Flat fields ─────────────────────────────────────────────────────────────
 
   it('renders flat field values in [data-cfdev] elements', () => {
-    cy.then(() => cy.visit(`/?pagename=cfdev-test&post_id=${postId}`))
+    cy.then(() => cy.visit(`/?cfdev_render=${postId}`))
 
     cy.get('[data-cfdev="_text_demo_flat_text"]').should('have.text', FLAT_TEXT)
     cy.get('[data-cfdev="_text_demo_flat_select"]').should('have.text', FLAT_SELECT)
@@ -126,7 +127,7 @@ describe('CFDev — Front-end Rendering', () => {
   // ── Bundle rows ──────────────────────────────────────────────────────────────
 
   it('renders bundle rows with correct values per row', () => {
-    cy.then(() => cy.visit(`/?pagename=cfdev-test&post_id=${postId}`))
+    cy.then(() => cy.visit(`/?cfdev_render=${postId}`))
 
     cy.get('#cfdev-bundle [data-cfdev-bundle-row]').should('have.length', 2)
 

@@ -37,9 +37,22 @@ Cypress.Commands.add('loginToWP', () => {
  * Works with the Classic Editor plugin.
  */
 Cypress.Commands.add('publishPost', () => {
-  // WordPress redirects to post-new.php?wp-post-new-reload=true when auto_draft=1
-  // is still set at publish time (no autosave has fired yet to reset it).
-  // Force it to 0 so WordPress takes the normal save+redirect path.
+  // Wait for all in-flight jQuery AJAX to settle before submitting.
+  // Fast tests (few fields, add-row) finish before the title-blur autosave AJAX
+  // completes, so auto_draft is still 1 when #publish is clicked.  WordPress then
+  // redirects to post-new.php?wp-post-new-reload=true instead of post.php?post=ID.
+  // Waiting for jQuery.active === 0 ensures the autosave response has arrived and
+  // set auto_draft=0, so the subsequent publish goes through the normal path.
+  cy.window().then(win => {
+    return new Cypress.Promise(resolve => {
+      const check = () => {
+        if (!win.jQuery || win.jQuery.active === 0) resolve()
+        else setTimeout(check, 50)
+      }
+      check()
+    })
+  })
+  // Safety net: force auto_draft=0 in case no autosave fired at all.
   cy.window().then(win => {
     const input = win.document.getElementById('auto_draft')
     if (input) input.value = '0'

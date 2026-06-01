@@ -48,7 +48,7 @@ class Initializer
         // Container
         $this->container = new Container();
         $this->container->bind(Config::class, new Config(
-            version:      '1.0.0',
+            version:      '1.0.5',
             dir:          untrailingslashit(plugin_dir_path($this->plugin_file)),
             url:          untrailingslashit(self::resolveUrl($this->plugin_file)),
             src_dir:      untrailingslashit(plugin_dir_path($this->plugin_file)) . '/src',

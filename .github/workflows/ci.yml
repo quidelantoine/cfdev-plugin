@@ -69,7 +69,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run lint:js
+      - run: npm run lint:js -- --max-warnings 0
 
   # ── 5. PHPStan niveau 8 ──────────────────────────────────────────────────
   phpstan:

@@ -5,7 +5,7 @@ function cfdevEscHtml(str) {
 }
 
 function cfdevFileSvg(mime) {
-	var map = [
+	const map = [
 		[/^application\/pdf$/,                             'PDF', '#e74c3c'],
 		[/word/,                                           'DOC', '#2980b9'],
 		[/sheet|excel/,                                    'XLS', '#27ae60'],
@@ -15,8 +15,8 @@ function cfdevFileSvg(mime) {
 		[/^video\//,                                       'VID', '#c0392b'],
 		[/^audio\//,                                       'AUD', '#16a085'],
 	];
-	var label = 'FILE', color = '#95a5a6';
-	for (var i = 0; i < map.length; i++) {
+	let label = 'FILE', color = '#95a5a6';
+	for (let i = 0; i < map.length; i++) {
 		if (map[i][0].test(mime || '')) { label = map[i][1]; color = map[i][2]; break; }
 	}
 	return '<svg class="cfdev-file-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="29" viewBox="0 0 36 44" aria-hidden="true">'
@@ -28,7 +28,7 @@ function cfdevFileSvg(mime) {
 
 jQuery( function( $ ) {
 
-	var add_events;
+	let add_events;
 
 	(add_events = function( object ) 
 	{
@@ -58,7 +58,7 @@ jQuery( function( $ ) {
 
 		// Auto-activate the first tab panel that contains a validation error
 		$('.js-cfdev-tabs', object).each(function () {
-			var $tabsWidget = $(this);
+			const $tabsWidget = $(this);
 			$tabsWidget.children('div[id]').each(function (i) {
 				if ($(this).find('.cfdev-has-error').length) {
 					$tabsWidget.tabs('option', 'active', i);
@@ -84,7 +84,7 @@ jQuery( function( $ ) {
 
 		// Auto-activate the first accordion section that contains a validation error
 		$('.js-cfdev-accordion', object).each(function () {
-			var $acc = $(this);
+			const $acc = $(this);
 			$acc.children('div').each(function (i) {
 				if ($(this).find('.cfdev-has-error').length) {
 					$acc.accordion('option', 'active', i);
@@ -113,16 +113,16 @@ jQuery( function( $ ) {
 		// Gallery — add images
 		$('.js-cfdev-gallery', object).on('click', '.js-cfdev-gallery-add', function(e) {
 			e.preventDefault();
-			var wrap  = $(this).closest('.js-cfdev-gallery');
-			var items = wrap.find('.js-cfdev-gallery-items');
-			var name  = wrap.data('field-name');
+			const wrap  = $(this).closest('.js-cfdev-gallery');
+			const items = wrap.find('.js-cfdev-gallery-items');
+			const name  = wrap.data('field-name');
 
-			var uploader = wp.media({ title: 'Select Images', multiple: true, library: { type: 'image' } });
+			const uploader = wp.media({ title: 'Select Images', multiple: true, library: { type: 'image' } });
 
 			uploader.on('select', function() {
 				uploader.state().get('selection').each(function(attachment) {
-					var a   = attachment.toJSON();
-					var url = a.sizes && a.sizes.thumbnail ? a.sizes.thumbnail.url : a.url;
+					const a   = attachment.toJSON();
+					const url = a.sizes && a.sizes.thumbnail ? a.sizes.thumbnail.url : a.url;
 					items.append(
 						'<div class="cfdev-gallery-item js-cfdev-gallery-item">' +
 						'<input type="hidden" name="' + name + '" value="' + a.id + '" />' +
@@ -145,7 +145,7 @@ jQuery( function( $ ) {
 		// Remove current attached image
 		$('.cfdev-td, .form-field', object).on( 'click', '.js-cfdev-remove-media', function()
 		{
-			var that 	= $( this ),
+			const that 	= $( this ),
 				td 		= that.closest('.cfdev-field, .cfdev-td, .form-field');
 
 			$( '.cfdev-preview', td ).html('');
@@ -159,18 +159,18 @@ jQuery( function( $ ) {
 		// Upload image
 		$('.cfdev-td, .form-field', object).on( 'click', '.js-cfdev-upload', function()
 		{
-			var that	= $(this),
+			const that	= $(this),
 				type 	= that.data('cfdev-media-type'),
 				parent	= that.closest('.cfdev-field, .cfdev-td, .form-field'),
 				hidden 	= $( '.cfdev-hidden', parent ),
-				preview = $( '.cfdev-preview', parent ),
-				preview_size,
+				preview = $( '.cfdev-preview', parent );
+			let preview_size,
 				attachment,
-				_cfdev_uploader;
+				_cfdev_uploader; // eslint-disable-line prefer-const -- réassigné plus bas (faux positif : déclaration sans valeur initiale)
 
 			try {
 				preview_size  = $.parseJSON( that.data('cfdev-media-preview-size') );
-			} catch(e) {
+			} catch(_e) { // eslint-disable-line no-unused-vars -- ecmaVersion 2017 requiert un paramètre catch
 				preview_size  = that.data('cfdev-media-preview-size');
 			}
 
@@ -194,12 +194,12 @@ jQuery( function( $ ) {
 
 	            	// (Re)set the remove button
 	            	$('.js-cfdev-remove-media', parent).remove();
-	            	that.after('<button type="button" class="js-cfdev-remove-media cfdev-remove-media">' + ( type == 'image' ? Cfdev.remove_image : Cfdev.remove_file ) + '</button> ');
+	            	that.after('<button type="button" class="js-cfdev-remove-media cfdev-remove-media">' + ( type === 'image' ? Cfdev.remove_image : Cfdev.remove_file ) + '</button> ');
 
 	            	// Send an id or url to the field and set the preview
-	            	if( type == 'image' )
+	            	if( type === 'image' )
 					{
-						var thumbnail = preview_size && !$.isArray(preview_size) && attachment.sizes[preview_size] ? attachment.sizes[preview_size] : ( attachment.sizes.medium ? attachment.sizes.medium : attachment.sizes.full );
+						const thumbnail = preview_size && !$.isArray(preview_size) && attachment.sizes[preview_size] ? attachment.sizes[preview_size] : ( attachment.sizes.medium ? attachment.sizes.medium : attachment.sizes.full );
 						if( $.isArray( preview_size ) ) {
 							if( parseInt( preview_size[0] ) > 0 )
 								thumbnail.width = parseInt( preview_size[0] );
@@ -272,7 +272,7 @@ jQuery( function( $ ) {
 	$(document).on('postbox-toggled', function (e, $box) {
 		if (!$box || $box.hasClass('closed')) { return; }
 		$box.find('.js-cfdev-tabs').each(function () {
-			var $w = $(this);
+			const $w = $(this);
 			$w.children('div[id]').each(function (i) {
 				if ($(this).find('.cfdev-has-error').length) {
 					$w.tabs('option', 'active', i);
@@ -281,7 +281,7 @@ jQuery( function( $ ) {
 			});
 		});
 		$box.find('.js-cfdev-accordion').each(function () {
-			var $w = $(this);
+			const $w = $(this);
 			$w.children('div').each(function (i) {
 				if ($(this).find('.cfdev-has-error').length) {
 					$w.accordion('option', 'active', i);
@@ -292,15 +292,15 @@ jQuery( function( $ ) {
 	});
 
 	function init_editors( object, settings ) {
-		var editors = $('.wp-editor-wrap', object);
+		const editors = $('.wp-editor-wrap', object);
 		
 		if( Cfdev.wp_version >= '3.9' && editors.length )
 		{
 			editors.each(function() {
 				$('.mce-tinymce, .quicktags-toolbar', this).remove();
-				var new_id = $('.cfdev-input', this).attr('id');
+				const new_id = $('.cfdev-input', this).attr('id');
 
-				var editor_settings = $.extend( true, { tmce: {}, quicktags: { id: new_id, buttons: 'strong,em,link,block,del,ins,img,ul,ol,li,code,more,close' } }, settings );
+				const editor_settings = $.extend( true, { tmce: {}, quicktags: { id: new_id, buttons: 'strong,em,link,block,del,ins,img,ul,ol,li,code,more,close' } }, settings );
 
 				// Clone tinyMCEPreInit.mceInit object
 				tinyMCEPreInit.mceInit[new_id] = editor_settings.tmce;
@@ -310,13 +310,13 @@ jQuery( function( $ ) {
 				QTags._buttonsInit();
 
 				// Switch to Visual/Text mode
-				var mode = 'html';
+				let mode = 'html';
 				if( $(this).hasClass('tmce-active') )
 					mode = 'tmce';
 				switchEditors.go(new_id, mode);
 
 				$(this).on( 'click', '.insert-media', function( event ) {
-					var elem = $( event.currentTarget ),
+					const elem = $( event.currentTarget ),
 						editor = elem.data('editor'),
 						options = {
 							frame:    'post',
@@ -345,58 +345,60 @@ jQuery( function( $ ) {
 	// Remove sortable
 	$('.cfdev').on( 'click', '.js-cfdev-remove-sortable', function() 
 	{
-		var that 		= $( this ),
+		const that 		= $( this ),
 			field 		= that.closest('.js-cfdev-sortable-item'),
 			wrap 		= that.closest('.js-cfdev-sortable'),
 			fields 		= $( '.js-cfdev-sortable-item', wrap ).length;
 		
 		if( fields > 1 ) { field.remove(); }
-		if( fields == 2 ){ $( '.js-cfdev-sortable-item', wrap ).find('.js-cfdev-remove-sortable').remove(); }
+		if( fields === 2 ){ $( '.js-cfdev-sortable-item', wrap ).find('.js-cfdev-remove-sortable').remove(); }
 	});		
 	
 	// Add sortable
 	$('.cfdev').on( 'click', '.js-cfdev-add-sortable', function() 
 	{
-		var that			= $( this );
-		var	parent 			= that.closest( '.cfdev-td, .cfdev' ),
+		const that			= $( this );
+		const	parent 			= that.closest( '.cfdev-td, .cfdev' ),
 			wrap 			= that.hasClass( 'js-cfdev-add-bundle' )
 								? that.closest( '.padding-wrap' ).children( '.js-cfdev-sortable' )
 								: $( '.js-cfdev-sortable', parent ),
-			is_bundle		= wrap.data( 'cfdev-sortable-type') == 'bundle' ? true : false,
+			is_bundle		= wrap.data( 'cfdev-sortable-type') === 'bundle',
 			last 			= $( '> .js-cfdev-sortable-item:last', wrap ),
 			handle 			= '<button type="button" class="cfdev-handle-sortable js-cfdev-handle-sortable" aria-label="' + Cfdev.drag_to_reorder + '"></button>',
 			remover 		= '<button type="button" class="cfdev-remove-sortable js-cfdev-remove-sortable" aria-label="' + Cfdev.remove + '"></button>',
-			new_item 		= last.clone( false, false ),
-			switch_editors 	= [];
+			new_item 		= last.clone( false, false );
 
-		var is_editor = false;
-		var tinyMCE_options = {};
-		var QTags_options = {};
+		let is_editor = false;
+		let tinyMCE_options = {};
+		let QTags_options = {};
 		
 		// Set new bundle array key
 		if( is_bundle )
 		{
 			new_item.find('tr').each(function() {
 
-				var cfdev_input = $(this).find('.cfdev-input');
+				const cfdev_input = $(this).find('.cfdev-input');
+				// Declared here so both Wysiwyg blocks share the same scope.
+				let last_id, last_name;
 
 				if(cfdev_input.length > 1 && cfdev_input.first().parent().hasClass('cfdev-sortable-item'))
 					$(this).find('.cfdev-input:not(:first)').parent().remove();
 
 				// Checkboxes and radios to default value
-				if( cfdev_input.attr('type') == 'checkbox' || cfdev_input.attr('type') == 'radio' ) {
+				if( cfdev_input.attr('type') === 'checkbox' || cfdev_input.attr('type') === 'radio' ) {
 					cfdev_input.each(function() {
 						$(this).removeAttr('checked').prop('checked', false);
 
-						var default_value = $(this).closest('.cfdev-checkboxes-wrap').data('default-value');
-						if( default_value != undefined && (default_value + '').length && default_value == $(this).val() )
+						const default_value = $(this).closest('.cfdev-checkboxes-wrap').data('default-value');
+						if( default_value !== undefined && (default_value + '').length && default_value === $(this).val() )
 							$(this).attr('checked', 'checked').prop('checked', true);
 					});
 				}
 
 				// Wysiwyg
 				if( cfdev_input.hasClass('wp-editor-area') ) {
-					var last_id = cfdev_input.attr('id'), last_name = cfdev_input.attr('name');
+					last_id = cfdev_input.attr('id');
+					last_name = cfdev_input.attr('name');
 					$(this).find('span.mceEditor').remove();
 					cfdev_input.show();
 				}
@@ -416,11 +418,11 @@ jQuery( function( $ ) {
 				// Select
 				if( cfdev_input.hasClass('cfdev-select') ) {
 					cfdev_input.each(function() {
-						var default_value = $(this).data('default-value');
+						const default_value = $(this).data('default-value');
 						$(this).find('option').removeAttr('selected').prop('selected', false);
-						if( default_value != undefined && (default_value + '').length ) {
+						if( default_value !== undefined && (default_value + '').length ) {
 							$(this).find('option').each(function() {
-								if( $(this).val() == default_value )
+								if( $(this).val() === default_value )
 									$(this).attr('selected', 'selected').prop('selected', true);
 							});
 						}
@@ -430,15 +432,15 @@ jQuery( function( $ ) {
 				// Add new wysiwyg
 				if( cfdev_input.hasClass('wp-editor-area' )) {
 					is_editor = true;
-					var new_id = cfdev_input.attr('id'), new_name = cfdev_input.attr('name'), last_id_regexp = new RegExp(last_id, 'g'), last_name_regexp = new RegExp(last_name, 'g');
+					const new_id = cfdev_input.attr('id'), new_name = cfdev_input.attr('name'), last_id_regexp = new RegExp(last_id, 'g'), last_name_regexp = new RegExp(last_name, 'g');
 					$(this).html( $(this).html().replace( last_name_regexp, new_name ).replace( last_id_regexp, new_id ) );
 
 					if( Cfdev.wp_version >= '3.9' )
 					{
 						tinyMCE_options = $.extend(true, {}, tinyMCEPreInit.mceInit[last_id]);
-						var QTags_last = QTags.getInstance(last_id);
+						const QTags_last = QTags.getInstance(last_id);
 						$.each( tinyMCE_options, function( key, value ) {
-							if( $.type( value ) == 'string' )
+							if( $.type( value ) === 'string' )
 							tinyMCE_options[key] = value.replace(last_id_regexp, new_id);
 						} );
 
@@ -492,8 +494,8 @@ jQuery( function( $ ) {
 
 		// Add new handler and remover if necessary
 		$('> .js-cfdev-sortable-item', wrap).each(function( index, item ) {
-			if( $('> .js-cfdev-handle-sortable', item ).length == 0 ) { $(item).prepend( handle ); }
-			if( $('> .js-cfdev-remove-sortable', item ).length == 0 ) { $(item).append( remover ); }
+			if( $('> .js-cfdev-handle-sortable', item ).length === 0 ) { $(item).prepend( handle ); }
+			if( $('> .js-cfdev-remove-sortable', item ).length === 0 ) { $(item).append( remover ); }
 		});
 
 		// Scroll to the new item
@@ -539,7 +541,7 @@ jQuery( function( $ ) {
 	// });
 
 	$('.cfdev-td').on('click', '.js-cfdev-ajax-save', function() {
-		var that       = $(this),
+		const that       = $(this),
 			parent     = that.closest('.cfdev-td'),
 			cfdev       = parent.closest('.cfdev'),
 			input       = $('.cfdev-input', parent),
@@ -550,7 +552,7 @@ jQuery( function( $ ) {
 			object_id   = cfdev.data('object-id');
 
 		// --- Récupération de la valeur en fonction du type de champ ---
-		var value;
+		let value;
 		if (input.is('input[type="checkbox"]')) {
 			// Cas : Checkbox (cochée = "on", décochée = "")
 			value = input.is(':checked') ? input.val() || 'on' : '';
@@ -569,12 +571,12 @@ jQuery( function( $ ) {
 		}
 
 		// Sauvegarder le texte original du bouton
-		var originalButtonText = that.text();
+		const originalButtonText = that.text();
 		if (that.data('original-text') === undefined) {
 			that.data('original-text', originalButtonText);
 		}
 
-		var data = {
+		const data = {
 			action: 'cfdev_field_ajax_save',
 			cfdev: {
 				value:      value,
@@ -588,10 +590,10 @@ jQuery( function( $ ) {
 		// Désactiver le bouton pendant la requête
 		that.prop('disabled', true).text(Cfdev.saving);
 
-		$.post(Cfdev.ajax_url, data, function(r) {
+		$.post(Cfdev.ajax_url, data, function(_r) {
 			// Animation plus forte : clignotement vert 3 fois
-			var border_color = input.css('border-color');
-			for (var i = 0; i < 3; i++) {
+			const border_color = input.css('border-color');
+			for (let i = 0; i < 3; i++) {
 				input.animate({ borderColor: '#60b334' }, 200)
 					.animate({ borderColor: border_color }, 200);
 			}
@@ -614,10 +616,10 @@ jQuery( function( $ ) {
 
 	// Notice anchor links — scroll to the field, opening tabs/accordion/postbox if needed
 	$(document).on('click', '.notice a[href^="#"]', function (e) {
-		var $link   = $(this),
-			anchor  = $link.attr('href'),
-			fieldId = anchor.replace(/^#/, ''),
-			target  = $(anchor);
+		const $link   = $(this),
+			anchor    = $link.attr('href'),
+			fieldId   = anchor.replace(/^#/, '');
+		let target    = $(anchor);
 
 		// Fallback: group fields (checkboxes, radios…) expose id only on wrapper — find by prefix
 		if (!target.length) {
@@ -629,12 +631,12 @@ jQuery( function( $ ) {
 		e.preventDefault();
 
 		// Bundle sub-field: <abbr title="bundleId.rowIndex.fieldId"> beside the link
-		var abbrTitle    = $link.siblings('abbr[title]').attr('title') || '',
-			parts        = abbrTitle.split('.'),
-			$scrollTarget = target;
+		const abbrTitle = $link.siblings('abbr[title]').attr('title') || '',
+			parts         = abbrTitle.split('.');
+		let $scrollTarget = target;
 
 		if (parts.length === 3) {
-			var $field = $('#' + parts[2] + '_' + parts[1]);
+			const $field = $('#' + parts[2] + '_' + parts[1]);
 			if ($field.length) {
 				$scrollTarget = $field;
 			}
@@ -646,46 +648,46 @@ jQuery( function( $ ) {
 			$scrollTarget.hasClass('wp-editor-area') ||
 			$scrollTarget.hasClass('cfdev-colorpicker')
 		) {
-			var $row = $scrollTarget.closest('tr, .form-field');
+			const $row = $scrollTarget.closest('tr, .form-field');
 			if ($row.length) {
 				$scrollTarget = $row;
 			}
 		}
 
 		// Open collapsed WordPress postbox (meta box) — post.php only
-		var $postbox = $scrollTarget.closest('.postbox');
+		const $postbox = $scrollTarget.closest('.postbox');
 		if ($postbox.length && $postbox.hasClass('closed')) {
 			$postbox.find('.handlediv, .hndle').first().trigger('click');
 		}
 
 		// Open jQuery UI accordion panel containing the field
-		var $accordion = $scrollTarget.closest('.js-cfdev-accordion');
+		let $accordion = $scrollTarget.closest('.js-cfdev-accordion');
 		if (!$accordion.length) { $accordion = target.closest('.js-cfdev-accordion'); }
 		if ($accordion.length) {
-			var $panel = $scrollTarget.closest('.js-cfdev-accordion > div');
+			let $panel = $scrollTarget.closest('.js-cfdev-accordion > div');
 			if (!$panel.length) { $panel = target.closest('.js-cfdev-accordion > div'); }
-			var panelIndex = $accordion.children('div').index($panel);
+			const panelIndex = $accordion.children('div').index($panel);
 			if (panelIndex >= 0) { $accordion.accordion('option', 'active', panelIndex); }
 		}
 
 		// Open jQuery UI tab containing the field
-		var $tabs = $scrollTarget.closest('.js-cfdev-tabs');
+		let $tabs = $scrollTarget.closest('.js-cfdev-tabs');
 		if (!$tabs.length) { $tabs = target.closest('.js-cfdev-tabs'); }
 		if ($tabs.length) {
-			var $tabPanel = $scrollTarget.closest('.js-cfdev-tabs > div[id]');
+			let $tabPanel = $scrollTarget.closest('.js-cfdev-tabs > div[id]');
 			if (!$tabPanel.length) { $tabPanel = target.closest('.js-cfdev-tabs > div[id]'); }
-			var tabIndex = $tabs.children('div[id]').index($tabPanel);
+			const tabIndex = $tabs.children('div[id]').index($tabPanel);
 			if (tabIndex >= 0) { $tabs.tabs('option', 'active', tabIndex); }
 		}
 
 		// Scroll after animations (postbox open ~200ms, accordion/tabs ~300ms)
 		setTimeout(function () {
-			var offset = $scrollTarget.offset();
+			let offset = $scrollTarget.offset();
 
 			// offset.top === 0 means element is still hidden (collapsed postbox or display:none)
 			// Fall back to the postbox title bar, which is always visible
 			if (!offset || offset.top === 0) {
-				var $hndle = $scrollTarget.closest('.postbox').find('.hndle');
+				const $hndle = $scrollTarget.closest('.postbox').find('.hndle');
 				if ($hndle.length) { offset = $hndle.offset(); }
 			}
 

@@ -1,14 +1,13 @@
 /* CFDev — Fields registry admin page */
-/* global cfdevInspect */
 (function () {
 
     /* ── Tab switching ─────────────────────────────────────── */
-    var tabs   = document.querySelectorAll(".cfdev-tabs-nav .nav-tab");
-    var panels = document.querySelectorAll(".cfdev-tab-panel");
+    const tabs   = document.querySelectorAll(".cfdev-tabs-nav .nav-tab");
+    const panels = document.querySelectorAll(".cfdev-tab-panel");
     tabs.forEach(function (tab) {
         tab.addEventListener("click", function (e) {
             e.preventDefault();
-            var target = this.getAttribute("href");
+            const target = this.getAttribute("href");
             panels.forEach(function (p) { p.hidden = true; });
             document.querySelector(target).hidden = false;
             tabs.forEach(function (t) { t.classList.remove("nav-tab-active"); });
@@ -19,9 +18,9 @@
     /* ── Group expand / collapse ───────────────────────────── */
     document.querySelectorAll(".cfdev-group-header").forEach(function (header) {
         function toggle() {
-            var group  = header.closest(".cfdev-group");
-            var body   = group.querySelector(".cfdev-group-body");
-            var isOpen = !body.hidden;
+            const group  = header.closest(".cfdev-group");
+            const body   = group.querySelector(".cfdev-group-body");
+            const isOpen = !body.hidden;
             body.hidden = isOpen;
             group.classList.toggle("is-open", !isOpen);
             header.setAttribute("aria-expanded", String(!isOpen));
@@ -33,30 +32,20 @@
     });
 
     /* ── Bundle fields modal (REST page only) ─────────────── */
-    var bModal = document.getElementById("cfdev-rest-bundle-modal");
+    const bModal = document.getElementById("cfdev-rest-bundle-modal");
     if (bModal) {
-        var bKeyEl  = document.getElementById("cfdev-rest-bundle-key");
-        var bBodyEl = document.getElementById("cfdev-rest-bundle-body");
-
-        function epLink(url, txt) {
-            if (!url) return "<code>" + esc(txt) + "</code>";
-            return "<a href=\"" + esc(url) + "\" target=\"_blank\" rel=\"noopener noreferrer\"><code>" + esc(txt) + "</code></a>";
-        }
+        const bKeyEl  = document.getElementById("cfdev-rest-bundle-key");
+        const bBodyEl = document.getElementById("cfdev-rest-bundle-body");
 
         document.addEventListener("click", function (e) {
-            var btn = e.target.closest(".cfdev-bundle-fields-btn");
+            const btn = e.target.closest(".cfdev-bundle-fields-btn");
             if (btn) {
-                var key      = btn.dataset.cfdevBundleKey    || "";
-                var fields   = JSON.parse(btn.dataset.cfdevBundleFields || "[]");
-                var epCurl   = btn.dataset.cfdevEpCfdevUrl   || "";
-                var epCtxt   = btn.dataset.cfdevEpCfdevTxt   || "";
-                var epNurl   = btn.dataset.cfdevEpNativeUrl  || "";
-                var epNtxt   = btn.dataset.cfdevEpNativeTxt  || "";
-                var native   = (btn.dataset.cfdevMetaType    || "") !== "user";
+                const key    = btn.dataset.cfdevBundleKey    || "";
+                const fields = JSON.parse(btn.dataset.cfdevBundleFields || "[]");
 
                 bKeyEl.textContent = key;
 
-                var html = "<table class=\"widefat striped cfdev-rest-table\"><thead><tr>"
+                let html = "<table class=\"widefat striped cfdev-rest-table\"><thead><tr>"
                          + "<th>Meta key</th><th>Label</th><th>REST type</th>"
                          + "</tr></thead><tbody>";
 
@@ -85,14 +74,14 @@
     }
 
     /* ── Code modal ────────────────────────────────────────── */
-    var codeModal      = document.getElementById("cfdev-code-modal");
+    const codeModal      = document.getElementById("cfdev-code-modal");
     if (codeModal) {
-        var codeGroupId    = document.getElementById("cfdev-code-group-id");
-        var codeOutput     = document.getElementById("cfdev-code-output");
-        var codeCopyBtn    = document.getElementById("cfdev-code-copy");
-        var codeTabDisplay = document.getElementById("cfdev-code-tab-display");
-        var codeTabRaw     = document.getElementById("cfdev-code-tab-raw");
-        var curCodeBtn     = null;
+        const codeGroupId    = document.getElementById("cfdev-code-group-id");
+        const codeOutput     = document.getElementById("cfdev-code-output");
+        const codeCopyBtn    = document.getElementById("cfdev-code-copy");
+        const codeTabDisplay = document.getElementById("cfdev-code-tab-display");
+        const codeTabRaw     = document.getElementById("cfdev-code-tab-raw");
+        let curCodeBtn     = null;
 
         function setCodeTab(raw) {
             if (!curCodeBtn) return;
@@ -134,25 +123,25 @@
     }
 
     /* ── Inspector modal ───────────────────────────────────── */
-    var AJAX_URL   = (window.cfdevInspect || {}).ajaxUrl     || "";
-    var NONCE      = (window.cfdevInspect || {}).nonce       || "";
-    var NONCE_SRCH = (window.cfdevInspect || {}).nonceSearch || "";
-    var modal      = document.getElementById("cfdev-inspect-modal");
+    const AJAX_URL   = (window.cfdevInspect || {}).ajaxUrl     || "";
+    const NONCE      = (window.cfdevInspect || {}).nonce       || "";
+    const NONCE_SRCH = (window.cfdevInspect || {}).nonceSearch || "";
+    const modal      = document.getElementById("cfdev-inspect-modal");
     if (!modal) return;
 
-    var metaLabelEl = modal.querySelector(".cfdev-modal-meta-label");
-    var groupIdEl   = modal.querySelector(".cfdev-modal-group-id");
-    var forceBtn    = document.getElementById("cfdev-inspect-force");
-    var cacheBadge  = document.getElementById("cfdev-inspect-cache-badge");
-    var output      = document.getElementById("cfdev-inspect-output");
-    var toolbar     = document.getElementById("cfdev-inspect-toolbar");
-    var selectEl    = document.getElementById("cfdev-object-select");
-    var nodeIdx     = 0;
-    var curType     = "post";
-    var curObjectId = 0;
-    var curTax      = "";
-    var curGroupId  = "";
-    var curOpts     = [];
+    const metaLabelEl = modal.querySelector(".cfdev-modal-meta-label");
+    const groupIdEl   = modal.querySelector(".cfdev-modal-group-id");
+    const forceBtn    = document.getElementById("cfdev-inspect-force");
+    const cacheBadge  = document.getElementById("cfdev-inspect-cache-badge");
+    const output      = document.getElementById("cfdev-inspect-output");
+    const toolbar     = document.getElementById("cfdev-inspect-toolbar");
+    const selectEl    = document.getElementById("cfdev-object-select");
+    let nodeIdx     = 0;
+    let curType     = "post";
+    let curObjectId = 0;
+    let curTax      = "";
+    let curGroupId  = "";
+    let curOpts     = [];
 
     /* Open — populate select and auto-load */
     document.querySelectorAll(".cfdev-btn-inspect").forEach(function (btn) {
@@ -164,17 +153,17 @@
             curGroupId  = this.dataset.groupId    || "";
             curOpts     = JSON.parse(this.dataset.options || "[]");
 
-            var isFixed = this.dataset.fixed === "1";
+            const isFixed = this.dataset.fixed === "1";
             toolbar.hidden = isFixed;
             if (!isFixed) {
                 selectEl.innerHTML = "";
                 if (curOpts.length === 0) {
-                    var ph = document.createElement("option");
+                    const ph = document.createElement("option");
                     ph.value = "0"; ph.textContent = "No objects available";
                     selectEl.appendChild(ph);
                 } else {
                     curOpts.forEach(function (item) {
-                        var opt = document.createElement("option");
+                        const opt = document.createElement("option");
                         opt.value       = item.id;
                         opt.textContent = item.label + (item.meta ? " · " + item.meta : "") + "  #" + item.id;
                         if (item.id === curObjectId) opt.selected = true;
@@ -201,7 +190,7 @@
     /* Select change → load new object */
     selectEl.addEventListener("change", function () {
         curObjectId = parseInt(this.value, 10);
-        var chosen  = curOpts.find(function (o) { return o.id === curObjectId; });
+        const chosen  = curOpts.find(function (o) { return o.id === curObjectId; });
         if (chosen && curType === "term" && chosen.meta) curTax = chosen.meta;
         metaLabelEl.textContent = curType + (curTax ? " / " + curTax : "") + " #" + curObjectId;
         if (curObjectId > 0) {
@@ -228,7 +217,7 @@
         cacheBadge.hidden = true;
         forceBtn.disabled = true;
 
-        var body = new FormData();
+        const body = new FormData();
         body.append("action",      "cfdev_inspect");
         body.append("nonce",       NONCE);
         body.append("object_type", curType);
@@ -256,11 +245,11 @@
 
     /* Cache badge */
     function renderBadge(cache) {
-        var label, cls;
+        let label, cls;
         if (!cache.enabled) {
             label = "CACHE OFF"; cls = "cfdev-cache-badge--off";
         } else if (cache.hit) {
-            var a = cache.age, h = a < 60 ? a + "s" : Math.round(a / 60) + "min";
+            const a = cache.age, h = a < 60 ? a + "s" : Math.round(a / 60) + "min";
             label = "CACHE HIT — " + h + " ago"; cls = "cfdev-cache-badge--hit";
         } else {
             label = "GENERATED"; cls = "cfdev-cache-badge--miss";
@@ -272,19 +261,19 @@
 
     /* Output click handler (toggle + copy) */
     output.addEventListener("click", function (e) {
-        var copyBtn = e.target.closest(".cfdev-copy-btn");
+        const copyBtn = e.target.closest(".cfdev-copy-btn");
         if (copyBtn) {
             e.stopPropagation();
             navigator.clipboard.writeText(copyBtn.dataset.copy || "").then(function () {
-                var orig = copyBtn.textContent;
+                const orig = copyBtn.textContent;
                 copyBtn.textContent = "✓";
                 setTimeout(function () { copyBtn.textContent = orig; }, 1200);
             });
             return;
         }
-        var tg = e.target.closest(".cfdev-tree-toggle");
+        const tg = e.target.closest(".cfdev-tree-toggle");
         if (!tg) return;
-        var el = document.getElementById(tg.dataset.target);
+        const el = document.getElementById(tg.dataset.target);
         if (!el) return;
         el.hidden = !el.hidden;
         tg.querySelector(".cfdev-tree-caret").textContent = el.hidden ? "▶" : "▼";
@@ -292,7 +281,7 @@
 
     /* ── Tree renderer ─────────────────────────────────────── */
     function buildSnippet() {
-        var method = curType === "term" ? "term(" + curObjectId + ", '" + curTax + "')"
+        const method = curType === "term" ? "term(" + curObjectId + ", '" + curTax + "')"
                    : curType === "user" ? "user(" + curObjectId + ")"
                    : "post(" + curObjectId + ")";
         return "$data  = (new \\Weblitzer\\CFDev\\Cache\\CacheManager())->" + method + ";\n"
@@ -303,15 +292,15 @@
         nodeIdx = 0;
         output.innerHTML = "";
 
-        var snip = buildSnippet();
-        var wrap = document.createElement("div");
+        const snip = buildSnippet();
+        const wrap = document.createElement("div");
         wrap.className = "cfdev-snippet";
         wrap.innerHTML = "<pre class=\"cfdev-snippet-code\">" + esc(snip) + "</pre>"
                        + "<button class=\"cfdev-copy-btn cfdev-copy-global\" data-copy=\"" + esc(snip) + "\""
                        + " title=\"Copy snippet\">⎘</button>";
         output.appendChild(wrap);
 
-        var ul = document.createElement("ul");
+        const ul = document.createElement("ul");
         ul.className = "cfdev-tree";
         Object.entries(data).forEach(function (kv) {
             ul.appendChild(makeNode(kv[0], kv[1], "$group"));
@@ -320,8 +309,8 @@
     }
 
     function makeNode(key, value, basePath) {
-        var path = basePath + "['" + key + "']";
-        var li   = document.createElement("li");
+        const path = basePath + "['" + key + "']";
+        const li   = document.createElement("li");
         li.innerHTML = copyIcon(path)
                      + "<span class=\"cfdev-tree-key\">" + esc(String(key)) + "</span>"
                      + " <span class=\"cfdev-tree-arrow\">⇒</span> "
@@ -337,7 +326,7 @@
         if (typeof v === "number")
             return "<span class=\"cfdev-tv cfdev-tv--num\">" + v + "</span>";
         if (typeof v === "string") {
-            var preview = v.length > 100 ? v.slice(0, 100) + "…" : v;
+            const preview = v.length > 100 ? v.slice(0, 100) + "…" : v;
             return "<span class=\"cfdev-tv cfdev-tv--str\">\"" + esc(preview) + "\"</span>"
                  + "<span class=\"cfdev-tv-meta\"> (" + v.length + ")</span>";
         }
@@ -346,7 +335,7 @@
                 ? "<span class=\"cfdev-tv cfdev-tv--arr\">array(0)</span> <span class=\"cfdev-tv-meta\">[]</span>"
                 : renderColl(v.map(function (x, i) { return [i, x]; }), "arr", depth, path || "");
         if (typeof v === "object") {
-            var ks = Object.keys(v);
+            const ks = Object.keys(v);
             return ks.length === 0
                 ? "<span class=\"cfdev-tv cfdev-tv--obj\">object(0)</span> <span class=\"cfdev-tv-meta\">{}</span>"
                 : renderColl(Object.entries(v), "obj", depth, path || "");
@@ -355,12 +344,12 @@
     }
 
     function renderColl(entries, kind, depth, basePath) {
-        var id    = "cfdev-n-" + (nodeIdx++);
-        var label = kind === "arr" ? "array(" + entries.length + ")" : "object(" + entries.length + ")";
-        var open  = depth < 1;
-        var rows  = entries.map(function (kv) {
-            var k    = kv[0];
-            var path = basePath + (kind === "arr" ? "[" + k + "]" : "['" + k + "']");
+        const id    = "cfdev-n-" + (nodeIdx++);
+        const label = kind === "arr" ? "array(" + entries.length + ")" : "object(" + entries.length + ")";
+        const open  = depth < 1;
+        const rows  = entries.map(function (kv) {
+            const k    = kv[0];
+            const path = basePath + (kind === "arr" ? "[" + k + "]" : "['" + k + "']");
             return "<li>" + copyIcon(path)
                  + "<span class=\"cfdev-tree-key\">" + esc(String(k)) + "</span>"
                  + " <span class=\"cfdev-tree-arrow\">⇒</span> "

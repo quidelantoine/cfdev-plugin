@@ -133,3 +133,22 @@ npx cypress run --spec "cypress/e2e/10-admin-pages.cy.js" --browser chrome
 # Vérification complète avant commit
 ./vendor/bin/phpunit --testsuite Unit && vendor/bin/phpcs && vendor/bin/phpstan analyse
 ```
+
+
+## Development
+
+```bash
+# Tests
+./vendor/bin/phpunit --testsuite Unit
+./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
+
+# Code quality
+vendor/bin/phpcs -s
+vendor/bin/phpstan analyse src tests
+
+# E2E (requires docker compose up -d)
+npm run cy:run
+npm run cy:open
+```
+
+---

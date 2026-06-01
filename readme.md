@@ -137,24 +137,6 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 
 ---
 
-## Development
-
-```bash
-# Tests
-./vendor/bin/phpunit --testsuite Unit
-./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
-
-# Code quality
-vendor/bin/phpcs -s
-vendor/bin/phpstan analyse src tests
-
-# E2E (requires docker compose up -d)
-npm run cy:run
-npm run cy:open
-```
-
----
-
 ## License
 
 GPL-2.0-or-later

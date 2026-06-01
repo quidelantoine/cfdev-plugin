@@ -56,6 +56,17 @@ jQuery( function( $ ) {
 		// Tabs
 		$('.js-cfdev-tabs', object).tabs();
 
+		// Auto-activate the first tab panel that contains a validation error
+		$('.js-cfdev-tabs', object).each(function () {
+			var $tabsWidget = $(this);
+			$tabsWidget.children('div[id]').each(function (i) {
+				if ($(this).find('.cfdev-has-error').length) {
+					$tabsWidget.tabs('option', 'active', i);
+					return false;
+				}
+			});
+		});
+
 		// Slider (jQuery UI legacy)
 		$( '.js-slider', object ).slider();
 
@@ -69,6 +80,17 @@ jQuery( function( $ ) {
 		// Accordion
 		$('.js-cfdev-accordion', object).accordion({
 			heightStyle: "content"
+		});
+
+		// Auto-activate the first accordion section that contains a validation error
+		$('.js-cfdev-accordion', object).each(function () {
+			var $acc = $(this);
+			$acc.children('div').each(function (i) {
+				if ($(this).find('.cfdev-has-error').length) {
+					$acc.accordion('option', 'active', i);
+					return false;
+				}
+			});
 		});
 
 		// Sortable
@@ -242,6 +264,30 @@ jQuery( function( $ ) {
 			return false;
 		});
 	})( $('body') );
+
+	// When a postbox is opened, activate any tab/accordion panel that contains a validation error.
+	// Complements the add_events page-load activation which only covers postboxes already open.
+	$(document).on('postbox-toggled', function (e, $box) {
+		if (!$box || $box.hasClass('closed')) { return; }
+		$box.find('.js-cfdev-tabs').each(function () {
+			var $w = $(this);
+			$w.children('div[id]').each(function (i) {
+				if ($(this).find('.cfdev-has-error').length) {
+					$w.tabs('option', 'active', i);
+					return false;
+				}
+			});
+		});
+		$box.find('.js-cfdev-accordion').each(function () {
+			var $w = $(this);
+			$w.children('div').each(function (i) {
+				if ($(this).find('.cfdev-has-error').length) {
+					$w.accordion('option', 'active', i);
+					return false;
+				}
+			});
+		});
+	});
 
 	function init_editors( object, settings ) {
 		var editors = $('.wp-editor-wrap', object);

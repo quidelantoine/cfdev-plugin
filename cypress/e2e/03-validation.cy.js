@@ -40,6 +40,28 @@ describe('CFDev — Validation Errors', () => {
     cy.get('p.cfdev-field-error').should('exist').and('not.be.empty')
   })
 
+  it('each notice anchor points to an existing element in the DOM', () => {
+    cy.get('.notice-error a[href^="#"]').each(($a) => {
+      const targetId = $a.attr('href').slice(1)
+      cy.get(`[id="${CSS.escape(targetId)}"]`).should('exist')
+    })
+  })
+
+  it('clicking each notice anchor opens its container and makes the field visible', () => {
+    // The existing JS handler already opens postbox + tab/accordion when an anchor is clicked.
+    // This test verifies that full flow works for every anchor in the notice.
+    cy.get('.notice-error a[href^="#"]').each(($a) => {
+      const targetId = $a.attr('href').slice(1)
+      cy.wrap($a).click()
+      cy.get(`[id="${CSS.escape(targetId)}"]`).then(($el) => {
+        // Flat fields: the input may be display:none (e.g. Image). Check the parent <tr>.
+        // Bundle top-level: rendered outside a <table>, so no <tr> ancestor — check the div itself.
+        const $row = $el.closest('tr')
+        cy.wrap($row.length ? $row : $el).should('be.visible')
+      })
+    })
+  })
+
   it('clears the error on a field once it is filled on next save', () => {
     // Value must satisfy all rules: Required, MinLength(3), MaxLength(50),
     // Contains('a'), StartsWith('A'), EndsWith('z')

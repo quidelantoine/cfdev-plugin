@@ -8,10 +8,9 @@ define('CFDEV_DEMO', true);
 # A FAIRE 
 ===========
 
-NOtice validation, est ce que les anchor peuvent etre testé, savoir si c'est ok on arrive sur l'erreu quand on click sur le anchor , c'est souvent liee à un champ plus qua à la validation
-=> ecrire des tests pour cela est possible ??? cypress ?? ou autre ici ??
 
-//l la ici c'est visuel aller voir 
+
+//la ici c'est visuel aller voir 
 => tester les nouvelles notice de id identiques reserve etc ?? +++ , voir si notice sont bine placé
 => Mettre dan sles fichiers de mo des trucs qui genrer les notices pour les voir en mode demo
 

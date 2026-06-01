@@ -9,6 +9,8 @@ define('CFDEV_DEMO', true);
 ===========
 ++++++++++++
 problem ci cypress +++
+
+retire api 9 de la ci uniquement mais garder en local, le but c'est d'etre pro donc pas une bonne idéee ??
 ++++++++++++++++++
 
 Faire une docs dediée term et une autre dedié User +++

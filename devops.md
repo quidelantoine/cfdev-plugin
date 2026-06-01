@@ -76,6 +76,25 @@ vendor/bin/phpcs src/Admin/DashboardPage.php
 
 ---
 
+## Linting JS (ESLint)
+
+Config : `eslint.config.js`. Règles : `no-shadow` + `no-undef` en **error** (bloquant), `no-var` / `eqeqeq` en warning.
+
+```bash
+# Vérifier (lecture seule)
+npm run lint:js
+
+# Correction automatique des warnings fixables
+npm run lint:js:fix
+
+# Un fichier précis
+npx eslint assets/js/functions.js
+```
+
+> `cypress.config.cjs` (et non `.js`) — renommé pour coexister avec `"type": "module"` dans `package.json`.
+
+---
+
 ## Analyse statique (PHPStan)
 
 Niveau configuré dans `phpstan.neon`. La baseline `phpstan-baseline.neon` contient les suppressions connues.

@@ -2,6 +2,7 @@
   "name": "cfdev-plugin-e2e",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "cy:open": "cypress open",
     "cy:run": "cypress run --browser chrome --spec 'cypress/e2e/*.cy.js'",
@@ -9,10 +10,15 @@
     "wp-env:start": "wp-env start",
     "wp-env:stop": "wp-env stop",
     "wp-env:clean": "wp-env clean all",
-    "wp-env:seed": "bash bin/wp-env-seed.sh"
+    "wp-env:seed": "bash bin/wp-env-seed.sh",
+    "lint:js": "eslint assets/js/",
+    "lint:js:fix": "eslint assets/js/ --fix"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@wordpress/env": "^9.0.0",
-    "cypress": "^13.14.2"
+    "cypress": "^13.14.2",
+    "eslint": "^10.4.1",
+    "globals": "^17.6.0"
   }
 }

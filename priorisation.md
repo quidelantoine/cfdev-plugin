@@ -3,18 +3,6 @@
 
 # A FAIRE 
 ===========
-
-
-
-//la ici c'est visuel aller voir 
-=> tester les nouvelles notice de id identiques reserve etc ?? +++ , voir si notice sont bine placé
-=> Mettre dan sles fichiers de mo des trucs qui genrer les notices pour les voir en mode demo
-class="cfdev-header">
-
-
-
-transient des notices ???, mieux si fichiers tmp ?? eviter d'allourdir le transient . d'ailleurs utilise ton bc les trransient dans noutre plugin
-
 Objectif : GitHub (pas GitLab)
 
 Pourquoi GitHub plutôt que GitLab pour se mettre en avant :

@@ -55,7 +55,23 @@ jobs:
 
       - run: vendor/bin/phpcs
 
-  # ── 3. PHPStan niveau 8 ──────────────────────────────────────────────────
+  # ── 3. ESLint ────────────────────────────────────────────────────────────
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint:js
+
+  # ── 5. PHPStan niveau 8 ──────────────────────────────────────────────────
   phpstan:
     name: PHPStan — niveau 8
     runs-on: ubuntu-latest
@@ -77,7 +93,7 @@ jobs:
 
       - run: vendor/bin/phpstan analyse --no-progress
 
-  # ── 4. PHPUnit — Integration ─────────────────────────────────────────────
+  # ── 6. PHPUnit — Integration ─────────────────────────────────────────────
   phpunit-integration:
     name: PHPUnit — Integration
     runs-on: ubuntu-latest
@@ -144,7 +160,7 @@ jobs:
 
       - run: ./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
 
-  # ── 5. Cypress — E2E (wp-env + matrix parallèle) ─────────────────────────
+  # ── 7. Cypress — E2E (wp-env + matrix parallèle) ─────────────────────────
   cypress:
     name: Cypress — E2E (${{ matrix.group }})
     runs-on: ubuntu-latest

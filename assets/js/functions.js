@@ -164,6 +164,8 @@ jQuery( function( $ ) {
 				parent	= that.closest('.cfdev-field, .cfdev-td, .form-field'),
 				hidden 	= $( '.cfdev-hidden', parent ),
 				preview = $( '.cfdev-preview', parent ),
+				preview_size,
+				attachment,
 				_cfdev_uploader;
 
 			try {
@@ -360,7 +362,7 @@ jQuery( function( $ ) {
 			wrap 			= that.hasClass( 'js-cfdev-add-bundle' )
 								? that.closest( '.padding-wrap' ).children( '.js-cfdev-sortable' )
 								: $( '.js-cfdev-sortable', parent ),
-			is_bundle		= wrap.data( 'cfdev-sortable-type') == 'bundle' ? true : false;
+			is_bundle		= wrap.data( 'cfdev-sortable-type') == 'bundle' ? true : false,
 			last 			= $( '> .js-cfdev-sortable-item:last', wrap ),
 			handle 			= '<button type="button" class="cfdev-handle-sortable js-cfdev-handle-sortable" aria-label="' + Cfdev.drag_to_reorder + '"></button>',
 			remover 		= '<button type="button" class="cfdev-remove-sortable js-cfdev-remove-sortable" aria-label="' + Cfdev.remove + '"></button>',
@@ -400,7 +402,7 @@ jQuery( function( $ ) {
 				}
 
 				// New name and id attributes
-				cfdev_input.attr('name', function( i, val ) { return val ? val.replace( /\[(\d+)\]/, function( match, n ) { return '[' + ( Number(n) + 1 ) + ']'; }) : val; }).attr('id', function( i, val ) { return val ? val.replace( /\_(\d+)/, function( match, n ) { return '_' + ( Number(n) + 1 ); }) : val; }).removeClass('hasDatepicker');
+				cfdev_input.attr('name', function( i, val ) { return val ? val.replace( /\[(\d+)\]/, function( match, n ) { return '[' + ( Number(n) + 1 ) + ']'; }) : val; }).attr('id', function( i, val ) { return val ? val.replace( /_(\d+)/, function( match, n ) { return '_' + ( Number(n) + 1 ); }) : val; }).removeClass('hasDatepicker');
 
 				// Set label for new id
 				$(this).find('label').attr('for', cfdev_input.attr('id'));

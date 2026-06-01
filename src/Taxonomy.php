@@ -64,7 +64,12 @@ class Taxonomy extends ContentType
             $reserved = WPValidator::isReservedTerm($this->name);
 
             if ($reserved) {
-                (new Notice($reserved->get_error_message(), 'error'))->register();
+                $message = sprintf(
+                    /* translators: %s = the reserved term slug that was used */
+                    __('Use of a reserved term: "%s".', 'cfdev'),
+                    $this->name
+                );
+                (new Notice($message, 'error'))->register(['toplevel_page_cfdev']);
                 return;
             }
 

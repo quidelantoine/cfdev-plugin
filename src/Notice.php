@@ -24,10 +24,22 @@ class Notice
     /**
      * Registers the notice to be rendered when admin_notices fires.
      * Use this when Notice is created BEFORE the admin_notices hook.
+     *
+     * @param list<string>|null $screen_ids Restrict to these screen IDs. null = all admin pages.
      */
-    public function register(): void
+    public function register(?array $screen_ids = null): void
     {
-        add_action('admin_notices', $this->render(...));
+        if ($screen_ids === null) {
+            add_action('admin_notices', $this->render(...));
+            return;
+        }
+
+        add_action('admin_notices', function () use ($screen_ids): void {
+            $screen = get_current_screen();
+            if ($screen && in_array($screen->id, $screen_ids, true)) {
+                $this->render();
+            }
+        });
     }
 
     /**

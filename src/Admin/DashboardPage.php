@@ -72,6 +72,7 @@ final class DashboardPage extends AdminPage
                 </span>
                 <?php endif; ?>
             </div>
+            <span class="wp-header-end"></span>
 
             <?php if (! empty($intraBoxDups)) : ?>
             <div class="notice notice-error cfdev-notice-dups">

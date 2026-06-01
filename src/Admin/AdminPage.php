@@ -30,6 +30,7 @@ abstract class AdminPage
             <span class="cfdev-header__sub"><?php echo esc_html($subtitle); ?></span>
             <?php endif; ?>
         </div>
+        <span class="wp-header-end"></span>
         <?php
     }
 

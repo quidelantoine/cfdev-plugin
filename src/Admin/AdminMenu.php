@@ -37,10 +37,7 @@ final class AdminMenu
             return;
         }
 
-        if (
-            (function_exists('is_plugin_active') && is_plugin_active('classic-editor/classic-editor.php'))
-            || ! apply_filters('use_block_editor_for_post_type', true, 'post')
-        ) {
+        if (function_exists('is_plugin_active') && is_plugin_active('classic-editor/classic-editor.php')) {
             return;
         }
 

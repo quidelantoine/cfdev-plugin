@@ -75,7 +75,7 @@
 .cfdev .cfdev-table th{ font-weight: normal; text-align: left; vertical-align: top; width: var(--cfdev-label-width); }
 
 .cfdev .cfdev-table th label,
-.cfdev .cfdev-th label { font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+.cfdev .cfdev-th label { font-size: 12px; font-weight: bold; display: inline-flex; gap: 5px; }
 
 .cfdev-field-icon { font-size: 14px; width: 14px; height: 14px; flex-shrink: 0; }
 

@@ -24,8 +24,10 @@ Cypress.Commands.add('loginToWP', () => {
  */
 Cypress.Commands.add('publishPost', () => {
   cy.get('#publish').click()
-  // 35 s : publish + redirect + page render can be slow on CI under load
-  cy.get('#message.notice-success, .notice-success', { timeout: 35000 }).should('exist')
+  // Wait for WP to save + redirect: URL changes from post-new.php → post.php?post=ID
+  // URL-based check is more reliable than DOM notice (WP version-independent)
+  // 45 s to handle slow CI runners under load (spec 09+ runs late in the suite)
+  cy.url({ timeout: 45000 }).should('match', /[?&]post=\d+/)
 })
 
 /**

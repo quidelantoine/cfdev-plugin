@@ -16,8 +16,6 @@ class ErrorBagTest extends CFDevTestCase
         $ref = new \ReflectionProperty(ErrorBag::class, 'runtime');
         $ref->setAccessible(true);
         $ref->setValue(null, null);
-
-        Functions\when('get_current_user_id')->justReturn(1);
     }
 
     /** @return array<string, array{label: string, errors: array<int, string>}> */

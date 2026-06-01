@@ -24,7 +24,7 @@ final class ErrorBag
 
     private static function key(string $meta_type, int $object_id): string
     {
-        return self::PREFIX . $meta_type . '_' . get_current_user_id() . '_' . $object_id;
+        return self::PREFIX . $meta_type . '_' . $object_id;
     }
 
     // -------------------------------------------------------------------------

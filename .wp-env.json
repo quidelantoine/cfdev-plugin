@@ -12,5 +12,7 @@
     "CFDEV_DEMO": true,
     "DISABLE_WP_CRON": true
   },
-  "afterSetup": "bash bin/wp-env-seed.sh"
+  "lifecycleScripts": {
+    "afterStart": "bash bin/wp-env-seed.sh"
+  }
 }

@@ -6,6 +6,9 @@ Toutes les commandes pour développer, tester et livrer le plugin.
 ```php
 // wp-config.php
 define('CFDEV_DEMO', true);
+// src/demo/demo-notices.php — activé uniquement quand :
+define('CFDEV_DEMO',         true);
+define('CFDEV_DEMO_NOTICES', true);
 ```
 
 

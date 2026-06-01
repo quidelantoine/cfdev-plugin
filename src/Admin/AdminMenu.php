@@ -14,6 +14,53 @@ final class AdminMenu
     public static function register(): void
     {
         add_action('admin_menu', [self::class, 'build']);
+        add_action('admin_notices', [self::class, 'noticeClassicEditor']);
+    }
+
+    /**
+     * Shows a warning when Classic Editor is not active.
+     * CFDev meta boxes run inside a Gutenberg iframe without it,
+     * which breaks AJAX fields and Wysiwyg editors.
+     * Only shown on post edit screens and CFDev admin pages.
+     */
+    public static function noticeClassicEditor(): void
+    {
+        $screen = get_current_screen();
+        if (! $screen) {
+            return;
+        }
+
+        $on_post_edit = in_array($screen->base, ['post', 'post-new'], true);
+        $on_cfdev     = str_contains($screen->id, 'cfdev');
+
+        if (! $on_post_edit && ! $on_cfdev) {
+            return;
+        }
+
+        if (
+            (function_exists('is_plugin_active') && is_plugin_active('classic-editor/classic-editor.php'))
+            || ! apply_filters('use_block_editor_for_post_type', true, 'post')
+        ) {
+            return;
+        }
+
+        $install_url = admin_url('plugin-install.php?s=classic+editor&tab=search&type=term');
+
+        $message = esc_html__(
+            'The Classic Editor plugin is recommended. Without it, CFDev meta boxes run inside'
+            . ' a block editor iframe and some features (AJAX fields, Wysiwyg) may not work correctly.',
+            'cfdev'
+        );
+        $link = sprintf(
+            '<a href="%s">%s</a>',
+            esc_url($install_url),
+            esc_html__('Install Classic Editor →', 'cfdev')
+        );
+        printf(
+            '<div class="notice notice-warning is-dismissible"><p><strong>CFDev</strong> — %s %s</p></div>',
+            $message, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            $link     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        );
     }
 
     public static function build(): void

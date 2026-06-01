@@ -197,7 +197,87 @@ add_action('init', static function (): void {
 
 Les erreurs de validation survivent au cycle POST → redirection et s'affichent **inline dans le formulaire** — aucune donnée n'est perdue.
 
-## 5. Ajouter des méta de terme et d'utilisateur
+## 5. Articles et pages — champs sur les post types natifs
+
+CFDev fonctionne sur les post types natifs de WordPress aussi bien que sur les types personnalisés. Utilisez `new PostType('post')` ou `new PostType('page')` pour attacher des meta boxes — aucun enregistrement de post type n'est nécessaire.
+
+### Articles et pages standard
+
+```php
+use Weblitzer\CFDev\PostType;
+
+add_action('init', static function (): void {
+
+    // Champs sur tous les articles
+    (new PostType('post'))->addMetaBox('post_extra', 'Détails de l\'article', [
+        ['id' => 'subtitle', 'type' => 'text',   'label' => 'Sous-titre'],
+        ['id' => 'source',   'type' => 'url',    'label' => 'URL source'],
+        ['id' => 'gallery',  'type' => 'gallery','label' => 'Galerie photo'],
+    ]);
+
+    // Champs sur toutes les pages
+    (new PostType('page'))->addMetaBox('page_hero', 'Section Hero', [
+        ['id' => 'hero_image', 'type' => 'image', 'label' => 'Image hero'],
+        ['id' => 'hero_title', 'type' => 'text',  'label' => 'Titre hero'],
+        ['id' => 'hero_cta',   'type' => 'link',  'label' => 'Bouton CTA'],
+    ]);
+
+});
+```
+
+### Restreindre une meta box à un template de page spécifique
+
+Les champs n'apparaissent que si la page utilise un template donné. Idéal pour les landing pages, pages d'accueil, etc.
+
+```php
+(new PostType('page'))
+    ->addMetaBox('home_sections', 'Sections page d\'accueil', [
+        ['id' => 'intro',    'type' => 'wysiwyg', 'label' => 'Introduction'],
+        ['id' => 'features', 'type' => 'textarea','label' => 'Liste de fonctionnalités'],
+        ['id' => 'banner',   'type' => 'image',   'label' => 'Bannière'],
+    ])
+    ->onlyForTemplate('template-home.php');
+```
+
+### Restreindre une meta box à une page spécifique (par ID)
+
+Les champs n'apparaissent que sur une page précise — utile pour une page de contact, une page "à propos", etc.
+
+```php
+(new PostType('page'))
+    ->addMetaBox('contact_options', 'Options de contact', [
+        ['id' => 'map_embed', 'type' => 'text', 'label' => 'URL embed Google Maps'],
+        ['id' => 'phone',     'type' => 'tel',  'label' => 'Numéro de téléphone'],
+    ])
+    ->onlyForId(42); // uniquement pour la page avec l'ID 42
+```
+
+> L'ID doit correspondre à l'ID de la page en base de données (visible dans l'URL en modification : `post=42`).
+
+### Pages avec plusieurs layouts via Tabs
+
+```php
+(new PostType('page'))
+    ->addMetaBox('page_content', 'Contenu de la page', [
+        'tabs',
+        [
+            'Hero' => [
+                ['id' => 'hero_image', 'type' => 'image', 'label' => 'Image'],
+                ['id' => 'hero_title', 'type' => 'text',  'label' => 'Titre'],
+                ['id' => 'hero_cta',   'type' => 'link',  'label' => 'CTA'],
+            ],
+            'SEO' => [
+                ['id' => 'seo_title', 'type' => 'text',     'label' => 'Titre SEO'],
+                ['id' => 'seo_desc',  'type' => 'textarea', 'label' => 'Meta description'],
+            ],
+        ],
+    ])
+    ->onlyForTemplate('template-home.php');
+```
+
+---
+
+## 6. Ajouter des méta de terme et d'utilisateur
 
 ```php
 // Méta de terme — apparaît sur les formulaires Ajouter et Modifier (défaut)
@@ -414,4 +494,4 @@ $product->addMetaBox('specs', 'Fiche technique', [
 
 ## Suivant
 
-→ [Types de champs](champs.md) · [Layouts](layouts.md) · [Validation](validation.md) · [Cache](cache.md)
+→ [Types de champs](champs.md) · [Layouts](layouts.md) · [Validation](validation.md) · [Cache](cache.md) · [Term Meta](term-meta.md) · [User Meta](user-meta.md)

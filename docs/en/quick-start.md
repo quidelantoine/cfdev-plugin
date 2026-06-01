@@ -197,7 +197,87 @@ add_action('init', static function (): void {
 
 Validation errors survive the POST → redirect cycle and appear **inline in the edit form** — no data is lost.
 
-## 5. Add term meta and user meta
+## 5. Posts and pages — fields on native post types
+
+CFDev works on built-in WordPress post types just as well as on custom ones. Use `new PostType('post')` or `new PostType('page')` to attach meta boxes — no post type registration needed.
+
+### Standard posts and pages
+
+```php
+use Weblitzer\CFDev\PostType;
+
+add_action('init', static function (): void {
+
+    // Fields on all posts
+    (new PostType('post'))->addMetaBox('post_extra', 'Post Details', [
+        ['id' => 'subtitle', 'type' => 'text',  'label' => 'Subtitle'],
+        ['id' => 'source',   'type' => 'url',   'label' => 'Source URL'],
+        ['id' => 'gallery',  'type' => 'gallery','label' => 'Photo Gallery'],
+    ]);
+
+    // Fields on all pages
+    (new PostType('page'))->addMetaBox('page_hero', 'Hero Section', [
+        ['id' => 'hero_image',   'type' => 'image',   'label' => 'Hero Image'],
+        ['id' => 'hero_title',   'type' => 'text',    'label' => 'Hero Title'],
+        ['id' => 'hero_cta',     'type' => 'link',    'label' => 'CTA Button'],
+    ]);
+
+});
+```
+
+### Restrict a meta box to a specific page template
+
+Fields only appear when the page uses a given template file. Ideal for landing pages, home pages, etc.
+
+```php
+(new PostType('page'))
+    ->addMetaBox('home_sections', 'Home Page Sections', [
+        ['id' => 'intro',    'type' => 'wysiwyg', 'label' => 'Introduction'],
+        ['id' => 'features', 'type' => 'textarea','label' => 'Features list'],
+        ['id' => 'banner',   'type' => 'image',   'label' => 'Banner'],
+    ])
+    ->onlyForTemplate('template-home.php');
+```
+
+### Restrict a meta box to a specific page (by ID)
+
+Fields appear only on one specific page — useful for a unique contact page, about page, etc.
+
+```php
+(new PostType('page'))
+    ->addMetaBox('contact_options', 'Contact Options', [
+        ['id' => 'map_embed',  'type' => 'text', 'label' => 'Google Maps embed URL'],
+        ['id' => 'phone',      'type' => 'tel',  'label' => 'Phone number'],
+    ])
+    ->onlyForId(42); // only for page with ID 42
+```
+
+> The ID must match the post's database ID (visible in the URL when editing: `post=42`).
+
+### Pages with multiple layouts using Tabs
+
+```php
+(new PostType('page'))
+    ->addMetaBox('page_content', 'Page Content', [
+        'tabs',
+        [
+            'Hero' => [
+                ['id' => 'hero_image', 'type' => 'image', 'label' => 'Image'],
+                ['id' => 'hero_title', 'type' => 'text',  'label' => 'Title'],
+                ['id' => 'hero_cta',   'type' => 'link',  'label' => 'CTA'],
+            ],
+            'SEO' => [
+                ['id' => 'seo_title', 'type' => 'text',     'label' => 'SEO Title'],
+                ['id' => 'seo_desc',  'type' => 'textarea', 'label' => 'Meta Description'],
+            ],
+        ],
+    ])
+    ->onlyForTemplate('template-home.php');
+```
+
+---
+
+## 6. Add term meta and user meta
 
 ```php
 // Term meta — appears on both the Add and Edit term forms (default)
@@ -414,4 +494,4 @@ $product->addMetaBox('specs', 'Technical Specs', [
 
 ## Next
 
-→ [Field Types](fields.md) · [Layouts](layouts.md) · [Validation](validation.md) · [Cache](cache.md)
+→ [Field Types](fields.md) · [Layouts](layouts.md) · [Validation](validation.md) · [Cache](cache.md) · [Term Meta](term-meta.md) · [User Meta](user-meta.md)

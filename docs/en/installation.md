@@ -14,6 +14,17 @@
 PHP 8.2 minimum: `readonly` properties used in `FileMime`.  
 WordPress 6.5 minimum: targets actively maintained installs.
 
+### Classic Editor — recommended
+
+CFDev uses WordPress **meta boxes** to render fields on the edit screen. In WordPress 6.x with the block editor (Gutenberg) active, meta boxes are moved into an **iframe**. This breaks some CFDev features:
+
+- AJAX-powered fields (repeatable, post/term/user selects) become inaccessible
+- The **Wysiwyg** (TinyMCE) editor may not initialize correctly
+
+**Install and activate the [Classic Editor](https://wordpress.org/plugins/classic-editor/) plugin** to avoid these issues. CFDev will display a warning in the admin if it detects that Classic Editor is not active.
+
+> If you have disabled the block editor yourself via `add_filter('use_block_editor_for_post_type', '__return_false')`, CFDev will not show the warning.
+
 ---
 
 ## Install

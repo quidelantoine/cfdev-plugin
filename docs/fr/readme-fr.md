@@ -4,6 +4,7 @@
 
 [![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
 [![WordPress 6.5+](https://img.shields.io/badge/WordPress-6.5%2B-blue)](https://wordpress.org/)
+[![Works with WooCommerce](https://img.shields.io/badge/WooCommerce-compatible-96588a)](woocommerce.md)
 
 [![PHPStan](https://img.shields.io/badge/PHPStan-niveau%208-brightgreen)](../../phpstan.neon)
 [![PHPCS](https://img.shields.io/badge/PHPCS-WordPress--VIP--Go-blue)](../../phpcs.xml)
@@ -109,6 +110,8 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 | [Types de champs](champs.md) | Tous les types de champs avec options |
 | [Layouts](layouts.md) | Bundle, Tabs, Accordion |
 | [Validation](validation.md) | 25+ règles de validation intégrées |
+| [Term Meta](term-meta.md) | Champs sur les termes de taxonomie — tous les cas |
+| [User Meta](user-meta.md) | Champs sur les profils utilisateurs — rôles, ordre |
 | [Cache](cache.md) | Cache fichier — activation, invalidation, perf |
 | [Interface admin](admin.md) | Pages admin CFDev (Champs, Cache) |
 | [REST API](rest-api.md) | Exposer les champs via WP REST API |

@@ -110,6 +110,8 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 | [Field Types](docs/en/fields.md) | All 30+ field types with options |
 | [Layouts](docs/en/layouts.md) | Bundle, Tabs, Accordion |
 | [Validation](docs/en/validation.md) | 25+ built-in validation rules |
+| [Term Meta](docs/en/term-meta.md) | Fields on taxonomy terms — all forms and patterns |
+| [User Meta](docs/en/user-meta.md) | Fields on user profiles — roles, locations, order |
 | [Cache](docs/en/cache.md) | File cache — setup, invalidation, performance |
 | [Admin UI](docs/en/admin.md) | CFDev admin pages (Fields, Cache) |
 | [REST API](docs/en/rest-api.md) | Expose fields via WP REST API |

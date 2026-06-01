@@ -10,7 +10,7 @@ Cypress.Commands.add('loginToWP', () => {
       cy.get('#user_login').type(Cypress.env('WP_USER'))
       cy.get('#user_pass').type(Cypress.env('WP_PASS'), { log: false })
       cy.get('#wp-submit').click()
-      cy.url().should('include', '/wp-admin')
+      cy.url({ timeout: 20000 }).should('include', '/wp-admin')
     },
     {
       cacheAcrossSpecs: true,

@@ -1,8 +1,5 @@
 # Priorisation des tâches — CFDev
 ---
-```php
-
-```
 
 # A FAIRE 
 ===========

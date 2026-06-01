@@ -1,16 +1,30 @@
 /**
  * cy.loginToWP() — log in to WP admin and cache the session.
  * The session is reused across tests in the same spec file.
+ *
+ * Uses cy.request() instead of a browser form click: in CI (wp-env Docker),
+ * clicking #wp-submit can hang on cold PHP-FPM startup, causing a 20 s timeout.
+ * cy.request() goes through Cypress's HTTP layer which shares the browser cookie
+ * jar — auth cookies set in the response are available to all subsequent cy.visit().
+ * Omitting 'testcookie' in the body skips WordPress's cookie-presence guard;
+ * wp_signon() still validates credentials against the database normally.
  */
 Cypress.Commands.add('loginToWP', () => {
   cy.session(
     Cypress.env('WP_USER'),
     () => {
-      cy.visit('/wp-login.php')
-      cy.get('#user_login').type(Cypress.env('WP_USER'))
-      cy.get('#user_pass').type(Cypress.env('WP_PASS'), { log: false })
-      cy.get('#wp-submit').click()
-      cy.url({ timeout: 20000 }).should('include', '/wp-admin')
+      cy.request({
+        method: 'POST',
+        url: '/wp-login.php',
+        form: true,
+        body: {
+          log: Cypress.env('WP_USER'),
+          pwd: Cypress.env('WP_PASS'),
+          'wp-submit': 'Log In',
+          redirect_to: '/wp-admin/',
+        },
+      })
+      cy.visit('/wp-admin/')
     },
     {
       cacheAcrossSpecs: true,

@@ -1,10 +1,9 @@
 # Priorisation des tâches — CFDev
-
-> Synthèse actionnable de [AFAIRE.md](./AFAIRE.md).
-> Logique : débloquer d'abord ce qui bloque le reste, puis maximiser le ROI.
-
 ---
-define('CFDEV_DEMO', true);
+```php
+
+```
+
 # A FAIRE 
 ===========
 
@@ -14,8 +13,7 @@ define('CFDEV_DEMO', true);
 => tester les nouvelles notice de id identiques reserve etc ?? +++ , voir si notice sont bine placé
 => Mettre dan sles fichiers de mo des trucs qui genrer les notices pour les voir en mode demo
 
-=> faire test de relase 1.0.4 sur un autre ordi pou test si ok +++
-=> En cours pas eleves , a voir ??
+
 
 transient des notices ???, mieux si fichiers tmp ?? eviter d'allourdir le transient . d'ailleurs utilise ton bc les trransient dans noutre plugin
 
@@ -125,6 +123,9 @@ les propriete de field repeatable et ajax, test ok ? est ce que je garde ???
 Si on garde c'est quoi les limtes etest ce que cela vaut vraiment le coup ???
 
 - admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
+
+=> faire test de relase 1.0.4 sur un autre ordi pou test si ok +++
+=> En cours pas eleves , a voir ??
 
 ## 🏁 Finir ce qui est commencé
 | # | Tâche | Tests associés |
@@ -562,7 +563,7 @@ sed -i 's/ancien_texte/nouveau_texte/gi'
 @todo       // Ce qui reste à faire
 
 
-# prompt pb ci cypress
+# A VIRER ci dessous => sans pb si je reviens ici depuis longtemps
 
 
 Je veux migrer les tests Cypress E2E de ce plugin WordPress (CFDev)

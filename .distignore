@@ -4,6 +4,8 @@ node_modules/
 
 # Dev tooling
 tests/
+bin/
+.wp-env.json
 cypress/
 cypress.config.js
 cypress.env.json

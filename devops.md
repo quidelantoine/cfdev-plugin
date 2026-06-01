@@ -3,10 +3,16 @@
 Toutes les commandes pour développer, tester et livrer le plugin.
 
 ---
+```php
+// wp-config.php
+define('CFDEV_DEMO', true);
+```
+
 
 ## Dépendances
 
 ```bash
+
 # PHP (dev)
 composer install
 

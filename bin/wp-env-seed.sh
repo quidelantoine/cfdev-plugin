@@ -18,12 +18,14 @@ $WP rewrite structure '/%postname%/'
 $WP rewrite flush
 
 echo "→ Test page for spec 11 (front-end)…"
-# Check first so the script is idempotent on repeated runs
+# grep -E '^[0-9]+$' : only match a line that is exclusively digits,
+# which avoids grabbing years from Docker Compose timestamps (2026-06-01T…)
+# or wp-env status lines that appear in the same stdout stream.
 PAGE_ID=$($WP post list \
   --post_type=page \
   --post_name=cfdev-test \
   --post_status=publish \
-  --format=ids 2>&1 | grep -oE '[0-9]+' | head -1)
+  --field=ID 2>&1 | grep -E '^[0-9]+$' | head -1)
 
 if [ -z "$PAGE_ID" ]; then
   PAGE_ID=$($WP post create \
@@ -31,7 +33,12 @@ if [ -z "$PAGE_ID" ]; then
     --post_title="CFDev Test" \
     --post_name=cfdev-test \
     --post_status=publish \
-    --porcelain 2>&1 | grep -oE '[0-9]+' | head -1)
+    --porcelain 2>&1 | grep -E '^[0-9]+$' | head -1)
+fi
+
+if [ -z "$PAGE_ID" ]; then
+  echo "✖ Could not resolve page ID for cfdev-test" >&2
+  exit 1
 fi
 
 $WP post meta update "$PAGE_ID" _wp_page_template template-cfdev-test.php

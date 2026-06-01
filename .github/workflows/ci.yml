@@ -213,12 +213,27 @@ jobs:
             | grep -E '^(wordpress|mariadb)' | grep -v '<none>' | tr '\n' ' ')
           [ -n "${IMAGES// }" ] && docker save $IMAGES -o /tmp/docker-wp-images.tar || true
 
-      # ── Préchauffage opcache ─────────────────────────────────────────────────
-      # Évite les timeouts sur le premier cy.session() (cold PHP path).
+      # ── Préchauffage authentifié ────────────────────────────────────────────
+      # Réplique exactement ce que fait Cypress spec-01 : login form → wp-admin.
+      # Sans ça, le premier cy.session() échoue en CI car le cold start PHP-FPM
+      # dans Docker dépasse defaultCommandTimeout sur la première requête réelle.
+      # On fait aussi un retry loop pour absorber le warm-up MariaDB résiduel.
       - name: Warm up WordPress
         run: |
-          curl -sf http://localhost:8888/wp-login.php > /dev/null || true
-          curl -sf http://localhost:8888/wp-admin/    > /dev/null || true
+          timeout 30 bash -c \
+            'until curl -sf http://localhost:8888/wp-login.php > /dev/null; do sleep 2; done'
+          curl -s -c /tmp/wpcookies.txt \
+            http://localhost:8888/wp-login.php > /dev/null
+          curl -s -b /tmp/wpcookies.txt -c /tmp/wpcookies.txt \
+            --data-urlencode "log=admin" \
+            --data-urlencode "pwd=password" \
+            -d "wp-submit=Log+In&redirect_to=%2Fwp-admin%2F&testcookie=1" \
+            http://localhost:8888/wp-login.php > /dev/null
+          curl -s -b /tmp/wpcookies.txt \
+            http://localhost:8888/wp-admin/ > /dev/null || true
+          curl -s -b /tmp/wpcookies.txt \
+            "http://localhost:8888/wp-admin/post-new.php?post_type=post" \
+            > /dev/null || true
 
       # ── Cypress ─────────────────────────────────────────────────────────────
       # Credentials wp-env par défaut : admin / password

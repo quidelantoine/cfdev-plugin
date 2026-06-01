@@ -234,6 +234,11 @@ jobs:
           curl -s -b /tmp/wpcookies.txt \
             "http://localhost:8888/wp-admin/post-new.php?post_type=post" \
             > /dev/null || true
+          # Pré-chauffe le template cfdev-test (spec 11) — vérifie aussi que
+          # la page créée par le seed est accessible via ses permaliens.
+          curl -s -b /tmp/wpcookies.txt \
+            "http://localhost:8888/cfdev-test/?post_id=1" \
+            > /dev/null || true
 
       # ── Cypress ─────────────────────────────────────────────────────────────
       # Credentials wp-env par défaut : admin / password

@@ -10,7 +10,8 @@
   },
   "config": {
     "CFDEV_DEMO": true,
-    "DISABLE_WP_CRON": true
+    "DISABLE_WP_CRON": true,
+    "AUTOSAVE_INTERVAL": 3600
   },
   "lifecycleScripts": {
     "afterStart": "bash bin/wp-env-seed.sh"

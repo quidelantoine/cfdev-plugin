@@ -8,6 +8,10 @@ WP="npx wp-env run cli wp"
 
 echo "→ cfdev options…"
 $WP option update cfdev_cache_enabled 1
+# Écrire explicitement en DB — les valeurs par défaut (1) sont dans le code
+# mais get_option() lit la DB, et wp-env part d'une DB vide à chaque run.
+$WP option update cfdev_rest_enabled 1
+$WP option update cfdev_api_enabled 1
 
 echo "→ Classic Editor options…"
 $WP option update classic-editor-replace classic
@@ -42,4 +46,11 @@ if [ -z "$PAGE_ID" ]; then
 fi
 
 $WP post meta update "$PAGE_ID" _wp_page_template template-cfdev-test.php
+
+# Second flush après la création de la page : consolide les règles de réécriture
+# pour inclure le nouveau slug cfdev-test (règle générique /%postname%/ suffit
+# théoriquement, mais un flush garanti évite les edge-cases Docker/nginx).
+echo "→ Final rewrite flush…"
+$WP rewrite flush
+
 echo "→ Done (page ID $PAGE_ID)."

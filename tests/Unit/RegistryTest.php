@@ -259,7 +259,7 @@ class RegistryTest extends CFDevTestCase
         $warns = Registry::intraBoxDuplicates();
         $this->assertNotEmpty($warns);
         $this->assertSame('price', $warns[0]['field']);
-        $this->assertSame('box',   $warns[0]['meta_box']);
+        $this->assertSame('box', $warns[0]['meta_box']);
     }
 
     public function testIntraBoxDuplicatesReturnsEmptyWhenAllFieldIdsUnique(): void
@@ -443,7 +443,7 @@ class RegistryTest extends CFDevTestCase
         ]);
 
         $reserved = Registry::reservedFieldIds();
-        $this->assertArrayHasKey('_thumbnail_id',     $reserved);
+        $this->assertArrayHasKey('_thumbnail_id', $reserved);
         $this->assertArrayHasKey('_wp_page_template', $reserved);
     }
 

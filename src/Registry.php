@@ -201,10 +201,11 @@ class Registry
             if (! ($meta instanceof MetaBox)) {
                 continue;
             }
-            foreach (array_keys($meta->data instanceof \Weblitzer\CFDev\Fields\Bundle
+            foreach (
+                array_keys($meta->data instanceof \Weblitzer\CFDev\Fields\Bundle
                 ? [$meta->data->id => true]
-                : self::resolveBundleIds($meta)
-            ) as $bundle_id) {
+                : self::resolveBundleIds($meta)) as $bundle_id
+            ) {
                 foreach ($meta->post_types as $pt) {
                     $key       = $bundle_id . ':' . $pt;
                     $map[$key] = ($map[$key] ?? 0) + 1;

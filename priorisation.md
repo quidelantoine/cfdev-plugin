@@ -14,7 +14,10 @@ problem ci cypress +++
 Faire une docs dediée term et une autre dedié User +++
 
 dans la docs faire un trucs speciale gestions des pages et gestions des articles, finir par tous les autres custom post 
-Mettre exmple des pages sur les premiers exemple +++ 
+Mettre aussi exemple des pages sur les premiers exemple +++ en plus de l'exemple product +++
+
+=> tester les nouvelles notice de id identiques reserve etc ?? +++ , voir si notice sont bine placé
+=> Mettre dan sles fichiers de mo des trucs qui genrer les notices pour les voir en mode demo
 
 => faire test de relase 1.0.4 sur un autre ordi pou test si ok +++
 

@@ -242,6 +242,13 @@ class MetaBox extends Meta
 
     protected function resolveObjectId(): int
     {
+        // admin_notices fires (via admin-header.php) before post.php sets up
+        // the global $post, so get_the_ID() returns 0 at that point.
+        // $_GET['post'] is always present on the post-edit URL and is reliable.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (isset($_GET['post'])) {
+            return absint($_GET['post']); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        }
         return absint(get_the_ID());
     }
 

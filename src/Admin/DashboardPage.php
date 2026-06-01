@@ -83,7 +83,8 @@ final class DashboardPage extends AdminPage
                         <?php esc_html_e('declared more than once in', 'cfdev'); ?>
                         <strong><?php echo esc_html($w['meta_box']); ?></strong>
                         (<?php echo esc_html($w['context']); ?>)
-                        — <?php esc_html_e('only the last declaration is active; the earlier field definition and its saved data are silently lost.', 'cfdev'); ?>
+                        — <?php esc_html_e('only the last declaration is active;', 'cfdev'); ?>
+                        <?php esc_html_e('the earlier field definition and its saved data are silently lost.', 'cfdev'); ?>
                     </li>
                     <?php endforeach; ?>
                 </ul>
@@ -115,7 +116,8 @@ final class DashboardPage extends AdminPage
                         <code><?php echo esc_html($field_id); ?></code>
                         <?php esc_html_e('in', 'cfdev'); ?>
                         <strong><?php echo esc_html(implode(', ', $boxes)); ?></strong>
-                        — <?php esc_html_e('this key is used by WordPress core. Saving to it will corrupt native WordPress data (featured image, page template, user sessions, etc.). Rename this field immediately.', 'cfdev'); ?>
+                        — <?php esc_html_e('this key is used by WordPress core. Saving to it will corrupt native WordPress data', 'cfdev'); ?>
+                        <?php esc_html_e('(featured image, page template, user sessions, etc.). Rename this field immediately.', 'cfdev'); ?>
                     </li>
                     <?php endforeach; ?>
                 </ul>

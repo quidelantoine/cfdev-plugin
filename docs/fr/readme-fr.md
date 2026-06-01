@@ -7,7 +7,7 @@
 
 [![PHPStan](https://img.shields.io/badge/PHPStan-niveau%208-brightgreen)](../../phpstan.neon)
 [![PHPCS](https://img.shields.io/badge/PHPCS-WordPress--VIP--Go-blue)](../../phpcs.xml)
-[![Tests unitaires](https://img.shields.io/badge/tests%20unitaires-1360%20ok-brightgreen)](../../tests/Unit)
+[![Tests unitaires](https://img.shields.io/badge/tests%20unitaires-1382%20ok-brightgreen)](../../tests/Unit)
 [![Tests intégration](https://img.shields.io/badge/tests%20intégration-228%20ok-brightgreen)](../../tests/Integration)
 [![Cypress](https://img.shields.io/badge/Cypress-65%20specs%20%7C%2016%20fichiers-brightgreen)](../../cypress/e2e)
 

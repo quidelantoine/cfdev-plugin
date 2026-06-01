@@ -524,7 +524,8 @@ abstract class Meta
             'field'   => $field_id,
             'context' => $context,
             'message' => sprintf(
-                'Field ID "%s" is declared more than once in meta box "%s" (context: %s). Only the last declaration is active — the earlier field definition is silently lost.',
+                'Field ID "%s" is declared more than once in meta box "%s" (context: %s). '
+                . 'Only the last declaration is active — the earlier field definition is silently lost.',
                 $field_id,
                 $this->id,
                 $context

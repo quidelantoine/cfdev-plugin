@@ -240,6 +240,8 @@ jobs:
           sudo chmod o+x /home/runner
           ln -s $GITHUB_WORKSPACE $WP_DIR/wp-content/plugins/cfdev-plugin
           wp plugin activate cfdev-plugin --path=$WP_DIR
+          # Cache activé pour spec 10 (cache admin page tests)
+          wp option update cfdev_cache_enabled 1 --path=$WP_DIR
           # Permaliens (flush DB seulement, pas de .htaccess — nginx gère le routing)
           wp rewrite structure '/%postname%/' --path=$WP_DIR
           wp rewrite flush --path=$WP_DIR

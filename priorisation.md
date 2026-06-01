@@ -80,18 +80,20 @@ js full vanilla ??, utilisation de vite.js,  et js polyfills
 
 # design de la page admin
 trouver un logo ++ perso ????
-# CI 1 ESlINT
-=> Mettre en place ci , phpcs , linter etc , phpstan ,   eslint , SOnarQUbe ++ 
--> reste eslint ??? et ci
-=> ajouter badge  au readme quand c'est fait
+# CI reste SonarQube
+
 # A refaire 
 => duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
+
 => Tous les champs sont tester , unitaire, integration et fonctionnel ???
 # Plus tard mais imporant
 Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
 => relire la docs , tranquillou
 => revoir admin api, des trucs etrange sur les liens proposer ++
 reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
+
+
+ajoute les champs relation et datetime/time/multiselect dans les specs Cypress
 
 # Traduction
 => Utiliser plugins traduction loco translate pour générer fichier .mo et .po
@@ -549,50 +551,86 @@ sed -i 's/ancien_texte/nouveau_texte/gi'
 @todo       // Ce qui reste à faire
 
 
-# A VIRER ci dessous => sans pb si je reviens ici depuis longtemps
+┌────────────┬──────┬─────────────┬─────────┐
+│   Champ    │ Unit │ Integration │ Cypress │
+├────────────┼──────┼─────────────┼─────────┤
+│ Text       │  ✓   │      ✓      │    ✓    │
+├────────────┼──────┼─────────────┼─────────┤
+│ Textarea   │  ✓   │      ✓      │    ✓    │                                                                                                                                                             
+├────────────┼──────┼─────────────┼─────────┤
+│ Number     │  ✓   │      ✓      │    ✓    │
+├────────────┼──────┼─────────────┼─────────┤
+│ Email      │  ✓   │      ✓      │    ✓    │
+├────────────┼──────┼─────────────┼─────────┤
+│ Url        │  ✓   │      ✓      │    ✓    │                                                                                                                                                             
+├────────────┼──────┼─────────────┼─────────┤
+│ Toggle     │  ✓   │      ✓      │    ✓    │
+├────────────┼──────┼─────────────┼─────────┤
+│ Checkbox   │  ✓   │      ✓      │    ✓    │
+├────────────┼──────┼─────────────┼─────────┤
+│ Checkboxes │  ✓   │      ✓      │    ✓    │                                                                                                                                                             
+├────────────┼──────┼─────────────┼─────────┤
+│ Select     │  ✓   │      ✓      │    ✓    │
+├────────────┼──────┼─────────────┼─────────┤
+│ Bundle     │  ✓   │      ✓      │    ✓    │
+├─────────────┼──────┼─────────────┼─────────┤
+│ Tabs        │  ✓   │      ✓      │    ✓    │                                                                                                                                                            
+├─────────────┼──────┼─────────────┼─────────┤
+│ Accordion   │  ✓   │      ✓      │    ✓    │
+├─────────────┼──────┼─────────────┼─────────┤
+│ Range       │  ✓   │      —      │    ✓    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Tel              │  ✓   │      —      │    ✓    │                                                                                                                                                       
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Color            │  ✓   │      —      │    ✓    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Date             │  ✓   │      —      │    ✓    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Radios           │  ✓   │      —      │    ✓    │                                                                                                                                                       
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Yesno            │  ✓   │      —      │    ✓    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Wysiwyg          │  ✓   │      ✓      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Datetime         │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Time             │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ MultiSelect      │  ✓   │      —      │    —    │                                                                                                                                                       
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Image / ImageAlt │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ File             │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Gallery          │  ✓   │      —      │    —    │                                                                                                                                                       
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Link             │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ PostSelect       │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ TermSelect       │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ UserSelect       │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ PostCheckboxes   │  ✓   │      —      │    —    │                                                                                                                                                       
+├──────────────────┼──────┼─────────────┼─────────┤
+│ TermCheckboxes   │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ UserCheckboxes   │  ✓   │      —      │    —    │
+├──────────────────┼──────┼─────────────┼─────────┤
+│ Heading / Hidden │  ✓   │      —      │    —    │                                                                                                                                                       
+└──────────────────┴──────┴─────────────┴─────────┘
 
+  ---
+Bilan :
 
-Je veux migrer les tests Cypress E2E de ce plugin WordPress (CFDev)
-depuis une CI artisanale (nginx + php-fpm bare-metal sur ubuntu-latest)
-vers @wordpress/env (wp-env) pour avoir un environnement identique
-en local et sur GitHub Actions.
+- 12 champs : couverture complète Unit + Integration + E2E
+- 6 champs : Unit + E2E, pas d'intégration (Range, Tel, Color, Date, Radios, Yesno) — leur save/restore est validé via Cypress, l'intégration DB reste la lacune
+- 1 champ : Unit + Integration uniquement (Wysiwyg — le picker média est difficile à automatiser)
+- 14 champs : Unit uniquement — principalement les médias (Image, File, Gallery), les relations (PostSelect, TermSelect…, Checkboxes de relation), Datetime, Time, MultiSelect
 
-CONTEXTE ACTUEL :
-- Plugin : cfdev-plugin, dans wp-content/plugins/cfdev-plugin/
-- Local : FrankenPHP + HTTPS (localhost auto-signé)
-- CI actuelle : .github/workflows/ci.yml — job "Cypress" qui installe
-  manuellement nginx, php-fpm, WP-CLI, WordPress, Classic Editor,
-  configure des options (cfdev_cache_enabled, cfdev_rest_enabled, etc.)
-  puis lance Cypress avec CYPRESS_BASE_URL=http://localhost
-- Tests Cypress : cypress/e2e/*.cy.js, 15 specs, ~65 tests
-- Problèmes récurrents : cold start FPM, session timeout, autosave
-  race condition, wp-post-new-reload
+Les vrais trous :
+1. Médias — pas testables en Cypress sans le media picker WP (explicitement skippés dans les specs)
+2. Relations (PostSelect/TermSelect/UserSelect et leurs variantes Checkboxes) — testables en intégration et Cypress, non encore couverts
+3. Datetime / Time / MultiSelect — oubliés des specs Cypress malgré leur présence dans les démos
 
-OBJECTIF :
-Remplacer le job "Cypress" du ci.yml par @wordpress/env qui :
-1. Lance WP dans Docker (nginx + PHP + MariaDB) — même image local/CI
-2. Active le plugin cfdev-plugin
-3. Seed les options WP nécessaires (cfdev_cache_enabled=1, etc.)
-4. Lance Cypress avec la même base URL
-
-- Garder Classic Editor activé (les specs utilisent #publish comme
-  input[type="submit"], pas le block editor)
-- Garder CFDEV_DEMO=true (active les meta boxes de démo)
-- Garder DISABLE_WP_CRON=true
-- Garder le mu-plugin qui désactive le block editor
-- Les specs Cypress ne doivent pas être modifiées (sauf si wp-env
-  impose un port différent — adapter CYPRESS_BASE_URL)
-- Le job PHPUnit Unit/Integration et PHPCS/PHPStan restent inchangés
-
-FICHIERS CLÉS à modifier :
-- .github/workflows/ci.yml (job cypress uniquement)
-- cypress.config.js (baseUrl : https://localhost → http://localhost:8888
-  ou le port wp-env)
-- package.json (ajouter @wordpress/env)
-- Créer .wp-env.json à la racine du plugin
-
-Commence par lire .github/workflows/ci.yml et cypress.config.js pour
-comprendre le setup actuel, puis propose le plan de migration.
-
-
-Verifer la relase => distignore ??

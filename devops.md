@@ -152,6 +152,8 @@ npx cypress run --spec "cypress/e2e/09-rest-api.cy.js" --browser chrome
 | `11-front-end.cy.js` | Lecture côté front |
 | `12-code-modal.cy.js` | Modale code snippet |
 | `13-field-icons.cy.js` | Icônes de champs |
+| `14-media-fields.cy.js` | Image, File, Gallery, Link (bypass media picker via hidden input) |
+| `15-skipped-fields.cy.js` | Datetime, Time, MultiSelect, PostSelect/Checkboxes, TermSelect/Checkboxes, UserSelect/Checkboxes |
 
 ---
 

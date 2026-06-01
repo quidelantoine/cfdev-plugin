@@ -37,7 +37,7 @@ add_filter('template_include', function (string $template): string {
 // any request that carries ?cfdev_render=N and serves the template directly,
 // returning HTTP 200 regardless of what WordPress's query resolver thinks.
 add_action('template_redirect', function (): void {
-    $post_id = isset($_GET['cfdev_render']) ? (int) $_GET['cfdev_render'] : 0;
+    $post_id = isset($_GET['cfdev_render']) ? (int) $_GET['cfdev_render'] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- CI test endpoint; capability check on line 44 is the guard.
     if ($post_id <= 0) {
         return;
     }

@@ -357,4 +357,112 @@ class CacheResolverTest extends CFDevTestCase
         $this->assertSame(0, array_key_first($result));
         $this->assertSame(1, array_key_last($result));
     }
+
+    // -------------------------------------------------------------------------
+    // image() — uncovered branches
+    // -------------------------------------------------------------------------
+
+    public function testFieldImageAltRemainsEmptyWhenGetPostIsNull(): void
+    {
+        // alt_meta = '' AND get_post returns null → alt stays '' (line 87 false branch)
+        Functions\when('get_post_meta')->justReturn('');
+        Functions\when('get_post')->justReturn(null);
+        Functions\when('wp_get_attachment_url')->justReturn('https://example.com/img.jpg');
+        Functions\when('wp_get_attachment_metadata')->justReturn(['sizes' => []]);
+
+        $result = $this->resolver->field('image', '4');
+
+        $this->assertSame('', $result['alt']);
+    }
+
+    public function testFieldImageSizeSkippedWhenWpGetAttachmentImageSrcReturnsFalse(): void
+    {
+        // wp_get_attachment_image_src returns false → size not added to result (line 96 false branch)
+        Functions\when('get_post_meta')->justReturn('Alt');
+        Functions\when('wp_get_attachment_url')->justReturn('https://example.com/img.jpg');
+        Functions\when('wp_get_attachment_metadata')->justReturn([
+            'sizes' => ['thumbnail' => [], 'medium' => []],
+        ]);
+        Functions\when('wp_get_attachment_image_src')->justReturn(false);
+
+        $result = $this->resolver->field('image', '6');
+
+        $this->assertArrayNotHasKey('thumbnail', $result);
+        $this->assertArrayNotHasKey('medium', $result);
+        $this->assertArrayHasKey('full', $result);
+    }
+
+    // -------------------------------------------------------------------------
+    // imageAlt() — array input path
+    // -------------------------------------------------------------------------
+
+    public function testFieldImageAltWithDirectArrayInputResolvesImage(): void
+    {
+        // raw is already an array, not a JSON string (line 107 true branch with non-empty data)
+        Functions\when('get_post_meta')->justReturn('Post meta alt');
+        Functions\when('wp_get_attachment_url')->justReturn('https://example.com/img.jpg');
+        Functions\when('wp_get_attachment_metadata')->justReturn(['sizes' => []]);
+
+        $result = $this->resolver->field('image_alt', ['id' => 5, 'alt' => 'Direct alt']);
+
+        $this->assertSame(5, $result['id']);
+        $this->assertSame('Direct alt', $result['alt']);
+    }
+
+    // -------------------------------------------------------------------------
+    // file() — legacy URL path
+    // -------------------------------------------------------------------------
+
+    public function testFieldFileLegacyUrlStringCallsAttachmentUrlToPostId(): void
+    {
+        // Non-numeric URL → $id = 0 → enters legacy branch → attachment_url_to_postid called → still 0 → []
+        Functions\when('attachment_url_to_postid')->justReturn(0);
+
+        $result = $this->resolver->field('file', 'https://example.com/legacy-doc.pdf');
+
+        $this->assertSame([], $result);
+    }
+
+    public function testFieldFileLegacyUrlWithValidIdReturnsStructure(): void
+    {
+        // Non-numeric URL → attachment_url_to_postid returns valid ID → structure returned
+        Functions\when('attachment_url_to_postid')->justReturn(12);
+        Functions\when('wp_get_attachment_url')->justReturn('https://example.com/legacy-doc.pdf');
+        Functions\when('get_attached_file')->justReturn('/var/www/uploads/legacy-doc.pdf');
+
+        $result = $this->resolver->field('file', 'https://example.com/legacy-doc.pdf');
+
+        $this->assertSame(12, $result['id']);
+        $this->assertSame('https://example.com/legacy-doc.pdf', $result['url']);
+        $this->assertSame('legacy-doc.pdf', $result['filename']);
+    }
+
+    // -------------------------------------------------------------------------
+    // toArray() — PHP serialized legacy path
+    // -------------------------------------------------------------------------
+
+    public function testBundleDecodesLegacyPhpSerializedRows(): void
+    {
+        // toArray() unserializes PHP-serialized data (lines 206-209)
+        $defs       = ['name' => ['type' => 'text', 'label' => 'Name', 'required' => false]];
+        $serialized = serialize([['name' => 'Alice'], ['name' => 'Bob']]); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+
+        $result = $this->resolver->bundle($defs, $serialized);
+
+        $this->assertCount(2, $result);
+        $this->assertSame('Alice', $result[0]['name']);
+        $this->assertSame('Bob', $result[1]['name']);
+    }
+
+    // -------------------------------------------------------------------------
+    // multiValue() → toArray() with non-JSON, non-serialized string
+    // -------------------------------------------------------------------------
+
+    public function testFieldCheckboxesWithNonJsonStringReturnsEmptyArray(): void
+    {
+        // multiValue('plain-text') → toArray('plain-text') → json_decode=null, no serialized match → []
+        $result = $this->resolver->field('checkboxes', 'plain-text-value');
+
+        $this->assertSame([], $result);
+    }
 }

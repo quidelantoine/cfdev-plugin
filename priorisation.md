@@ -16,8 +16,17 @@ TEsts sur les champs => couverture complete ???
 
 - admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
 - Nettoyage automatique en base si un nom de champ est modifié
-- 
+####################################"
 => covergae des tests est ok ?  Pourcentage ??? afficher sur le read_me ??? 
+
+Ordre d'attaque recommandé (ROI décroissant)
+
+1. Fields render()      → +8-12% coverage  (30 classes × ~30 lignes)
+2. AjaxHandler handlers → +3-4%            (handleInspect + handleSearchObjects)
+3. CacheResolver gaps   → +2-3%            (imageAlt, file legacy, toArray serialize)
+4. Rest edge cases      → +1-2%            (chemins d'erreur)
+##############################################
+5. Mettre a jour badges dans readme.md
 
 => revoir le fichiers devops manuellement !!!! 
 

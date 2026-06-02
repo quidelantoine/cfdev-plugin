@@ -3,9 +3,11 @@
 namespace Weblitzer\CFDev\Tests\Unit\Rest;
 
 use Brain\Monkey\Functions;
+use Weblitzer\CFDev\Admin\RestPage;
 use Weblitzer\CFDev\Meta\MetaBox;
 use Weblitzer\CFDev\Meta\TermMeta;
 use Weblitzer\CFDev\Meta\UserMeta;
+use Weblitzer\CFDev\OptionsPage;
 use Weblitzer\CFDev\Registry;
 use Weblitzer\CFDev\Rest\CfdevRestApi;
 use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
@@ -553,6 +555,132 @@ class CfdevRestApiTest extends CFDevTestCase
         $this->assertArrayHasKey('_bio', $group);
         $this->assertArrayNotHasKey('_private', $group);
         $this->assertSame('Developer', $group['_bio']);
+    }
+
+    // =========================================================================
+    // registerRoutes()
+    // =========================================================================
+
+    public function testRegisterRoutesSkipsWhenApiOptionIsZero(): void
+    {
+        Functions\when('get_option')->alias(
+            fn(string $opt, mixed $d = null): mixed => ($opt === RestPage::OPTION_API) ? '0' : $d
+        );
+        Functions\expect('register_rest_route')->never();
+        $this->api->registerRoutes();
+        $this->addToAssertionCount(1);
+    }
+
+    public function testRegisterRoutesRegistersAllFourRoutesWhenEnabled(): void
+    {
+        Functions\when('get_option')->alias(
+            fn(string $opt, mixed $d = null): mixed => ($opt === RestPage::OPTION_API) ? '1' : $d
+        );
+        Functions\expect('register_rest_route')->times(4);
+        $this->api->registerRoutes();
+        $this->addToAssertionCount(1);
+    }
+
+    // =========================================================================
+    // handleOptions()
+    // =========================================================================
+
+    public function testHandleOptionsReturns404WhenNoRestEntriesForPageId(): void
+    {
+        // No OptionsPage registered → restEntriesFor returns []
+        $result = $this->api->handleOptions($this->request(['page_id' => 'nonexistent']));
+
+        $this->assertInstanceOf(\WP_Error::class, $result);
+        $this->assertSame(404, $result->data['status']);
+    }
+
+    public function testHandleOptionsReturnsResolvedFlatFieldsForValidPage(): void
+    {
+        new OptionsPage('site_settings', 'Site Settings', [
+            ['type' => 'text', 'id' => '_opt_name', 'name' => 'Name', 'rest' => true],
+            ['type' => 'text', 'id' => '_opt_private', 'name' => 'Private'],
+        ]);
+
+        // get_option returns a value for _opt_name
+        Functions\when('get_option')->alias(
+            fn(string $key, mixed $d = null): mixed => match ($key) {
+                '_opt_name' => 'My Site',
+                default     => $d,
+            }
+        );
+
+        $result = $this->api->handleOptions($this->request(['page_id' => 'site_settings']));
+
+        $this->assertInstanceOf(\WP_REST_Response::class, $result);
+        $group = $result->data['groups']['site_settings'] ?? null;
+        $this->assertNotNull($group);
+        $this->assertArrayHasKey('_opt_name', $group);
+        $this->assertArrayNotHasKey('_opt_private', $group); // non-REST field excluded
+        $this->assertSame('My Site', $group['_opt_name']);
+    }
+
+    public function testHandleOptionsResponseContainsPageAndGroupsKeys(): void
+    {
+        new OptionsPage('settings_a', 'Settings A', [
+            ['type' => 'text', 'id' => '_opt_a', 'name' => 'A', 'rest' => true],
+        ]);
+
+        $result = $this->api->handleOptions($this->request(['page_id' => 'settings_a']));
+
+        $this->assertInstanceOf(\WP_REST_Response::class, $result);
+        $this->assertSame('settings_a', $result->data['page']);
+        $this->assertArrayHasKey('groups', $result->data);
+    }
+
+    // =========================================================================
+    // handleUser() — role exclusion
+    // =========================================================================
+
+    public function testHandleUserGroupExcludedWhenRequestedUserRolesDoNotMatch(): void
+    {
+        $um = new UserMeta('admin_section', 'Admin Section', [
+            ['type' => 'text', 'id' => '_admin_note', 'name' => 'Admin Note', 'rest' => true],
+        ]);
+        $um->onlyForRole('administrator');
+
+        // Requested user is subscriber — does NOT have administrator role
+        $user        = new \WP_User();
+        $user->ID    = 8;
+        $user->roles = ['subscriber'];
+
+        Functions\when('get_userdata')->justReturn($user);
+        Functions\when('get_user_meta')->justReturn('');
+
+        $result = $this->api->handleUser($this->request(['id' => 8]));
+
+        $this->assertInstanceOf(\WP_REST_Response::class, $result);
+        $this->assertArrayNotHasKey('admin_section', $result->data['groups']);
+    }
+
+    // =========================================================================
+    // filterGroups() — group absent in CacheManager output
+    // =========================================================================
+
+    public function testFilterGroupsSkipsGroupWhenAbsentInCacheData(): void
+    {
+        // MetaBox targets 'book', but get_post_type returns 'page' →
+        // generatePost() skips the entry → 'details' absent in all_groups
+        new MetaBox('details', 'Détails', 'book', [
+            ['type' => 'text', 'id' => '_title', 'name' => 'Title', 'rest' => true],
+        ]);
+
+        $post            = new \WP_Post();
+        $post->ID        = 1;
+        $post->post_type = 'book';
+
+        Functions\when('get_post')->justReturn($post);
+        Functions\when('get_post_type')->justReturn('page'); // mismatch → group skipped in generate
+        Functions\when('get_post_meta')->justReturn('');
+
+        $result = $this->api->handlePost($this->request(['id' => 1]));
+
+        $this->assertInstanceOf(\WP_REST_Response::class, $result);
+        $this->assertSame([], $result->data['groups']);
     }
 
     public function testHandleUserFiltersGroupsByRequestedUserRoles(): void

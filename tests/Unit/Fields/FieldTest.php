@@ -226,4 +226,15 @@ class FieldTest extends CFDevTestCase
         $this->assertStringContainsString('cfdev-sortable-item', $output);
         $this->assertStringNotContainsString('js-cfdev-ajax-save', $output);
     }
+
+    public function testOutputAjaxIgnoredWhenTypeDoesNotSupportIt(): void
+    {
+        // Link has supports_ajax=false — ajax=true must be silently ignored
+        $field  = new \Weblitzer\CFDev\Fields\Link(
+            ['type' => 'link', 'id' => 'my_link', 'name' => 'my_link', 'label' => 'Link', 'ajax' => true, 'underscore' => false],
+            'my_mb'
+        );
+        $output = $field->output(['url' => '', 'text' => '', 'target' => '_self']);
+        $this->assertStringNotContainsString('js-cfdev-ajax-save', $output);
+    }
 }

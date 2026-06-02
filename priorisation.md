@@ -1,8 +1,8 @@
 # Priorisation des tâches — CFDev
 ---
 
-ok => Dans admin apirest CFDev endpoint la coloone est vide , comment faire ? , faire un endpoint aussi pour recuperer les donées formater comme les url des images au lieu de l'id de l'image
-ok => revoir les endpoind sur admin apirest ??
+
+
 
 ---
 Parcours complet
@@ -63,12 +63,12 @@ Si on garde c'est quoi les limtes etest ce que cela vaut vraiment le coup ???
 - admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
 
 ## 🏁 Finir ce qui est commencé
-| 3 | **Repeatable** — test complet fonctionnel | Tests repeatable tous types |
-=> Changer badge
-=> push
+
 
 proprieté ajax dans fields , est bien tester ? Pas possible de donée un autre nom à la propriété ? save ? save_unique ? plus clair ? non ?
+=> verifier test et push +++ 
 
+| 3 | revoir les endpoind sur admin apirest ?? sont t'il vraiment fonctionel, est ce que c'est testé ?
 | ↳ | **Tests Admin HTML** — une fois l'UI figée | Tests rendu, structure HTML |
 
 | 15 | **i18n** — `__('')` en anglais + `.mo`/`.po` (FR, DE, ES, ZH) | — |

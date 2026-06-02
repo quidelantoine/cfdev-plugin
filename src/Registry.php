@@ -362,7 +362,7 @@ class Registry
             if ($type !== $meta_type) {
                 continue;
             }
-            if (isset($meta->fields[$field_id]) && $meta->fields[$field_id]->supports_ajax) {
+            if (isset($meta->fields[$field_id]) && $meta->fields[$field_id]->supports_ajax && $meta->fields[$field_id]->ajax) {
                 return true;
             }
         }

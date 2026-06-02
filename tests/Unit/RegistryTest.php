@@ -830,4 +830,48 @@ class RegistryTest extends CFDevTestCase
 
         $this->assertArrayNotHasKey('title', Registry::duplicates());
     }
+
+    // -------------------------------------------------------------------------
+    // isAjaxField
+    // -------------------------------------------------------------------------
+
+    public function testIsAjaxFieldReturnsFalseForUnregisteredField(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->fieldDef('title')]);
+
+        $this->assertFalse(Registry::isAjaxField('nonexistent', 'post'));
+    }
+
+    public function testIsAjaxFieldReturnsFalseWhenAjaxFlagNotSet(): void
+    {
+        // Text has supports_ajax=true but ajax defaults to false — must not grant access
+        $this->makeMetaBox('box', 'post', [$this->fieldDef('title')]);
+
+        $this->assertFalse(Registry::isAjaxField('title', 'post'));
+    }
+
+    public function testIsAjaxFieldReturnsTrueWhenBothFlagsSet(): void
+    {
+        $field = array_merge($this->fieldDef('title'), ['ajax' => true]);
+        $this->makeMetaBox('box', 'post', [$field]);
+
+        $this->assertTrue(Registry::isAjaxField('title', 'post'));
+    }
+
+    public function testIsAjaxFieldReturnsFalseWhenMetaTypeDoesNotMatch(): void
+    {
+        $field = array_merge($this->fieldDef('title'), ['ajax' => true]);
+        $this->makeMetaBox('box', 'post', [$field]);
+
+        $this->assertFalse(Registry::isAjaxField('title', 'user'));
+    }
+
+    public function testIsAjaxFieldReturnsFalseWhenTypeDoesNotSupportAjax(): void
+    {
+        // Link has supports_ajax=false — ajax=true must not grant access
+        $field = ['type' => 'link', 'id' => 'my_link', 'name' => 'my_link', 'label' => 'Link', 'ajax' => true];
+        $this->makeMetaBox('box', 'post', [$field]);
+
+        $this->assertFalse(Registry::isAjaxField('my_link', 'post'));
+    }
 }

@@ -177,8 +177,8 @@ jobs:
           # Groupe D — media fields, datetime/multiselect/relations
           # 14-woocommerce.cy.js intentionnellement exclu (requiert WooCommerce installé)
           - { group: "14-15", spec: "cypress/e2e/14-media-fields.cy.js,cypress/e2e/15-skipped-fields.cy.js" }
-          # Groupe E — options pages (dashboard tab, save/restore, validation, REST, code modal)
-          - { group: "16", spec: "cypress/e2e/16-options-pages.cy.js" }
+          # Groupe E — options pages (16a–16h : dashboard, flat, bundle, tabs, accordion, settings, code modal, REST)
+          - { group: "16-options", spec: "cypress/e2e/16[a-h]-options-*.cy.js" }
           # Groupe F — repeatable fields (add, remove, save, order, bundle)
           - { group: "17", spec: "cypress/e2e/17-repeatable.cy.js" }
 

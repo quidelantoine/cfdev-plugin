@@ -131,7 +131,10 @@ npx cypress run --spec "cypress/e2e/06-page-accordion.cy.js" --browser chrome
 npx cypress run --spec "cypress/e2e/05-page-tabs.cy.js" --browser chrome
 npx cypress run --spec "cypress/e2e/03-validation.cy.js" --browser chrome
 npx cypress run --spec "cypress/e2e/09-rest-api.cy.js" --browser chrome
-npx cypress run --spec "cypress/e2e/16-options-pages.cy.js" --browser chrome
+npx cypress run --spec "cypress/e2e/16h-options-rest.cy.js" --browser chrome
+
+  # Tout le groupe 16 d'un coup
+  npx cypress run --spec "cypress/e2e/16[a-h]-options-*.cy.js" --browser chrome     
 ```
 
 ### Specs disponibles

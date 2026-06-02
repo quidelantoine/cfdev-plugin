@@ -373,4 +373,104 @@ class CodeSnippetTest extends CFDevTestCase
         $this->assertStringContainsString("\$row['label']", $code);
         $this->assertStringNotContainsString("\$group['label']", $code);
     }
+
+    // ── codeSnippet() — option meta type ─────────────────────────────────────
+
+    public function testOptionSnippetUsesGetOptionForFlatField(): void
+    {
+        $entry = $this->entry('option', ['site_settings'], ['api_key' => ['type' => 'text', 'label' => 'API Key']]);
+        $code  = self::callCodeSnippet($entry);
+
+        $this->assertStringContainsString('get_option', $code);
+        $this->assertStringNotContainsString('CacheManager', $code);
+        $this->assertStringNotContainsString('$group', $code);
+    }
+
+    public function testOptionSnippetBuildOptsArrayForMultipleFlatFields(): void
+    {
+        $entry = $this->entry('option', ['site_settings'], [
+            'api_key'  => ['type' => 'text', 'label' => 'API Key'],
+            'site_url' => ['type' => 'url',  'label' => 'Site URL'],
+        ]);
+        $code = self::callCodeSnippet($entry);
+
+        $this->assertStringContainsString('$opts', $code);
+        $this->assertStringContainsString("get_option('api_key')", $code);
+        $this->assertStringContainsString("get_option('site_url')", $code);
+        $this->assertStringContainsString("\$opts['api_key']", $code);
+        $this->assertStringContainsString("\$opts['site_url']", $code);
+    }
+
+    public function testOptionSnippetFieldValueReadFromOptsArray(): void
+    {
+        $entry = $this->entry('option', ['settings'], ['title' => ['type' => 'text', 'label' => 'Title']]);
+        $code  = self::callCodeSnippet($entry);
+
+        $this->assertStringContainsString("\$opts['title']", $code);
+    }
+
+    public function testOptionBundleSnippetUsesDecodeMetaValue(): void
+    {
+        $entry = $this->entry('option', ['settings'], [], [
+            '_rows' => ['fields' => ['name' => ['type' => 'text', 'label' => 'Name']]],
+        ]);
+        $code = self::callCodeSnippet($entry);
+
+        $this->assertStringContainsString('Field::decodeMetaValue', $code);
+        $this->assertStringContainsString("get_option('_rows')", $code);
+    }
+
+    public function testOptionBundleSnippetWrapsFieldsInForeach(): void
+    {
+        $entry = $this->entry('option', ['settings'], [], [
+            '_rows' => ['fields' => ['name' => ['type' => 'text', 'label' => 'Name']]],
+        ]);
+        $code = self::callCodeSnippet($entry);
+
+        $this->assertStringContainsString('foreach ($rows as $row)', $code);
+    }
+
+    public function testOptionBundleSnippetBundleFieldUsesRowAsSrc(): void
+    {
+        $entry = $this->entry('option', ['settings'], [], [
+            '_rows' => ['fields' => ['label' => ['type' => 'text', 'label' => 'Label']]],
+        ]);
+        $code = self::callCodeSnippet($entry);
+
+        $this->assertStringContainsString("\$row['label']", $code);
+        $this->assertStringNotContainsString("\$opts['label']", $code);
+    }
+
+    public function testOptionSnippetWithSectionsAndBundleUsesDecodeMetaValue(): void
+    {
+        $entry              = $this->entry('option', ['settings']);
+        $entry['bundles']   = ['_slides' => ['fields' => ['title' => ['type' => 'text', 'label' => 'Title']]]];
+        $entry['sections']  = [
+            ['title' => 'Slides', 'bundle_id' => '_slides', 'fields' => []],
+        ];
+        $code = self::callCodeSnippet($entry);
+
+        $this->assertStringContainsString('Field::decodeMetaValue', $code);
+        $this->assertStringContainsString("get_option('_slides')", $code);
+        $this->assertStringContainsString('foreach ($rows as $row)', $code);
+        $this->assertStringContainsString('// Slides', $code);
+    }
+
+    public function testOptionSnippetDoesNotContainCacheManagerForAnyLayout(): void
+    {
+        $entry = $this->entry('option', ['settings'], ['k' => ['type' => 'text', 'label' => 'K']]);
+        $code  = self::callCodeSnippet($entry);
+
+        $this->assertStringNotContainsString('CacheManager', $code);
+        $this->assertStringNotContainsString('CacheResolver', $code);
+    }
+
+    public function testOptionRawSnippetContainsNoEchoOrHtml(): void
+    {
+        $entry = $this->entry('option', ['settings'], ['title' => ['type' => 'text', 'label' => 'Title']]);
+        $code  = self::callCodeSnippet($entry, true);
+
+        $this->assertStringNotContainsString('echo', $code);
+        $this->assertStringNotContainsString('<a ', $code);
+    }
 }

@@ -98,6 +98,14 @@ class WP_UnitTest_Factory_For_Comment
     }
 }
 
+class WPDieException extends \Exception
+{
+    public function __construct(string $message = '', int $code = 0)
+    {
+        parent::__construct($message, $code);
+    }
+}
+
 /**
  * @param string|string[] $hook_name
  * @param callable|string $callback

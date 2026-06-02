@@ -6,6 +6,7 @@ use Brain\Monkey\Functions;
 use Weblitzer\CFDev\Meta\MetaBox;
 use Weblitzer\CFDev\Meta\TermMeta;
 use Weblitzer\CFDev\Meta\UserMeta;
+use Weblitzer\CFDev\OptionsPage;
 use Weblitzer\CFDev\Registry;
 
 class RegistryTest extends CFDevTestCase
@@ -740,5 +741,93 @@ class RegistryTest extends CFDevTestCase
         $entries = Registry::all();
         $this->assertCount(1, $entries);
         $this->assertSame('new', $entries[0]['id']);
+    }
+
+    // -------------------------------------------------------------------------
+    // OptionsPage registration
+    // -------------------------------------------------------------------------
+
+    private function makeOptionsPage(string $id = 'site_settings', string $title = 'Site Settings'): OptionsPage
+    {
+        Functions\when('add_action')->justReturn(null);
+        return new OptionsPage($id, $title);
+    }
+
+    public function testOptionsPageRegistersWithMetaTypeOption(): void
+    {
+        $this->makeOptionsPage();
+
+        $this->assertSame('option', Registry::all()[0]['meta_type']);
+    }
+
+    public function testOptionsPageTargetsContainItsOwnId(): void
+    {
+        $this->makeOptionsPage('site_settings');
+
+        $this->assertSame(['site_settings'], Registry::all()[0]['targets']);
+    }
+
+    public function testOptionsPageRegistersWithCorrectTitle(): void
+    {
+        $this->makeOptionsPage('settings', 'My Settings');
+
+        $this->assertSame('My Settings', Registry::all()[0]['title']);
+    }
+
+    public function testOptionsPageHasEmptyConditions(): void
+    {
+        $this->makeOptionsPage();
+
+        $this->assertSame([], Registry::all()[0]['conditions']);
+    }
+
+    public function testOptionsPageWithFlatFieldsHasFlatLayout(): void
+    {
+        Functions\when('add_action')->justReturn(null);
+        new OptionsPage('settings', 'Settings', [$this->fieldDef('title')]);
+
+        $this->assertSame('flat', Registry::all()[0]['layout']);
+    }
+
+    public function testOptionsPageWithBundleHasBundleLayout(): void
+    {
+        Functions\when('add_action')->justReturn(null);
+        Functions\when('wp_json_encode')->alias('json_encode');
+        new OptionsPage('settings', 'Settings', [
+            'bundle', '_rows', [$this->fieldDef('name')],
+        ]);
+
+        $this->assertSame('bundle', Registry::all()[0]['layout']);
+    }
+
+    public function testOptionsPageFieldsAreReflectedInRegistry(): void
+    {
+        Functions\when('add_action')->justReturn(null);
+        new OptionsPage('settings', 'Settings', [$this->fieldDef('api_key')]);
+
+        $fields = Registry::all()[0]['fields'];
+        $this->assertArrayHasKey('api_key', $fields);
+        $this->assertSame('text', $fields['api_key']['type']);
+    }
+
+    public function testOptionsPageAccumulatesWithOtherMetaTypes(): void
+    {
+        $this->makeMetaBox('my_box', 'post');
+        $this->makeOptionsPage('site_settings');
+
+        $entries    = Registry::all();
+        $meta_types = array_column($entries, 'meta_type');
+
+        $this->assertContains('post', $meta_types);
+        $this->assertContains('option', $meta_types);
+    }
+
+    public function testDuplicatesDoesNotFlagSameFieldIdAcrossOptionAndPost(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->fieldDef('title')]);
+        Functions\when('add_action')->justReturn(null);
+        new OptionsPage('settings', 'Settings', [$this->fieldDef('title')]);
+
+        $this->assertArrayNotHasKey('title', Registry::duplicates());
     }
 }

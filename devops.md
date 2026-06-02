@@ -129,8 +129,9 @@ npm run cy:run:headed
 # Un spec précis
 npx cypress run --spec "cypress/e2e/06-page-accordion.cy.js" --browser chrome
 npx cypress run --spec "cypress/e2e/05-page-tabs.cy.js" --browser chrome
-npx cypress run --spec "cypress/e2e/11-front-end.cy" --browser chrome
+npx cypress run --spec "cypress/e2e/03-validation.cy.js" --browser chrome
 npx cypress run --spec "cypress/e2e/09-rest-api.cy.js" --browser chrome
+npx cypress run --spec "cypress/e2e/16-options-pages.cy.js" --browser chrome
 ```
 
 ### Specs disponibles
@@ -419,3 +420,115 @@ Pour pointer ailleurs : `CYPRESS_BASE_URL=https://monsite.local npm run cy:run`.
 ```
 
 ---
+
+
+# Coverage — Unit (rapide, sans DB)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-php coverage/unit.cov --no-progress
+
+# Coverage — Integration (nécessite docker compose up -d db)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap-docker.php --coverage-php coverage/integration.cov --no-progress
+
+# Fusion + rapport HTML (nécessite d'avoir lancé les deux commandes ci-dessus)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+php -d pcov.enabled=1 vendor/bin/phpcov merge --html coverage/html coverage/
+# → ouvrir app/wp-content/plugins/cfdev-plugin/coverage/html/index.html
+
+# Rapport texte rapide (Unit seul)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-text --no-progress
+
+
+## Gestion des versions
+
+### Vérifier la compatibilité PHP
+
+```bash
+# Signale toute syntaxe absente avant la version cible (ex : 8.2-)
+vendor/bin/phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 8.2- src/
+
+# Ou via phpcs.xml (testVersion déjà configuré à 8.2-)
+vendor/bin/phpcs src/
+```
+
+Pour changer le plancher, modifier `testVersion` dans `phpcs.xml` :
+
+```xml
+<config name="testVersion" value="8.2-"/>
+```
+
+### Trouver le plancher WordPress
+
+Pas d'outil automatique équivalent pour WP. Méthode manuelle :
+
+```bash
+# Lister toutes les fonctions/classes WP utilisées dans src/
+grep -roh --include="*.php" -P '(?<!\w)(wp_\w+|WP_\w+|register_\w+|add_\w+|get_\w+|update_\w+|delete_\w+)\(' src/ \
+  | sort -u
+grep -roh --include="*.php" -P '\b(wp_\w+|WP_\w+|register_\w+|add_meta_box|get_term_meta|update_term_meta|delete_term_meta|get_user_meta|update_user_meta)\(' src/ | sort -u
+
+# Puis vérifier chaque fonction sur https://developer.wordpress.org/reference/
+# La plus récente détermine le plancher.
+```
+
+Fonctions déterminantes pour ce plugin :
+
+| Fonction | Introduite |
+|----------|-----------|
+| `get_term_meta` / `update_term_meta` | WP 4.4 |
+| `register_rest_route` / `WP_REST_*` | WP 4.4 |
+| `register_meta` avec `object_subtype` | WP 4.9.8 |
+| `wp_date()` | **WP 5.3** ← plancher actuel |
+
+
+# prompt
+#### 
+Rewrite CLAUDE.md based on everything we've done so far — architecture, conventions, gotchas discovered. keep it under 500 words.
+
+### recherche
+grep -rn "render_post_filter" .
+render_post_filter
+
+# replace texte
+# Prévisualiser sans modifier (dry run)
+grep -rn "ancien_texte" . --include="*.php"
+grep -rn "Gijs Jorissen" . --include="*.php"
+
+grep -rn --exclude-dir=vendor "ancien_texte" .
+
+
+# Tous types de fichiers
+find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
+find . -type f -exec sed -i 's/Gijs Jorissen/quidelantoine/g' {} +
+# Insensible à la casse
+sed -i 's/ancien_texte/nouveau_texte/gi'
+
+
+# Claude code
+
+```bash
+# Dans la session interactive
+> Analyse ce fichier @src/utils/validation.js
+
+# En mode non-interactif (-p)
+claude -p "Explique cette fonction @src/auth.ts"
+
+# Pipe direct — zéro exploration de repo
+cat fichier | claude -p "..."
+cat src/auth.ts | claude -p "Explique cette fonction"
+
+# Ou avec redirection
+claude -p "Trouve les bugs dans ce code" < src/auth.ts
+```
+
+## Recherche & remplacement (helpers)
+
+```bash
+# Rechercher
+grep -rn "render_post_filter" .
+grep -rn --exclude-dir=vendor "ancien_texte" .
+
+# Remplacer
+find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
+```

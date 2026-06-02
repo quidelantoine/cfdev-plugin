@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       Custom Field For Dev
- * Version:           1.0.0
+ * Version:           1.0.6
  * Requires PHP:      8.2
  * Requires at least: 6.5
  * Tested up to:      7.0

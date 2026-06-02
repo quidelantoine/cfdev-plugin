@@ -133,9 +133,10 @@ class Tab extends FieldContainer
     private function resolveValue(int $postId, string $id): mixed
     {
         $value = match ($this->meta_type) {
-            'user'  => get_user_meta($postId, $id, true),
-            'term'  => get_term_meta($postId, $id, true),
-            default => get_post_meta($postId, $id, true),
+            'user'   => get_user_meta($postId, $id, true),
+            'term'   => get_term_meta($postId, $id, true),
+            'option' => get_option($id),
+            default  => get_post_meta($postId, $id, true),
         };
 
         return \Weblitzer\CFDev\Field::decodeMetaValue($value);

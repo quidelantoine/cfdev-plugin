@@ -269,8 +269,9 @@ jQuery( function( $ ) {
 
 	// When a postbox is opened, activate any tab/accordion panel that contains a validation error.
 	// Complements the add_events page-load activation which only covers postboxes already open.
-	$(document).on('postbox-toggled', function (e, $box) {
-		if (!$box || $box.hasClass('closed')) { return; }
+	$(document).on('postbox-toggled', function (e, box) {
+		const $box = $(box);
+		if (!$box.length || $box.hasClass('closed')) { return; }
 		$box.find('.js-cfdev-tabs').each(function () {
 			const $w = $(this);
 			$w.children('div[id]').each(function (i) {

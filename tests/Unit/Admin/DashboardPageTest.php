@@ -4,6 +4,7 @@ namespace Weblitzer\CFDev\Tests\Unit\Admin;
 
 use Brain\Monkey\Functions;
 use Weblitzer\CFDev\Admin\DashboardPage;
+use Weblitzer\CFDev\OptionsPage;
 use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 
 class DashboardPageTest extends CFDevTestCase
@@ -93,5 +94,55 @@ class DashboardPageTest extends CFDevTestCase
     {
         $output = $this->captureRender();
         $this->assertStringNotContainsString('cfdev-notice-dups', $output);
+    }
+
+    // -------------------------------------------------------------------------
+    // Options tab
+    // -------------------------------------------------------------------------
+
+    private function registerOptionsPage(string $id = 'site_settings', string $title = 'Site Settings'): void
+    {
+        Functions\when('add_action')->justReturn(null);
+        Functions\when('sanitize_title')->alias(
+            fn(string $s) => strtolower((string) preg_replace('/[^a-z0-9]+/i', '-', $s))
+        );
+        Functions\when('apply_filters')->returnArg(2);
+        Functions\when('wp_json_encode')->alias('json_encode');
+        new OptionsPage($id, $title);
+    }
+
+    public function testRenderOutputsOptionsTabWhenOptionsPagesRegistered(): void
+    {
+        $this->registerOptionsPage();
+        Functions\when('menu_page_url')->justReturn('https://example.com/wp-admin/admin.php?page=cfdev-site_settings');
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('id="cfdev-tab-options"', $output);
+    }
+
+    public function testRenderOptionsTabCountMatchesRegisteredPages(): void
+    {
+        $this->registerOptionsPage('settings_a', 'Settings A');
+        $this->registerOptionsPage('settings_b', 'Settings B');
+        Functions\when('menu_page_url')->justReturn('');
+
+        $output = $this->captureRender();
+
+        // Options tab count badge should show 2
+        preg_match('/#cfdev-tab-options.*?cfdev-tab-count[^>]*>(\d+)/s', $output, $m);
+        $this->assertSame('2', $m[1] ?? '');
+    }
+
+    public function testRenderOptionsEntryShowsEditButtonNotInspect(): void
+    {
+        $this->registerOptionsPage();
+        Functions\when('menu_page_url')->justReturn('https://example.com/wp-admin/admin.php?page=cfdev-site_settings');
+
+        $output = $this->captureRender();
+
+        // Options entries show Edit link instead of Inspect button
+        $this->assertStringNotContainsString('cfdev-btn-inspect', $output);
+        $this->assertStringContainsString('button-small', $output);
     }
 }

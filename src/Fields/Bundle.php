@@ -50,9 +50,10 @@ class Bundle extends FieldContainer
 //            ? get_user_meta($post->ID, $this->id, true)
 //            : get_post_meta($post->ID, $this->id, true);
         $meta = match ($this->meta_type) {
-            'user' => get_user_meta($post->ID, $this->id, true),
-            'term' => get_term_meta($post->ID, $this->id, true),
-            default => get_post_meta($post->ID, $this->id, true),
+            'user'   => get_user_meta($post->ID, $this->id, true),
+            'term'   => get_term_meta($post->ID, $this->id, true),
+            'option' => get_option($this->id),
+            default  => get_post_meta($post->ID, $this->id, true),
         };
         $meta = \Weblitzer\CFDev\Field::decodeMetaValue($meta);
 
@@ -416,12 +417,14 @@ class Bundle extends FieldContainer
             return;
         }
 
-        if ($this->meta_type == 'user') {
+        if ($this->meta_type === 'user') {
             delete_user_meta($object_id, $this->id);
             update_user_meta($object_id, $this->id, $json);
-        } elseif ($this->meta_type == 'term') {
+        } elseif ($this->meta_type === 'term') {
             delete_term_meta($object_id, $this->id);
             update_term_meta($object_id, $this->id, $json);
+        } elseif ($this->meta_type === 'option') {
+            update_option($this->id, $json);
         } else {
             delete_post_meta($object_id, $this->id);
             update_post_meta($object_id, $this->id, $json);

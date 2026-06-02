@@ -9,6 +9,7 @@ use Weblitzer\CFDev\Fields\Tabs;
 use Weblitzer\CFDev\Meta\MetaBox;
 use Weblitzer\CFDev\Meta\TermMeta;
 use Weblitzer\CFDev\Meta\UserMeta;
+use Weblitzer\CFDev\OptionsPage;
 
 /**
  * Central registry of all declared meta boxes and their fields.
@@ -416,6 +417,9 @@ class Registry
         }
         if ($meta instanceof TermMeta) {
             return ['term', $meta->taxonomies];
+        }
+        if ($meta instanceof OptionsPage) {
+            return ['option', [$meta->id]];
         }
         return ['unknown', []];
     }

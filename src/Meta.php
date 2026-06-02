@@ -127,9 +127,10 @@ abstract class Meta
             }
 
             $value = match ($this->metaType()) {
-                'user'  => get_user_meta($object->ID, $id_name, true),
-                'term'  => get_term_meta($object->ID, $id_name, true),
-                default => get_post_meta($object->ID, $id_name, true),
+                'user'   => get_user_meta($object->ID, $id_name, true),
+                'term'   => get_term_meta($object->ID, $id_name, true),
+                'option' => get_option($id_name),
+                default  => get_post_meta($object->ID, $id_name, true),
             };
             $value = \Weblitzer\CFDev\Field::decodeMetaValue($value);
 

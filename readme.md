@@ -25,12 +25,13 @@ CFDev is a WordPress plugin for developers who want to declare custom fields in 
 
 - **30+ field types** — text, image, file, select, checkboxes, date, wysiwyg, color, gallery, link, and more
 - **Post, term and user meta** — attach meta boxes to any CPT or taxonomy, and field groups to user profiles
+- **Options pages** — global site settings stored in `wp_options`, with sub-pages, bundles, tabs, and accordion — no ACF Options add-on needed
 - **Layout containers** — group fields into **Bundles** (repeatable row groups), **Tabs**, or **Accordions** for clean, structured edit screens
 - **Repeatable fields** — any field can be made repeatable with AJAX-powered add/remove
 - **25+ validation rules** — required, min/max, regex, email, URL… enforced server-side, errors survive the redirect
 - **File cache** — resolved field data cached to disk, invalidated on save, ready for high-traffic reads
 - **Admin helper** — a built-in back-office panel to inspect all registered fields, browse cached data, and flush the cache in one click
-- **REST API** — expose any field via WP REST with a single `'rest' => true` flag
+- **REST API** — expose any field (including options) via WP REST with a single `'rest' => true` flag
 
 ```php
 register_cfdev_post_type(['book', 'books'], ['public' => true])
@@ -113,6 +114,7 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 | [Validation](docs/en/validation.md) | 25+ built-in validation rules |
 | [Term Meta](docs/en/term-meta.md) | Fields on taxonomy terms — all forms and patterns |
 | [User Meta](docs/en/user-meta.md) | Fields on user profiles — roles, locations, order |
+| [Options Pages](docs/en/options-page.md) | Global site settings in `wp_options` — sub-pages, layouts, REST |
 | [Cache](docs/en/cache.md) | File cache — setup, invalidation, performance |
 | [Admin UI](docs/en/admin.md) | CFDev admin pages (Fields, Cache) |
 | [REST API](docs/en/rest-api.md) | Expose fields via WP REST API |
@@ -129,6 +131,7 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 | [Types de champs](docs/fr/champs.md) | Tous les types de champs avec options |
 | [Layouts](docs/fr/layouts.md) | Bundle, Tabs, Accordion |
 | [Validation](docs/fr/validation.md) | 25+ règles de validation intégrées |
+| [Pages d'options](docs/fr/options-page.md) | Réglages globaux dans `wp_options` — sous-pages, layouts, REST |
 | [Cache](docs/fr/cache.md) | Cache fichier — activation, invalidation, perf |
 | [Interface admin](docs/fr/admin.md) | Pages admin CFDev (Champs, Cache) |
 | [REST API](docs/fr/rest-api.md) | Exposer les champs via WP REST API |

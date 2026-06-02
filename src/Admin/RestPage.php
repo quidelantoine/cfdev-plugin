@@ -46,12 +46,15 @@ final class RestPage extends AdminPage
         $by_type = [];
         $terms   = [];
         $users   = [];
+        $options = [];
 
         foreach ($entries as $entry) {
             if ($entry['meta_type'] === 'term') {
                 $terms[] = $entry;
             } elseif ($entry['meta_type'] === 'user') {
                 $users[] = $entry;
+            } elseif ($entry['meta_type'] === 'option') {
+                $options[] = $entry;
             } else {
                 foreach ($entry['targets'] as $pt) {
                     $by_type[$pt][] = $entry;
@@ -61,9 +64,10 @@ final class RestPage extends AdminPage
         ksort($by_type);
 
         $first_pt  = array_key_first($by_type);
-        $first_tab = $first_pt
-                ? 'cfdev-rest-tab-pt-' . $first_pt
-                : (! empty($terms) ? 'cfdev-rest-tab-terms' : 'cfdev-rest-tab-users');
+        $first_tab = $first_pt ? 'cfdev-rest-tab-pt-' . $first_pt
+            : (! empty($terms)   ? 'cfdev-rest-tab-terms'
+            : (! empty($users)   ? 'cfdev-rest-tab-users'
+            : 'cfdev-rest-tab-options'));
 
         $total_rest = count($entries);
 
@@ -165,6 +169,14 @@ final class RestPage extends AdminPage
                                 <span class="cfdev-tab-count"><?php echo esc_html((string) self::countFields($users)); ?></span>
                             </a>
                         <?php endif; ?>
+                        <?php if (! empty($options)) : ?>
+                            <a href="#cfdev-rest-tab-options"
+                               class="nav-tab<?php echo ($first_tab === 'cfdev-rest-tab-options') ? ' nav-tab-active' : ''; ?>"
+                               data-cfdev-tab>
+                                <?php esc_html_e('Options', 'cfdev'); ?>
+                                <span class="cfdev-tab-count"><?php echo esc_html((string) self::countFields($options)); ?></span>
+                            </a>
+                        <?php endif; ?>
                     </nav>
 
                     <?php foreach ($by_type as $pt => $pt_entries) : ?>
@@ -188,6 +200,14 @@ final class RestPage extends AdminPage
                              class="cfdev-tab-panel"
                                 <?php echo ($first_tab !== 'cfdev-rest-tab-users') ? 'hidden' : ''; ?>>
                             <?php self::renderFieldsTable($users, 'user', $home); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (! empty($options)) : ?>
+                        <div id="cfdev-rest-tab-options"
+                             class="cfdev-tab-panel"
+                                <?php echo ($first_tab !== 'cfdev-rest-tab-options') ? 'hidden' : ''; ?>>
+                            <?php self::renderFieldsTable($options, 'option', $home); ?>
                         </div>
                     <?php endif; ?>
 
@@ -243,11 +263,11 @@ final class RestPage extends AdminPage
             $layout        = $entry['layout'] ?? 'flat';
             $target        = $entry['targets'][0] ?? '';
             $example_id    = self::exampleId($entry['meta_type'], $target);
-            $ep_cfdev_url  = $example_id > 0
-                ? $home . self::cfdevEndpoint($entry['meta_type'], $entry['targets'], $example_id)
-                : '';
+            $is_option     = $entry['meta_type'] === 'option';
+            $cfdev_path    = self::cfdevEndpoint($entry['meta_type'], $entry['targets'], $example_id);
+            $ep_cfdev_url  = ($example_id > 0 && $cfdev_path !== '') ? $home . $cfdev_path : '';
             $native_suffix = $entry['meta_type'] === 'post' ? '?_fields=id,title,meta' : '';
-            $ep_native_url = $example_id > 0
+            $ep_native_url = ($example_id > 0 || $is_option)
                 ? $home . self::nativeEndpoint($entry['meta_type'], $entry['targets'], $example_id) . $native_suffix
                 : '';
             $ep_cfdev_txt  = self::cfdevEndpoint($entry['meta_type'], $entry['targets'], $example_id);
@@ -512,10 +532,11 @@ final class RestPage extends AdminPage
         $target  = $targets[0] ?? '';
         $id_part = $id > 0 ? (string) $id : '{id}';
         return match ($meta_type) {
-            'post'  => '/wp-json/cfdev/v1/post/' . $id_part,
-            'term'  => '/wp-json/cfdev/v1/term/' . $target . '/' . $id_part,
-            'user'  => '/wp-json/cfdev/v1/user/' . $id_part,
-            default => '/wp-json/cfdev/v1/...',
+            'post'   => '/wp-json/cfdev/v1/post/' . $id_part,
+            'term'   => '/wp-json/cfdev/v1/term/' . $target . '/' . $id_part,
+            'user'   => '/wp-json/cfdev/v1/user/' . $id_part,
+            'option' => '/wp-json/cfdev/v1/options/' . $target,
+            default  => '/wp-json/cfdev/v1/...',
         };
     }
 
@@ -541,8 +562,9 @@ final class RestPage extends AdminPage
         }
 
         return match ($meta_type) {
-            'user'  => '/wp-json/wp/v2/users/' . $id_part,
-            default => '/wp-json/wp/v2/...',
+            'user'   => '/wp-json/wp/v2/users/' . $id_part,
+            'option' => '/wp-json/wp/v2/settings',
+            default  => '/wp-json/wp/v2/...',
         };
     }
 

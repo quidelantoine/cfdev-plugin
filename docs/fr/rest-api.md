@@ -4,10 +4,10 @@
 
 Ajoutez `'rest' => true` sur un champ pour l'exposer dans **les deux modes** :
 
-| Mode | Posts | Termes | Utilisateurs | Valeurs |
-|---|---|---|---|---|
-| REST WP natif | `/wp/v2/{rest_base}/{id}` | `/wp/v2/{rest_base}/{id}` | `/wp/v2/users/{id}` | Brutes (ID d'image, JSON string…) |
-| API CFDev | `/cfdev/v1/post/{id}` | `/cfdev/v1/term/{slug}/{id}` | `/cfdev/v1/user/{id}` | Résolues (image enrichie, bundle décodé…) |
+| Mode | Posts | Termes | Utilisateurs | Options | Valeurs |
+|---|---|---|---|---|---|
+| REST WP natif | `/wp/v2/{rest_base}/{id}` | `/wp/v2/{rest_base}/{id}` | `/wp/v2/users/{id}` | `/wp/v2/settings` | Brutes (ID d'image, JSON string…) |
+| API CFDev | `/cfdev/v1/post/{id}` | `/cfdev/v1/term/{slug}/{id}` | `/cfdev/v1/user/{id}` | `/cfdev/v1/options/{page_id}` | Résolues (image enrichie, bundle décodé…) |
 
 Un groupe n'apparaît dans l'API CFDev que s'il contient au moins un champ `rest: true`. Seuls ces champs sont inclus dans la réponse.
 
@@ -172,9 +172,67 @@ GET /wp-json/cfdev/v1/user/{id}
 }
 ```
 
+### Options
+
+```
+GET /wp-json/cfdev/v1/options/{page_id}
+```
+
+`{page_id}` est le premier argument de `register_cfdev_options_page()`.
+
+**Auth :** aucune — les options sont lisibles publiquement.
+
+```json
+{
+    "page": "marque",
+    "groups": {
+        "marque": {
+            "_marque_nom": "Acme Corp",
+            "_marque_couleur": "#e63946",
+            "_marque_logo": {
+                "id": 42,
+                "alt": "Logo Acme",
+                "full": "https://exemple.com/wp-content/uploads/logo.png",
+                "thumbnail": "https://exemple.com/wp-content/uploads/logo-150x150.png",
+                "medium": "https://exemple.com/wp-content/uploads/logo-300x100.png"
+            },
+            "_equipe": [
+                {
+                    "_eq_nom": "Alice",
+                    "_eq_poste": "CEO",
+                    "_eq_photo": { "id": 5, "alt": "Alice", "full": "https://…/alice.jpg", "medium": "https://…/alice-300x300.jpg" }
+                }
+            ]
+        }
+    }
+}
+```
+
+Seuls les champs et bundles avec `rest: true` apparaissent dans la réponse.
+
+Pour l'endpoint natif WP settings, les mêmes champs sont disponibles à `/wp/v2/settings` en valeurs brutes :
+
+```ts
+const res = await fetch('/wp-json/wp/v2/settings', {
+    headers: { Authorization: 'Basic ' + btoa('user:app-password') },
+});
+// → { "_marque_nom": "Acme Corp", "_marque_logo": "42", "_equipe": "[{…}]" }
+```
+
+> `/wp/v2/settings` requiert `manage_options` même en lecture. Préférez l'endpoint CFDev pour un usage public.
+
+---
+
 ### Depuis Next.js
 
 ```ts
+// Options — aucune auth requise
+const marque = await fetch('https://exemple.com/wp-json/cfdev/v1/options/marque').then(r => r.json());
+marque.groups.marque._marque_nom           // "Acme Corp"
+marque.groups.marque._marque_logo.full     // "https://…/logo.png"
+marque.groups.marque._marque_logo.medium   // "https://…/logo-300x100.png"
+marque.groups.marque._equipe               // [{ _eq_nom: "Alice", _eq_photo: { full: "…" } }]
+
 // Post
 const post = await fetch('https://exemple.com/wp-json/cfdev/v1/post/42').then(r => r.json());
 post.groups.details.subtitle          // "Mon sous-titre"
@@ -219,6 +277,8 @@ user.groups.profile.bio               // "Mon intro"
 | Taxonomie privée, authentifié sans `manage_terms` | 403 |
 | Endpoint user, non authentifié | 401 |
 | Endpoint user, authentifié mais pas l'utilisateur concerné ni admin | 403 |
+| Endpoint options (`/cfdev/v1/options/…`) | 200 — toujours public |
+| Page options introuvable ou aucun champ `rest: true` | 404 |
 
 ---
 

@@ -4,6 +4,7 @@ namespace Weblitzer\CFDev\Rest;
 
 use Weblitzer\CFDev\Admin\RestPage;
 use Weblitzer\CFDev\Cache\CacheManager;
+use Weblitzer\CFDev\Cache\CacheResolver;
 use Weblitzer\CFDev\Registry;
 
 /**
@@ -13,6 +14,7 @@ use Weblitzer\CFDev\Registry;
  *   GET /wp-json/cfdev/v1/post/{id}
  *   GET /wp-json/cfdev/v1/term/{taxonomy}/{id}
  *   GET /wp-json/cfdev/v1/user/{id}
+ *   GET /wp-json/cfdev/v1/options/{page_id}
  *
  * @package CFDev
  * @author  quidelantoine
@@ -69,6 +71,19 @@ final class CfdevRestApi
                 'permission_callback' => [$this, 'canReadUser'],
                 'args'                => [
                     'id' => ['required' => true, 'type' => 'integer', 'sanitize_callback' => 'absint'],
+                ],
+            ]
+        );
+
+        register_rest_route(
+            self::NAMESPACE,
+            '/options/(?P<page_id>[a-z0-9_-]+)',
+            [
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => [$this, 'handleOptions'],
+                'permission_callback' => '__return_true',
+                'args'                => [
+                    'page_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_key'],
                 ],
             ]
         );
@@ -151,6 +166,45 @@ final class CfdevRestApi
 
         return new \WP_REST_Response([
             'id'     => $id,
+            'groups' => $groups,
+        ]);
+    }
+
+    public function handleOptions(\WP_REST_Request $request): \WP_REST_Response|\WP_Error
+    {
+        $page_id = (string) $request->get_param('page_id');
+
+        $entries = self::restEntriesFor('option', $page_id);
+        if (empty($entries)) {
+            return new \WP_Error(
+                'cfdev_not_found',
+                __('No CFDev fields exposed for this options page.', 'cfdev'),
+                ['status' => 404]
+            );
+        }
+
+        $resolver = new CacheResolver();
+        $groups   = [];
+
+        foreach ($entries as $entry) {
+            $group = [];
+
+            foreach ($entry['fields'] as $field_id => $field) {
+                $raw              = \Weblitzer\CFDev\Field::decodeMetaValue(get_option($field_id));
+                $group[$field_id] = $resolver->field($field['type'], $raw);
+            }
+
+            foreach ($entry['bundles'] as $bundle_id => $bundle) {
+                $group[$bundle_id] = $resolver->bundle($bundle['fields'], get_option($bundle_id));
+            }
+
+            if (! empty($group)) {
+                $groups[$entry['id']] = $group;
+            }
+        }
+
+        return new \WP_REST_Response([
+            'page'   => $page_id,
             'groups' => $groups,
         ]);
     }

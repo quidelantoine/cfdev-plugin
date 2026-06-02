@@ -3,6 +3,23 @@
 
 # A FAIRE 
 ===========
+
+=> option 
+
+
+ok => comment gerer si les champs option meta son dans api ou non => "rest" => true cela donne quoi ??? il y at'il des propriété qui serve pas dans options
+ok => Dans admin apirest CFDev endpoint la coloone est vide , comment faire ? , faire un endpoint aussi pour recuperer les donées formater comme les url des images au lieu de l'id de l'image
+
+A faire ++ => creation de test unitaire, integration, fonctionlle , pour la partie option , mise en place des options, tests sur les fields. et tests sur admin options aussi en plus .
+=> ok tests sur ci 
+=> new => tags 1.0.6, new realease
+
+ok a verifier=> commence à rediger la docs => rediger la doc, faire un fichier dédiée , expliquer bien les limites.  le rejouter au readme en intro aussi, trucs vendeur, et dans les liens (en/fr).
+
+Pour rappel etre plus vendeur sur le readme au debut , groupes de champ repeatable pas sure de l'avoir vu ??
+
+ok => revoir les endpoind sur admin apirest ??
+
 Objectif : GitHub (pas GitLab)
 
 Pourquoi GitHub plutôt que GitLab pour se mettre en avant :
@@ -62,8 +79,8 @@ git commit -m "..."
 git push origin main
 
 # 3. Créer le tag et le pusher → déclenche le workflow
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.5
+git push origin v1.0.5
 
 #####
 git add .github/workflows/release.yml
@@ -85,7 +102,7 @@ trouver un logo ++ perso ????
 # A refaire 
 => duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
 
-=> Tous les champs sont tester , unitaire, integration et fonctionnel ???
+=> Tous les champs sont tester , unitaire, integration et fonctionnel ??? a reposer encore, meme sur partie non field admin par exemple !!!
 # Plus tard mais imporant
 Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
 => relire la docs , tranquillou
@@ -93,7 +110,6 @@ Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
 reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ???
 
 
-ajoute les champs relation et datetime/time/multiselect dans les specs Cypress
 
 # Traduction
 => Utiliser plugins traduction loco translate pour générer fichier .mo et .po
@@ -141,8 +157,7 @@ Si on garde c'est quoi les limtes etest ce que cela vaut vraiment le coup ???
 | # | Tâche | Complexité | Impact |
 |---|-------|-----------|--------|
 | 21 | **Conditional logic** | 🔴 Élevée (JS + PHP) | 🔴 Critique |
-| 22 | **Flexible Content** | 🟠 Moyenne (variante Bundle) | 🔴 Critique |
-| 25 | **Champ Group** | 🟢 Faible | 🟡 Important |
+
 
 
 ---
@@ -154,8 +169,6 @@ Si on garde c'est quoi les limtes etest ce que cela vaut vraiment le coup ???
 - Champ `hidden` — documenter les cas d'usage
 - Format de date par défaut (`m/d/Y` vs `d/m/Y`)
 - Export JSON/PHP des définitions de champs
-- - transient des notices ???
-
 
 # CFDev — Code-First Custom Meta Fields for WordPress
 
@@ -184,8 +197,6 @@ Plugin WordPress pour déclarer des champs personnalisés (meta fields) entière
 2. **Options pages** — page de réglages globaux stockée dans `wp_options` (ex : infos du site, réseaux sociaux, header/footer global). Cas d'usage quotidien.
 
 3. **Flexible Content** — comme le `bundle` mais chaque ligne peut être d'un *type différent* (ex : ligne "hero", ligne "texte+image", ligne "galerie"). C'est le fondement du page builder sans page builder.
-
-4. **REST API** — exposer les champs résolus via `/wp-json`. Indispensable pour les headless / Next.js.
 
 #### 🟡 Important
 

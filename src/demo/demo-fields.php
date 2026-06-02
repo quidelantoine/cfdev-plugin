@@ -23,6 +23,7 @@ add_action('init', static function (): void {
     require __DIR__ . '/demo-custom.php';
     require __DIR__ . '/demo-cypress.php';
 
+    require __DIR__ . '/demo-options.php';
     require __DIR__ . '/demo-woocommerce.php';
     require __DIR__ . '/demo-notices.php';
 });

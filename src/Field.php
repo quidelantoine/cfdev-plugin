@@ -246,10 +246,11 @@ class Field implements Renderable, Saveable
         }
 
         return match ($this->meta_type) {
-            'user' => update_user_meta($object_id, $this->id, $value),
-            'post' => update_post_meta($object_id, $this->id, $value),
-            'term' => update_term_meta($object_id, $this->id, $value),
-            default => false,
+            'user'   => update_user_meta($object_id, $this->id, $value),
+            'post'   => update_post_meta($object_id, $this->id, $value),
+            'term'   => update_term_meta($object_id, $this->id, $value),
+            'option' => update_option($this->id, $value),
+            default  => false,
         };
     }
 
@@ -318,10 +319,11 @@ class Field implements Renderable, Saveable
         }
 
         $can_save = match ($meta_type) {
-            'post' => current_user_can('edit_post', $object_id),
-            'user' => current_user_can('edit_user', $object_id),
-            'term' => current_user_can('edit_term', $object_id),
-            default => false,
+            'post'   => current_user_can('edit_post', $object_id),
+            'user'   => current_user_can('edit_user', $object_id),
+            'term'   => current_user_can('edit_term', $object_id),
+            'option' => current_user_can('manage_options'),
+            default  => false,
         };
 
         if (! $can_save) {
@@ -333,10 +335,11 @@ class Field implements Renderable, Saveable
         }
 
         match ($meta_type) {
-            'post' => update_post_meta($object_id, $field_id, $value),
-            'user' => update_user_meta($object_id, $field_id, $value),
-            'term' => update_term_meta($object_id, $field_id, $value),
-            default => null,
+            'post'   => update_post_meta($object_id, $field_id, $value),
+            'user'   => update_user_meta($object_id, $field_id, $value),
+            'term'   => update_term_meta($object_id, $field_id, $value),
+            'option' => update_option($field_id, $value),
+            default  => null,
         };
 
         wp_send_json_success();

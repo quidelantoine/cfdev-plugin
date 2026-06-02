@@ -78,6 +78,7 @@ class Initializer
         require_once path_join($src, 'functions/post_type_function.php');
         require_once path_join($src, 'functions/taxonomy_function.php');
         require_once path_join($src, 'functions/user_meta_function.php');
+        require_once path_join($src, 'functions/options_page_function.php');
 
         if ($this->container->get(Config::class)->demo) {
             require_once path_join($src, 'demo/demo-fields.php');

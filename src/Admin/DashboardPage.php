@@ -38,12 +38,16 @@ final class DashboardPage extends AdminPage
         }
         ksort($by_type);
 
-        $terms = array_values(array_filter($all, fn($e) => $e['meta_type'] === 'term'));
-        $users = array_values(array_filter($all, fn($e) => $e['meta_type'] === 'user'));
+        $terms   = array_values(array_filter($all, fn($e) => $e['meta_type'] === 'term'));
+        $users   = array_values(array_filter($all, fn($e) => $e['meta_type'] === 'user'));
+        $options = array_values(array_filter($all, fn($e) => $e['meta_type'] === 'option'));
 
         // Determine which tab is active on first load
         $first_pt  = array_key_first($by_type);
-        $first_tab = $first_pt ? 'cfdev-tab-pt-' . $first_pt : (! empty($terms) ? 'cfdev-tab-terms' : 'cfdev-tab-users');
+        $first_tab = $first_pt ? 'cfdev-tab-pt-' . $first_pt
+            : (! empty($terms)   ? 'cfdev-tab-terms'
+            : (! empty($users)   ? 'cfdev-tab-users'
+            : 'cfdev-tab-options'));
 
         ?>
         <div class="wrap cfdev-registry">
@@ -161,9 +165,10 @@ final class DashboardPage extends AdminPage
                 <p>
                     <?php esc_html_e('No field groups declared yet. Register your first group using', 'cfdev'); ?>
                     <code>register_cfdev_post_type()</code>,
-                    <code>register_cfdev_taxonomy()</code>
+                    <code>register_cfdev_taxonomy()</code>,
+                    <code>register_cfdev_user_meta()</code>
                     <?php esc_html_e('or', 'cfdev'); ?>
-                    <code>register_cfdev_user_meta()</code>.
+                    <code>register_cfdev_options_page()</code>.
                 </p>
             </div>
             <?php endif; ?>
@@ -197,6 +202,12 @@ final class DashboardPage extends AdminPage
                     <?php esc_html_e('Users', 'cfdev'); ?>
                     <span class="cfdev-tab-count"><?php echo count($users); ?></span>
                 </a>
+                <a href="#cfdev-tab-options"
+                   class="nav-tab<?php echo ($first_tab === 'cfdev-tab-options') ? ' nav-tab-active' : ''; ?>"
+                   data-cfdev-tab>
+                    <?php esc_html_e('Options', 'cfdev'); ?>
+                    <span class="cfdev-tab-count"><?php echo count($options); ?></span>
+                </a>
 
             </nav>
 
@@ -216,6 +227,10 @@ final class DashboardPage extends AdminPage
             <div id="cfdev-tab-users" class="cfdev-tab-panel"
                  <?php echo ($first_tab !== 'cfdev-tab-users') ? 'hidden' : ''; ?>>
                 <?php self::renderPanel($users, $dups, $dupBoxIds); ?>
+            </div>
+            <div id="cfdev-tab-options" class="cfdev-tab-panel"
+                 <?php echo ($first_tab !== 'cfdev-tab-options') ? 'hidden' : ''; ?>>
+                <?php self::renderPanel($options, $dups); ?>
             </div>
 
         </div>
@@ -255,8 +270,8 @@ final class DashboardPage extends AdminPage
         $total        = count($entry['fields']) + $bundle_count;
         $dup_ids      = array_keys($dups);
 
-        // Other post types this group is also assigned to (shown only in CPT tabs)
-        $other_pts = $current_pt !== ''
+        // Other post types this group is also assigned to (shown only in CPT tabs, not for options)
+        $other_pts = ($current_pt !== '' && $entry['meta_type'] !== 'option')
             ? array_values(array_filter($entry['targets'], fn($t) => $t !== $current_pt))
             : [];
 
@@ -326,6 +341,7 @@ final class DashboardPage extends AdminPage
                     )); ?>
                 </span>
 
+                <?php if ($entry['meta_type'] !== 'option') : ?>
                 <button type="button" class="cfdev-btn-inspect button button-small"
                         data-meta-type="<?php echo esc_attr($entry['meta_type']); ?>"
                         data-group-id="<?php echo esc_attr($entry['id']); ?>"
@@ -336,6 +352,12 @@ final class DashboardPage extends AdminPage
                         data-fixed="<?php echo $is_fixed ? '1' : '0'; ?>">
                     <?php esc_html_e('⚙ Inspect', 'cfdev'); ?>
                 </button>
+                <?php else : ?>
+                <a href="<?php echo esc_url(menu_page_url('cfdev-' . $entry['id'], false) ?: admin_url('admin.php?page=cfdev-' . $entry['id'])); ?>"
+                   class="button button-small">
+                    ✎ <?php esc_html_e('Edit', 'cfdev'); ?>
+                </a>
+                <?php endif; ?>
 
                 <button type="button" class="cfdev-btn-code button button-small"
                         data-group-id="<?php echo esc_attr($entry['id']); ?>"
@@ -645,6 +667,10 @@ final class DashboardPage extends AdminPage
         $id   = (string) $entry['id'];
         $type = (string) ($entry['meta_type'] ?? 'post');
 
+        if ($type === 'option') {
+            return self::optionCodeSnippet($entry, $raw);
+        }
+
         if ($type === 'post') {
             $call = 'post($post->ID)';
         } elseif ($type === 'term') {
@@ -707,6 +733,86 @@ final class DashboardPage extends AdminPage
         }
 
         return implode("\n", $lines);
+    }
+
+    /**
+     * Generates a PHP code snippet for an options page (fields stored in wp_options).
+     *
+     * @param array<string, mixed> $entry
+     */
+    private static function optionCodeSnippet(array $entry, bool $raw = false): string
+    {
+        $lines = ['<?php'];
+
+        $fl = $raw
+            ? static fn(string $f, array $d, string $s): array => self::fieldLinesRaw($f, $d, $s)
+            : static fn(string $f, array $d, string $s): array => self::fieldLines($f, $d, $s);
+
+        if (! empty($entry['sections'])) {
+            foreach ($entry['sections'] as $section) {
+                $lines[] = '';
+                $lines[] = '// ' . ($section['title'] ?? '');
+                $bid     = $section['bundle_id'] ?? null;
+                if ($bid !== null && isset($entry['bundles'][$bid])) {
+                    $sbid    = str_replace("'", "\\'", (string) $bid);
+                    $lines[] = "\$rows = \\Weblitzer\\CFDev\\Field::decodeMetaValue(get_option('{$sbid}')) ?: [];";
+                    $lines[] = 'foreach ($rows as $row) {';
+                    foreach ($entry['bundles'][$bid]['fields'] as $fid => $field) {
+                        foreach ($fl((string) $fid, $field, '$row') as $l) {
+                            $lines[] = '    ' . $l;
+                        }
+                    }
+                    $lines[] = '}';
+                } elseif (! empty($section['fields'])) {
+                    array_push($lines, ...self::optionFlatBlock($section['fields'], $fl));
+                }
+            }
+        } elseif (! empty($entry['bundles'])) {
+            foreach ($entry['bundles'] as $bundle_id => $bundle) {
+                $sbid    = str_replace("'", "\\'", (string) $bundle_id);
+                $lines[] = '';
+                $lines[] = "\$rows = \\Weblitzer\\CFDev\\Field::decodeMetaValue(get_option('{$sbid}')) ?: [];";
+                $lines[] = 'foreach ($rows as $row) {';
+                foreach ($bundle['fields'] as $fid => $field) {
+                    foreach ($fl((string) $fid, $field, '$row') as $l) {
+                        $lines[] = '    ' . $l;
+                    }
+                }
+                $lines[] = '}';
+            }
+        } else {
+            array_push($lines, '', ...self::optionFlatBlock($entry['fields'], $fl));
+        }
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Builds a $opts loader + per-field lines for flat option fields.
+     *
+     * @param array<string, array<string, mixed>> $fields
+     * @param callable(string, array<string,mixed>, string): array<string> $fl
+     * @return list<string>
+     */
+    private static function optionFlatBlock(array $fields, callable $fl): array
+    {
+        if (empty($fields)) {
+            return [];
+        }
+
+        $lines = ['$opts = ['];
+        foreach (array_keys($fields) as $fid) {
+            $sfid    = str_replace("'", "\\'", (string) $fid);
+            $lines[] = "    '{$sfid}' => get_option('{$sfid}'),";
+        }
+        $lines[] = '];';
+
+        foreach ($fields as $fid => $field) {
+            $lines[] = '';
+            array_push($lines, ...$fl((string) $fid, $field, '$opts'));
+        }
+
+        return $lines;
     }
 
     /**

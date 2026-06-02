@@ -8,12 +8,8 @@ Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
 => Utiliser plugins traduction loco translate pour générer fichier .mo et .po
 allemand, espagnol, chinois
 ## Test
-| ↳ | **Tests Admin HTML** — une fois l'UI figée | Tests rendu, structure HTML | il manque quoi à tester sur cette partie ?
-// Voir si la docs sur partie admin est a jour 
-// Mise à jour des badges su r les 2 readme en anglais et francais
-// passer tous les tests
-// push 
-##############################################################"""
+
+
 TEsts sur les champs => couverture complete ??? 
 
 | 15 | **i18n** — `__('')` en anglais + `.mo`/`.po` (FR, DE, ES, ZH) | — |

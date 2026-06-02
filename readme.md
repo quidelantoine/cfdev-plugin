@@ -12,6 +12,7 @@
 [![Unit tests](https://img.shields.io/badge/unit%20tests-1560%20passing-brightgreen)](tests/Unit)
 [![Integration tests](https://img.shields.io/badge/integration%20tests-290%20passing-brightgreen)](tests/Integration)
 [![Cypress](https://img.shields.io/badge/Cypress-127%20specs%20%7C%2028%20files-brightgreen)](cypress/e2e)
+[![Coverage](https://img.shields.io/codecov/c/github/quidelantoine/cfdev-plugin?label=coverage)](https://codecov.io/gh/quidelantoine/cfdev-plugin)
 
 **[English docs](docs/en/installation.md)** · **[Lire en français](docs/fr/readme-fr.md)**
 

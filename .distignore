@@ -13,6 +13,7 @@ phpunit.xml
 phpcs.xml
 phpstan.neon
 phpstan-baseline.neon
+patchwork.json
 package.json
 package-lock.json
 composer.json

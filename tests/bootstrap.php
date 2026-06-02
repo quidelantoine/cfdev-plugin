@@ -124,6 +124,17 @@ if (! class_exists('WP_Post_Type')) {
         public bool $public = true;
     }
 }
+if (! class_exists('WP_Query')) {
+    class WP_Query
+    {
+        /** @var array<\WP_Post> */
+        public array $posts = [];
+        /** @param array<string, mixed> $args */
+        public function __construct(array $args = [])
+        {
+        }
+    }
+}
 // phpcs:enable PSR1.Classes.ClassDeclaration.MissingNamespace,Squiz.Classes.ValidClassName.NotCamelCaps,PSR1.Methods.CamelCapsMethodName.NotCamelCaps
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';

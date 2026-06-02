@@ -1,0 +1,12 @@
+{
+    "redefinable-internals": [
+        "is_dir",
+        "file_exists",
+        "glob",
+        "filemtime",
+        "filesize",
+        "unlink",
+        "file_get_contents",
+        "file_put_contents"
+    ]
+}

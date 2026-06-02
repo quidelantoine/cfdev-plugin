@@ -105,13 +105,11 @@ class AjaxHandler implements Registerable
             }
             $q = new \WP_Query($args);
             foreach ($q->posts as $post) {
-                if ($post instanceof \WP_Post) {
-                    $results[] = [
-                        'id'    => $post->ID,
-                        'label' => $post->post_title !== '' ? $post->post_title : '(sans titre) #' . $post->ID,
-                        'meta'  => $post->post_type,
-                    ];
-                }
+                $results[] = [
+                    'id'    => $post->ID,
+                    'label' => $post->post_title !== '' ? $post->post_title : '(sans titre) #' . $post->ID,
+                    'meta'  => $post->post_type,
+                ];
             }
         } elseif ($object_type === 'term') {
             $tax  = $taxonomy !== '' ? $taxonomy : ($targets[0] ?? '');

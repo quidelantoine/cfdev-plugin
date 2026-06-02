@@ -170,3 +170,47 @@ L'invalidation est automatique sur `save_post`, `edited_term`, `delete_term`, `p
 Les lignes dont l'âge dépasse 24 h affichent un badge **Expiré**.
 
 > La colonne "Groupes" ne liste que les groupes **dont les conditions correspondent** à cet objet. Un article standard n'affiche pas un groupe conditionné à la page d'accueil.
+
+---
+
+## Page REST API
+
+La page REST API (`?page=cfdev-rest`) fournit deux interrupteurs et une vue complète de tous les champs exposés à l'API REST.
+
+### Toggles
+
+| Toggle | Comportement quand actif |
+|---|---|
+| **WP REST natif** | Enregistre les champs via `register_meta()` pour qu'ils apparaissent dans les réponses `/wp-json/wp/v2/` sous forme de valeurs brutes (ID image, bundle encodé JSON) |
+| **CFDev API** | Active les endpoints `/wp-json/cfdev/v1/`, qui renvoient des valeurs résolues (images enrichies, bundles décodés) |
+
+Chaque toggle est une case à cocher qui soumet automatiquement le formulaire au changement. Les deux sont **actifs par défaut**.
+
+### Champs exposés — vue par onglets
+
+Les champs déclarés avec `'rest' => true` sont regroupés par contexte dans des onglets :
+
+- **Un onglet par post type** — groupes ayant au moins un champ plat ou un bundle exposé REST
+- **Termes** — groupes de term meta
+- **Utilisateurs** — groupes de user meta
+- **Options** — pages d'options
+
+Le badge de total dans l'en-tête de la section indique le nombre de champs REST exposés.
+
+### Cartes de groupes
+
+Chaque groupe est rétractable. En le déroulant, on voit un tableau REST :
+
+| Colonne | Contenu |
+|---|---|
+| Clé meta | L'`id` du champ ou l'ID du bundle, avec un badge `bundle` le cas échéant |
+| Label | Libellé lisible du champ |
+| Type REST | Type JSON — `string`, `number`, `boolean`, ou `array` |
+| Endpoint CFDev | `/wp-json/cfdev/v1/…` — lien cliquable si un objet correspondant existe en base |
+| Endpoint natif | `/wp-json/wp/v2/…` — lien cliquable si un objet correspondant existe |
+
+Les badges de layout (`flat`, `tabs`, `accordion`) et de condition (`ID : 42`, `Template : …`, `Rôle : editor`) apparaissent dans l'en-tête du groupe, comme sur le Tableau de bord.
+
+### Modale bundle
+
+Les lignes de type bundle affichent un bouton **⊞ Voir les champs**. Un clic ouvre une modale listant tous les champs du bundle avec leur clé meta, leur label et leur type REST. Un bundle est exposé comme un seul objet JSON — les champs individuels ne peuvent pas être sélectionnés séparément.

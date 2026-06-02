@@ -9,9 +9,9 @@
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen)](phpstan.neon)
 [![PHPCS](https://img.shields.io/badge/PHPCS-WordPress--VIP--Go-blue)](phpcs.xml)
 [![ESLint](https://img.shields.io/badge/ESLint-0%20warnings-brightgreen)](eslint.config.js)
-[![Unit tests](https://img.shields.io/badge/unit%20tests-1489%20passing-brightgreen)](tests/Unit)
+[![Unit tests](https://img.shields.io/badge/unit%20tests-1560%20passing-brightgreen)](tests/Unit)
 [![Integration tests](https://img.shields.io/badge/integration%20tests-290%20passing-brightgreen)](tests/Integration)
-[![Cypress](https://img.shields.io/badge/Cypress-120%20specs%20%7C%2020%20files-brightgreen)](cypress/e2e)
+[![Cypress](https://img.shields.io/badge/Cypress-127%20specs%20%7C%2028%20files-brightgreen)](cypress/e2e)
 
 **[English docs](docs/en/installation.md)** · **[Lire en français](docs/fr/readme-fr.md)**
 

@@ -170,3 +170,47 @@ Automatic invalidation runs on `save_post`, `edited_term`, `delete_term`, `profi
 Rows older than 24 h show an **Expired** badge.
 
 > The "Groups" column only lists groups **whose conditions match** the object. A standard post won't show a group conditioned to the home page.
+
+---
+
+## REST API page
+
+The REST API page (`?page=cfdev-rest`) provides two on/off controls and a full overview of every field exposed to the REST API.
+
+### Toggles
+
+| Toggle | Behavior when active |
+|---|---|
+| **Native WP REST** | Registers fields via `register_meta()` so they appear in `/wp-json/wp/v2/` responses as raw values (image ID, JSON-encoded bundle string) |
+| **CFDev API** | Enables the `/wp-json/cfdev/v1/` endpoints, which return resolved values (expanded images, decoded bundles) |
+
+Each toggle is a checkbox that auto-submits on change. Both default to **on**.
+
+### Exposed fields — tab view
+
+Fields declared with `'rest' => true` are grouped by context in tabs:
+
+- **One tab per post type** — groups with at least one REST-exposed flat field or bundle
+- **Terms** — term meta groups
+- **Users** — user meta groups
+- **Options** — options pages
+
+The total count badge in the section header shows the aggregate number of REST-exposed fields.
+
+### Group cards
+
+Each group is collapsible. Expanding it reveals a REST table:
+
+| Column | Content |
+|---|---|
+| Meta key | The field `id` or bundle ID, with a `bundle` badge where applicable |
+| Label | Human-readable field label |
+| REST type | JSON type — `string`, `number`, `boolean`, or `array` |
+| CFDev endpoint | `/wp-json/cfdev/v1/…` — linked if a matching object exists in the database |
+| Native endpoint | `/wp-json/wp/v2/…` — linked if a matching object exists |
+
+Layout badges (`flat`, `tabs`, `accordion`) and condition badges (`ID : 42`, `Template : …`, `Role: editor`) appear in the group header, identical to the Dashboard.
+
+### Bundle modal
+
+Bundle rows show a **⊞ View fields** button. Clicking it opens a modal listing all fields inside the bundle with their meta key, label, and REST type. Bundles are exposed as a single JSON object — individual fields inside cannot be selected separately.

@@ -595,13 +595,11 @@ final class DashboardPage extends AdminPage
             $q    = new \WP_Query($args);
             $opts = [];
             foreach ($q->posts as $post) {
-                if ($post instanceof \WP_Post) {
-                    $opts[] = [
-                        'id'    => $post->ID,
-                        'label' => $post->post_title !== '' ? $post->post_title : __('(no title)', 'cfdev'),
-                        'meta'  => $post->post_type,
-                    ];
-                }
+                $opts[] = [
+                    'id'    => $post->ID,
+                    'label' => $post->post_title !== '' ? $post->post_title : __('(no title)', 'cfdev'),
+                    'meta'  => $post->post_type,
+                ];
             }
             return $opts;
         }

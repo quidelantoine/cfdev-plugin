@@ -4,6 +4,9 @@ namespace Weblitzer\CFDev\Tests\Unit\Admin;
 
 use Brain\Monkey\Functions;
 use Weblitzer\CFDev\Admin\DashboardPage;
+use Weblitzer\CFDev\Meta\MetaBox;
+use Weblitzer\CFDev\Meta\TermMeta;
+use Weblitzer\CFDev\Meta\UserMeta;
 use Weblitzer\CFDev\OptionsPage;
 use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 
@@ -144,5 +147,386 @@ class DashboardPageTest extends CFDevTestCase
         // Options entries show Edit link instead of Inspect button
         $this->assertStringNotContainsString('cfdev-btn-inspect', $output);
         $this->assertStringContainsString('button-small', $output);
+    }
+
+    // =========================================================================
+    // Helpers for MetaBox registration
+    // =========================================================================
+
+    /**
+     * @param array<mixed>        $data
+     * @param string|array<string> $pt
+     */
+    private function makeMetaBox(string $id, string|array $pt, array $data, string $title = ''): MetaBox
+    {
+        Functions\when('apply_filters')->returnArg(2);
+        Functions\when('register_meta')->justReturn(true);
+        return new MetaBox($id, $title ?: ucfirst($id), $pt, $data);
+    }
+
+    /** @return array<string, mixed> */
+    private function f(string $id, string $type = 'text', bool $required = false): array
+    {
+        return ['type' => $type, 'id' => $id, 'name' => ucfirst($id), 'required' => $required];
+    }
+
+    // =========================================================================
+    // Group header — title, ID, count, buttons
+    // =========================================================================
+
+    public function testRenderGroupShowsGroupTitle(): void
+    {
+        $this->makeMetaBox('details', 'post', [$this->f('_title')], 'Book Details');
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('Book Details', $output);
+    }
+
+    public function testRenderGroupShowsGroupId(): void
+    {
+        $this->makeMetaBox('cfdev_book', 'post', [$this->f('_pages')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev_book', $output);
+    }
+
+    public function testRenderGroupShowsFieldCountBadge(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->f('_f1'), $this->f('_f2')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-field-count', $output);
+        $this->assertMatchesRegularExpression('/cfdev-field-count[^>]*>\s*2/', $output);
+    }
+
+    public function testRenderGroupShowsInspectButton(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->f('_f1')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-btn-inspect', $output);
+    }
+
+    public function testRenderGroupShowsCodeButton(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->f('_f1')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-btn-code', $output);
+    }
+
+    // =========================================================================
+    // Layout badges
+    // =========================================================================
+
+    public function testRenderShowsFlatLayoutBadge(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->f('_f1')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-badge--flat', $output);
+    }
+
+    public function testRenderShowsTabsLayoutBadge(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'tabs',
+            ['Tab A' => [$this->f('_f1')], 'Tab B' => [$this->f('_f2')]],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-badge--tabs', $output);
+    }
+
+    public function testRenderShowsAccordionLayoutBadge(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'accordion',
+            ['Section A' => [$this->f('_f1')]],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-badge--accordion', $output);
+    }
+
+    public function testRenderShowsBundleBadgeAlongsideTabsWhenGroupHasBundles(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'tabs',
+            [
+                'Info'  => [$this->f('_name')],
+                'Items' => [['bundle', [$this->f('_item')]]],
+            ],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-badge--tabs', $output);
+        $this->assertStringContainsString('cfdev-badge--bundle', $output);
+    }
+
+    // =========================================================================
+    // Condition badges
+    // =========================================================================
+
+    public function testRenderShowsConditionBadgeForPostId(): void
+    {
+        $mb = $this->makeMetaBox('box', 'post', [$this->f('_f1')]);
+        $mb->onlyForId(42);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-condition-badge', $output);
+        $this->assertStringContainsString('ID : 42', $output);
+    }
+
+    public function testRenderShowsConditionBadgeForTemplate(): void
+    {
+        $mb = $this->makeMetaBox('box', 'post', [$this->f('_f1')]);
+        $mb->onlyForTemplate('templates/home.php');
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-condition-badge', $output);
+        $this->assertStringContainsString('Template : home.php', $output);
+    }
+
+    public function testRenderShowsConditionBadgeForRoles(): void
+    {
+        Functions\when('apply_filters')->returnArg(2);
+        Functions\when('register_meta')->justReturn(true);
+        $um = new UserMeta('profile_extra', 'Profile', [$this->f('_bio')]);
+        $um->onlyForRole('editor');
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-condition-badge', $output);
+        $this->assertStringContainsString('Role: editor', $output);
+    }
+
+    public function testRenderShowsConditionBadgeForParentId(): void
+    {
+        Functions\when('apply_filters')->returnArg(2);
+        Functions\when('register_meta')->justReturn(true);
+        $tm = new TermMeta('genre', 'Genre', [$this->f('_desc')]);
+        $tm->onlyIfParent(5);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-condition-badge', $output);
+        $this->assertStringContainsString('Parent : 5', $output);
+    }
+
+    // =========================================================================
+    // Field table (group body)
+    // =========================================================================
+
+    public function testRenderGroupBodyContainsFieldsTable(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->f('_subtitle')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-fields-table', $output);
+    }
+
+    public function testRenderFieldsTableContainsFieldId(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->f('_isbn')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('_isbn', $output);
+    }
+
+    public function testRenderFieldsTableContainsTypeBadge(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->f('_count', 'number')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-type--number', $output);
+    }
+
+    public function testRenderFieldsTableShowsRequiredBadge(): void
+    {
+        $this->makeMetaBox('box', 'post', [$this->f('_title', 'text', true)]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-rule-badge--required', $output);
+    }
+
+    public function testRenderFieldsTableMarksDuplicateFieldWithDupClass(): void
+    {
+        // Same field ID in two different MetaBoxes → cross-box duplicate
+        $this->makeMetaBox('box_a', 'post', [$this->f('_shared')]);
+        $this->makeMetaBox('box_b', 'post', [$this->f('_shared')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('class="cfdev-dup"', $output);
+    }
+
+    // =========================================================================
+    // Sections — tabs layout
+    // =========================================================================
+
+    public function testRenderTabsGroupHasSectionDivForEachTab(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'tabs',
+            [
+                'General' => [$this->f('_name')],
+                'Details' => [$this->f('_desc')],
+            ],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertGreaterThanOrEqual(2, substr_count($output, 'cfdev-section'));
+    }
+
+    public function testRenderTabsSectionTitleAppearsInOutput(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'tabs',
+            ['My Tab Section' => [$this->f('_f1')]],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('My Tab Section', $output);
+    }
+
+    // =========================================================================
+    // Sections — accordion layout
+    // =========================================================================
+
+    public function testRenderAccordionGroupHasAccordionSectionClass(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'accordion',
+            ['Pricing' => [$this->f('_price')]],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-section--accordion', $output);
+    }
+
+    // =========================================================================
+    // Bundle section ref (tabs/accordion with a bundle tab)
+    // =========================================================================
+
+    public function testRenderSectionWithBundleShowsBundleRef(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'accordion',
+            [
+                'Info'  => [$this->f('_name')],
+                'Items' => [['bundle', [$this->f('_item')]]],
+            ],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-section-bundle-ref', $output);
+    }
+
+    // =========================================================================
+    // Standalone bundle layout
+    // =========================================================================
+
+    public function testRenderBundleLayoutGroupShowsBundleDiv(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'bundle',
+            '_rows',
+            [$this->f('_qty'), $this->f('_price')],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-bundle', $output);
+        $this->assertStringContainsString('_rows', $output);
+    }
+
+    // =========================================================================
+    // Warning notices
+    // =========================================================================
+
+    public function testRenderShowsDuplicateBoxIdBadgeWhenSameIdRegisteredTwice(): void
+    {
+        $this->makeMetaBox('same_id', 'post', [$this->f('_f1')]);
+        $this->makeMetaBox('same_id', 'post', [$this->f('_f2')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-dup-badge--box', $output);
+    }
+
+    public function testRenderShowsIntraBoxDuplicateNoticeWhenSameFieldInTwoTabs(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            'tabs',
+            [
+                'Tab A' => [$this->f('_dupe')],
+                'Tab B' => [$this->f('_dupe')],
+            ],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-notice-dups', $output);
+    }
+
+    public function testRenderShowsReservedKeyNoticeWhenFieldUsesWpInternalMetaKey(): void
+    {
+        $this->makeMetaBox('box', 'post', [
+            ['type' => 'image', 'id' => '_thumbnail_id', 'name' => 'Image'],
+        ]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-notice-dups', $output);
+        $this->assertStringContainsString('_thumbnail_id', $output);
+    }
+
+    // =========================================================================
+    // "Also in" tag for multi-post-type groups
+    // =========================================================================
+
+    public function testRenderShowsAlsoInTagWhenGroupAssignedToMultiplePostTypes(): void
+    {
+        $this->makeMetaBox('box', ['post', 'page'], [$this->f('_f1')]);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-also-in', $output);
+    }
+
+    // =========================================================================
+    // Tab count per post type
+    // =========================================================================
+
+    public function testRenderTabCountBadgeMatchesGroupCountForPostType(): void
+    {
+        $this->makeMetaBox('box_a', 'post', [$this->f('_f1')]);
+        $this->makeMetaBox('box_b', 'post', [$this->f('_f2')]);
+
+        $output = $this->captureRender();
+
+        // Tab link for 'post' should have count badge showing 2
+        preg_match('/#cfdev-tab-pt-post[^>]*>.*?cfdev-tab-count[^>]*>(\d+)/s', $output, $m);
+        $this->assertSame('2', $m[1] ?? '');
     }
 }

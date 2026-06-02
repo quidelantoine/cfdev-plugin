@@ -225,7 +225,13 @@ jobs:
       # injecte les constantes (CFDEV_DEMO, DISABLE_WP_CRON) via config,
       # puis afterSetup exécute bin/wp-env-seed.sh (options WP + page spec-11).
       - name: Start wp-env
-        run: npx wp-env start
+        run: |
+          for i in 1 2 3; do
+            npx wp-env start && break
+            echo "wp-env start attempt $i/3 failed, retrying in 15s..."
+            npx wp-env stop || true
+            sleep 15
+          done
 
       # Persiste les images wordpress/mariadb pour les runs suivants.
       # actions/cache@v4 auto-save en post-step si le fichier existe.

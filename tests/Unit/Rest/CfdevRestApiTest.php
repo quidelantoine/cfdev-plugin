@@ -291,6 +291,41 @@ class CfdevRestApiTest extends CFDevTestCase
     }
 
     // =========================================================================
+    // canReadOptions
+    // =========================================================================
+
+    public function testCanReadOptionsReturns401WhenNotLoggedIn(): void
+    {
+        Functions\when('is_user_logged_in')->justReturn(false);
+
+        $result = $this->api->canReadOptions($this->request([]));
+
+        $this->assertInstanceOf(\WP_Error::class, $result);
+        $this->assertSame(401, $result->data['status']);
+    }
+
+    public function testCanReadOptionsReturns403WhenLoggedInWithoutManageOptions(): void
+    {
+        Functions\when('is_user_logged_in')->justReturn(true);
+        Functions\when('current_user_can')->justReturn(false);
+
+        $result = $this->api->canReadOptions($this->request([]));
+
+        $this->assertInstanceOf(\WP_Error::class, $result);
+        $this->assertSame(403, $result->data['status']);
+    }
+
+    public function testCanReadOptionsReturnsTrueWhenUserCanManageOptions(): void
+    {
+        Functions\when('is_user_logged_in')->justReturn(true);
+        Functions\when('current_user_can')->justReturn(true);
+
+        $result = $this->api->canReadOptions($this->request([]));
+
+        $this->assertTrue($result);
+    }
+
+    // =========================================================================
     // handlePost — error paths
     // =========================================================================
 
@@ -518,5 +553,28 @@ class CfdevRestApiTest extends CFDevTestCase
         $this->assertArrayHasKey('_bio', $group);
         $this->assertArrayNotHasKey('_private', $group);
         $this->assertSame('Developer', $group['_bio']);
+    }
+
+    public function testHandleUserFiltersGroupsByRequestedUserRoles(): void
+    {
+        // Group visible only to 'editor' role
+        $um = new UserMeta('editor_section', 'Editor Section', [
+            ['type' => 'text', 'id' => '_notes', 'name' => 'Notes', 'rest' => true],
+        ]);
+        $um->onlyForRole('editor');
+
+        // Requested user is an editor; current user (setUp) is administrator
+        $user        = new \WP_User();
+        $user->ID    = 7;
+        $user->roles = ['editor'];
+
+        Functions\when('get_userdata')->justReturn($user);
+        Functions\when('get_user_meta')->justReturn('some note');
+
+        $result = $this->api->handleUser($this->request(['id' => 7]));
+
+        $this->assertInstanceOf(\WP_REST_Response::class, $result);
+        // The group must be present because the *requested* user is an editor
+        $this->assertArrayHasKey('editor_section', $result->data['groups']);
     }
 }

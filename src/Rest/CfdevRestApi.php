@@ -81,7 +81,7 @@ final class CfdevRestApi
             [
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => [$this, 'handleOptions'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [$this, 'canReadOptions'],
                 'args'                => [
                     'page_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_key'],
                 ],
@@ -155,10 +155,10 @@ final class CfdevRestApi
             return new \WP_Error('cfdev_not_found', __('No CFDev fields exposed for users.', 'cfdev'), ['status' => 404]);
         }
 
-        $current_user_roles = (array) wp_get_current_user()->roles;
-        $entries = array_values(array_filter($entries, function (array $entry) use ($current_user_roles): bool {
+        $subject_roles = (array) $user->roles;
+        $entries = array_values(array_filter($entries, function (array $entry) use ($subject_roles): bool {
             $roles = $entry['conditions']['roles'] ?? [];
-            return empty($roles) || ! empty(array_intersect($roles, $current_user_roles));
+            return empty($roles) || ! empty(array_intersect($roles, $subject_roles));
         }));
 
         $all    = (new CacheManager())->user($id);
@@ -256,6 +256,19 @@ final class CfdevRestApi
         return is_user_logged_in()
             ? new \WP_Error('rest_forbidden', __('Insufficient permissions.', 'cfdev'), ['status' => 403])
             : new \WP_Error('rest_forbidden', __('Authentication required.', 'cfdev'), ['status' => 401]);
+    }
+
+    public function canReadOptions(\WP_REST_Request $request): bool|\WP_Error
+    {
+        if (! is_user_logged_in()) {
+            return new \WP_Error('rest_forbidden', __('Authentication required.', 'cfdev'), ['status' => 401]);
+        }
+
+        if (current_user_can('manage_options')) {
+            return true;
+        }
+
+        return new \WP_Error('rest_forbidden', __('Insufficient permissions.', 'cfdev'), ['status' => 403]);
     }
 
     public function canReadUser(\WP_REST_Request $request): bool|\WP_Error

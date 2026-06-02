@@ -180,6 +180,8 @@ git push origin main v1.0.1
 ```bash
 # Vérification complète avant commit
 ./vendor/bin/phpunit --testsuite Unit && vendor/bin/phpcs && vendor/bin/phpstan analyse
+
+./vendor/bin/phpunit --testsuite Unit && ./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php && vendor/bin/phpcs && vendor/bin/phpstan analyse
 ```
 
 

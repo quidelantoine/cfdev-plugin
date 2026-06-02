@@ -180,7 +180,7 @@ GET /wp-json/cfdev/v1/options/{page_id}
 
 `{page_id}` is the first argument of `register_cfdev_options_page()`.
 
-**Auth:** none — options are publicly readable.
+**Auth:** requires authentication. The current user must have the `manage_options` capability (administrators by default).
 
 ```json
 {
@@ -219,15 +219,17 @@ const res = await fetch('/wp-json/wp/v2/settings', {
 // → { "_brand_name": "Acme Corp", "_brand_logo": "42", "_team_members": "[{…}]" }
 ```
 
-> `/wp/v2/settings` requires `manage_options` even for reading. Prefer the CFDev endpoint for public-facing use.
+> Both `/wp/v2/settings` and `/cfdev/v1/options/…` require `manage_options`. Use the CFDev endpoint for resolved values (decoded bundles, enriched images); use `/wp/v2/settings` for raw values.
 
 ---
 
 ### From Next.js
 
 ```ts
-// Options — no auth required
-const brand = await fetch('https://example.com/wp-json/cfdev/v1/options/brand').then(r => r.json());
+// Options — manage_options required
+const brand = await fetch('https://example.com/wp-json/cfdev/v1/options/brand', {
+    headers: { Authorization: 'Basic ' + Buffer.from(process.env.CFDEV_WP_TOKEN!).toString('base64') },
+}).then(r => r.json());
 brand.groups.brand._brand_name          // "Acme Corp"
 brand.groups.brand._brand_logo.full     // "https://…/logo.png"
 brand.groups.brand._brand_logo.medium   // "https://…/logo-300x100.png"
@@ -277,7 +279,9 @@ user.groups.profile.bio               // "My intro"
 | Private taxonomy, authenticated without `manage_terms` | 403 |
 | User endpoint, unauthenticated | 401 |
 | User endpoint, authenticated but not own user or admin | 403 |
-| Options endpoint (`/cfdev/v1/options/…`) | 200 — always public |
+| Options endpoint, unauthenticated | 401 |
+| Options endpoint, authenticated without `manage_options` | 403 |
+| Options endpoint, authenticated with `manage_options` | 200 |
 | Options page not found or no `rest: true` fields | 404 |
 
 ---

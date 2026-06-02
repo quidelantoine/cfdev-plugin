@@ -134,12 +134,18 @@ When `show_admin_column: true` is combined with `repeatable: true`, values are j
 
 ---
 
-## AJAX loading
+## Inline Save (AJAX)
 
-Fields marked `ajax: true` load their editor assets on demand instead of on page load. This reduces initial page weight on posts with many media fields.
+Fields marked `ajax: true` render with a standalone **Save** button. Clicking it saves that single field via AJAX without submitting the whole meta box form.
 
 ```php
-['id' => 'photos', 'type' => 'image', 'label' => 'Photos', 'repeatable' => true, 'ajax' => true]
+['id' => 'subtitle', 'type' => 'text', 'label' => 'Subtitle', 'ajax' => true]
 ```
+
+Two conditions must be met for the Save button to appear:
+- The field config has `'ajax' => true` (developer opt-in)
+- The field type supports it (`supports_ajax = true` on the class) — e.g. `Link` and `Gallery` do not
+
+`ajax` and `repeatable` are mutually exclusive: if both are set, `repeatable` takes priority.
 
 Compatible types are listed in the [Field Types](fields.md) summary table (`ajax` column).

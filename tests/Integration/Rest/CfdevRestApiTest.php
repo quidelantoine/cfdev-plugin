@@ -3,6 +3,7 @@
 namespace Weblitzer\CFDev\Tests\Integration\Rest;
 
 use Weblitzer\CFDev\Meta\MetaBox;
+use Weblitzer\CFDev\Meta\UserMeta;
 use Weblitzer\CFDev\Registry;
 use Weblitzer\CFDev\Rest\CfdevRestApi;
 use Weblitzer\CFDev\Tests\Integration\IntegrationTestCase;
@@ -278,5 +279,76 @@ class CfdevRestApiTest extends IntegrationTestCase
         $result = $api->canReadUser($request);
 
         $this->assertTrue($result);
+    }
+
+    // -------------------------------------------------------------------------
+    // canReadOptions
+    // -------------------------------------------------------------------------
+
+    public function testOptionsRouteRequiresAuthentication(): void
+    {
+        wp_set_current_user(0);
+
+        $request = new WP_REST_Request('GET', '/cfdev/v1/options/any_page');
+        $request->set_param('page_id', 'any_page');
+
+        $api    = new CfdevRestApi();
+        $result = $api->canReadOptions($request);
+
+        $this->assertInstanceOf(\WP_Error::class, $result);
+        $this->assertSame(401, $result->get_error_data()['status']);
+    }
+
+    public function testOptionsRouteForbiddenForSubscriber(): void
+    {
+        $subscriber_id = static::factory()->user->create(['role' => 'subscriber']);
+        wp_set_current_user($subscriber_id);
+
+        $request = new WP_REST_Request('GET', '/cfdev/v1/options/any_page');
+        $request->set_param('page_id', 'any_page');
+
+        $api    = new CfdevRestApi();
+        $result = $api->canReadOptions($request);
+
+        $this->assertInstanceOf(\WP_Error::class, $result);
+        $this->assertSame(403, $result->get_error_data()['status']);
+    }
+
+    public function testOptionsRouteAllowsAdminAccess(): void
+    {
+        $request = new WP_REST_Request('GET', '/cfdev/v1/options/any_page');
+        $request->set_param('page_id', 'any_page');
+
+        $api    = new CfdevRestApi();
+        $result = $api->canReadOptions($request);
+
+        $this->assertTrue($result);
+    }
+
+    // -------------------------------------------------------------------------
+    // handleUser — role filtering
+    // -------------------------------------------------------------------------
+
+    public function testHandleUserFiltersGroupsByRequestedUserRoles(): void
+    {
+        // Group restricted to 'editor' role
+        $um = new UserMeta('editor_section', 'Editor Section', [
+            ['type' => 'text', 'id' => '_editor_note', 'name' => 'Note', 'rest' => true],
+        ]);
+        $um->onlyForRole('editor');
+
+        $editor_id = static::factory()->user->create(['role' => 'editor']);
+        update_user_meta($editor_id, '_editor_note', 'my note');
+
+        // Current user is administrator; requested user is editor
+        $request = new WP_REST_Request('GET', '/cfdev/v1/user/' . $editor_id);
+        $request->set_param('id', $editor_id);
+
+        $api      = new CfdevRestApi();
+        $response = $api->handleUser($request);
+
+        // Group must be present because the *requested* user is an editor
+        $this->assertInstanceOf(\WP_REST_Response::class, $response);
+        $this->assertArrayHasKey('editor_section', $response->get_data()['groups']);
     }
 }

@@ -265,7 +265,7 @@ final class RestPage extends AdminPage
             $example_id    = self::exampleId($entry['meta_type'], $target);
             $is_option     = $entry['meta_type'] === 'option';
             $cfdev_path    = self::cfdevEndpoint($entry['meta_type'], $entry['targets'], $example_id);
-            $ep_cfdev_url  = ($example_id > 0 && $cfdev_path !== '') ? $home . $cfdev_path : '';
+            $ep_cfdev_url  = (($example_id > 0 || $is_option) && $cfdev_path !== '') ? $home . $cfdev_path : '';
             $native_suffix = $entry['meta_type'] === 'post' ? '?_fields=id,title,meta' : '';
             $ep_native_url = ($example_id > 0 || $is_option)
                 ? $home . self::nativeEndpoint($entry['meta_type'], $entry['targets'], $example_id) . $native_suffix

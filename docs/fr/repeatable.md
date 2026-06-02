@@ -134,12 +134,18 @@ Quand `show_admin_column: true` est combiné avec `repeatable: true`, les valeur
 
 ---
 
-## Chargement AJAX
+## Sauvegarde inline (AJAX)
 
-Les champs marqués `ajax: true` chargent leurs assets d'édition à la demande plutôt qu'au chargement de la page. Cela réduit le poids initial sur les posts comportant de nombreux champs médias.
+Les champs marqués `ajax: true` affichent un bouton **Enregistrer** autonome. Un clic sur ce bouton sauvegarde uniquement ce champ via AJAX, sans soumettre tout le formulaire de la meta box.
 
 ```php
-['id' => 'photos', 'type' => 'image', 'label' => 'Photos', 'repeatable' => true, 'ajax' => true]
+['id' => 'subtitle', 'type' => 'text', 'label' => 'Sous-titre', 'ajax' => true]
 ```
+
+Deux conditions doivent être réunies pour que le bouton apparaisse :
+- La config du champ contient `'ajax' => true` (opt-in développeur)
+- Le type de champ le supporte (`supports_ajax = true` sur la classe) — ex. `Link` et `Gallery` ne le supportent pas
+
+`ajax` et `repeatable` sont mutuellement exclusifs : si les deux sont définis, `repeatable` prend la priorité.
 
 Les types compatibles sont listés dans le [tableau récapitulatif des types de champs](champs.md) (colonne `ajax`).

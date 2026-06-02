@@ -273,4 +273,84 @@ class MetaBoxTest extends CFDevTestCase
 
         $this->assertTrue($pushed);
     }
+
+    // -------------------------------------------------------------------------
+    // addMetaBox() + matchesConditions()
+    // -------------------------------------------------------------------------
+
+    public function testAddMetaBoxRegistersMetaBoxWhenNoConditions(): void
+    {
+        $mb = $this->makeMetaBox();
+        Functions\expect('add_meta_box')->once();
+        $mb->addMetaBox('post');
+        $this->addToAssertionCount(1);
+    }
+
+    public function testAddMetaBoxSkipsWhenPostIdConditionNotMet(): void
+    {
+        $mb       = $this->makeMetaBox();
+        $mb->onlyForId(42);
+        $post     = new \WP_Post();
+        $post->ID = 99;
+
+        Functions\expect('add_meta_box')->never();
+        $mb->addMetaBox('post', $post);
+        $this->addToAssertionCount(1);
+    }
+
+    public function testAddMetaBoxRegistersWhenPostIdConditionMatches(): void
+    {
+        $mb       = $this->makeMetaBox();
+        $mb->onlyForId(42);
+        $post     = new \WP_Post();
+        $post->ID = 42;
+
+        Functions\expect('add_meta_box')->once();
+        $mb->addMetaBox('post', $post);
+        $this->addToAssertionCount(1);
+    }
+
+    public function testAddMetaBoxSkipsWhenTemplateConditionNotMet(): void
+    {
+        $mb       = $this->makeMetaBox();
+        $mb->onlyForTemplate('template-home.php');
+        $post     = new \WP_Post();
+        $post->ID = 1;
+        Functions\when('get_page_template_slug')->justReturn('template-other.php');
+
+        Functions\expect('add_meta_box')->never();
+        $mb->addMetaBox('post', $post);
+        $this->addToAssertionCount(1);
+    }
+
+    // -------------------------------------------------------------------------
+    // resolveObjectId()
+    // -------------------------------------------------------------------------
+
+    public function testResolveObjectIdReadsFromGetParam(): void
+    {
+        Functions\when('absint')->alias('intval');
+        $_GET['post'] = '42';
+
+        $mb     = $this->makeMetaBox();
+        $method = new \ReflectionMethod(MetaBox::class, 'resolveObjectId');
+        $method->setAccessible(true);
+        $result = $method->invoke($mb);
+
+        unset($_GET['post']);
+        $this->assertSame(42, $result);
+    }
+
+    public function testResolveObjectIdFallsBackToGetTheId(): void
+    {
+        Functions\when('absint')->alias('intval');
+        Functions\when('get_the_ID')->justReturn(7);
+        unset($_GET['post']);
+
+        $mb     = $this->makeMetaBox();
+        $method = new \ReflectionMethod(MetaBox::class, 'resolveObjectId');
+        $method->setAccessible(true);
+
+        $this->assertSame(7, $method->invoke($mb));
+    }
 }

@@ -281,4 +281,18 @@ class RestPageTest extends CFDevTestCase
         $this->assertStringContainsString('cfdev-rest-table', $output);
         $this->assertStringContainsString('_subtitle', $output);
     }
+
+    public function testRenderShowsConditionBadgeWhenRestEntryHasCondition(): void
+    {
+        $this->setupMetaBoxMocks();
+        $mb = new MetaBox('box', 'Box', 'book', [
+            ['type' => 'text', 'id' => '_subtitle', 'name' => 'Subtitle', 'rest' => true],
+        ]);
+        $mb->onlyForId(42);
+
+        $output = $this->captureRender();
+
+        $this->assertStringContainsString('cfdev-condition-badge', $output);
+        $this->assertStringContainsString('ID : 42', $output);
+    }
 }

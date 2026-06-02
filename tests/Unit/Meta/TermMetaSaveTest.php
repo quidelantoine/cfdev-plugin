@@ -332,4 +332,86 @@ class TermMetaSaveTest extends CFDevTestCase
 
         $this->assertArrayHasKey($bundle->id, $saved);
     }
+
+    // -------------------------------------------------------------------------
+    // setTitle() — public fluent setter
+    // -------------------------------------------------------------------------
+
+    public function testSetTitleChangesTheTitleAndReturnsStatic(): void
+    {
+        $tm     = $this->makeTermMeta();
+        $result = $tm->setTitle('Custom Title');
+
+        $this->assertSame($tm, $result);
+        $this->assertSame('Custom Title', $tm->title);
+    }
+
+    // -------------------------------------------------------------------------
+    // resolveTitle() — private, via reflection
+    // -------------------------------------------------------------------------
+
+    public function testResolveTitleReturnsExplicitTitleWhenSet(): void
+    {
+        $tm = $this->makeTermMeta();
+        $tm->setTitle('My Title');
+
+        $method = new \ReflectionMethod(TermMeta::class, 'resolveTitle');
+        $method->setAccessible(true);
+
+        $this->assertSame('My Title', $method->invoke($tm, 'genre'));
+    }
+
+    public function testResolveTitleUsesGetTaxonomyWhenTitleIsEmpty(): void
+    {
+        $tax                          = new \stdClass();
+        $tax->labels                  = new \stdClass();
+        $tax->labels->singular_name   = 'Genre';
+        Functions\when('get_taxonomy')->justReturn($tax);
+
+        $tm     = $this->makeTermMeta(); // title = ''
+        $method = new \ReflectionMethod(TermMeta::class, 'resolveTitle');
+        $method->setAccessible(true);
+
+        $this->assertSame('Genre', $method->invoke($tm, 'genre'));
+    }
+
+    public function testResolveTitleFallsBackToUcfirstWhenGetTaxonomyReturnsNull(): void
+    {
+        Functions\when('get_taxonomy')->justReturn(null);
+
+        $tm     = $this->makeTermMeta();
+        $method = new \ReflectionMethod(TermMeta::class, 'resolveTitle');
+        $method->setAccessible(true);
+
+        $this->assertSame('Genre', $method->invoke($tm, 'genre'));
+    }
+
+    // -------------------------------------------------------------------------
+    // resolveObjectId() — protected, via reflection
+    // -------------------------------------------------------------------------
+
+    public function testResolveObjectIdReadsTagIdFromGetParam(): void
+    {
+        $_GET['tag_ID'] = '5';
+
+        $tm     = $this->makeTermMeta();
+        $method = new \ReflectionMethod(TermMeta::class, 'resolveObjectId');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($tm);
+        unset($_GET['tag_ID']);
+
+        $this->assertSame(5, $result);
+    }
+
+    public function testResolveObjectIdReturnsZeroWhenTagIdAbsent(): void
+    {
+        unset($_GET['tag_ID']);
+
+        $tm     = $this->makeTermMeta();
+        $method = new \ReflectionMethod(TermMeta::class, 'resolveObjectId');
+        $method->setAccessible(true);
+
+        $this->assertSame(0, $method->invoke($tm));
+    }
 }

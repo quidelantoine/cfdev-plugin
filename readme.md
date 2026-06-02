@@ -9,7 +9,7 @@
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen)](phpstan.neon)
 [![PHPCS](https://img.shields.io/badge/PHPCS-WordPress--VIP--Go-blue)](phpcs.xml)
 [![ESLint](https://img.shields.io/badge/ESLint-0%20warnings-brightgreen)](eslint.config.js)
-[![Unit tests](https://img.shields.io/badge/unit%20tests-1560%20passing-brightgreen)](tests/Unit)
+[![Unit tests](https://img.shields.io/badge/unit%20tests-1685%20passing-brightgreen)](tests/Unit)
 [![Integration tests](https://img.shields.io/badge/integration%20tests-290%20passing-brightgreen)](tests/Integration)
 [![Cypress](https://img.shields.io/badge/Cypress-127%20specs%20%7C%2028%20files-brightgreen)](cypress/e2e)
 [![Coverage](https://img.shields.io/codecov/c/github/quidelantoine/cfdev-plugin?label=coverage)](https://codecov.io/gh/quidelantoine/cfdev-plugin)

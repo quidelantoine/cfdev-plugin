@@ -49,7 +49,10 @@ class Time extends Field
      */
     public function saveValue(string|array $value): string|array
     {
-        $timestamp = is_string($value) ? strtotime($value) : false;
+        if (is_array($value)) {
+            return array_map(fn($v) => $this->saveValue(is_string($v) ? $v : ''), $value);
+        }
+        $timestamp = strtotime($value);
         return $timestamp !== false ? (string) $timestamp : '';
     }
 }

@@ -141,12 +141,26 @@ Stored as: `string` (e.g. `#3a86ff`) | repeatable ✅ | ajax ✅ | bundle ✅
 ---
 
 ### `hidden`
-Hidden input. Useful for storing a fixed or computed value.
+Hidden input (`<input type="hidden">`). The value is saved through the standard save cycle and goes through normal validation. Do not mark `required` without a `default_value`, or validation will silently fail.
+
+**Common use cases:**
 
 ```php
+// Tag the origin of a record (import, API, manual…)
 ['id' => 'source', 'type' => 'hidden', 'default_value' => 'import']
+
+// Lock a computed value set at creation time (never overwrite it in the admin)
+['id' => 'schema_version', 'type' => 'hidden', 'default_value' => '2']
+
+// Store an external identifier without exposing it in the form
+// The value is pre-filled programmatically via an upstream save_post hook
+['id' => 'stripe_product_id', 'type' => 'hidden']
+
+// Inside a Bundle: store an internal flag per row with no visible column
+['id' => '_row_migrated', 'type' => 'hidden', 'default_value' => '0']
 ```
-Stored as: `string` | repeatable ❌ | ajax ❌ | bundle ❌
+
+Stored as: `string` | repeatable ❌ | ajax ❌ | bundle ✅
 
 ---
 
@@ -360,11 +374,17 @@ Stored as: `array` of IDs (or `'-1'`) | bundle ✅
 ---
 
 ### `user_select`
-User dropdown. Stores the user ID. Accepts all `wp_dropdown_users()` args.
+User dropdown. Stores the user ID. Accepts all `wp_dropdown_users()` args, which are forwarded to `WP_User_Query` — including `role__in` to filter by multiple roles.
 
 ```php
+// Single role
 ['id' => 'author', 'type' => 'user_select', 'label' => 'Author', 'args' => [
     'role' => 'editor', 'show_option_none' => '— Choose —',
+]]
+
+// Multiple roles (role__in, WP_User_Query)
+['id' => 'assignee', 'type' => 'user_select', 'label' => 'Assigned to', 'args' => [
+    'role__in' => ['editor', 'author'], 'show_option_none' => '— Choose —',
 ]]
 ```
 Stored as: `string` (user ID) | repeatable ✅ | bundle ✅
@@ -419,7 +439,7 @@ Visual separator — no data saved. Groups fields inside a MetaBox without using
 | `url` | string | — | ✅ | ✅ | ✅ |
 | `tel` | string | — | ✅ | ✅ | ✅ |
 | `color` | hex string | — | ✅ | ✅ | ✅ |
-| `hidden` | string | — | ❌ | ❌ | ❌ |
+| `hidden` | string | — | ❌ | ❌ | ✅ |
 | `date` / `time` / `datetime` | timestamp | — | ✅ | ✅ | ✅ |
 | `image` | attachment ID | — | ✅ | ✅ | ✅ |
 | `image_alt` | JSON {id, alt} | — | ❌ | ❌ | ✅ |

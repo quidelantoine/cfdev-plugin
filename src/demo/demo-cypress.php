@@ -61,3 +61,16 @@ $postType->addMetaBox('cfdev_cypress_accordion', '[CYPRESS] Accordéon', [
         ],
     ],
 ]);
+
+// ── [CYPRESS] Repeatable fields on post ──────────────────────────────────────
+// Field IDs: _rep_text, _rep_number, _rep_email, _rep_select
+// POST names: cfdev[_rep_text][], cfdev[_rep_number][], …
+$postType->addMetaBox('cfdev_cypress_repeatable', '[CYPRESS] Repeatable', [
+    ['id' => '_rep_text',   'type' => 'text',   'label' => 'Tags',     'repeatable' => true],
+    ['id' => '_rep_number', 'type' => 'number', 'label' => 'Scores',   'repeatable' => true],
+    ['id' => '_rep_email',  'type' => 'email',  'label' => 'Contacts', 'repeatable' => true],
+    ['id' => '_rep_select', 'type' => 'select', 'label' => 'Status',
+        'options'    => ['draft' => 'Brouillon', 'review' => 'Révision', 'done' => 'Terminé'],
+        'repeatable' => true,
+    ],
+]);

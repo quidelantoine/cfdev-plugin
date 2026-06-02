@@ -301,4 +301,61 @@ class ValidationRulesTest extends IntegrationTestCase
         $errors = ErrorBag::peek('user', $this->user_id);
         $this->assertArrayNotHasKey('age_user', $errors);
     }
+
+    // -------------------------------------------------------------------------
+    // Required + repeatable
+    // -------------------------------------------------------------------------
+
+    public function testRequiredRepeatablePassesWithNonEmptyValues(): void
+    {
+        $box = new MetaBox('req_rep', 'Req', 'article', [
+            ['type' => 'text', 'id' => 'tags_req', 'label' => 'Tags', 'required' => true, 'repeatable' => true],
+        ]);
+
+        $this->postWith(['tags_req' => ['php', 'docker']]);
+        $box->savePost($this->post_id);
+
+        $errors = ErrorBag::peek('post', $this->post_id);
+        $this->assertArrayNotHasKey('tags_req', $errors);
+    }
+
+    public function testRequiredRepeatableFailsWithEmptyArray(): void
+    {
+        $box = new MetaBox('req_rep_empty', 'Req', 'article', [
+            ['type' => 'text', 'id' => 'tags_empty', 'label' => 'Tags', 'required' => true, 'repeatable' => true],
+        ]);
+
+        $this->postWith(['tags_empty' => []]);
+        $box->savePost($this->post_id);
+
+        $errors = ErrorBag::peek('post', $this->post_id);
+        $this->assertArrayHasKey('tags_empty', $errors);
+    }
+
+    public function testRequiredRepeatableFailsWhenAllValuesAreEmptyStrings(): void
+    {
+        $box = new MetaBox('req_rep_blanks', 'Req', 'article', [
+            ['type' => 'text', 'id' => 'tags_blanks', 'label' => 'Tags', 'required' => true, 'repeatable' => true],
+        ]);
+
+        // All rows are empty strings — should fail Required even though array is non-empty
+        $this->postWith(['tags_blanks' => ['', '']]);
+        $box->savePost($this->post_id);
+
+        $errors = ErrorBag::peek('post', $this->post_id);
+        $this->assertArrayHasKey('tags_blanks', $errors);
+    }
+
+    public function testRequiredRepeatablePassesWhenAtLeastOneValueIsNonEmpty(): void
+    {
+        $box = new MetaBox('req_rep_partial', 'Req', 'article', [
+            ['type' => 'text', 'id' => 'tags_partial', 'label' => 'Tags', 'required' => true, 'repeatable' => true],
+        ]);
+
+        $this->postWith(['tags_partial' => ['', 'valid']]);
+        $box->savePost($this->post_id);
+
+        $errors = ErrorBag::peek('post', $this->post_id);
+        $this->assertArrayNotHasKey('tags_partial', $errors);
+    }
 }

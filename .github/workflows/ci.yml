@@ -179,6 +179,8 @@ jobs:
           - { group: "14-15", spec: "cypress/e2e/14-media-fields.cy.js,cypress/e2e/15-skipped-fields.cy.js" }
           # Groupe E — options pages (dashboard tab, save/restore, validation, REST, code modal)
           - { group: "16", spec: "cypress/e2e/16-options-pages.cy.js" }
+          # Groupe F — repeatable fields (add, remove, save, order, bundle)
+          - { group: "17", spec: "cypress/e2e/17-repeatable.cy.js" }
 
     steps:
       - uses: actions/checkout@v4

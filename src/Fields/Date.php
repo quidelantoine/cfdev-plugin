@@ -52,6 +52,9 @@ class Date extends Field
 
     public function validate(mixed $value): \Weblitzer\CFDev\Validation\Validator
     {
+        if (is_array($value)) {
+            return parent::validate($value);
+        }
         $format = $this->args['date_format'] ?? 'm/d/Y';
         $date   = \DateTime::createFromFormat($format, (string) $value);
         return parent::validate($date !== false ? $date->format('Y-m-d') : $value);
@@ -63,7 +66,10 @@ class Date extends Field
      */
     public function saveValue(string|array $value): string|array
     {
-        $timestamp = is_string($value) ? strtotime($value) : false;
+        if (is_array($value)) {
+            return array_map(fn($v) => $this->saveValue(is_string($v) ? $v : ''), $value);
+        }
+        $timestamp = strtotime($value);
         return $timestamp !== false ? (string) $timestamp : '';
     }
 }

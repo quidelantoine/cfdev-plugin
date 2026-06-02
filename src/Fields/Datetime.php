@@ -68,6 +68,9 @@ class Datetime extends Field
 
     public function validate(mixed $value): \Weblitzer\CFDev\Validation\Validator
     {
+        if (is_array($value)) {
+            return parent::validate($value);
+        }
         $date_format = $this->args['date_format'] ?? 'm/d/Y';
         $time_format = $this->args['time_format'] ?? 'H:i';
         $date        = \DateTime::createFromFormat(trim($date_format . ' ' . $time_format), (string) $value);
@@ -80,7 +83,10 @@ class Datetime extends Field
      */
     public function saveValue(string|array $value): string|array
     {
-        $timestamp = is_string($value) ? strtotime($value) : false;
+        if (is_array($value)) {
+            return array_map(fn($v) => $this->saveValue(is_string($v) ? $v : ''), $value);
+        }
+        $timestamp = strtotime($value);
         return $timestamp !== false ? (string) $timestamp : '';
     }
 }

@@ -48,8 +48,8 @@ class Email extends Field
     {
         $rules = $this->rules;
 
-        // Only check format when there is a value; Required handles the empty case
-        if (!empty($value)) {
+        // Format check only for scalar values; repeatable arrays are sanitized item-by-item in saveValue
+        if (!empty($value) && is_string($value)) {
             $rules[] = new \Weblitzer\CFDev\Validation\Rules\Email();
         }
 

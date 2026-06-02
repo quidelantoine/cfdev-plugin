@@ -158,6 +158,23 @@ npx cypress run --spec "cypress/e2e/16-options-pages.cy.js" --browser chrome
 
 ---
 
+# 1. Committer tout ton travail
+git add .
+git commit -m "..."
+
+# 2. Pusher les commits
+git push origin main
+
+# 3. Créer le tag et le pusher → déclenche le workflow
+git tag v1.0.6
+git push origin v1.0.6
+
+#####
+git add .github/workflows/release.yml
+git commit -m "fix(ci): build dans /tmp pour éviter conflit rsync source/dest + Node 24"
+git tag v1.0.1
+git push origin main v1.0.1
+
 ## Résumé rapide
 
 ```bash

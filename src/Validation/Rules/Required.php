@@ -9,6 +9,9 @@ final class Required implements Validatable
 {
     public function validate(mixed $value): bool
     {
+        if (is_array($value)) {
+            return !empty(array_filter($value, fn($v) => $v !== '' && $v !== null));
+        }
         return ! empty($value);
     }
 

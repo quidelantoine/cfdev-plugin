@@ -81,6 +81,42 @@ foreach ((array) $urls as $url) {
 
 ---
 
+## Répétable dans un Bundle
+
+Un champ `repeatable: true` peut être placé à l'intérieur d'un Bundle. Chaque ligne du bundle stocke alors son propre tableau de valeurs dans le JSON global du bundle.
+
+```php
+->addMetaBox('articles', 'Articles', [
+    'bundle', 'articles_bundle', [
+        ['id' => 'title',  'type' => 'text', 'label' => 'Titre'],
+        ['id' => 'tags',   'type' => 'text', 'label' => 'Tags', 'repeatable' => true],
+    ],
+]);
+```
+
+Structure stockée :
+
+```json
+[
+  { "title": "Article A", "tags": ["php", "oop"] },
+  { "title": "Article B", "tags": ["js", "react"] }
+]
+```
+
+Lecture en front-end :
+
+```php
+$rows = json_decode(get_post_meta($post_id, '_articles_bundle', true), true);
+foreach ($rows as $row) {
+    echo esc_html($row['title']);
+    foreach ((array) $row['tags'] as $tag) {
+        echo '<span>' . esc_html($tag) . '</span>';
+    }
+}
+```
+
+---
+
 ## Colonne admin avec répétable
 
 Quand `show_admin_column: true` est combiné avec `repeatable: true`, les valeurs sont affichées jointes par `, ` dans la colonne :

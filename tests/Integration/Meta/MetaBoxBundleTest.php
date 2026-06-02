@@ -140,4 +140,59 @@ class MetaBoxBundleTest extends IntegrationTestCase
             $this->assertSame('', $raw);
         }
     }
+
+    // -------------------------------------------------------------------------
+    // Repeatable inside Bundle — champ répétable dans une ligne de bundle
+    // -------------------------------------------------------------------------
+
+    public function testRepeatableFieldInsideBundleSavesNestedArray(): void
+    {
+        // Bundle row 0 has a repeatable text field.
+        // POST: cfdev[_tags_bundle][0][keywords] = ['php', 'docker']
+        // Bundle::save() stores the whole bundle as JSON including the nested array.
+        $box = new MetaBox('tags_meta', 'Tags', 'programme', [
+            'bundle', 'tags_bundle', [
+                ['type' => 'text', 'id' => 'keywords', 'label' => 'Keywords', 'repeatable' => true],
+            ],
+        ]);
+
+        $this->postWith([
+            '_tags_bundle' => [
+                0 => ['keywords' => ['php', 'docker', 'ci']],
+            ],
+        ]);
+        $box->savePost($this->post_id);
+
+        $raw     = get_post_meta($this->post_id, '_tags_bundle', true);
+        $decoded = json_decode($raw, true);
+
+        $this->assertIsArray($decoded);
+        $this->assertCount(1, $decoded);
+        $this->assertSame(['php', 'docker', 'ci'], $decoded[0]['keywords']);
+    }
+
+    public function testRepeatableFieldInsideBundleMultipleRowsEachWithOwnArray(): void
+    {
+        $box = new MetaBox('links_meta', 'Links', 'programme', [
+            'bundle', 'links_bundle', [
+                ['type' => 'text', 'id' => 'tags', 'label' => 'Tags', 'repeatable' => true],
+                ['type' => 'text', 'id' => 'title', 'label' => 'Titre'],
+            ],
+        ]);
+
+        $this->postWith([
+            '_links_bundle' => [
+                0 => ['title' => 'Article A', 'tags' => ['php', 'oop']],
+                1 => ['title' => 'Article B', 'tags' => ['js', 'react']],
+            ],
+        ]);
+        $box->savePost($this->post_id);
+
+        $decoded = json_decode(get_post_meta($this->post_id, '_links_bundle', true), true);
+
+        $this->assertCount(2, $decoded);
+        $this->assertSame(['php', 'oop'], $decoded[0]['tags']);
+        $this->assertSame(['js', 'react'], $decoded[1]['tags']);
+        $this->assertSame('Article A', $decoded[0]['title']);
+    }
 }

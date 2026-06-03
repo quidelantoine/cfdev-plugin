@@ -67,6 +67,7 @@ class Initializer
         \Weblitzer\CFDev\Admin\AdminMenu::register();
         (new \Weblitzer\CFDev\Cache\CacheManager())->register();
         (new \Weblitzer\CFDev\Rest\CfdevRestApi())->register();
+        (new \Weblitzer\CFDev\Updater\GitHubUpdater($this->plugin_file, CFDEV_VERSION))->register();
         // Je susi pas sure que cela soit necessaire ??? , et pas fonctionnelle , a virer ????
         $this->container->get(AjaxHandler::class)->register();
     }

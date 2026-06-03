@@ -5,7 +5,7 @@
 /**
  * Plugin Name:       Custom Field For Dev
  * Description:       Code-first API for custom meta fields. 30+ types, bundles, tabs, validation, REST API and file cache.
- * Version:           1.0.7
+ * Version:           1.0.8
  * Plugin URI:        https://github.com/quidelantoine/cfdev-plugin
  * Author:            quidelantoine
  * Author URI:        https://github.com/quidelantoine
@@ -20,7 +20,7 @@
 
 defined('ABSPATH') || exit;
 
-define('CFDEV_VERSION', '1.0.7');
+define('CFDEV_VERSION', '1.0.8');
 
 if (version_compare(PHP_VERSION, '8.2', '<')) {
     add_action('admin_notices', fn() =>

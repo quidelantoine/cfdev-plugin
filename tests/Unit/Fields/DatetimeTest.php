@@ -270,6 +270,54 @@ class DatetimeTest extends CFDevTestCase
         $this->assertIsNumeric($result);
     }
 
+    public function testSaveValueRespectsDmyFormat(): void
+    {
+        $field  = $this->makeField(['args' => ['date_format' => 'd/m/Y', 'time_format' => 'H:i']]);
+        $result = $field->saveValue('15/06/2024 14:30');
+        $this->assertEquals(strtotime('06/15/2024 14:30'), $result);
+    }
+
+    public function testSaveValueReturnsEmptyOnGibberish(): void
+    {
+        $field  = $this->makeField();
+        $result = $field->saveValue('not-a-datetime');
+        $this->assertSame('', $result);
+    }
+
+    public function testSaveValueSecondsMidnightWithDefaultFormat(): void
+    {
+        $field    = $this->makeField();
+        $result   = (int) $field->saveValue('06/15/2024 14:30');
+        $expected = (int) strtotime('06/15/2024 14:30');
+        $this->assertSame($expected, $result);
+    }
+
+    public function testSaveValueArrayMapsEachElement(): void
+    {
+        $field  = $this->makeField();
+        $result = $field->saveValue(['06/15/2024 14:30', '01/01/2024 00:00']);
+        $this->assertIsArray($result);
+        $this->assertCount(2, $result);
+        $this->assertIsNumeric($result[0]);
+        $this->assertIsNumeric($result[1]);
+    }
+
+    public function testFormatDatetimeUsesCustomDateFormatOnly(): void
+    {
+        $timestamp = mktime(8, 30, 0, 12, 25, 2024);
+        $field     = $this->makeField(['args' => ['date_format' => 'd/m/Y']]);
+        $result    = $this->callFormatDatetime($field, $timestamp);
+        $this->assertSame(gmdate('d/m/Y H:i', (int) $timestamp), $result);
+    }
+
+    public function testFormatDatetimeUsesCustomTimeFormatOnly(): void
+    {
+        $timestamp = mktime(8, 30, 0, 12, 25, 2024);
+        $field     = $this->makeField(['args' => ['time_format' => 'H:i:s']]);
+        $result    = $this->callFormatDatetime($field, $timestamp);
+        $this->assertSame(gmdate('m/d/Y H:i:s', (int) $timestamp), $result);
+    }
+
     // -------------------------------------------------------------------------
     // parse_date_format
     // -------------------------------------------------------------------------

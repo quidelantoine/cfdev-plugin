@@ -69,6 +69,12 @@ class Date extends Field
         if (is_array($value)) {
             return array_map(fn($v) => $this->saveValue(is_string($v) ? $v : ''), $value);
         }
+        $format = $this->args['date_format'] ?? 'm/d/Y';
+        $date   = \DateTime::createFromFormat($format, (string) $value);
+        if ($date !== false) {
+            $date->setTime(0, 0, 0);
+            return (string) $date->getTimestamp();
+        }
         $timestamp = strtotime($value);
         return $timestamp !== false ? (string) $timestamp : '';
     }

@@ -3,7 +3,18 @@
 
 # Plus tard mais important
 Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
-- Format de date par défaut (`m/d/Y` vs `d/m/Y`): Dans les trois field de date et Time Et datetime reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ??? c'est quoi le probleme entre version de format fr ou en , que me propose tu ic , ne fais rien on echange avant
+- 
+#### ICIC CIC I
+OK - Format de date par défaut (`m/d/Y` vs `d/m/Y`): Dans les trois field de date et Time Et datetime reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ??? c'est quoi le probleme entre version de format fr ou en , que me propose tu ic , ne fais rien on echange avant
+A faire => relancer les tests 
+- de la docs ?? 
+  ⎿ Quelle langue veux-tu pour la documentation ? → FR + EN (les deux)
+  · Quel est le périmètre ? → Date / Time / Datetime uniquement
+  -> faire git diff pour voir les changements
+- push
+#### ICIC CIC I
+est ce que si recuperation d'une image on retrouve quand meme id de l'image dans le tableau php ???
+
 # Traduction
 => Utiliser plugins traduction loco translate pour générer fichier .mo et .po
 allemand, espagnol, chinois
@@ -16,13 +27,7 @@ TEsts sur les champs => couverture complete ???
 
 - admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
 - Nettoyage automatique en base si un nom de champ est modifié
-####################################"
-=> covergae des tests est ok ?  Pourcentage ??? afficher sur le read_me ??? 
 
-0% sur les classes ??? 
-##############################################
-
-5. Mettre a jour les nombres dans les badges dans readme.md
 
 => revoir le fichiers devops manuellement !!!! 
 

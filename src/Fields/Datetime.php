@@ -57,10 +57,9 @@ class Datetime extends Field
         }
 
         // 2. Détermine le format.
-        $format = 'm/d/Y H:i';
-        if (isset($this->args['date_format'], $this->args['time_format'])) {
-            $format = trim($this->args['date_format'] . ' ' . $this->args['time_format']);
-        }
+        $date_format = $this->args['date_format'] ?? 'm/d/Y';
+        $time_format = $this->args['time_format'] ?? 'H:i';
+        $format      = trim($date_format . ' ' . $time_format);
 
         // 3. Utilise gmdate() pour éviter les problèmes de fuseau horaire.
         return esc_attr(gmdate($format, (int) $value));
@@ -85,6 +84,16 @@ class Datetime extends Field
     {
         if (is_array($value)) {
             return array_map(fn($v) => $this->saveValue(is_string($v) ? $v : ''), $value);
+        }
+        $date_format = $this->args['date_format'] ?? 'm/d/Y';
+        $time_format = $this->args['time_format'] ?? 'H:i';
+        $combined = trim($date_format . ' ' . $time_format);
+        $date     = \DateTime::createFromFormat($combined, (string) $value);
+        if ($date !== false) {
+            if (strpos($combined, 's') === false) {
+                $date->setTime((int) $date->format('G'), (int) $date->format('i'), 0);
+            }
+            return (string) $date->getTimestamp();
         }
         $timestamp = strtotime($value);
         return $timestamp !== false ? (string) $timestamp : '';

@@ -166,33 +166,150 @@ Stored as: `string` | repeatable ❌ | ajax ❌ | bundle ✅
 
 ## Dates
 
-### `date`
-Date picker (jQuery UI). Stores a Unix timestamp.
+> All three date fields store a **Unix timestamp** (`string`).
+> For `date` and `datetime`, `date_format` controls both the **display** in the picker
+> and the **parsing** on save — they must be consistent.
 
+### `date`
+Date picker (jQuery UI). Stores a Unix timestamp (midnight UTC).
+
+**Minimal — US default (`m/d/Y`)**
 ```php
-['id' => 'event_date', 'type' => 'date', 'label' => 'Date', 'args' => ['date_format' => 'd/m/Y']]
+['id' => 'event_date', 'type' => 'date', 'label' => 'Event Date']
+// displays / parses: 06/15/2024
 ```
-`args`: `date_format` (PHP format, default `'m/d/Y'`). Stored as: Unix timestamp `string` | repeatable ✅ | bundle ✅
+
+**European format (`d/m/Y`)**
+```php
+['id' => 'event_date', 'type' => 'date', 'label' => 'Event Date', 'args' => [
+    'date_format' => 'd/m/Y',
+]]
+// displays / parses: 15/06/2024
+```
+
+**ISO 8601 (`Y-m-d`)**
+```php
+['id' => 'event_date', 'type' => 'date', 'label' => 'Event Date', 'args' => [
+    'date_format' => 'Y-m-d',
+]]
+// displays / parses: 2024-06-15
+```
+
+**Dot separator (`d.m.Y`)**
+```php
+['id' => 'event_date', 'type' => 'date', 'label' => 'Event Date', 'args' => [
+    'date_format' => 'd.m.Y',
+]]
+// displays / parses: 15.06.2024
+```
+
+| Arg | Default | Description |
+|---|---|---|
+| `date_format` | `'m/d/Y'` | PHP format — controls both display **and** parsing on save |
+
+**Reading the value:**
+```php
+$ts = (int) get_post_meta($post_id, 'event_date', true);
+echo date('d/m/Y', $ts); // 15/06/2024  (free format on the read side)
+```
+
+Stored as: Unix timestamp `string` | repeatable ✅ | ajax ✅ | bundle ✅
 
 ---
 
 ### `time`
 Time picker. Stores a Unix timestamp.
 
+**24h — default (`H:i`)**
 ```php
-['id' => 'start_time', 'type' => 'time', 'label' => 'Start Time', 'args' => ['time_format' => 'H:i']]
+['id' => 'start_time', 'type' => 'time', 'label' => 'Start Time']
+// displays / parses: 14:30
 ```
+
+**24h with seconds (`H:i:s`)**
+```php
+['id' => 'start_time', 'type' => 'time', 'label' => 'Start Time', 'args' => [
+    'time_format' => 'H:i:s',
+]]
+// displays / parses: 14:30:00
+```
+
+**12h AM/PM (`h:i a`)**
+```php
+['id' => 'start_time', 'type' => 'time', 'label' => 'Start Time', 'args' => [
+    'time_format' => 'h:i a',
+]]
+// displays / parses: 02:30 pm
+```
+
+| Arg | Default | Description |
+|---|---|---|
+| `time_format` | `'H:i'` | PHP format for the picker display and field value |
+
+> **Note:** The `time` field uses `strtotime()` to parse the value on save.
+> Standard formats (`H:i`, `H:i:s`, `h:i a`) are all recognized.
+
+**Reading the value:**
+```php
+$ts = (int) get_post_meta($post_id, 'start_time', true);
+echo date('H:i', $ts); // 14:30
+```
+
+Stored as: Unix timestamp `string` | repeatable ✅ | ajax ✅ | bundle ✅
 
 ---
 
 ### `datetime`
 Combined date + time picker. Stores a Unix timestamp.
 
+**Minimal — defaults (`m/d/Y H:i`)**
+```php
+['id' => 'published_at', 'type' => 'datetime', 'label' => 'Published At']
+// displays / parses: 06/15/2024 14:30
+```
+
+**European date + 24h time**
 ```php
 ['id' => 'published_at', 'type' => 'datetime', 'label' => 'Published At', 'args' => [
-    'date_format' => 'd/m/Y', 'time_format' => 'H:i',
+    'date_format' => 'd/m/Y',
+    'time_format' => 'H:i',
 ]]
+// displays / parses: 15/06/2024 14:30
 ```
+
+**ISO date + time with seconds**
+```php
+['id' => 'published_at', 'type' => 'datetime', 'label' => 'Published At', 'args' => [
+    'date_format' => 'Y-m-d',
+    'time_format' => 'H:i:s',
+]]
+// displays / parses: 2024-06-15 14:30:00
+```
+
+**Override date format only (time keeps its default)**
+```php
+['id' => 'published_at', 'type' => 'datetime', 'label' => 'Published At', 'args' => [
+    'date_format' => 'd/m/Y',
+    // time_format → defaults to 'H:i'
+]]
+// displays / parses: 15/06/2024 14:30
+```
+
+| Arg | Default | Description |
+|---|---|---|
+| `date_format` | `'m/d/Y'` | PHP format for the date portion |
+| `time_format` | `'H:i'` | PHP format for the time portion |
+
+> **Note:** If `time_format` does not include seconds (`s`), they are forced to `00` on save.
+> Each arg is independent — you can change one without affecting the other.
+
+**Reading the value:**
+```php
+$ts = (int) get_post_meta($post_id, 'published_at', true);
+echo date('d/m/Y H:i', $ts); // 15/06/2024 14:30
+```
+
+Stored as: Unix timestamp `string` | repeatable ✅ | ajax ✅ | bundle ✅
 
 ---
 

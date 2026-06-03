@@ -2,6 +2,7 @@
 
 namespace Weblitzer\CFDev\Tests\Unit\Fields;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Weblitzer\CFDev\Fields\Date;
 use Weblitzer\CFDev\Tests\Unit\CFDevTestCase;
 use Brain\Monkey\Functions;
@@ -228,6 +229,56 @@ class DateTest extends CFDevTestCase
         $field = $this->makeField();
         $result = $field->saveValue('01/01/2024');
         $this->assertIsNumeric($result);
+    }
+
+    public function testSaveValueRespectsDmyFormat(): void
+    {
+        $field  = $this->makeField(['args' => ['date_format' => 'd/m/Y']]);
+        $result = $field->saveValue('15/03/2024');
+        $this->assertEquals(strtotime('03/15/2024'), $result);
+    }
+
+    public function testSaveValueReturnsEmptyOnGibberish(): void
+    {
+        $field  = $this->makeField();
+        $result = $field->saveValue('not-a-date');
+        $this->assertSame('', $result);
+    }
+
+    public function testSaveValueStoresMidnightTimestamp(): void
+    {
+        $field     = $this->makeField();
+        $result    = (int) $field->saveValue('06/15/2024');
+        $midnight  = (int) strtotime('06/15/2024');
+        $this->assertSame($midnight, $result);
+    }
+
+    /** @return array<string, array{string, string, int}> */
+    public static function saveFormatProvider(): array
+    {
+        return [
+            'm/d/Y default'  => ['m/d/Y', '06/15/2024', (int) strtotime('06/15/2024')],
+            'd/m/Y european' => ['d/m/Y', '15/06/2024', (int) strtotime('06/15/2024')],
+            'Y-m-d ISO'      => ['Y-m-d', '2024-06-15', (int) strtotime('06/15/2024')],
+        ];
+    }
+
+    #[DataProvider('saveFormatProvider')]
+    public function testSaveValueFormats(string $format, string $input, int $expected): void
+    {
+        $field  = $this->makeField(['args' => ['date_format' => $format]]);
+        $result = (int) $field->saveValue($input);
+        $this->assertSame($expected, $result);
+    }
+
+    public function testSaveValueArrayMapsEachElement(): void
+    {
+        $field  = $this->makeField();
+        $result = $field->saveValue(['06/15/2024', '01/01/2024']);
+        $this->assertIsArray($result);
+        $this->assertCount(2, $result);
+        $this->assertIsNumeric($result[0]);
+        $this->assertIsNumeric($result[1]);
     }
 
     // -------------------------------------------------------------------------

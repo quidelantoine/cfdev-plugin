@@ -1,4 +1,4 @@
-quand il configure lerurs champ et meta ?# Types de champs
+# Types de champs
 
 [← README](../../readme.md) · [English](../en/fields.md)
 
@@ -166,33 +166,150 @@ Stocké comme : `string` | répétable ❌ | ajax ❌ | bundle ✅
 
 ## Dates
 
-### `date`
-Sélecteur de date (jQuery UI). Stocke un timestamp Unix.
+> Les trois champs de date stockent tous une **valeur Unix timestamp** (`string`).
+> Pour `date` et `datetime`, le `date_format` contrôle à la fois l'**affichage** dans le picker
+> et le **parsing** lors de la sauvegarde — ils doivent donc être cohérents.
 
+### `date`
+Sélecteur de date (jQuery UI). Stocke un timestamp Unix (minuit UTC).
+
+**Minimal — format US par défaut (`m/d/Y`)**
 ```php
-['id' => 'event_date', 'type' => 'date', 'label' => 'Date', 'args' => ['date_format' => 'd/m/Y']]
+['id' => 'event_date', 'type' => 'date', 'label' => 'Date de l\'événement']
+// affiche / parse : 06/15/2024
 ```
-`args` : `date_format` (format PHP, défaut `'m/d/Y'`). Stocké comme : timestamp Unix `string` | répétable ✅ | bundle ✅
+
+**Format européen (`d/m/Y`)**
+```php
+['id' => 'event_date', 'type' => 'date', 'label' => 'Date de l\'événement', 'args' => [
+    'date_format' => 'd/m/Y',
+]]
+// affiche / parse : 15/06/2024
+```
+
+**Format ISO 8601 (`Y-m-d`)**
+```php
+['id' => 'event_date', 'type' => 'date', 'label' => 'Date de l\'événement', 'args' => [
+    'date_format' => 'Y-m-d',
+]]
+// affiche / parse : 2024-06-15
+```
+
+**Format avec séparateur point (`d.m.Y`)**
+```php
+['id' => 'event_date', 'type' => 'date', 'label' => 'Date de l\'événement', 'args' => [
+    'date_format' => 'd.m.Y',
+]]
+// affiche / parse : 15.06.2024
+```
+
+| Arg | Défaut | Description |
+|---|---|---|
+| `date_format` | `'m/d/Y'` | Format PHP — contrôle l'affichage **et** le parsing à la sauvegarde |
+
+**Lire la valeur :**
+```php
+$ts = (int) get_post_meta($post_id, 'event_date', true);
+echo date('d/m/Y', $ts); // 15/06/2024  (format libre côté lecture)
+```
+
+Stocké comme : timestamp Unix `string` | répétable ✅ | ajax ✅ | bundle ✅
 
 ---
 
 ### `time`
 Sélecteur d'heure. Stocke un timestamp Unix.
 
+**24h — défaut (`H:i`)**
 ```php
-['id' => 'start_time', 'type' => 'time', 'label' => 'Heure de début', 'args' => ['time_format' => 'H:i']]
+['id' => 'start_time', 'type' => 'time', 'label' => 'Heure de début']
+// affiche / parse : 14:30
 ```
+
+**24h avec secondes (`H:i:s`)**
+```php
+['id' => 'start_time', 'type' => 'time', 'label' => 'Heure de début', 'args' => [
+    'time_format' => 'H:i:s',
+]]
+// affiche / parse : 14:30:00
+```
+
+**12h AM/PM (`h:i a`)**
+```php
+['id' => 'start_time', 'type' => 'time', 'label' => 'Heure de début', 'args' => [
+    'time_format' => 'h:i a',
+]]
+// affiche / parse : 02:30 pm
+```
+
+| Arg | Défaut | Description |
+|---|---|---|
+| `time_format` | `'H:i'` | Format PHP pour l'affichage dans le picker et la valeur du champ |
+
+> **Note :** Le champ `time` utilise `strtotime()` pour parser la valeur à la sauvegarde.
+> Les formats standards (`H:i`, `H:i:s`, `h:i a`) sont tous reconnus.
+
+**Lire la valeur :**
+```php
+$ts = (int) get_post_meta($post_id, 'start_time', true);
+echo date('H:i', $ts); // 14:30
+```
+
+Stocké comme : timestamp Unix `string` | répétable ✅ | ajax ✅ | bundle ✅
 
 ---
 
 ### `datetime`
-Sélecteur de date + heure combiné. Stocke un timestamp Unix.
+Sélecteur date + heure combiné. Stocke un timestamp Unix.
 
+**Minimal — défauts (`m/d/Y H:i`)**
+```php
+['id' => 'published_at', 'type' => 'datetime', 'label' => 'Publié le']
+// affiche / parse : 06/15/2024 14:30
+```
+
+**Date européenne + heure 24h**
 ```php
 ['id' => 'published_at', 'type' => 'datetime', 'label' => 'Publié le', 'args' => [
-    'date_format' => 'd/m/Y', 'time_format' => 'H:i',
+    'date_format' => 'd/m/Y',
+    'time_format' => 'H:i',
 ]]
+// affiche / parse : 15/06/2024 14:30
 ```
+
+**Date ISO + heure avec secondes**
+```php
+['id' => 'published_at', 'type' => 'datetime', 'label' => 'Publié le', 'args' => [
+    'date_format' => 'Y-m-d',
+    'time_format' => 'H:i:s',
+]]
+// affiche / parse : 2024-06-15 14:30:00
+```
+
+**Overrider uniquement le format date (heure garde son défaut)**
+```php
+['id' => 'published_at', 'type' => 'datetime', 'label' => 'Publié le', 'args' => [
+    'date_format' => 'd/m/Y',
+    // time_format → défaut 'H:i'
+]]
+// affiche / parse : 15/06/2024 14:30
+```
+
+| Arg | Défaut | Description |
+|---|---|---|
+| `date_format` | `'m/d/Y'` | Format PHP de la partie date |
+| `time_format` | `'H:i'` | Format PHP de la partie heure |
+
+> **Note :** Si `time_format` n'inclut pas les secondes (`s`), elles sont forcées à `00` à la sauvegarde.
+> Chaque arg est indépendant : on peut changer l'un sans toucher à l'autre.
+
+**Lire la valeur :**
+```php
+$ts = (int) get_post_meta($post_id, 'published_at', true);
+echo date('d/m/Y H:i', $ts); // 15/06/2024 14:30
+```
+
+Stocké comme : timestamp Unix `string` | répétable ✅ | ajax ✅ | bundle ✅
 
 ---
 

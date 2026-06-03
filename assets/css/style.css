@@ -409,6 +409,9 @@ a.cfdev-logo:focus { opacity: .8; color: #fff; }
     font-size: 11px; background: #fff8e5; color: #7a5c00;
     border: 1px solid #f5e07a; padding: 1px 8px; border-radius: var(--cfdev-radius);
 }
+.cfdev-condition-badge--fn {
+    background: #f0f4ff; color: #2d4ea0; border-color: #b3c6f5;
+}
 
 .cfdev-field-count { margin-left: auto; font-size: 12px; color: var(--cfdev-wp-text-3); }
 
@@ -516,6 +519,12 @@ a.cfdev-logo:focus { opacity: .8; color: #fff; }
 .cfdev-rest-toggles .cfdev-cache-option { margin-bottom: 0; border-radius: 0; border-bottom-width: 0; }
 .cfdev-rest-toggles .cfdev-cache-option:first-child { border-radius: var(--cfdev-radius-md) var(--cfdev-radius-md) 0 0; }
 .cfdev-rest-toggles .cfdev-cache-option:last-child  { border-radius: 0 0 4px 4px; border-bottom-width: 1px; }
+
+.cfdev-export-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    margin: 12px 0 16px;
+}
+.cfdev-export-toolbar form { margin: 0; }
 
 .cfdev-cache-toolbar {
     display: flex; align-items: center; gap: 16px;

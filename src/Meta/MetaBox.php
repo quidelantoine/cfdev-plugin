@@ -26,6 +26,10 @@ class MetaBox extends Meta
 
     public ?int $only_for_id = null;
     public ?string $only_for_template = null;
+    /** @var list<callable(\WP_Post): bool> */
+    public array $only_when = [];
+    /** @var list<string> */
+    public array $only_when_labels = [];
 
     protected function metaType(): string
     {
@@ -104,6 +108,20 @@ class MetaBox extends Meta
     }
 
     /**
+     * Add a custom display/save condition. Receives the WP_Post and must return bool.
+     * Multiple calls are ANDed. Applies to display, save, and REST output.
+     * The optional $label is shown as a badge in the Dashboard and REST admin pages.
+     *
+     * @param callable(\WP_Post): bool $fn
+     */
+    public function onlyWhen(callable $fn, string $label = ''): static
+    {
+        $this->only_when[]        = $fn;
+        $this->only_when_labels[] = $label;
+        return $this;
+    }
+
+    /**
      * Strips conditioned REST fields from responses where the post does not match
      * the onlyForId / onlyForTemplate condition.
      *
@@ -113,20 +131,13 @@ class MetaBox extends Meta
      */
     protected function addRestConditionFilter(string $object_type, string $subtype, array $field_ids): void
     {
-        if ($this->only_for_id === null && $this->only_for_template === null) {
+        if ($this->only_for_id === null && $this->only_for_template === null && empty($this->only_when)) {
             return;
         }
         add_filter(
             'rest_prepare_' . $subtype,
             function (\WP_REST_Response $response, \WP_Post $post) use ($field_ids): \WP_REST_Response {
-                $matches = true;
-                if ($this->only_for_id !== null && $post->ID !== $this->only_for_id) {
-                    $matches = false;
-                }
-                if ($matches && $this->only_for_template !== null) {
-                    $matches = get_page_template_slug($post->ID) === $this->only_for_template;
-                }
-                if (! $matches) {
+                if (! $this->matchesConditions($post)) {
                     $meta = $response->data['meta'] ?? [];
                     foreach ($field_ids as $id) {
                         unset($meta[$id]);
@@ -181,6 +192,11 @@ class MetaBox extends Meta
         if ($this->only_for_template !== null && get_page_template_slug($post->ID) !== $this->only_for_template) {
             return false;
         }
+        foreach ($this->only_when as $fn) {
+            if (! $fn($post)) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -208,14 +224,12 @@ class MetaBox extends Meta
             return;
         }
 
-        // Respect post ID condition
-        if ($this->only_for_id !== null && $post_id !== $this->only_for_id) {
-            return;
-        }
-
-        // Respect template condition
-        if ($this->only_for_template !== null && get_page_template_slug($post_id) !== $this->only_for_template) {
-            return;
+        // Respect location conditions (id, template, onlyWhen callables)
+        if ($this->only_for_id !== null || $this->only_for_template !== null || !empty($this->only_when)) {
+            $post = get_post($post_id);
+            if (! ($post instanceof \WP_Post) || ! $this->matchesConditions($post)) {
+                return;
+            }
         }
 
         // Is the current user capable to edit this post

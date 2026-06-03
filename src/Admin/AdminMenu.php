@@ -15,6 +15,7 @@ final class AdminMenu
     {
         add_action('admin_menu', [self::class, 'build']);
         add_action('admin_notices', [self::class, 'noticeClassicEditor']);
+        \Weblitzer\CFDev\Admin\Export\ExportHandler::register();
     }
 
     /**

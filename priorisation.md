@@ -1,21 +1,5 @@
 # Priorisation des tâches — CFDev
 ---
-
-# Plus tard mais important
-Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
-==========
-=> Utiliser plugins traduction loco translate pour générer fichier .mo et .po
-allemand, espagnol, chinois
-=> ajouter à la docs
-| 15 | **i18n** — `__('')` en anglais + `.mo`/`.po` (FR, DE, ES, ZH) | — |
-
-=> doc dans toutes les langues ?? 
-===============
-
-=> dans cfdev-plgins ajouter une description ++ et autre si possible ??
-
-- Export JSON/PHP des définitions de champs
-
 # Parcours complet WP
 dev  →  git tag v1.0.0  →  GitHub Actions  →  Release ZIP
 →  WordPress.org SVN (quand prêt)
@@ -27,16 +11,20 @@ Prérequis WP.org :
 - Review manuelle ~2 semaines
   Le workflow WP.org peut être ajouté plus tard quand tu es prêt à soumettre.
   trouver un logo ++ perso ????
-
 ## Améliorations Futurs
 1. **Conditional logic** (gros chantier JS + PHP) **Conditional logic** — afficher/masquer un champ selon la valeur d'un autre. C'est la feature la plus demandée dans tous les plugins de champs. Sans ça, le UX admin est limité.
-5. **Règles de localisation plus riches** — CFDev a `onlyForTemplate()` mais ACF permet : par rôle utilisateur, par auteur, par valeur de champ existant, par statut de post.
-8. Champs `password`, `oembed`, `button_group`, `page_link` — niche mais parfois nécessaires.
-9. Export JSON/PHP des définitions — snapshot portable.
-10. Formulaires frontend — rendre les champs hors admin.
+2. Champs `password`, `oembed`, `button_group`, `page_link` — niche mais parfois nécessaires.
+3. Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
 # CI reste SonarQube
-# test de release 1.0.6 ?
+# test de release 1.0.7 sur nouvelle installation ++ et tester le pluging +++ 
 # A REFAIRE
+=> Mettre a jour valeur des badges
+=> Docs en adéquations avec le code ??
 => duplicate code ????, interface ajouter ? architecture is ok ??? A refaire +++
 => Tous les champs sont tester , unitaire, integration et fonctionnel ??? a reposer encore, meme sur partie non field admin par exemple !!!
 => Audit sécurité
+
+# En cours +++
+
+Verifier les tests ,1.0.7 , pensez a changer aussi dans le code de CFDev,  push, et tag for new release 
+

@@ -226,3 +226,15 @@ $postType->addMetaBox('cfdev_demo_bundle', '[DEMO] Bundle', [
     ]),
     ['rest' => true]
 ]);
+
+
+// ── [DEMO] Exemples de conditions avec label ─────────────────────────────────
+// onlyWhen avec label — visible uniquement pour les brouillons (pas sur post-new auto-draft)
+$postType->addMetaBox('cfdev_demo_cond_draft', '[DEMO] Champs brouillon', [
+    ['id' => '_demo_cond_draft_note', 'type' => 'textarea', 'label' => 'Note de brouillon'],
+])->onlyWhen(fn(\WP_Post $p) => $p->post_status === 'draft', 'Brouillon uniquement');
+
+// onlyWhen avec label — visible uniquement pour les administrateurs
+$postType->addMetaBox('cfdev_demo_cond_admin', '[DEMO] Champs admin', [
+    ['id' => '_demo_cond_admin_note', 'type' => 'text', 'label' => 'Note interne admin'],
+])->onlyWhen(fn(\WP_Post $p) => current_user_can('manage_options'), 'Admins uniquement');

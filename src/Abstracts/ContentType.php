@@ -124,6 +124,17 @@ abstract class ContentType implements Registerable, Supportable, HasMetaBox
         return $this;
     }
 
+    /**
+     * Add a custom condition to the last registered meta box.
+     * Must be called immediately after addMetaBox().
+     *
+     * @param callable(\WP_Post): bool $fn
+     */
+    public function onlyWhen(callable $fn, string $label = ''): static
+    {
+        $this->lastMetaBox?->onlyWhen($fn, $label);
+        return $this;
+    }
 
     /**
      * Adds support for one or more post type features

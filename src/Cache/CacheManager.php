@@ -174,6 +174,15 @@ final class CacheManager
             if (isset($cond['template']) && get_page_template_slug($post_id) !== $cond['template']) {
                 continue;
             }
+            if (isset($cond['callable_conditions'])) {
+                $fns      = Registry::callableConditionsFor($entry['id']);
+                $post_obj = $fns ? get_post($post_id) : null;
+                foreach ($fns as $fn) {
+                    if (! ($post_obj instanceof \WP_Post) || ! $fn($post_obj)) {
+                        continue 2;
+                    }
+                }
+            }
 
             $resolved             = $this->resolveEntry($entry, $post_id, 'post');
             $groups[$entry['id']] = isset($groups[$entry['id']])
@@ -198,6 +207,9 @@ final class CacheManager
             }
 
             $cond = $entry['conditions'] ?? [];
+            if (isset($cond['term_id']) && (int) $cond['term_id'] !== $term_id) {
+                continue;
+            }
             if (isset($cond['parent_id'])) {
                 $term = get_term($term_id, $taxonomy);
                 if (! $term instanceof \WP_Term || (int) $term->parent !== (int) $cond['parent_id']) {

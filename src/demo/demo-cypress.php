@@ -62,6 +62,17 @@ $postType->addMetaBox('cfdev_cypress_accordion', '[CYPRESS] Accordéon', [
     ],
 ]);
 
+// ── [CYPRESS] onlyWhen conditions ────────────────────────────────────────────
+// cfdev_cypress_cond_admin  — condition passes (Cypress logs in as admin)
+// cfdev_cypress_cond_pending — condition fails  (post is never 'pending' in normal test flow)
+$postType->addMetaBox('cfdev_cypress_cond_admin', '[CYPRESS] onlyWhen (admin)', [
+    ['id' => '_cond_admin_text', 'type' => 'text', 'label' => 'Admin only'],
+])->onlyWhen(fn(\WP_Post $p) => current_user_can('manage_options'), 'Admins uniquement');
+
+$postType->addMetaBox('cfdev_cypress_cond_pending', '[CYPRESS] onlyWhen (pending)', [
+    ['id' => '_cond_pending_text', 'type' => 'text', 'label' => 'Pending only'],
+])->onlyWhen(fn(\WP_Post $p) => $p->post_status === 'pending', 'Statut : pending');
+
 // ── [CYPRESS] Repeatable fields on post ──────────────────────────────────────
 // Field IDs: _rep_text, _rep_number, _rep_email, _rep_select
 // POST names: cfdev[_rep_text][], cfdev[_rep_number][], …

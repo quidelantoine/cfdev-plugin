@@ -103,12 +103,40 @@ register_cfdev_taxonomy('product_cat', 'product')
 
 > On the Add term form, CFDev reads the parent from `$_GET['parent']` when present.
 > In REST responses, fields from this group are stripped for terms whose parent does not match.
+>
+> **Where to see it in admin:** create or edit a direct child of the parent term (ID 12 in the example). The group is always visible in the CFDev Dashboard with its `Parent : 12 — Term name` badge.
 
 ---
 
-## 6. Layouts
+## 6. Single-term restriction — `onlyForId()`
 
-### 6.1 Flat fields
+Limit fields to **one specific term**. Useful for a "featured" or "homepage" category that has unique extra fields no other term needs.
+
+```php
+// Via taxonomy chain
+register_cfdev_taxonomy('category', 'post')
+    ->addTermMeta([
+        ['id' => 'featured_color',  'type' => 'color', 'label' => 'Featured color'],
+        ['id' => 'featured_banner', 'type' => 'image', 'label' => 'Banner image'],
+    ])
+    ->onlyForId(7); // only for the "Featured" category (term ID 7)
+
+// Via direct instantiation
+(new TermMeta('category', 'Homepage category fields', $fields))
+    ->onlyForId(7);
+```
+
+> The Add term form is always hidden — the term ID does not exist before the term is saved.
+> In REST responses, fields are stripped for all terms except the one with this ID.
+> Combine with `onlyIfParent()` if needed — both conditions must pass.
+>
+> **Where to see it in admin:** navigate to the taxonomy list, then click **Edit** on the specific term (ID 7 in the example). The group is always visible in the CFDev Dashboard with its `ID : 7 — Term name` badge, regardless of which term you are currently editing.
+
+---
+
+## 7. Layouts
+
+### 7.1 Flat fields
 
 ```php
 new TermMeta('category', 'Category Meta', [
@@ -119,7 +147,7 @@ new TermMeta('category', 'Category Meta', [
 ]);
 ```
 
-### 6.2 Bundle — repeatable rows
+### 7.2 Bundle — repeatable rows
 
 ```php
 new TermMeta('category', 'Gallery', [
@@ -132,7 +160,7 @@ new TermMeta('category', 'Gallery', [
 ]);
 ```
 
-### 6.3 Tabs
+### 7.3 Tabs
 
 Tab labels are the array keys:
 
@@ -153,7 +181,7 @@ new TermMeta('category', 'Category Fields', [
 ]);
 ```
 
-### 6.4 Accordion
+### 7.4 Accordion
 
 Same structure as Tabs, displayed as collapsible sections:
 
@@ -172,7 +200,7 @@ new TermMeta('category', 'Category Fields', [
 ]);
 ```
 
-### 6.5 Bundle inside an Accordion section
+### 7.5 Bundle inside an Accordion section
 
 ```php
 new TermMeta('category', 'Category Fields', [
@@ -194,7 +222,7 @@ new TermMeta('category', 'Category Fields', [
 
 ---
 
-## 7. Reading term meta
+## 8. Reading term meta
 
 ### Without cache — direct meta
 
@@ -248,7 +276,7 @@ foreach ($photos as $photo) {
 
 ---
 
-## 8. REST API
+## 9. REST API
 
 Mark individual fields or entire bundles as REST-exposed with `'rest' => true`:
 
@@ -283,7 +311,7 @@ GET /wp-json/cfdev/v1/term/category/{id}
 
 ---
 
-## 9. Admin columns
+## 10. Admin columns
 
 Show a term meta value as a column in the taxonomy term list:
 

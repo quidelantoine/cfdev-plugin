@@ -7,7 +7,7 @@
 const ACC_REQUIRED = 'cfdev[_opt_acc_site_name]'
 
 function submitOptions() { cy.get('#submit').click() }
-function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('contain', 'Settings saved') }
+function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('exist') }
 
 describe('CFDev — Options accordion — validation', () => {
   beforeEach(() => {

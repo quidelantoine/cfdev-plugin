@@ -181,6 +181,8 @@ jobs:
           - { group: "16-options", spec: "cypress/e2e/16[a-h]-options-*.cy.js" }
           # Groupe F — repeatable fields (add, remove, save, order, bundle)
           - { group: "17", spec: "cypress/e2e/17-repeatable.cy.js" }
+          # Groupe G — onlyWhen() conditions (display, save, dashboard badge)
+          - { group: "18", spec: "cypress/e2e/18-conditions.cy.js" }
 
     steps:
       - uses: actions/checkout@v4

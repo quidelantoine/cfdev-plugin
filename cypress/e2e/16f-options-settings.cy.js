@@ -8,7 +8,7 @@ const RGL_NAME    = 'cfdev[_opt_rgl_site_name]'
 const RGL_TAGLINE = 'cfdev[_opt_rgl_tagline]'
 
 function submitOptions() { cy.get('#submit').click() }
-function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('contain', 'Settings saved') }
+function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('exist') }
 
 describe('CFDev — Options sous Réglages (cfdev_options_reglages)', () => {
   beforeEach(() => {

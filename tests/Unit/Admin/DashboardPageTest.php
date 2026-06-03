@@ -23,8 +23,13 @@ class DashboardPageTest extends CFDevTestCase
         Functions\when('esc_html_e')->returnArg(1);
         Functions\when('get_post_type_object')->justReturn(null);
         Functions\when('wp_create_nonce')->justReturn('test-nonce');
+        Functions\when('wp_nonce_field')->justReturn('');
+        Functions\when('esc_attr')->returnArg(1);
+        Functions\when('esc_url')->returnArg(1);
         Functions\when('admin_url')->justReturn('https://example.com/wp-admin/admin-ajax.php');
         Functions\when('wp_json_encode')->alias('json_encode');
+        Functions\when('get_the_title')->justReturn('');
+        Functions\when('get_term')->justReturn(null);
     }
 
     private function captureRender(): string

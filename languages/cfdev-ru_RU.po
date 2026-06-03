@@ -864,3 +864,8 @@ msgstr "⊞ Просмотр полей"
 #: src/Admin/DashboardPage.php:353
 msgid "⚙ Inspect"
 msgstr "⚙ Инспектировать"
+msgid "Export JSON"
+msgstr "\u042d\u043a\u0441\u043f\u043e\u0440\u0442 JSON"
+
+msgid "Export PHP"
+msgstr "\u042d\u043a\u0441\u043f\u043e\u0440\u0442 PHP"

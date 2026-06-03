@@ -66,6 +66,77 @@ When duplicates are found:
 
 ---
 
+## Export field definitions
+
+Two buttons appear below the Dashboard header:
+
+| Button | Output |
+|---|---|
+| **Export JSON** | `.json` file — machine-readable, suitable for tools, documentation or migrations |
+| **Export PHP** | `.php` file — PHP array with `return [...]`, ready to paste into `cfdev-fields.php` |
+
+The filename is timestamped automatically: `cfdev-export-YYYYMMDD-HHmmss.json`.
+
+### JSON structure
+
+```json
+{
+  "version": "1.0.6",
+  "exported_at": "2026-06-03T14:30:00+00:00",
+  "groups": [
+    {
+      "id": "product_info",
+      "title": "Product Info",
+      "meta_type": "post",
+      "targets": ["product"],
+      "layout": "flat",
+      "fields": [
+        { "id": "price", "type": "number", "label": "Price", "required": true, "args": { "min": 0 } },
+        { "id": "photo", "type": "image",  "label": "Photo" }
+      ]
+    }
+  ]
+}
+```
+
+Only non-default properties are included per field (`required`, `repeatable`, `ajax`, `rest`, `args`, `options`, `description`, `default_value`). A field with no extras only shows `id`, `type`, `label`.
+
+Groups with bundles include a `bundles` key:
+
+```json
+"bundles": {
+  "_specs": [
+    { "id": "material", "type": "text", "label": "Material" }
+  ]
+}
+```
+
+### PHP structure
+
+```php
+<?php
+// CFDev — Field definitions export
+// Generated : 2026-06-03 14:30:00
+
+return [
+    [
+        'id'        => 'product_info',
+        'title'     => 'Product Info',
+        'meta_type' => 'post',
+        'targets'   => ['product'],
+        'layout'    => 'flat',
+        'fields'    => [
+            ['id' => 'price', 'type' => 'number', 'label' => 'Price', 'required' => true],
+            ['id' => 'photo', 'type' => 'image',  'label' => 'Photo'],
+        ],
+    ],
+];
+```
+
+> The PHP export is a **data snapshot**, not executable `register_cfdev_*` code. Use it to document a project, copy field definitions to another site, or as a starting point for a migration.
+
+---
+
 ## The Inspector — developer tool
 
 The **⚙ Inspect** button on each group opens a dark modal showing the live data for a chosen object, straight from the admin.

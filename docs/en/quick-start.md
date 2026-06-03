@@ -254,6 +254,48 @@ Fields appear only on one specific page — useful for a unique contact page, ab
 
 > The ID must match the post's database ID (visible in the URL when editing: `post=42`).
 
+### Custom condition with `onlyWhen()`
+
+For any condition that `onlyForTemplate()` and `onlyForId()` can't express, use `onlyWhen()`.
+It receives the `WP_Post` object and must return `bool`. Multiple calls are **ANDed**.
+
+The condition applies to **display**, **save**, and **REST output** — if the callable returns `false`, the meta box is hidden, the fields are not saved, and the values are stripped from REST responses.
+
+```php
+// Visible only for administrators
+// The second argument is an optional label shown as a badge in the Dashboard
+(new PostType('page'))
+    ->addMetaBox('admin_notes', 'Admin Notes', [
+        ['id' => 'internal_note', 'type' => 'textarea', 'label' => 'Internal note'],
+    ])
+    ->onlyWhen(fn(\WP_Post $p) => current_user_can('manage_options'), 'Admins only');
+
+// Visible only while the post is a draft
+(new PostType('post'))
+    ->addMetaBox('draft_tools', 'Draft Tools', [
+        ['id' => 'draft_checklist', 'type' => 'textarea', 'label' => 'Pre-publish checklist'],
+    ])
+    ->onlyWhen(fn(\WP_Post $p) => $p->post_status === 'draft');
+
+// Visible only when another meta field has a value
+(new PostType('product'))
+    ->addMetaBox('variant_details', 'Variant Details', [
+        ['id' => 'variant_sku', 'type' => 'text', 'label' => 'Variant SKU'],
+    ])
+    ->onlyWhen(fn(\WP_Post $p) => !empty(get_post_meta($p->ID, 'is_variable', true)));
+
+// Stack with onlyForTemplate — both conditions must pass
+(new PostType('page'))
+    ->addMetaBox('landing_admin', 'Landing (admin only)', [
+        ['id' => 'ab_variant', 'type' => 'select', 'label' => 'A/B variant',
+         'options' => ['a' => 'A', 'b' => 'B']],
+    ])
+    ->onlyForTemplate('template-landing.php')
+    ->onlyWhen(fn(\WP_Post $p) => current_user_can('manage_options'));
+```
+
+> **Context note:** the callable runs inside `add_meta_boxes` (display), `save_post` (save), and `rest_prepare_{type}` (REST). All three receive the current `WP_Post`, so reading `$p->post_status`, `$p->post_author`, or `get_post_meta()` is safe. Avoid reading `$_POST` inside the callable — use the post object instead.
+
 ### Pages with multiple layouts using Tabs
 
 ```php

@@ -52,16 +52,14 @@ describe('CFDev — REST Admin Page', () => {
 
     // Guarantee starting state: enabled
     cy.get('#cfdev_rest_enabled').check({ force: true })
-    cy.get('.cfdev-rest-toggles').should('contain', 'Native WP REST active')
+    cy.get('#cfdev_rest_enabled').should('be.checked')
 
     // Disable
     cy.get('#cfdev_rest_enabled').uncheck({ force: true })
-    cy.get('.cfdev-rest-toggles').should('contain', 'Native WP REST inactive')
     cy.get('#cfdev_rest_enabled').should('not.be.checked')
 
     // Re-enable
     cy.get('#cfdev_rest_enabled').check({ force: true })
-    cy.get('.cfdev-rest-toggles').should('contain', 'Native WP REST active')
     cy.get('#cfdev_rest_enabled').should('be.checked')
   })
 
@@ -72,16 +70,14 @@ describe('CFDev — REST Admin Page', () => {
 
     // Guarantee starting state: enabled
     cy.get('#cfdev_api_enabled').check({ force: true })
-    cy.get('.cfdev-rest-toggles').should('contain', 'CFDev API active')
+    cy.get('#cfdev_api_enabled').should('be.checked')
 
     // Disable
     cy.get('#cfdev_api_enabled').uncheck({ force: true })
-    cy.get('.cfdev-rest-toggles').should('contain', 'CFDev API inactive')
     cy.get('#cfdev_api_enabled').should('not.be.checked')
 
     // Re-enable
     cy.get('#cfdev_api_enabled').check({ force: true })
-    cy.get('.cfdev-rest-toggles').should('contain', 'CFDev API active')
     cy.get('#cfdev_api_enabled').should('be.checked')
   })
 

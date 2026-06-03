@@ -49,6 +49,22 @@ class Registry
     }
 
     /**
+     * Returns the onlyWhen callables for a MetaBox identified by its group ID.
+     * Used by CacheManager to evaluate conditions at runtime without storing closures in entries.
+     *
+     * @return list<callable(\WP_Post): bool>
+     */
+    public static function callableConditionsFor(string $group_id): array
+    {
+        foreach (self::$metas as $meta) {
+            if ($meta instanceof MetaBox && $meta->id === $group_id && ! empty($meta->only_when)) {
+                return $meta->only_when;
+            }
+        }
+        return [];
+    }
+
+    /**
      * Returns MetaBox IDs registered more than once for the same post type.
      *
      * Example: addMetaBox('product_info', ...) called twice for post type 'product'
@@ -370,6 +386,20 @@ class Registry
     }
 
     /**
+     * Returns all groups with full field details for export (JSON / PHP).
+     *
+     * Unlike all(), this method includes args, options, repeatable, ajax,
+     * rest, description and default_value on each field, and inlines bundle
+     * field lists directly.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function exportGroups(): array
+    {
+        return array_values(array_map([self::class, 'toExportEntry'], self::$metas));
+    }
+
+    /**
      * Clears all registered entries. Use in tests to prevent state bleed.
      */
     public static function reset(): void
@@ -450,14 +480,25 @@ class Registry
             if ($meta->only_for_template !== null) {
                 $conditions['template'] = $meta->only_for_template;
             }
+            if (! empty($meta->only_when)) {
+                $conditions['callable_conditions'] = array_map(
+                    fn(int $i): string => $meta->only_when_labels[$i] ?: 'fn()',
+                    array_keys($meta->only_when)
+                );
+            }
         }
 
         if ($meta instanceof UserMeta && ! empty($meta->only_for_roles)) {
             $conditions['roles'] = $meta->only_for_roles;
         }
 
-        if ($meta instanceof TermMeta && $meta->only_if_parent !== null) {
-            $conditions['parent_id'] = $meta->only_if_parent;
+        if ($meta instanceof TermMeta) {
+            if ($meta->only_for_id !== null) {
+                $conditions['term_id'] = $meta->only_for_id;
+            }
+            if ($meta->only_if_parent !== null) {
+                $conditions['parent_id'] = $meta->only_if_parent;
+            }
         }
 
         return $conditions;
@@ -614,6 +655,118 @@ class Registry
             'required' => $field->required,
             'rules'    => $rules,
         ];
+    }
+
+    // -------------------------------------------------------------------------
+    // Export helpers
+    // -------------------------------------------------------------------------
+
+    /** @return array<string, mixed> */
+    private static function toExportEntry(Meta $meta): array
+    {
+        [$meta_type, $targets] = self::resolveTypeAndTargets($meta);
+
+        // Top-level (non-bundle) fields
+        $fields = [];
+        foreach ($meta->fields as $field_id => $field) {
+            if ($field instanceof Heading || $field->in_bundle) {
+                continue;
+            }
+            $fields[] = array_merge(['id' => $field_id], self::exportFieldEntry($field));
+        }
+
+        $entry = [
+            'id'        => $meta->id,
+            'title'     => $meta->title ?: $meta->id,
+            'meta_type' => $meta_type,
+            'targets'   => $targets,
+            'layout'    => self::resolveLayout($meta),
+            'fields'    => $fields,
+        ];
+
+        $conditions = self::resolveConditions($meta);
+        if (! empty($conditions)) {
+            $entry['conditions'] = $conditions;
+        }
+
+        // Bundle field lists (flat bundle, or bundles inside tabs/accordion)
+        $bundles = self::exportBundles($meta);
+        if (! empty($bundles)) {
+            $entry['bundles'] = $bundles;
+        }
+
+        return $entry;
+    }
+
+    /**
+     * @return array<string, mixed>  Non-default properties only to keep output concise.
+     */
+    private static function exportFieldEntry(\Weblitzer\CFDev\Field $field): array
+    {
+        $entry = [
+            'type'  => $field->type,
+            'label' => $field->label,
+        ];
+
+        if ($field->required) {
+            $entry['required'] = true;
+        }
+        if ($field->repeatable) {
+            $entry['repeatable'] = true;
+        }
+        if ($field->ajax) {
+            $entry['ajax'] = true;
+        }
+        if ($field->rest) {
+            $entry['rest'] = true;
+        }
+        if (! empty($field->args)) {
+            $entry['args'] = $field->args;
+        }
+        if (! empty($field->options)) {
+            $entry['options'] = $field->options;
+        }
+        if ($field->description !== '') {
+            $entry['description'] = $field->description;
+        }
+        if ($field->default_value !== '') {
+            $entry['default_value'] = $field->default_value;
+        }
+
+        return $entry;
+    }
+
+    /**
+     * Returns bundle id → field list for export.
+     *
+     * @return array<string, array<int, array<string, mixed>>>
+     */
+    private static function exportBundles(Meta $meta): array
+    {
+        $result = [];
+
+        $collect = function (Bundle $bundle) use (&$result): void {
+            $fields = [];
+            foreach ($bundle->fields as $id => $field) {
+                if ($field instanceof Heading) {
+                    continue;
+                }
+                $fields[] = array_merge(['id' => $id], self::exportFieldEntry($field));
+            }
+            $result[$bundle->id] = $fields;
+        };
+
+        if ($meta->data instanceof Bundle) {
+            $collect($meta->data);
+        } elseif ($meta->data instanceof Tabs || $meta->data instanceof Accordion) {
+            foreach ($meta->data->tabs as $tab) {
+                if ($tab->fields instanceof Bundle) {
+                    $collect($tab->fields);
+                }
+            }
+        }
+
+        return $result;
     }
 
     private static function describeRule(\Weblitzer\CFDev\Contracts\Validatable $rule): string

@@ -56,6 +56,22 @@ $pageType->addMetaBox('cfdev_demo_accordion', '[DEMO] Accordéon', [
     ],
 ])->onlyForTemplate('template-home.php');
 
+// ── [DEMO] onlyForId — champs réservés à la page "CFDev Test" ────────────────
+// L'ID est résolu dynamiquement par slug pour rester valide après une réinstallation.
+// Si la page n'existe pas encore (avant le seed), le bloc est ignoré silencieusement.
+// ID résolu par slug. Fallback à 0 si absent — le groupe s'affiche quand même
+// dans le Dashboard avec le badge de condition (MetaBox jamais visible en edit).
+$_cfdev_test_page    = get_page_by_path('cfdev-test');
+$_cfdev_test_page_id = ($_cfdev_test_page instanceof \WP_Post) ? $_cfdev_test_page->ID : 0;
+
+$pageType->addMetaBox('cfdev_demo_page_id', '[DEMO] Page — onlyForId', [
+    ['id' => '_demo_page_id_note',  'type' => 'text',    'label' => 'Note exclusive'],
+    ['id' => '_demo_page_id_image', 'type' => 'image',   'label' => 'Image exclusive'],
+    ['id' => '_demo_page_id_html',  'type' => 'wysiwyg', 'label' => 'Contenu exclusif'],
+])->onlyForId($_cfdev_test_page_id);
+
+unset($_cfdev_test_page, $_cfdev_test_page_id);
+
 // ── 6. Accordion + Bundle ────────────────────────────────────────────
 $pageType->addMetaBox('cfdev_demo_accordion_bundle', '[DEMO] Accordéon avec bundle', [
     'accordion',

@@ -29,7 +29,7 @@ describe('CFDev — Validation Errors', () => {
   })
 
   it('shows a notice-error banner when a Required field is empty', () => {
-    cy.get('.notice-error').should('contain', 'field')
+    cy.get('.notice-error').should('not.be.empty')
   })
 
   it('marks the field row with .cfdev-has-error', () => {

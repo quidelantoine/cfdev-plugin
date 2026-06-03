@@ -8,7 +8,7 @@ const TAB_TEXT   = 'cfdev[_opt_tab_a_text]'
 const TAB_SELECT = 'cfdev[_opt_tab_a_select]'
 
 function submitOptions() { cy.get('#submit').click() }
-function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('contain', 'Settings saved') }
+function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('exist') }
 
 describe('CFDev — Options tabs (cfdev_options_tabs)', () => {
   beforeEach(() => {

@@ -877,3 +877,8 @@ msgstr "⊞ Wyświetl pola"
 #: src/Admin/DashboardPage.php:353
 msgid "⚙ Inspect"
 msgstr "⚙ Sprawdź"
+msgid "Export JSON"
+msgstr "Eksportuj JSON"
+
+msgid "Export PHP"
+msgstr "Eksportuj PHP"

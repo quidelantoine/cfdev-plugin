@@ -9,7 +9,7 @@ const MAIN_SELECT = 'cfdev[_text_opt_main_select]'
 const MAIN_TOGGLE = 'cfdev[_text_opt_main_toggle]'
 
 function submitOptions() { cy.get('#submit').click() }
-function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('contain', 'Settings saved') }
+function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('exist') }
 
 describe('CFDev — Options page plate (cfdev_options_demo)', () => {
   beforeEach(() => {

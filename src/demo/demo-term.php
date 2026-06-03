@@ -37,3 +37,22 @@ new TermMeta('category', 'Catégorie — Accordéon with Bundle', [
         ],
     ],
 ]);
+
+// ── [DEMO] Conditions sur TermMeta ────────────────────────────────────────────
+// ID résolu par slug. Fallback à 1 si absent — le groupe s'affiche quand même
+// dans le Dashboard avec le badge de condition.
+$_cfdev_uncat    = get_term_by('slug', 'uncategorized', 'category');
+$_cfdev_uncat_id = ($_cfdev_uncat instanceof \WP_Term) ? $_cfdev_uncat->term_id : 1;
+
+// onlyForId — champs visibles uniquement sur la catégorie "Uncategorized"
+(new TermMeta('category', 'Catégorie — onlyForId (Uncategorized)', [
+    ['id' => '_demo_term_id_note',  'type' => 'text',  'label' => 'Note exclusive'],
+    ['id' => '_demo_term_id_image', 'type' => 'image', 'label' => 'Image exclusive'],
+]))->onlyForId($_cfdev_uncat_id);
+
+// onlyIfParent — champs visibles uniquement pour les sous-catégories directes d'Uncategorized
+(new TermMeta('category', 'Catégorie — onlyIfParent (Sous-catégorie DEMO)', [
+    ['id' => '_demo_term_parent_note', 'type' => 'text', 'label' => 'Info sous-catégorie'],
+]))->onlyIfParent($_cfdev_uncat_id);
+
+unset($_cfdev_uncat, $_cfdev_uncat_id);

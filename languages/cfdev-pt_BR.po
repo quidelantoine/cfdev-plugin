@@ -879,3 +879,8 @@ msgstr "⊞ Ver campos"
 #: src/Admin/DashboardPage.php:353
 msgid "⚙ Inspect"
 msgstr "⚙ Inspecionar"
+msgid "Export JSON"
+msgstr "Exportar JSON"
+
+msgid "Export PHP"
+msgstr "Exportar PHP"

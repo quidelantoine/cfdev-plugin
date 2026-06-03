@@ -835,3 +835,8 @@ msgstr "⊞ 查看字段"
 #: src/Admin/DashboardPage.php:353
 msgid "⚙ Inspect"
 msgstr "⚙ 检查"
+msgid "Export JSON"
+msgstr "\u5bfc\u51fa JSON"
+
+msgid "Export PHP"
+msgstr "\u5bfc\u51fa PHP"

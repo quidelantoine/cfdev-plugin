@@ -78,6 +78,25 @@ final class DashboardPage extends AdminPage
             </div>
             <span class="wp-header-end"></span>
 
+            <div class="cfdev-export-toolbar">
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                    <?php wp_nonce_field(\Weblitzer\CFDev\Admin\Export\ExportHandler::NONCE, 'cfdev_export_nonce'); ?>
+                    <input type="hidden" name="action" value="<?php echo esc_attr(\Weblitzer\CFDev\Admin\Export\ExportHandler::ACTION); ?>">
+                    <input type="hidden" name="cfdev_export_format" value="json">
+                    <button type="submit" class="button button-secondary cfdev-btn-export">
+                        <?php esc_html_e('Export JSON', 'cfdev'); ?>
+                    </button>
+                </form>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                    <?php wp_nonce_field(\Weblitzer\CFDev\Admin\Export\ExportHandler::NONCE, 'cfdev_export_nonce'); ?>
+                    <input type="hidden" name="action" value="<?php echo esc_attr(\Weblitzer\CFDev\Admin\Export\ExportHandler::ACTION); ?>">
+                    <input type="hidden" name="cfdev_export_format" value="php">
+                    <button type="submit" class="button button-secondary cfdev-btn-export">
+                        <?php esc_html_e('Export PHP', 'cfdev'); ?>
+                    </button>
+                </form>
+            </div>
+
             <?php if (! empty($intraBoxDups)) : ?>
             <div class="notice notice-error cfdev-notice-dups">
                 <p><strong><?php esc_html_e('Duplicate field IDs within the same meta box:', 'cfdev'); ?></strong></p>
@@ -277,9 +296,9 @@ final class DashboardPage extends AdminPage
 
         $conditions     = $entry['conditions'] ?? [];
         $default_tax    = $entry['meta_type'] === 'term' ? ($entry['targets'][0] ?? '') : '';
-        $is_fixed       = isset($conditions['post_id']);
+        $is_fixed       = isset($conditions['post_id']) || isset($conditions['term_id']);
         $default_id     = $is_fixed
-            ? (int) $conditions['post_id']
+            ? (int) ($conditions['post_id'] ?? $conditions['term_id'] ?? 0)
             : self::firstObjectId($entry['meta_type'], $entry['targets'], $conditions);
         $object_options = $is_fixed ? [] : self::objectOptions($entry['meta_type'], $entry['targets'], $default_tax, $conditions);
         ?>
@@ -492,17 +511,39 @@ final class DashboardPage extends AdminPage
 
     private static function conditionBadge(string $key, mixed $value): string
     {
+        if ($key === 'callable_conditions') {
+            $out = '';
+            foreach ((array) $value as $lbl) {
+                $out .= sprintf('<span class="cfdev-condition-badge cfdev-condition-badge--fn">%s</span>', esc_html((string) $lbl));
+            }
+            return $out;
+        }
         $label = match ($key) {
-            'post_id'   => 'ID : ' . $value,
+            'post_id'   => self::resolvePostLabel((int) $value),
+            'term_id'   => self::resolveTermLabel((int) $value),
             'template'  => 'Template : ' . basename((string) $value),
             'roles'     => 'Role: ' . implode(', ', (array) $value),
-            'parent_id' => 'Parent : ' . $value,
+            'parent_id' => self::resolveTermLabel((int) $value, 'Parent : '),
             default     => $key . ' : ' . $value,
         };
         return sprintf(
             '<span class="cfdev-condition-badge">%s</span>',
             esc_html($label)
         );
+    }
+
+    private static function resolvePostLabel(int $id): string
+    {
+        $title = get_the_title($id);
+        return $title ? 'ID : ' . $id . ' — ' . $title : 'ID : ' . $id;
+    }
+
+    private static function resolveTermLabel(int $id, string $prefix = 'ID : '): string
+    {
+        $term = get_term($id);
+        return ($term instanceof \WP_Term)
+            ? $prefix . $id . ' — ' . $term->name
+            : $prefix . $id;
     }
 
     private static function typeBadge(string $type): string

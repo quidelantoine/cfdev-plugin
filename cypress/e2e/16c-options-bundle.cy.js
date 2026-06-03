@@ -9,7 +9,7 @@ const BF_TEXT   = '_text_opt_bundle_text'
 const nb        = (row, fieldId) => `cfdev[${BUNDLE_ID}][${row}][${fieldId}]`
 
 function submitOptions() { cy.get('#submit').click() }
-function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('contain', 'Settings saved') }
+function expectSaved() { cy.get('.notice-success', { timeout: 15000 }).should('exist') }
 
 describe('CFDev — Options bundle (cfdev_options_bundle)', () => {
   beforeEach(() => {

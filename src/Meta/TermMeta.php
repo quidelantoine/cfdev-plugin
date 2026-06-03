@@ -27,6 +27,7 @@ class TermMeta extends Meta
     /** @var array<string> */
     public array $locations;
     public ?int $only_if_parent = null;
+    public ?int $only_for_id = null;
 
     protected function metaType(): string
     {
@@ -89,6 +90,16 @@ class TermMeta extends Meta
     }
 
     /**
+     * Restrict this section to a single specific term.
+     * The add-term form is always hidden (the term ID does not exist yet).
+     */
+    public function onlyForId(int $id): static
+    {
+        $this->only_for_id = $id;
+        return $this;
+    }
+
+    /**
      * Strips conditioned REST fields from term responses where the term's parent
      * does not match the onlyIfParent condition.
      *
@@ -98,13 +109,20 @@ class TermMeta extends Meta
      */
     protected function addRestConditionFilter(string $object_type, string $subtype, array $field_ids): void
     {
-        if ($this->only_if_parent === null) {
+        if ($this->only_if_parent === null && $this->only_for_id === null) {
             return;
         }
         add_filter(
             'rest_prepare_' . $subtype,
             function (\WP_REST_Response $response, \WP_Term $term) use ($field_ids): \WP_REST_Response {
-                if ($term->parent !== $this->only_if_parent) {
+                $matches = true;
+                if ($this->only_if_parent !== null && $term->parent !== $this->only_if_parent) {
+                    $matches = false;
+                }
+                if ($matches && $this->only_for_id !== null && $term->term_id !== $this->only_for_id) {
+                    $matches = false;
+                }
+                if (! $matches) {
                     $meta = $response->data['meta'] ?? [];
                     foreach ($field_ids as $id) {
                         unset($meta[$id]);
@@ -143,6 +161,11 @@ class TermMeta extends Meta
      */
     public function addFormFields(string $taxonomy): void
     {
+        // onlyForId: the term does not exist yet on the add form — always skip.
+        if ($this->only_for_id !== null) {
+            return;
+        }
+
         if ($this->only_if_parent !== null) {
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             $parent = isset($_GET['parent']) ? (int) $_GET['parent'] : 0;
@@ -184,6 +207,9 @@ class TermMeta extends Meta
      */
     public function editFormFields(\WP_Term $term): void
     {
+        if ($this->only_for_id !== null && $term->term_id !== $this->only_for_id) {
+            return;
+        }
         if ($this->only_if_parent !== null && $term->parent !== $this->only_if_parent) {
             return;
         }
@@ -234,7 +260,10 @@ class TermMeta extends Meta
             return;
         }
 
-        // Respect parent condition
+        // Respect ID and parent conditions
+        if ($this->only_for_id !== null && $term_id !== $this->only_for_id) {
+            return;
+        }
         if ($this->only_if_parent !== null) {
             $term = get_term($term_id);
             if (! $term instanceof \WP_Term || $term->parent !== $this->only_if_parent) {

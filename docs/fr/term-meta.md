@@ -103,12 +103,40 @@ register_cfdev_taxonomy('product_cat', 'product')
 
 > Sur le formulaire d'ajout, CFDev lit le parent depuis `$_GET['parent']` si présent.
 > Dans les réponses REST, les champs de ce groupe sont supprimés pour les termes dont le parent ne correspond pas.
+>
+> **Où le voir en back-office :** créer ou modifier un terme enfant direct du parent (ID 12 dans l'exemple). Le groupe est toujours visible dans le Dashboard CFDev avec le badge `Parent : 12 — Nom du terme`.
 
 ---
 
-## 6. Layouts
+## 6. Restriction à un terme unique — `onlyForId()`
 
-### 6.1 Champs plats
+Limite les champs à **un seul terme précis**. Utile pour une catégorie "en vedette" ou "page d'accueil" qui a des champs supplémentaires qu'aucun autre terme ne partage.
+
+```php
+// Via la chaîne de taxonomie
+register_cfdev_taxonomy('category', 'post')
+    ->addTermMeta([
+        ['id' => 'featured_color',  'type' => 'color', 'label' => 'Couleur vedette'],
+        ['id' => 'featured_banner', 'type' => 'image', 'label' => 'Bannière'],
+    ])
+    ->onlyForId(7); // uniquement pour la catégorie "En vedette" (term ID 7)
+
+// Via instanciation directe
+(new TermMeta('category', 'Champs catégorie homepage', $fields))
+    ->onlyForId(7);
+```
+
+> Le formulaire d'ajout est toujours masqué — l'ID du terme n'existe pas avant la sauvegarde.
+> Dans les réponses REST, les champs sont supprimés pour tous les termes sauf celui-ci.
+> Combinable avec `onlyIfParent()` — les deux conditions doivent passer simultanément.
+>
+> **Où le voir en back-office :** naviguer dans la liste de la taxonomie, puis cliquer **Modifier** sur le terme spécifique (ID 7 dans l'exemple). Le groupe est toujours visible dans le Dashboard CFDev avec le badge `ID : 7 — Nom du terme`, quel que soit le terme en cours d'édition.
+
+---
+
+## 7. Layouts
+
+### 7.1 Champs plats
 
 ```php
 new TermMeta('category', 'Méta catégorie', [
@@ -119,7 +147,7 @@ new TermMeta('category', 'Méta catégorie', [
 ]);
 ```
 
-### 6.2 Bundle — lignes répétables
+### 7.2 Bundle — lignes répétables
 
 ```php
 new TermMeta('category', 'Galerie', [
@@ -132,7 +160,7 @@ new TermMeta('category', 'Galerie', [
 ]);
 ```
 
-### 6.3 Tabs
+### 7.3 Tabs
 
 Les labels des onglets sont les clés du tableau :
 
@@ -153,7 +181,7 @@ new TermMeta('category', 'Champs catégorie', [
 ]);
 ```
 
-### 6.4 Accordéon
+### 7.4 Accordéon
 
 Même structure que les Tabs, affiché en sections repliables :
 
@@ -172,7 +200,7 @@ new TermMeta('category', 'Champs catégorie', [
 ]);
 ```
 
-### 6.5 Bundle dans une section d'Accordéon
+### 7.5 Bundle dans une section d'Accordéon
 
 ```php
 new TermMeta('category', 'Champs catégorie', [
@@ -194,7 +222,7 @@ new TermMeta('category', 'Champs catégorie', [
 
 ---
 
-## 7. Lire les term meta
+## 8. Lire les term meta
 
 ### Sans cache — méta directe
 
@@ -248,7 +276,7 @@ foreach ($photos as $photo) {
 
 ---
 
-## 8. REST API
+## 9. REST API
 
 Exposez des champs individuels ou des bundles entiers via `'rest' => true` :
 
@@ -283,7 +311,7 @@ GET /wp-json/cfdev/v1/term/category/{id}
 
 ---
 
-## 9. Colonnes admin
+## 10. Colonnes admin
 
 Affichez une valeur de term meta comme colonne dans la liste des termes :
 

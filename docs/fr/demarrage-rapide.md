@@ -254,6 +254,48 @@ Les champs n'apparaissent que sur une page précise — utile pour une page de c
 
 > L'ID doit correspondre à l'ID de la page en base de données (visible dans l'URL en modification : `post=42`).
 
+### Condition personnalisée avec `onlyWhen()`
+
+Pour tout cas que `onlyForTemplate()` et `onlyForId()` ne couvrent pas, utilisez `onlyWhen()`.
+La méthode reçoit l'objet `WP_Post` et doit retourner un `bool`. Plusieurs appels sont **combinés en AND**.
+
+La condition s'applique à l'**affichage**, à la **sauvegarde** et à la **sortie REST** — si le callable retourne `false`, la meta box est masquée, les champs ne sont pas sauvegardés, et les valeurs sont retirées des réponses REST.
+
+```php
+// Visible uniquement pour les administrateurs
+// Le deuxième argument est un label optionnel affiché comme badge dans le Dashboard
+(new PostType('page'))
+    ->addMetaBox('admin_notes', 'Notes internes', [
+        ['id' => 'internal_note', 'type' => 'textarea', 'label' => 'Note interne'],
+    ])
+    ->onlyWhen(fn(\WP_Post $p) => current_user_can('manage_options'), 'Admins uniquement');
+
+// Visible uniquement quand le post est un brouillon
+(new PostType('post'))
+    ->addMetaBox('draft_tools', 'Outils brouillon', [
+        ['id' => 'draft_checklist', 'type' => 'textarea', 'label' => 'Checklist avant publication'],
+    ])
+    ->onlyWhen(fn(\WP_Post $p) => $p->post_status === 'draft');
+
+// Visible uniquement si un autre champ meta a une valeur
+(new PostType('product'))
+    ->addMetaBox('variant_details', 'Détails variante', [
+        ['id' => 'variant_sku', 'type' => 'text', 'label' => 'SKU variante'],
+    ])
+    ->onlyWhen(fn(\WP_Post $p) => !empty(get_post_meta($p->ID, 'is_variable', true)));
+
+// Combinaison avec onlyForTemplate — les deux conditions doivent passer
+(new PostType('page'))
+    ->addMetaBox('landing_admin', 'Landing (admins uniquement)', [
+        ['id' => 'ab_variant', 'type' => 'select', 'label' => 'Variante A/B',
+         'options' => ['a' => 'A', 'b' => 'B']],
+    ])
+    ->onlyForTemplate('template-landing.php')
+    ->onlyWhen(fn(\WP_Post $p) => current_user_can('manage_options'));
+```
+
+> **Note sur le contexte :** le callable s'exécute dans `add_meta_boxes` (affichage), `save_post` (sauvegarde) et `rest_prepare_{type}` (REST). Les trois reçoivent l'objet `WP_Post` courant — lire `$p->post_status`, `$p->post_author` ou `get_post_meta()` est sûr. Évitez de lire `$_POST` dans le callable : utilisez l'objet post à la place.
+
 ### Pages avec plusieurs layouts via Tabs
 
 ```php

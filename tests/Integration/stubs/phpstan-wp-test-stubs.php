@@ -2,6 +2,10 @@
 
 // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols,PSR1.Classes.ClassDeclaration.MissingNamespace,PSR1.Classes.ClassDeclaration.MultipleClasses,Squiz.Classes.ValidClassName.NotCamelCaps,PSR1.Methods.CamelCapsMethodName.NotCamelCaps
 
+if (! defined('CFDEV_VERSION')) {
+    define('CFDEV_VERSION', '1.0.6');
+}
+
 use PHPUnit\Framework\TestCase;
 
 /**

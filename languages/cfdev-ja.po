@@ -841,3 +841,8 @@ msgstr "⊞ フィールドを表示"
 #: src/Admin/DashboardPage.php:353
 msgid "⚙ Inspect"
 msgstr "⚙ 検査"
+msgid "Export JSON"
+msgstr "JSON \u30a8\u30af\u30b9\u30dd\u30fc\u30c8"
+
+msgid "Export PHP"
+msgstr "PHP \u30a8\u30af\u30b9\u30dd\u30fc\u30c8"

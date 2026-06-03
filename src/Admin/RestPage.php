@@ -600,13 +600,35 @@ final class RestPage extends AdminPage
         );
     }
 
+    private static function resolvePostLabel(int $id): string
+    {
+        $title = get_the_title($id);
+        return $title ? 'ID : ' . $id . ' — ' . $title : 'ID : ' . $id;
+    }
+
+    private static function resolveTermLabel(int $id, string $prefix = 'ID : '): string
+    {
+        $term = get_term($id);
+        return ($term instanceof \WP_Term)
+            ? $prefix . $id . ' — ' . $term->name
+            : $prefix . $id;
+    }
+
     private static function conditionBadge(string $key, mixed $value): string
     {
+        if ($key === 'callable_conditions') {
+            $out = '';
+            foreach ((array) $value as $lbl) {
+                $out .= sprintf('<span class="cfdev-condition-badge cfdev-condition-badge--fn">%s</span>', esc_html((string) $lbl));
+            }
+            return $out;
+        }
         $label = match ($key) {
-            'post_id'   => 'ID : ' . $value,
+            'post_id'   => self::resolvePostLabel((int) $value),
+            'term_id'   => self::resolveTermLabel((int) $value),
             'template'  => 'Template : ' . basename((string) $value),
             'roles'     => 'Role: ' . implode(', ', (array) $value),
-            'parent_id' => 'Parent : ' . $value,
+            'parent_id' => self::resolveTermLabel((int) $value, 'Parent : '),
             default     => $key . ' : ' . $value,
         };
         return sprintf('<span class="cfdev-condition-badge">%s</span>', esc_html($label));

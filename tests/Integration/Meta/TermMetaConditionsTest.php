@@ -151,4 +151,56 @@ class TermMetaConditionsTest extends IntegrationTestCase
 
         $this->assertSame([], $entry['conditions']);
     }
+
+    // -------------------------------------------------------------------------
+    // onlyForId()
+    // -------------------------------------------------------------------------
+
+    public function testOnlyForIdSavesWhenIdsMatch(): void
+    {
+        $tm = (new TermMeta('region', 'Région', [
+            ['type' => 'text', 'id' => 'champ_id', 'label' => 'Champ'],
+        ]))->onlyForId($this->child_id);
+
+        $this->postWith(['champ_id' => 'valeur exacte']);
+        $tm->saveTerm($this->child_id);
+
+        $this->assertSame('valeur exacte', get_term_meta($this->child_id, 'champ_id', true));
+    }
+
+    public function testOnlyForIdSkipsWhenIdsDiffer(): void
+    {
+        $tm = (new TermMeta('region', 'Région', [
+            ['type' => 'text', 'id' => 'champ_id_other', 'label' => 'Champ'],
+        ]))->onlyForId($this->child_id);
+
+        $this->postWith(['champ_id_other' => 'ne doit pas sauver']);
+        $tm->saveTerm($this->other_child_id);
+
+        $this->assertSame('', get_term_meta($this->other_child_id, 'champ_id_other', true));
+    }
+
+    public function testOnlyForIdSkipsParentTerm(): void
+    {
+        $tm = (new TermMeta('region', 'Région', [
+            ['type' => 'text', 'id' => 'champ_id_parent', 'label' => 'Champ'],
+        ]))->onlyForId($this->child_id);
+
+        $this->postWith(['champ_id_parent' => 'ne doit pas sauver']);
+        $tm->saveTerm($this->parent_id);
+
+        $this->assertSame('', get_term_meta($this->parent_id, 'champ_id_parent', true));
+    }
+
+    public function testOnlyForIdConditionAppearsInRegistry(): void
+    {
+        (new TermMeta('region', 'Région', [
+            ['type' => 'text', 'id' => 'champ_reg_id', 'label' => 'Champ'],
+        ]))->onlyForId($this->child_id);
+
+        $entry = Registry::all()[0];
+
+        $this->assertArrayHasKey('conditions', $entry);
+        $this->assertSame($this->child_id, $entry['conditions']['term_id'] ?? null);
+    }
 }

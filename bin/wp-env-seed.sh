@@ -47,6 +47,23 @@ fi
 
 $WP post meta update "$PAGE_ID" _wp_page_template template-cfdev-test.php
 
+echo "→ Demo child category for onlyIfParent…"
+UNCAT_ID=$($WP term list category --name=Uncategorized --field=term_id 2>&1 | grep -E '^[0-9]+$' | head -1)
+if [ -n "$UNCAT_ID" ]; then
+  CHILD_EXISTS=$($WP term list category --name="Sous-catégorie DEMO" --field=term_id 2>&1 | grep -E '^[0-9]+$' | head -1)
+  if [ -z "$CHILD_EXISTS" ]; then
+    $WP term create category "Sous-catégorie DEMO" \
+      --slug=sous-categorie-demo \
+      --parent="$UNCAT_ID" \
+      --porcelain > /dev/null
+    echo "   Created child category under Uncategorized (ID $UNCAT_ID)."
+  else
+    echo "   Child category already exists (ID $CHILD_EXISTS)."
+  fi
+else
+  echo "   Uncategorized not found — skipping child category."
+fi
+
 # Second flush après la création de la page : consolide les règles de réécriture
 # pour inclure le nouveau slug cfdev-test (règle générique /%postname%/ suffit
 # théoriquement, mais un flush garanti évite les edge-cases Docker/nginx).

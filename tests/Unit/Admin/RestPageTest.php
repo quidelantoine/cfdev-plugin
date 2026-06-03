@@ -32,6 +32,8 @@ class RestPageTest extends CFDevTestCase
         });
         Functions\when('get_post_type_object')->justReturn(null);
         Functions\when('get_taxonomy')->justReturn(null);
+        Functions\when('get_the_title')->justReturn('');
+        Functions\when('get_term')->justReturn(null);
         Functions\when('admin_url')->justReturn('https://example.com/wp-admin/admin.php');
         Functions\when('wp_json_encode')->alias('json_encode');
     }

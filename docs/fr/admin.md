@@ -66,6 +66,77 @@ Lorsque des doublons sont détectés :
 
 ---
 
+## Exporter les définitions de champs
+
+Deux boutons apparaissent sous l'en-tête du Tableau de bord :
+
+| Bouton | Résultat |
+|---|---|
+| **Exporter JSON** | Fichier `.json` — lisible par machine, idéal pour outils, documentation ou migrations |
+| **Exporter PHP** | Fichier `.php` — tableau PHP avec `return [...]`, prêt à coller dans `cfdev-fields.php` |
+
+Le nom du fichier est horodaté automatiquement : `cfdev-export-YYYYMMDD-HHmmss.json`.
+
+### Structure JSON
+
+```json
+{
+  "version": "1.0.6",
+  "exported_at": "2026-06-03T14:30:00+00:00",
+  "groups": [
+    {
+      "id": "product_info",
+      "title": "Info produit",
+      "meta_type": "post",
+      "targets": ["product"],
+      "layout": "flat",
+      "fields": [
+        { "id": "price", "type": "number", "label": "Prix", "required": true, "args": { "min": 0 } },
+        { "id": "photo", "type": "image",  "label": "Photo" }
+      ]
+    }
+  ]
+}
+```
+
+Seules les propriétés non-défaut sont incluses par champ (`required`, `repeatable`, `ajax`, `rest`, `args`, `options`, `description`, `default_value`). Un champ sans extras n'affiche que `id`, `type`, `label`.
+
+Les groupes avec bundles incluent une clé `bundles` :
+
+```json
+"bundles": {
+  "_specs": [
+    { "id": "material", "type": "text", "label": "Matière" }
+  ]
+}
+```
+
+### Structure PHP
+
+```php
+<?php
+// CFDev — Field definitions export
+// Generated : 2026-06-03 14:30:00
+
+return [
+    [
+        'id'        => 'product_info',
+        'title'     => 'Info produit',
+        'meta_type' => 'post',
+        'targets'   => ['product'],
+        'layout'    => 'flat',
+        'fields'    => [
+            ['id' => 'price', 'type' => 'number', 'label' => 'Prix', 'required' => true],
+            ['id' => 'photo', 'type' => 'image',  'label' => 'Photo'],
+        ],
+    ],
+];
+```
+
+> L'export PHP est un **snapshot de données**, pas du code `register_cfdev_*` exécutable. Utile pour documenter un projet, copier des définitions vers un autre site, ou servir de base à une migration.
+
+---
+
 ## L'inspecteur — outil de développement
 
 Le bouton **⚙ Inspecter** sur chaque groupe ouvre une modale sombre affichant les données réelles d'un objet choisi, directement depuis l'admin.

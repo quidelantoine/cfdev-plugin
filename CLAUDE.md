@@ -11,9 +11,19 @@ CFDev ("Custom Field For Dev") is a WordPress plugin providing a code-first API 
 # Integration tests (real WP + Docker DB — run `docker compose up -d db` first)
 ./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
 
+# Single test file
+./vendor/bin/phpunit tests/Unit/Fields/DateTest.php
+
+# Coverage (PCOV via Docker — .mo file owned by root)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+  php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-text --no-progress
+
 # Lint check / auto-fix
 vendor/bin/phpcs
 vendor/bin/phpcbf
+
+# Pre-commit check (full)
+./vendor/bin/phpunit --testsuite Unit && vendor/bin/phpcs && vendor/bin/phpstan analyse
 
 # Cypress — interactive / headless / single spec
 npm run cy:open
@@ -57,6 +67,42 @@ Field (base: attrs, repeatable, validation)
 **Form data:** `cfdev[field_id]`. Bundles: `cfdev[bundle_id][row_index][field_id]`. Nonce: `cfdev_nonce` / action `cfdev_meta`. Bundle IDs are prefixed with `_` by `Bundle::buildId()` — POST keys and meta keys must use `'_slug'`.
 
 **Validation / ErrorBag:** Errors survive POST→redirect→GET via transients (60 s). `push()` on save → `load()` in render callback → `forField()` per field → `peek()` for admin notice banner. Bundle error keys use dot notation: `bundle.rowIndex.fieldId`.
+
+## Date / Time fields
+
+`Fields\Date`, `Fields\Datetime`, `Fields\Time` all store a Unix **timestamp string**.
+
+- `date_format` (default `'m/d/Y'`) and `time_format` (default `'H:i'`) are PHP date format strings.
+- `Date::saveValue()` and `Datetime::saveValue()` parse using `DateTime::createFromFormat($format, $value)` — the format must match exactly what the picker outputs. `Time::saveValue()` uses `strtotime()` instead.
+- `DateFormatHelper::parse()` (`src/Support/DateFormatHelper.php`) converts a PHP format to jQuery UI datepicker format — called in constructors to set `data-date-format` / `data-time-format` attributes.
+- Changing `date_format` affects both display and save parsing. Existing stored timestamps re-display correctly because `gmdate($format, $ts)` is format-agnostic.
+- `Datetime`: if `time_format` has no `s` character, seconds are zeroed on save.
+
+## CacheResolver — resolved shapes
+
+`src/Cache/CacheResolver.php` enriches raw meta values:
+
+- **image** → `['id' => int, 'alt' => string, 'full' => string, 'thumbnail' => string, 'medium' => string, …]` — `id` is always the first key, always present when the attachment exists.
+- **gallery** → `[['id', 'alt', 'full', …], …]`
+- **file** → `['id', 'url', 'filename']`
+- **link** → `['url', 'text', 'target']`
+- **bundle** → `[['field_id' => resolved_value, …], …]`
+- Empty raw value (`''`, `null`, `false`) is returned as-is without resolution.
+
+## i18n
+
+Translation files live in `languages/`. Three files per locale: `.po` (source), `.mo` (binary), `.l10n.php` (PHP cache — **WordPress 6.5+ loads this with priority over `.mo`**).
+
+Supported locales: `fr_FR`, `es_ES`, `de_DE`, `pt_BR`, `nl_NL`, `it_IT`, `ja`, `zh_CN`, `ru_RU`, `pl_PL`.
+
+`msgfmt` is not available on the host — compile via Docker:
+
+```bash
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+  php -r "/* parse .po → write .mo + .l10n.php */"
+```
+
+The `.l10n.php` and `.mo` files are owned by `root` (created inside the container). Always recompile both when editing a `.po`. The `.pot` template is `languages/cfdev.pot`.
 
 ## Coding standards
 

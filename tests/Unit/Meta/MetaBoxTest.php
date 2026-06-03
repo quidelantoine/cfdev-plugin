@@ -324,6 +324,92 @@ class MetaBoxTest extends CFDevTestCase
     }
 
     // -------------------------------------------------------------------------
+    // onlyWhen()
+    // -------------------------------------------------------------------------
+
+    public function testOnlyWhenReturnsSelf(): void
+    {
+        $mb = $this->makeMetaBox();
+        $this->assertSame($mb, $mb->onlyWhen(fn(\WP_Post $p) => true));
+    }
+
+    public function testOnlyWhenStoresLabel(): void
+    {
+        $mb = $this->makeMetaBox();
+        $mb->onlyWhen(fn(\WP_Post $p) => true, 'Admins only');
+        $this->assertSame(['Admins only'], $mb->only_when_labels);
+    }
+
+    public function testOnlyWhenEmptyLabelStoredAsEmptyString(): void
+    {
+        $mb = $this->makeMetaBox();
+        $mb->onlyWhen(fn(\WP_Post $p) => true);
+        $this->assertSame([''], $mb->only_when_labels);
+    }
+
+    public function testAddMetaBoxSkipsWhenOnlyWhenReturnsFalse(): void
+    {
+        $mb       = $this->makeMetaBox();
+        $mb->onlyWhen(fn(\WP_Post $p) => false);
+        $post     = new \WP_Post();
+        $post->ID = 1;
+
+        Functions\expect('add_meta_box')->never();
+        $mb->addMetaBox('post', $post);
+        $this->addToAssertionCount(1);
+    }
+
+    public function testAddMetaBoxRegistersWhenOnlyWhenReturnsTrue(): void
+    {
+        $mb       = $this->makeMetaBox();
+        $mb->onlyWhen(fn(\WP_Post $p) => true);
+        $post     = new \WP_Post();
+        $post->ID = 1;
+
+        Functions\expect('add_meta_box')->once();
+        $mb->addMetaBox('post', $post);
+        $this->addToAssertionCount(1);
+    }
+
+    public function testOnlyWhenMultipleCallablesAreAnded(): void
+    {
+        $mb       = $this->makeMetaBox();
+        $mb->onlyWhen(fn(\WP_Post $p) => true);
+        $mb->onlyWhen(fn(\WP_Post $p) => false);
+        $post     = new \WP_Post();
+        $post->ID = 1;
+
+        Functions\expect('add_meta_box')->never();
+        $mb->addMetaBox('post', $post);
+        $this->addToAssertionCount(1);
+    }
+
+    public function testSavePostSkipsWhenOnlyWhenReturnsFalse(): void
+    {
+        Functions\when('wp_verify_nonce')->justReturn(true);
+        Functions\when('get_post_type')->justReturn('post');
+        Functions\when('get_post')->alias(function (int $id): \WP_Post {
+            $p     = new \WP_Post();
+            $p->ID = $id;
+            return $p;
+        });
+
+        $stored = 'NOT_SET';
+        Functions\when('update_post_meta')->alias(function () use (&$stored): bool {
+            $stored = 'SAVED';
+            return true;
+        });
+
+        $mb = $this->makeMetaBox();
+        $mb->onlyWhen(fn(\WP_Post $p) => false);
+
+        $_POST = ['cfdev_nonce' => 'valid', 'cfdev' => ['title' => 'hello']];
+        $mb->savePost(1);
+
+        $this->assertSame('NOT_SET', $stored);
+    }
+
+    // -------------------------------------------------------------------------
     // resolveObjectId()
     // -------------------------------------------------------------------------
 

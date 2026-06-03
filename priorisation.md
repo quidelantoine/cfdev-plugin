@@ -28,3 +28,4 @@ Prérequis WP.org :
 
 Verifier les tests ,1.0.7 , pensez a changer aussi dans le code de CFDev,  push, et tag for new release 
 
+fix(ci): timeout warm-up 30s->60s + seed term create robuste & chore(release): bump version 1.0.6 -> 1.0.7

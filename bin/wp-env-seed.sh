@@ -48,11 +48,11 @@ fi
 $WP post meta update "$PAGE_ID" _wp_page_template template-cfdev-test.php
 
 echo "→ Demo child category for onlyIfParent…"
-UNCAT_ID=$($WP term list category --name=Uncategorized --field=term_id 2>&1 | grep -E '^[0-9]+$' | head -1)
+UNCAT_ID=$($WP term get category uncategorized --by=slug --field=term_id 2>/dev/null || true)
 if [ -n "$UNCAT_ID" ]; then
-  CHILD_EXISTS=$($WP term list category --name="Sous-catégorie DEMO" --field=term_id 2>&1 | grep -E '^[0-9]+$' | head -1)
+  CHILD_EXISTS=$($WP term get category sous-categorie-demo --by=slug --field=term_id 2>/dev/null || true)
   if [ -z "$CHILD_EXISTS" ]; then
-    $WP term create category "Sous-catégorie DEMO" \
+    $WP term create category "Sous-categorie DEMO" \
       --slug=sous-categorie-demo \
       --parent="$UNCAT_ID" \
       --porcelain > /dev/null

@@ -251,7 +251,7 @@ jobs:
       # On fait aussi un retry loop pour absorber le warm-up MariaDB résiduel.
       - name: Warm up WordPress
         run: |
-          timeout 30 bash -c \
+          timeout 60 bash -c \
             'until curl -sf http://localhost:8888/wp-login.php > /dev/null; do sleep 2; done'
           curl -s -c /tmp/wpcookies.txt \
             http://localhost:8888/wp-login.php > /dev/null

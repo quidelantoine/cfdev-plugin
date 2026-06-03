@@ -5,6 +5,7 @@
 [![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue)](https://www.php.net/)
 [![WordPress 6.5+](https://img.shields.io/badge/WordPress-6.5%2B-blue)](https://wordpress.org/)
 [![Works with WooCommerce](https://img.shields.io/badge/WooCommerce-works%20with-96588a)](docs/en/woocommerce.md)
+[![Translations](https://img.shields.io/badge/translations-10%20languages-blue)](languages/)
 
 [![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen)](phpstan.neon)
 [![PHPCS](https://img.shields.io/badge/PHPCS-WordPress--VIP--Go-blue)](phpcs.xml)
@@ -139,6 +140,19 @@ echo '<img src="' . esc_url($product['photo']['medium'] ?? '') . '" alt="' . esc
 | [Répétable & AJAX](docs/fr/repeatable.md) | Champs répétables et chargement AJAX |
 | [Colonnes admin](docs/fr/colonnes-admin.md) | Colonnes dans les listes post/terme/user |
 | [WooCommerce](docs/fr/woocommerce.md) | Champs personnalisés sur les produits et catégories |
+
+---
+
+## Translations
+
+The admin interface is fully translated into 10 languages:
+
+🇫🇷 French · 🇪🇸 Spanish · 🇩🇪 German · 🇧🇷 Portuguese (BR)  
+🇳🇱 Dutch · 🇮🇹 Italian · 🇯🇵 Japanese · 🇨🇳 Chinese (Simplified)  
+🇷🇺 Russian · 🇵🇱 Polish
+
+Translation files are located in the [`languages/`](languages/) directory (`.po`, `.mo`, `.l10n.php`).  
+To contribute a new locale, copy [`languages/cfdev.pot`](languages/cfdev.pot) and translate it with [Loco Translate](https://localise.biz/) or [Poedit](https://poedit.net/).
 
 ---
 

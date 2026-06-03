@@ -1,14 +1,13 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Custom Field For Dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-03 08:52+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: \n"
-"Language: \n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"PO-Revision-Date: 2026-06-03 00:00+0000\n"
+"Last-Translator: quidelantoine\n"
+"Language-Team: 中文（简体）\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,850 +20,818 @@ msgid ""
 " a block editor iframe and some features (AJAX fields, Wysiwyg) may not work "
 "correctly."
 msgstr ""
+" 块编辑器 iframe 和部分功能（AJAX 字段、Wysiwyg）可能无法正常工作。"
 
-#. %d = number of duplicate field IDs
 #: src/Admin/DashboardPage.php:73
 msgid "%d duplicate"
 msgid_plural "%d duplicates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个重复"
 
-#. %d = number of cached files
 #: src/Admin/CachePage.php:63
 msgid "%d fichier"
 msgid_plural "%d fichiers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个文件"
 
-#. %d = number of fields
 #: src/Admin/RestPage.php:311 src/Admin/DashboardPage.php:339
 msgid "%d field"
 msgid_plural "%d fields"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个字段"
 
-#. %d = number of deleted files
 #: src/Admin/CachePage.php:71
 msgid "%d file deleted."
 msgid_plural "%d files deleted."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "已删除 %d 个文件。"
 
-#. %d = number of groups
 #: src/Admin/DashboardPage.php:65
 msgid "%d group"
 msgid_plural "%d groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个组"
 
-#. %d = hours
 #: src/Admin/CachePage.php:269
 msgid "%d h"
 msgid_plural "%d h"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 小时"
 
-#. %d = days
 #: src/Admin/CachePage.php:276
 msgid "%d j"
 msgid_plural "%d j"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 天"
 
-#. %d = minutes
 #: src/Admin/CachePage.php:261
 msgid "%d min"
 msgid_plural "%d min"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 分钟"
 
-#. %d = seconds
 #: src/Admin/CachePage.php:253
 msgid "%d s"
 msgid_plural "%d s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 秒"
 
-#: src/PostType.php:94 src/PostType.php:118 src/Taxonomy.php:155
-#: src/Taxonomy.php:168
+#: src/PostType.php:94 src/PostType.php:118 src/Taxonomy.php:155 src/Taxonomy.php:168
 #, php-format
 msgid "%s"
-msgstr ""
+msgstr "%s"
 
 #: src/PostType.php:96
 msgctxt "%s"
 msgid "Add New"
-msgstr ""
+msgstr "添加"
 
 #: src/PostType.php:101
 #, php-format
 msgid "%s Archive"
-msgstr ""
+msgstr "%s 归档"
 
-#. phpcs:ignore WordPress.WP.I18n.MismatchedPlaceholders
 #: src/Meta.php:304 src/OptionsPage.php:188
 #, php-format
 msgid "%s field needs attention"
 msgid_plural "%s fields need attention"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s 个字段需要注意"
 
 #: src/PostType.php:105
 #, php-format
 msgid "%s Parent"
-msgstr ""
+msgstr "%s 父级"
 
 #: src/Admin/DashboardPage.php:125
 msgid ""
 "(featured image, page template, user sessions, etc.). Rename this field "
 "immediately."
 msgstr ""
+"（特色图像、页面模板、用户会话等）。请立即重命名此字段。"
 
 #: src/Admin/DashboardPage.php:600
 msgid "(no title)"
-msgstr ""
+msgstr "（无标题）"
 
 #: src/templates/template-cfdev-test.php:23
 msgid "Access denied."
-msgstr ""
+msgstr "访问被拒绝。"
 
 #: src/Admin/RestPage.php:593 src/Admin/DashboardPage.php:483
 msgid "Accordion"
-msgstr ""
+msgstr "手风琴"
 
-#: src/Meta.php:161 src/Fields/Bundle.php:62 src/Fields/Bundle.php:195
-#: src/Fields/Tab.php:163
+#: src/Meta.php:161 src/Fields/Bundle.php:62 src/Fields/Bundle.php:195 src/Fields/Tab.php:163
 msgid "Add"
-msgstr ""
+msgstr "添加"
 
 #: src/Fields/Gallery.php:33
 msgid "Add images"
-msgstr ""
+msgstr "添加图片"
 
 #: src/PostType.php:97 src/Taxonomy.php:153
 #, php-format
 msgid "Add New %s"
-msgstr ""
+msgstr "添加新 %s"
 
 #: src/Admin/CachePage.php:131
 msgid "Age"
-msgstr ""
+msgstr "时长"
 
 #: src/PostType.php:95 src/Taxonomy.php:148
 #, php-format
 msgid "All %s"
-msgstr ""
+msgstr "所有 %s"
 
 #: src/Admin/DashboardPage.php:314
 msgid "Also in:"
-msgstr ""
+msgstr "也在："
 
 #: src/Fields/ImageAlt.php:54
 msgid "Alternative text for the image"
-msgstr ""
+msgstr "图片替代文字"
 
-#: src/Rest/CfdevRestApi.php:236 src/Rest/CfdevRestApi.php:258
-#: src/Rest/CfdevRestApi.php:264 src/Rest/CfdevRestApi.php:277
+#: src/Rest/CfdevRestApi.php:236 src/Rest/CfdevRestApi.php:258 src/Rest/CfdevRestApi.php:264 src/Rest/CfdevRestApi.php:277
 msgid "Authentication required."
-msgstr ""
+msgstr "需要身份验证。"
 
-#: src/Admin/RestPage.php:232 src/Admin/RestPage.php:328
-#: src/Admin/RestPage.php:374 src/Admin/RestPage.php:594
-#: src/Admin/DashboardPage.php:384 src/Admin/DashboardPage.php:408
-#: src/Admin/DashboardPage.php:484
+#: src/Admin/RestPage.php:232 src/Admin/RestPage.php:328 src/Admin/RestPage.php:374 src/Admin/RestPage.php:594 src/Admin/DashboardPage.php:384 src/Admin/DashboardPage.php:408 src/Admin/DashboardPage.php:484
 msgid "Bundle"
-msgstr ""
+msgstr "Bundle"
 
 #: src/Admin/RestPage.php:438
 msgid "bundle"
-msgstr ""
+msgstr "bundle"
 
 #: src/Admin/CachePage.php:61 src/Admin/AdminMenu.php:78
-#: src/Admin/AdminMenu.php:78
 msgid "Cache"
-msgstr ""
+msgstr "缓存"
 
 #: src/Admin/CachePage.php:92
 msgid "Cache active"
-msgstr ""
+msgstr "缓存已启用"
 
 #: src/Admin/CachePage.php:97
 msgid "Cache inactive"
-msgstr ""
+msgstr "缓存已禁用"
 
 #: src/Admin/AdminMenu.php:67
 msgid "CFDev"
-msgstr ""
+msgstr "CFDev"
 
 #: src/Admin/RestPage.php:114
 msgid "CFDev API active"
-msgstr ""
+msgstr "CFDev API 已启用"
 
 #: src/Admin/RestPage.php:116
 msgid "CFDev API inactive"
-msgstr ""
+msgstr "CFDev API 已禁用"
 
 #: src/Admin/AdminPage.php:24
 msgid "CFDev Dashboard"
-msgstr ""
+msgstr "CFDev 控制台"
 
 #: src/Admin/RestPage.php:419
 msgid "CFDev endpoint"
-msgstr ""
+msgstr "CFDev 端点"
 
 #: src/Admin/CachePage.php:113
 msgid "Clear all cache"
-msgstr ""
+msgstr "清除所有缓存"
 
-#: src/Admin/RestPage.php:236 src/Admin/DashboardPage.php:1203
-#: src/Admin/DashboardPage.php:1235
+#: src/Admin/RestPage.php:236 src/Admin/DashboardPage.php:1203 src/Admin/DashboardPage.php:1235
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: src/Admin/DashboardPage.php:366 src/Admin/DashboardPage.php:1186
 msgid "Code"
-msgstr ""
+msgstr "代码"
 
 #: src/Admin/DashboardPage.php:1200
 msgid "Copy"
-msgstr ""
+msgstr "复制"
 
 #: src/Admin/RestPage.php:130
 msgid "Currently exposed fields"
-msgstr ""
+msgstr "当前已公开字段"
 
-#. Name of the plugin
 msgid "Custom Field For Dev"
-msgstr ""
+msgstr "Custom Field For Dev"
 
 #: src/Admin/AdminMenu.php:77
 msgid "Dashboard"
-msgstr ""
+msgstr "控制台"
 
 #: src/Taxonomy.php:226 src/Meta/MetaBox.php:296
 msgid "Date"
-msgstr ""
+msgstr "日期"
 
 #: src/Admin/DashboardPage.php:155
 msgid "declared in"
-msgstr ""
+msgstr "声明于"
 
 #: src/Admin/DashboardPage.php:88
 msgid "declared more than once in"
-msgstr ""
+msgstr "多次声明于"
 
 #: src/Admin/CachePage.php:172
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
 #: src/Admin/DashboardPage.php:1192
 msgid "Display"
-msgstr ""
+msgstr "显示"
 
-#: src/Field.php:191 src/Fields/Bundle.php:80 src/Fields/Bundle.php:113
-#: src/Fields/Bundle.php:140 src/Config/Assets/AssetLoader.php:159
+#: src/Field.php:191 src/Fields/Bundle.php:80 src/Fields/Bundle.php:113 src/Fields/Bundle.php:140 src/Config/Assets/AssetLoader.php:159
 msgid "Drag to reorder"
-msgstr ""
+msgstr "拖拽以重新排序"
 
 #: src/Admin/DashboardPage.php:101
 msgid "Duplicate bundle IDs across meta boxes:"
-msgstr ""
+msgstr "跨元数据框的重复 Bundle ID："
 
 #: src/Admin/DashboardPage.php:83
 msgid "Duplicate field IDs within the same meta box:"
-msgstr ""
+msgstr "同一元数据框中重复的字段 ID："
 
 #: src/Admin/DashboardPage.php:150
 msgid "Duplicate field IDs:"
-msgstr ""
+msgstr "重复的字段 ID："
 
 #: src/Admin/DashboardPage.php:449
 msgid "Duplicate ID"
-msgstr ""
+msgstr "重复 ID"
 
 #: src/Admin/DashboardPage.php:297
 msgid "Duplicate meta box ID — WordPress only shows the last registration"
-msgstr ""
+msgstr "元数据框 ID 重复 — WordPress 仅显示最后一次注册"
 
 #: src/Admin/DashboardPage.php:134
 msgid "Duplicate meta box IDs:"
-msgstr ""
+msgstr "重复的元数据框 ID："
 
 #: src/Admin/DashboardPage.php:358
 msgid "Edit"
-msgstr ""
+msgstr "编辑"
 
 #: src/PostType.php:98 src/Taxonomy.php:151
 #, php-format
 msgid "Edit %s"
-msgstr ""
+msgstr "编辑 %s"
 
 #: src/Admin/DashboardPage.php:108
 msgid ""
 "every save overwrites the other meta box's bundle data. Use a unique bundle "
 "ID for each meta box."
 msgstr ""
+"每次保存都会覆盖其他元数据框的 bundle 数据。请为每个元数据框使用唯一的 bundle ID。"
 
 #: src/Admin/CachePage.php:146
 msgid "Expired"
-msgstr ""
+msgstr "已过期"
 
 #: src/Admin/RestPage.php:239
 msgid "Exposure is all-or-nothing: all fields in the bundle are included."
-msgstr ""
+msgstr "公开是全有或全无：bundle 中的所有字段都会被包含。"
 
 #: src/Admin/DashboardPage.php:60
 msgid "Field groups"
-msgstr ""
+msgstr "字段组"
 
 #: src/Admin/RestPage.php:591 src/Admin/DashboardPage.php:481
 msgid "Flat"
-msgstr ""
+msgstr "扁平"
 
 #: src/Admin/CachePage.php:129
 msgid "Groups"
-msgstr ""
+msgstr "组"
 
 #: src/Admin/DashboardPage.php:436
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: src/Admin/DashboardPage.php:122
 msgid "in"
-msgstr ""
+msgstr "在"
 
 #: src/Admin/RestPage.php:240
 msgid "Individual fields inside cannot be selected separately."
-msgstr ""
+msgstr "内部各字段不能单独选择。"
 
 #: src/Admin/AdminMenu.php:54
 msgid "Install Classic Editor →"
-msgstr ""
+msgstr "安装 Classic Editor →"
 
-#: src/Rest/CfdevRestApi.php:235 src/Rest/CfdevRestApi.php:257
-#: src/Rest/CfdevRestApi.php:271 src/Rest/CfdevRestApi.php:286
+#: src/Rest/CfdevRestApi.php:235 src/Rest/CfdevRestApi.php:257 src/Rest/CfdevRestApi.php:271 src/Rest/CfdevRestApi.php:286
 msgid "Insufficient permissions."
-msgstr ""
+msgstr "权限不足。"
 
 #: src/Rest/CfdevRestApi.php:245
 msgid "Invalid taxonomy."
-msgstr ""
+msgstr "无效的分类法。"
 
 #: src/Admin/DashboardPage.php:139
 msgid "is registered multiple times for post type"
-msgstr ""
+msgstr "在文章类型中注册了多次"
 
 #: src/Admin/DashboardPage.php:106
 msgid "is used as a bundle ID in multiple meta boxes for post type"
-msgstr ""
+msgstr "在文章类型的多个元数据框中用作 bundle ID"
 
 #: src/Admin/RestPage.php:417 src/Admin/DashboardPage.php:438
 msgid "Label"
-msgstr ""
+msgstr "标签"
 
 #: src/Fields/Link.php:33
 msgid "Link text"
-msgstr ""
+msgstr "链接文本"
 
 #: src/Admin/DashboardPage.php:1245
 msgid "Loading…"
-msgstr ""
+msgstr "加载中…"
 
 #: src/Admin/RestPage.php:416
 msgid "Meta key"
-msgstr ""
+msgstr "元数据键"
 
 #: src/Admin/CachePage.php:132
 msgid "Modified"
-msgstr ""
+msgstr "修改时间"
 
 #: src/Admin/RestPage.php:420
 msgid "Native endpoint"
-msgstr ""
+msgstr "原生端点"
 
 #: src/Admin/RestPage.php:91
 msgid "Native WP REST active"
-msgstr ""
+msgstr "WP REST 原生已启用"
 
 #: src/Admin/RestPage.php:93
 msgid "Native WP REST inactive"
-msgstr ""
+msgstr "WP REST 原生已禁用"
 
 #: src/PostType.php:99
 #, php-format
 msgid "New %s"
-msgstr ""
+msgstr "新建 %s"
 
 #: src/Taxonomy.php:154
 #, php-format
 msgid "New %s Name"
-msgstr ""
+msgstr "新名称：%s"
 
 #: src/Fields/Link.php:37
 msgid "New tab"
-msgstr ""
+msgstr "新标签页"
 
 #: src/Fields/Yesno.php:19
 msgid "No"
-msgstr ""
+msgstr "否"
 
 #: src/PostType.php:103
 #, php-format
 msgid "No %s found"
-msgstr ""
+msgstr "未找到 %s"
 
 #: src/PostType.php:104
 #, php-format
 msgid "No %s found in trash"
-msgstr ""
+msgstr "回收站中没有 %s"
 
 #: src/Admin/CachePage.php:122
 msgid "No cached files."
-msgstr ""
+msgstr "没有缓存文件。"
 
 #: src/Rest/CfdevRestApi.php:181
 msgid "No CFDev fields exposed for this options page."
-msgstr ""
+msgstr "此选项页面没有公开的 CFDev 字段。"
 
 #: src/Rest/CfdevRestApi.php:107
 msgid "No CFDev fields exposed for this post type."
-msgstr ""
+msgstr "此文章类型没有公开的 CFDev 字段。"
 
 #: src/Rest/CfdevRestApi.php:131
 msgid "No CFDev fields exposed for this taxonomy."
-msgstr ""
+msgstr "此分类法没有公开的 CFDev 字段。"
 
 #: src/Rest/CfdevRestApi.php:155
 msgid "No CFDev fields exposed for users."
-msgstr ""
+msgstr "用户没有公开的 CFDev 字段。"
 
 #: src/Admin/DashboardPage.php:166
 msgid "No field groups declared yet. Register your first group using"
-msgstr ""
+msgstr "尚未声明任何字段组。请使用以下方法注册您的第一个组"
 
 #: src/Admin/RestPage.php:137
 msgid "No fields marked rest: true yet."
-msgstr ""
+msgstr "尚未有字段标记为 rest: true。"
 
-#: src/Admin/RestPage.php:353 src/Admin/RestPage.php:390
-#: src/Admin/DashboardPage.php:394 src/Admin/DashboardPage.php:416
+#: src/Admin/RestPage.php:353 src/Admin/RestPage.php:390 src/Admin/DashboardPage.php:394 src/Admin/DashboardPage.php:416
 msgid "No fields."
-msgstr ""
+msgstr "无字段。"
 
 #: src/Admin/RestPage.php:258 src/Admin/DashboardPage.php:254
 msgid "No groups declared."
-msgstr ""
+msgstr "未声明任何组。"
 
 #: src/Admin/CachePage.php:127
 msgid "Object"
-msgstr ""
+msgstr "对象"
 
 #: src/Admin/DashboardPage.php:91
 msgid "only the last declaration is active;"
-msgstr ""
+msgstr "只有最后一次声明有效；"
 
 #: src/Admin/RestPage.php:176 src/Admin/DashboardPage.php:208
 msgid "Options"
-msgstr ""
+msgstr "选项"
 
 #: src/Admin/DashboardPage.php:170
 msgid "or"
-msgstr ""
+msgstr "或"
 
 #: src/Taxonomy.php:149
 #, php-format
 msgid "Parent %s"
-msgstr ""
+msgstr "父级：%s"
 
 #: src/Taxonomy.php:150
 #, php-format
 msgid "Parent %s:"
-msgstr ""
+msgstr "父级 %s："
 
 #: src/Rest/CfdevRestApi.php:102 src/Rest/CfdevRestApi.php:222
 msgid "Post not found."
-msgstr ""
+msgstr "文章未找到。"
 
 #: src/PostType.php:92
 #, php-format
 msgctxt "post type general name"
 msgid "%s"
-msgstr ""
+msgstr "%s"
 
 #: src/PostType.php:93
 #, php-format
 msgctxt "post type singular name"
 msgid "%s"
-msgstr ""
+msgstr "%s"
 
 #: src/Admin/DashboardPage.php:1196
 msgid "Raw"
-msgstr ""
+msgstr "原始数据"
 
 #: src/Admin/DashboardPage.php:1232
 msgid "Regenerate"
-msgstr ""
+msgstr "重新生成"
 
-#: src/Field.php:195 src/Fields/Bundle.php:81
-#: src/Config/Assets/AssetLoader.php:160
+#: src/Field.php:195 src/Fields/Bundle.php:81 src/Config/Assets/AssetLoader.php:160
 msgid "Remove"
-msgstr ""
+msgstr "删除"
 
 #: src/Fields/File.php:55 src/Config/Assets/AssetLoader.php:158
 msgid "Remove current file"
-msgstr ""
+msgstr "删除当前文件"
 
-#: src/Fields/ImageAlt.php:33 src/Fields/Image.php:29
-#: src/Config/Assets/AssetLoader.php:157
+#: src/Fields/ImageAlt.php:33 src/Fields/Image.php:29 src/Config/Assets/AssetLoader.php:157
 msgid "Remove current image"
-msgstr ""
+msgstr "删除当前图片"
 
 #: src/Fields/Gallery.php:49
 msgid "Remove image"
-msgstr ""
+msgstr "删除图片"
 
 #: src/Admin/DashboardPage.php:461
 msgid "required"
-msgstr ""
+msgstr "必填"
 
 #: src/Admin/DashboardPage.php:117
 msgid "Reserved WordPress meta keys used as field IDs:"
-msgstr ""
+msgstr "用作字段 ID 的 WordPress 保留元数据键："
 
 #: src/Admin/RestPage.php:76 src/Admin/AdminMenu.php:79
-#: src/Admin/AdminMenu.php:79
 msgid "REST API"
-msgstr ""
+msgstr "REST API"
 
 #: src/Admin/RestPage.php:418
 msgid "REST type"
-msgstr ""
+msgstr "REST 类型"
 
 #: src/Fields/Link.php:35
 msgid "Same tab"
-msgstr ""
+msgstr "同一标签页"
 
 #: src/Field.php:221
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: src/OptionsPage.php:153
 msgid "Save settings"
-msgstr ""
+msgstr "保存设置"
 
 #: src/Config/Assets/AssetLoader.php:162
 msgid "Saved!"
-msgstr ""
+msgstr "已保存！"
 
 #: src/Config/Assets/AssetLoader.php:161
 msgid "Saving..."
-msgstr ""
+msgstr "保存中..."
 
 #: src/PostType.php:102 src/Taxonomy.php:147
 #, php-format
 msgid "Search %s"
-msgstr ""
+msgstr "搜索 %s"
 
 #: src/OptionsPage.php:205
 msgid "Security check failed."
-msgstr ""
+msgstr "安全检查失败。"
 
 #: src/Fields/File.php:42
 msgid "Select file"
-msgstr ""
+msgstr "选择文件"
 
 #: src/Fields/ImageAlt.php:49 src/Fields/Image.php:55
 msgid "Select image"
-msgstr ""
+msgstr "选择图片"
 
 #: src/Admin/CachePage.php:32
 msgid "Setting saved."
-msgstr ""
+msgstr "设置已保存。"
 
 #: src/OptionsPage.php:162
 msgid "Settings saved."
-msgstr ""
+msgstr "设置已保存。"
 
 #: src/Taxonomy.php:282
 #, php-format
 msgid "Show all %s"
-msgstr ""
+msgstr "显示所有 %s"
 
 #: src/Admin/CachePage.php:130
 msgid "Size"
-msgstr ""
+msgstr "大小"
 
 #: src/Admin/RestPage.php:454
 msgid "string (native)"
-msgstr ""
+msgstr "string（原生）"
 
 #: src/Admin/RestPage.php:592 src/Admin/DashboardPage.php:482
 msgid "Tabs"
-msgstr ""
+msgstr "标签页"
 
 #: src/Taxonomy.php:145
 #, php-format
 msgctxt "taxonomy general name"
 msgid "%s"
-msgstr ""
+msgstr "%s"
 
 #: src/Taxonomy.php:146
 #, php-format
 msgctxt "taxonomy singular name"
 msgid "%s"
-msgstr ""
+msgstr "%s"
 
 #: src/Rest/CfdevRestApi.php:126
 msgid "Term not found."
-msgstr ""
+msgstr "词条未找到。"
 
 #: src/Admin/RestPage.php:159 src/Admin/DashboardPage.php:196
 msgid "Terms"
-msgstr ""
+msgstr "词条"
 
 #: src/Admin/DashboardPage.php:92
 msgid "the earlier field definition and its saved data are silently lost."
-msgstr ""
+msgstr "早期的字段定义及其保存的数据将被静默删除。"
 
 #: src/Validation/Rules/DateAfter.php:39
 #, php-format
 msgid "This date must be after %s."
-msgstr ""
+msgstr "此日期必须晚于 %s。"
 
 #: src/Validation/Rules/DateBefore.php:34
 #, php-format
 msgid "This date must be before %s."
-msgstr ""
+msgstr "此日期必须早于 %s。"
 
 #: src/Validation/Rules/DateAfterToday.php:38
 msgid "This date must be in the future."
-msgstr ""
+msgstr "此日期必须是将来的日期。"
 
 #: src/Validation/Rules/Regex.php:25
 msgid "This field has an invalid format."
-msgstr ""
+msgstr "此字段格式无效。"
 
 #: src/Validation/Rules/Required.php:20
 msgid "This field is required."
-msgstr ""
+msgstr "此字段为必填项。"
 
 #: src/Validation/Rules/IsNumeric.php:16
 msgid "This field must be a number."
-msgstr ""
+msgstr "此字段必须是数字。"
 
 #: src/Validation/Rules/Positive.php:16
 msgid "This field must be a positive number."
-msgstr ""
+msgstr "此字段必须是正数。"
 
 #: src/Validation/Rules/Email.php:17
 msgid "This field must be a valid email address."
-msgstr ""
+msgstr "此字段必须是有效的电子邮件地址。"
 
 #: src/Validation/Rules/Slug.php:20
 msgid "This field must be a valid slug (e.g. my-slug-123)."
-msgstr ""
+msgstr "此字段必须是有效的 slug（例如 my-slug-123）。"
 
 #: src/Validation/Rules/Url.php:16
 msgid "This field must be a valid URL."
-msgstr ""
+msgstr "此字段必须是有效的 URL。"
 
 #: src/Validation/Rules/Uuid.php:23
 msgid "This field must be a valid UUID."
-msgstr ""
+msgstr "此字段必须是有效的 UUID。"
 
 #: src/Validation/Rules/MinLength.php:25
 msgid "This field must be at least %d characters."
-msgstr ""
+msgstr "此字段至少需要 %d 个字符。"
 
 #: src/Validation/Rules/Min.php:21
 #, php-format
 msgid "This field must be at least %s."
-msgstr ""
+msgstr "此字段不得少于 %s。"
 
 #: src/Validation/Rules/Max.php:21
 #, php-format
 msgid "This field must be at most %s."
-msgstr ""
+msgstr "此字段不得超过 %s。"
 
 #: src/Validation/Rules/Between.php:24
 #, php-format
 msgid "This field must be between %s and %s."
-msgstr ""
+msgstr "此字段必须介于 %s 和 %s 之间。"
 
 #: src/Validation/Rules/ExactLength.php:27
 msgid "This field must be exactly %d characters long."
-msgstr ""
+msgstr "此字段必须恰好 %d 个字符。"
 
 #: src/Validation/Rules/Contains.php:21
 #, php-format
 msgid "This field must contain \"%s\"."
-msgstr ""
+msgstr "此字段必须包含 \"%s\"。"
 
 #: src/Validation/Rules/AlphaNumeric.php:16
 msgid "This field must contain only letters and numbers."
-msgstr ""
+msgstr "此字段只能包含字母和数字。"
 
 #: src/Validation/Rules/Alpha.php:16
 msgid "This field must contain only letters."
-msgstr ""
+msgstr "此字段只能包含字母。"
 
 #: src/Validation/Rules/EndsWith.php:21
 #, php-format
 msgid "This field must end with \"%s\"."
-msgstr ""
+msgstr "此字段必须以 \"%s\" 结尾。"
 
 #: src/Validation/Rules/MaxLength.php:25
 msgid "This field must not exceed %d characters."
-msgstr ""
+msgstr "此字段不得超过 %d 个字符。"
 
 #: src/Validation/Rules/MaxItems.php:28
 msgid "This field must not exceed %d item."
 msgid_plural "This field must not exceed %d items."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "此字段不得超过 %d 个条目。"
 
 #: src/Validation/Rules/StartsWith.php:25
 #, php-format
 msgid "This field must start with \"%s\"."
-msgstr ""
+msgstr "此字段必须以 \"%s\" 开头。"
 
 #: src/Validation/Rules/MinItems.php:28
 msgid "This field requires at least %d item."
 msgid_plural "This field requires at least %d items."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "此字段至少需要 %d 个条目。"
 
 #: src/Validation/Rules/FileExtension.php:69
 #, php-format
 msgid "This file must be one of the following types: %s."
-msgstr ""
+msgstr "此文件必须是以下类型之一：%s。"
 
 #: src/Validation/Rules/FileMime.php:60
 #, php-format
 msgid "This file type is not allowed. Accepted types: %s."
-msgstr ""
+msgstr "不允许此文件类型。可接受的类型：%s。"
 
 #: src/Validation/Rules/ImageMinDimensions.php:74
 msgid "This image must be at least %dpx tall."
-msgstr ""
+msgstr "此图片高度至少为 %dpx。"
 
 #: src/Validation/Rules/ImageMinDimensions.php:60
 msgid "This image must be at least %dpx wide and %dpx tall."
-msgstr ""
+msgstr "此图片宽度至少为 %dpx，高度至少为 %dpx。"
 
 #: src/Validation/Rules/ImageMinDimensions.php:68
 msgid "This image must be at least %dpx wide."
-msgstr ""
+msgstr "此图片宽度至少为 %dpx。"
 
 #: src/Validation/Rules/ImageExactDimensions.php:74
 msgid "This image must be exactly %dpx tall."
-msgstr ""
+msgstr "此图片高度必须恰好为 %dpx。"
 
 #: src/Validation/Rules/ImageExactDimensions.php:68
 msgid "This image must be exactly %dpx wide."
-msgstr ""
+msgstr "此图片宽度必须恰好为 %dpx。"
 
 #: src/Validation/Rules/ImageExactDimensions.php:60
 msgid "This image must be exactly %dpx × %dpx."
-msgstr ""
+msgstr "此图片必须恰好为 %dpx × %dpx。"
 
 #: src/Fields/Bundle.php:189
 msgid "This input type doesn't support the bundle functionality (yet)."
-msgstr ""
+msgstr "此输入类型（尚）不支持 bundle 功能。"
 
 #: src/Admin/DashboardPage.php:124
 msgid ""
 "this key is used by WordPress core. Saving to it will corrupt native "
 "WordPress data"
 msgstr ""
+"此键由 WordPress 核心使用。向其写入将损坏 WordPress 原生数据"
 
 #: src/Admin/AdminPage.php:43
 msgid "This section is under development."
-msgstr ""
+msgstr "此部分正在开发中。"
 
 #: src/Admin/CachePage.php:128 src/Admin/DashboardPage.php:437
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 #: src/Taxonomy.php:152
 #, php-format
 msgid "Update %s"
-msgstr ""
+msgstr "更新 %s"
 
 #: src/Support/WPValidator.php:37
 msgid "Use of a reserved term."
-msgstr ""
+msgstr "使用了保留词。"
 
-#. %s = the reserved term slug that was used
 #: src/Taxonomy.php:69
 #, php-format
 msgid "Use of a reserved term: \"%s\"."
-msgstr ""
+msgstr "使用了保留词：\"%s\"。"
 
 #: src/Admin/CachePage.php:227
 msgid "User"
-msgstr ""
+msgstr "用户"
 
 #: src/Rest/CfdevRestApi.php:150
 msgid "User not found."
-msgstr ""
+msgstr "用户未找到。"
 
 #: src/Admin/RestPage.php:168 src/Admin/DashboardPage.php:202
 msgid "Users"
-msgstr ""
+msgstr "用户"
 
 #: src/Admin/DashboardPage.php:439
 msgid "Validation"
-msgstr ""
+msgstr "验证"
 
 #: src/PostType.php:100
 #, php-format
 msgid "View %s"
-msgstr ""
+msgstr "查看 %s"
 
 #: src/Admin/DashboardPage.php:141
 msgid ""
 "WordPress only shows the last registration. Use a unique ID for each "
 "addMetaBox() call."
 msgstr ""
+"WordPress 仅显示最后一次注册。请为每次 addMetaBox() 调用使用唯一 ID。"
 
 #: src/Fields/Yesno.php:18
 msgid "Yes"
-msgstr ""
+msgstr "是"
 
 #: src/OptionsPage.php:122
 msgid "You do not have permission to access this page."
-msgstr ""
+msgstr "您没有访问此页面的权限。"
 
 #: src/OptionsPage.php:198
 msgid "You do not have permission to perform this action."
-msgstr ""
+msgstr "您没有执行此操作的权限。"
 
 #: src/Admin/CachePage.php:99
 msgid ""
 "— data is always read directly from the database (recommended in development)"
 msgstr ""
+"— 数据始终直接从数据库读取（建议在开发环境中使用）"
 
 #: src/Admin/CachePage.php:94
 msgid "— data is read and written from .tmp files"
-msgstr ""
+msgstr "— 数据从 .tmp 文件读取和写入"
 
 #: src/Admin/RestPage.php:97
 msgid "— raw values (image ID, JSON string for bundles)"
-msgstr ""
+msgstr "— 原始值（图片 ID、bundle 的 JSON 字符串）"
 
 #: src/Admin/RestPage.php:120
 msgid "— resolved values (enriched images, decoded bundles)"
-msgstr ""
+msgstr "— 解析后的值（丰富的图片、解码的 bundle）"
 
 #: src/Admin/DashboardPage.php:1240
 msgid "— select —"
-msgstr ""
+msgstr "— 选择 —"
 
 #: src/Admin/RestPage.php:449
 msgid "⊞ View fields"
-msgstr ""
+msgstr "⊞ 查看字段"
 
 #: src/Admin/DashboardPage.php:353
 msgid "⚙ Inspect"
-msgstr ""
+msgstr "⚙ 检查"

@@ -147,6 +147,16 @@ require_once get_template_directory() . '/cfdev-fields.php';
 
 ---
 
+## Traductions
+
+L'interface d'administration est traduite en 10 langues : 🇫🇷 🇪🇸 🇩🇪 🇧🇷 🇳🇱 🇮🇹 🇯🇵 🇨🇳 🇷🇺 🇵🇱
+
+WordPress sélectionne automatiquement la bonne locale en fonction de la langue du site (**Réglages → Général → Langue du site**). Aucune configuration nécessaire.
+
+Pour ajouter une nouvelle langue, copiez [`languages/cfdev.pot`](../../languages/cfdev.pot) et traduisez-le avec [Loco Translate](https://localise.biz/) ou [Poedit](https://poedit.net/).
+
+---
+
 ## Vérifier l'installation
 
 Après avoir activé le plugin et ajouté au moins une déclaration de champ, rendez-vous dans **WordPress Admin → CFDev**. Vous devriez voir la liste de tous les groupes de champs enregistrés.

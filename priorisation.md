@@ -3,34 +3,16 @@
 
 # Plus tard mais important
 Ajouter un numero dans un ?bundle pour connaitre le nombre d'element ddedans
-- 
-#### ICIC CIC I
-OK - Format de date par défaut (`m/d/Y` vs `d/m/Y`): Dans les trois field de date et Time Et datetime reverifier m/d/Y =>  'args' => ['date_format' => 'm/d/Y']]),  ou d/m/Y, mieux de rien mettre ??? c'est quoi le probleme entre version de format fr ou en , que me propose tu ic , ne fais rien on echange avant
-A faire => relancer les tests 
-- de la docs ?? 
-  ⎿ Quelle langue veux-tu pour la documentation ? → FR + EN (les deux)
-  · Quel est le périmètre ? → Date / Time / Datetime uniquement
-  -> faire git diff pour voir les changements
-- push
-#### ICIC CIC I
-est ce que si recuperation d'une image on retrouve quand meme id de l'image dans le tableau php ???
-
-# Traduction
+==========
 => Utiliser plugins traduction loco translate pour générer fichier .mo et .po
 allemand, espagnol, chinois
-## Test
-
-
-TEsts sur les champs => couverture complete ??? 
-
+=> ajouter à la docs
 | 15 | **i18n** — `__('')` en anglais + `.mo`/`.po` (FR, DE, ES, ZH) | — |
 
-- admin, effacer les données des tables , si un nom de champ a etais modifié, comparaison declaraison et ce qu'il y a dans la table eteffecer ce qui n'est pas bon
-- Nettoyage automatique en base si un nom de champ est modifié
+=> doc dans toutes les langues ?? 
+===============
 
-
-=> revoir le fichiers devops manuellement !!!! 
-
+=> dans cfdev-plgins ajouter une description ++ et autre si possible ??
 
 - Export JSON/PHP des définitions de champs
 

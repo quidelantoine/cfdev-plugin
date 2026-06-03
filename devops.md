@@ -3,19 +3,23 @@
 Toutes les commandes pour développer, tester et livrer le plugin.
 
 ---
+
+## Mode démo
+
+Activer les champs de démonstration et les notices de debug dans `wp-config.php` :
+
 ```php
-// wp-config.php
-define('CFDEV_DEMO', true);
-// src/demo/demo-notices.php — activé uniquement quand :
 define('CFDEV_DEMO',         true);
 define('CFDEV_DEMO_NOTICES', true);
 ```
 
+> Requis pour tous les specs Cypress. Charge les fichiers `src/demo/demo-*.php`.
+
+---
 
 ## Dépendances
 
 ```bash
-
 # PHP (dev)
 composer install
 
@@ -26,17 +30,15 @@ composer install --no-dev --optimize-autoloader --classmap-authoritative
 npm install
 ```
 
-```php
-define('CFDEV_DEMO', true);
-```
 ---
 
-## Tests unitaires (PHPUnit)
+## Tests
+
+### Unitaires (PHPUnit)
 
 Pas besoin de WordPress — Brain/Monkey mocke les fonctions WP.
 
 ```bash
-
 # Tous les tests
 ./vendor/bin/phpunit
 
@@ -44,7 +46,7 @@ Pas besoin de WordPress — Brain/Monkey mocke les fonctions WP.
 ./vendor/bin/phpunit --testsuite Unit
 
 # Suite d'intégration uniquement (requiert une instance WP)
-./vendor/bin/phpunit --testsuite Integration
+./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
 
 # Un fichier précis
 ./vendor/bin/phpunit tests/Unit/Fields/TextTest.php
@@ -58,61 +60,33 @@ Pas besoin de WordPress — Brain/Monkey mocke les fonctions WP.
 
 ---
 
-## Linting PHP (PHPCS / PHPCBF)
-
-Standard : `WordPress-VIP-Go` + `PSR12` (voir `phpcs.xml`). Longueur max : 160 caractères.
+### Couverture de code (PCOV + Docker)
 
 ```bash
-# Vérifier uniquement (lecture seule)
-vendor/bin/phpcs
-vendor/bin/phpcs -s
+# Unit (rapide, sans DB)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+  php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit \
+  --coverage-php coverage/unit.cov --no-progress
 
-# Correction automatique
-vendor/bin/phpcbf
+# Integration (nécessite docker compose up -d db)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+  php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Integration \
+  --bootstrap tests/Integration/bootstrap-docker.php \
+  --coverage-php coverage/integration.cov --no-progress
 
-# Vérifier un fichier précis
-vendor/bin/phpcs src/Admin/DashboardPage.php
+# Fusion + rapport HTML (après les deux commandes ci-dessus)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+  php -d pcov.enabled=1 vendor/bin/phpcov merge --html coverage/html coverage/
+# → ouvrir coverage/html/index.html
+
+# Rapport texte rapide (Unit seul)
+docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
+  php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-text --no-progress
 ```
 
 ---
 
-## Linting JS (ESLint)
-
-Config : `eslint.config.js`. Règles : `no-shadow` + `no-undef` en **error** (bloquant), `no-var` / `eqeqeq` en warning.
-
-```bash
-# Vérifier (lecture seule)
-npm run lint:js
-
-# Correction automatique des warnings fixables
-npm run lint:js:fix
-
-# Un fichier précis
-npx eslint assets/js/functions.js
-```
-
-> `cypress.config.cjs` (et non `.js`) — renommé pour coexister avec `"type": "module"` dans `package.json`.
-
----
-
-## Analyse statique (PHPStan)
-
-Niveau configuré dans `phpstan.neon`. La baseline `phpstan-baseline.neon` contient les suppressions connues.
-
-```bash
-# Analyse complète
-vendor/bin/phpstan analyse
-
-# Avec limite mémoire explicite
-vendor/bin/phpstan analyse --memory-limit=512M
-
-# Régénérer la baseline (après avoir corrigé ou accepté de nouvelles erreurs)
-vendor/bin/phpstan analyse --generate-baseline
-```
-
----
-
-## Tests E2E (Cypress)
+### E2E (Cypress)
 
 Requiert une instance WordPress locale active avec le plugin activé et les champs DEMO chargés.
 
@@ -128,16 +102,14 @@ npm run cy:run:headed
 
 # Un spec précis
 npx cypress run --spec "cypress/e2e/06-page-accordion.cy.js" --browser chrome
-npx cypress run --spec "cypress/e2e/05-page-tabs.cy.js" --browser chrome
-npx cypress run --spec "cypress/e2e/03-validation.cy.js" --browser chrome
-npx cypress run --spec "cypress/e2e/09-rest-api.cy.js" --browser chrome
-npx cypress run --spec "cypress/e2e/16h-options-rest.cy.js" --browser chrome
 
-  # Tout le groupe 16 d'un coup
-  npx cypress run --spec "cypress/e2e/16[a-h]-options-*.cy.js" --browser chrome     
+# Un groupe de specs (glob)
+npx cypress run --spec "cypress/e2e/16[a-h]-options-*.cy.js" --browser chrome
 ```
 
-### Specs disponibles
+> `cypress.config.cjs` (et non `.js`) — renommé pour coexister avec `"type": "module"` dans `package.json`.
+
+#### Specs disponibles
 
 | Fichier | Couverture |
 |---|---|
@@ -161,47 +133,148 @@ npx cypress run --spec "cypress/e2e/16h-options-rest.cy.js" --browser chrome
 
 ---
 
-# 1. Committer tout ton travail
+## Qualité du code
+
+### Linting PHP (PHPCS / PHPCBF)
+
+Standard : `WordPress-VIP-Go` + `PSR12` (voir `phpcs.xml`). Longueur max : 160 caractères.
+
+```bash
+# Vérifier (lecture seule)
+vendor/bin/phpcs
+vendor/bin/phpcs -s
+
+# Correction automatique
+vendor/bin/phpcbf
+
+# Vérifier un fichier précis
+vendor/bin/phpcs src/Admin/DashboardPage.php
+```
+
+---
+
+### Linting JS (ESLint)
+
+Config : `eslint.config.js`. Règles : `no-shadow` + `no-undef` en **error** (bloquant), `no-var` / `eqeqeq` en warning.
+
+```bash
+# Vérifier (lecture seule)
+npm run lint:js
+
+# Correction automatique des warnings fixables
+npm run lint:js:fix
+
+# Un fichier précis
+npx eslint assets/js/functions.js
+```
+
+---
+
+### Analyse statique (PHPStan)
+
+Niveau configuré dans `phpstan.neon`. La baseline `phpstan-baseline.neon` contient les suppressions connues.
+
+```bash
+# Analyse complète
+vendor/bin/phpstan analyse
+
+# Avec limite mémoire explicite
+vendor/bin/phpstan analyse --memory-limit=512M
+
+# Régénérer la baseline (après avoir corrigé ou accepté de nouvelles erreurs)
+vendor/bin/phpstan analyse --generate-baseline
+```
+
+---
+
+## Résumé avant commit
+
+```bash
+# Rapide (Unit seul)
+./vendor/bin/phpunit --testsuite Unit && vendor/bin/phpcs && vendor/bin/phpstan analyse
+
+# Complet (Unit + Integration)
+./vendor/bin/phpunit --testsuite Unit && \
+./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php && \
+vendor/bin/phpcs && \
+vendor/bin/phpstan analyse
+```
+
+---
+
+## Release
+
+```bash
+# 1. Committer tout le travail
 git add .
 git commit -m "..."
 
-# 2. Pusher les commits
+# 2. Pousser les commits
 git push origin main
 
-# 3. Créer le tag et le pusher → déclenche le workflow
+# 3. Créer le tag et le pousser → déclenche le workflow GitHub Actions
 git tag v1.0.6
 git push origin v1.0.6
 
-#####
+# Ou en une commande (commit + tag + push)
 git add .github/workflows/release.yml
-git commit -m "fix(ci): build dans /tmp pour éviter conflit rsync source/dest + Node 24"
+git commit -m "fix(ci): ..."
 git tag v1.0.1
 git push origin main v1.0.1
-
-## Résumé rapide
-
-```bash
-# Vérification complète avant commit
-./vendor/bin/phpunit --testsuite Unit && vendor/bin/phpcs && vendor/bin/phpstan analyse
-
-./vendor/bin/phpunit --testsuite Unit && ./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php && vendor/bin/phpcs && vendor/bin/phpstan analyse
 ```
 
+---
 
-## Development
+## Gestion des versions
+
+### Vérifier la compatibilité PHP
 
 ```bash
-# Tests
-./vendor/bin/phpunit --testsuite Unit
-./vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap.php
+# Signale toute syntaxe absente avant la version cible (ex : 8.2-)
+vendor/bin/phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 8.2- src/
 
-# Code quality
-vendor/bin/phpcs -s
-vendor/bin/phpstan analyse src tests
+# Ou via phpcs.xml (testVersion déjà configuré à 8.2-)
+vendor/bin/phpcs src/
+```
 
-# E2E (requires docker compose up -d)
-npm run cy:run
-npm run cy:open
+Pour changer le plancher, modifier `testVersion` dans `phpcs.xml` :
+
+```xml
+<config name="testVersion" value="8.2-"/>
+```
+
+### Trouver le plancher WordPress
+
+```bash
+# Lister toutes les fonctions/classes WP utilisées dans src/
+grep -roh --include="*.php" \
+  -P '(?<!\w)(wp_\w+|WP_\w+|register_\w+|add_\w+|get_\w+|update_\w+|delete_\w+)\(' src/ \
+  | sort -u
+```
+
+Fonctions déterminantes pour ce plugin :
+
+| Fonction | Introduite |
+|---|---|
+| `get_term_meta` / `update_term_meta` | WP 4.4 |
+| `register_rest_route` / `WP_REST_*` | WP 4.4 |
+| `register_meta` avec `object_subtype` | WP 4.9.8 |
+| `wp_date()` | **WP 5.3** ← plancher actuel |
+
+---
+
+## Helpers — recherche & remplacement
+
+```bash
+# Rechercher (en excluant vendor)
+grep -rn --exclude-dir=vendor "terme_cherché" .
+
+# Remplacer dans tous les fichiers PHP
+find . -name "*.php" -not -path "*/vendor/*" \
+  -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
+
+# Dry run — prévisualiser sans modifier
+grep -rn --exclude-dir=vendor "ancien_texte" .
 ```
 
 ---
@@ -209,8 +282,6 @@ npm run cy:open
 ## Réinstallation sur un nouveau poste
 
 Tout ce qu'il faut pour que les tests Cypress passent sur une installation fraîche du projet FrankenPHP.
-
----
 
 ### 1. Prérequis
 
@@ -285,7 +356,6 @@ Via WP Admin → Extensions, ou WP-CLI :
 Après activation de Classic Editor, forcer le mode classic pour tous les utilisateurs :
 
 ```sql
--- Via phpMyAdmin (http://localhost:8080) ou directement en DB
 INSERT INTO wp_options (option_name, option_value) VALUES
   ('classic-editor-replace',     'classic'),
   ('classic-editor-allow-users', 'disallow')
@@ -315,8 +385,6 @@ ln -s ../plugins/cfdev-plugin/tests/mu-plugins/ci-disable-block-editor.php \
 
 ### 7. Options WordPress à configurer
 
-#### Via phpMyAdmin (http://localhost:8080) ou SQL direct
-
 ```sql
 INSERT INTO wp_options (option_name, option_value) VALUES
   ('permalink_structure',        '/%postname%/'),
@@ -326,24 +394,22 @@ INSERT INTO wp_options (option_name, option_value) VALUES
 ON DUPLICATE KEY UPDATE option_value = VALUES(option_value);
 ```
 
-Puis **vider les règles de réécriture** (nécessaire après changement de permalink) :
+Puis **vider les règles de réécriture** :
 
 ```bash
 # WP-CLI depuis le conteneur si disponible
 docker compose exec php wp rewrite flush --path=/app/public
 
-# Sinon : aller dans WP Admin → Réglages → Permaliens et cliquer "Enregistrer"
+# Sinon : WP Admin → Réglages → Permaliens → Enregistrer
 ```
 
 #### Thème actif
 
-Le thème `webvite` doit être actif (il fournit `header.php` / `footer.php` appelés par les templates de test). Le mu-plugin injecte `template-home.php` et `template-cfdev-test.php` dans le sélecteur sans qu'il soit nécessaire de les placer dans le thème.
+Le thème `webvite` doit être actif (il fournit `header.php` / `footer.php` appelés par les templates de test).
 
 ---
 
 ### 8. Page pour le spec 11 (front-end)
-
-Créer une page WordPress avec :
 
 | Champ | Valeur |
 |---|---|
@@ -351,8 +417,6 @@ Créer une page WordPress avec :
 | Slug | `cfdev-test` |
 | Statut | Publié |
 | Template | `CFDev Test` (exposé par le mu-plugin) |
-
-Via WP Admin → Pages → Ajouter, ou SQL :
 
 ```sql
 -- 1. Créer la page
@@ -368,8 +432,7 @@ VALUES (X, '_wp_page_template', 'template-cfdev-test.php')
 ON DUPLICATE KEY UPDATE meta_value = 'template-cfdev-test.php';
 ```
 
-> Le spec 11 n'utilise pas l'URL de la page — il passe par `/?cfdev_render=POST_ID`
-> (géré par le mu-plugin). La page n'a donc pas besoin d'être accessible via son slug.
+> Le spec 11 passe par `/?cfdev_render=POST_ID` (géré par le mu-plugin) — la page n'a pas besoin d'être accessible via son slug.
 
 ---
 
@@ -386,19 +449,13 @@ Le compte utilisé par Cypress est défini dans `cypress.env.json` (à la racine
 
 Ce compte doit exister dans WordPress avec le rôle **Administrateur**.
 
-Pour changer les identifiants : modifier `cypress.env.json` (non commité si sensible — vérifier `.gitignore`).
-
 ---
 
 ### 10. Installer les dépendances du plugin
 
 ```bash
 cd app/wp-content/plugins/cfdev-plugin
-
-# PHP
 composer install
-
-# JavaScript / Cypress
 npm install
 ```
 
@@ -439,118 +496,4 @@ Pour pointer ailleurs : `CYPRESS_BASE_URL=https://monsite.local npm run cy:run`.
 [ ] Thème webvite actif
 [ ] cypress.env.json avec les bons identifiants admin
 [ ] composer install + npm install dans le plugin
-```
-
----
-
-
-# Coverage — Unit (rapide, sans DB)
-docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
-php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-php coverage/unit.cov --no-progress
-
-# Coverage — Integration (nécessite docker compose up -d db)
-docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
-php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Integration --bootstrap tests/Integration/bootstrap-docker.php --coverage-php coverage/integration.cov --no-progress
-
-# Fusion + rapport HTML (nécessite d'avoir lancé les deux commandes ci-dessus)
-docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
-php -d pcov.enabled=1 vendor/bin/phpcov merge --html coverage/html coverage/
-# → ouvrir app/wp-content/plugins/cfdev-plugin/coverage/html/index.html
-
-# Rapport texte rapide (Unit seul)
-docker compose exec -w /app/public/wp-content/plugins/cfdev-plugin php \
-php -d pcov.enabled=1 vendor/bin/phpunit --testsuite Unit --coverage-text --no-progress
-
-
-## Gestion des versions
-
-### Vérifier la compatibilité PHP
-
-```bash
-# Signale toute syntaxe absente avant la version cible (ex : 8.2-)
-vendor/bin/phpcs --standard=PHPCompatibilityWP --runtime-set testVersion 8.2- src/
-
-# Ou via phpcs.xml (testVersion déjà configuré à 8.2-)
-vendor/bin/phpcs src/
-```
-
-Pour changer le plancher, modifier `testVersion` dans `phpcs.xml` :
-
-```xml
-<config name="testVersion" value="8.2-"/>
-```
-
-### Trouver le plancher WordPress
-
-Pas d'outil automatique équivalent pour WP. Méthode manuelle :
-
-```bash
-# Lister toutes les fonctions/classes WP utilisées dans src/
-grep -roh --include="*.php" -P '(?<!\w)(wp_\w+|WP_\w+|register_\w+|add_\w+|get_\w+|update_\w+|delete_\w+)\(' src/ \
-  | sort -u
-grep -roh --include="*.php" -P '\b(wp_\w+|WP_\w+|register_\w+|add_meta_box|get_term_meta|update_term_meta|delete_term_meta|get_user_meta|update_user_meta)\(' src/ | sort -u
-
-# Puis vérifier chaque fonction sur https://developer.wordpress.org/reference/
-# La plus récente détermine le plancher.
-```
-
-Fonctions déterminantes pour ce plugin :
-
-| Fonction | Introduite |
-|----------|-----------|
-| `get_term_meta` / `update_term_meta` | WP 4.4 |
-| `register_rest_route` / `WP_REST_*` | WP 4.4 |
-| `register_meta` avec `object_subtype` | WP 4.9.8 |
-| `wp_date()` | **WP 5.3** ← plancher actuel |
-
-
-# prompt
-#### 
-Rewrite CLAUDE.md based on everything we've done so far — architecture, conventions, gotchas discovered. keep it under 500 words.
-
-### recherche
-grep -rn "render_post_filter" .
-render_post_filter
-
-# replace texte
-# Prévisualiser sans modifier (dry run)
-grep -rn "ancien_texte" . --include="*.php"
-grep -rn "Gijs Jorissen" . --include="*.php"
-
-grep -rn --exclude-dir=vendor "ancien_texte" .
-
-
-# Tous types de fichiers
-find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
-find . -type f -exec sed -i 's/Gijs Jorissen/quidelantoine/g' {} +
-# Insensible à la casse
-sed -i 's/ancien_texte/nouveau_texte/gi'
-
-
-# Claude code
-
-```bash
-# Dans la session interactive
-> Analyse ce fichier @src/utils/validation.js
-
-# En mode non-interactif (-p)
-claude -p "Explique cette fonction @src/auth.ts"
-
-# Pipe direct — zéro exploration de repo
-cat fichier | claude -p "..."
-cat src/auth.ts | claude -p "Explique cette fonction"
-
-# Ou avec redirection
-claude -p "Trouve les bugs dans ce code" < src/auth.ts
-```
-
-## Recherche & remplacement (helpers)
-
-```bash
-# Rechercher
-grep -rn "render_post_filter" .
-grep -rn --exclude-dir=vendor "ancien_texte" .
-
-# Remplacer
-find . -type f -exec sed -i 's/ancien_texte/nouveau_texte/g' {} +
 ```
